@@ -1,8 +1,30 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { generateWithGemini, getAudioData, validateGeminiKey } from "@/lib/gemini";
+import packageJson from "../../package.json";
+import { getAudioData } from "@/lib/gemini";
+import {
+  AiModel,
+  AiProvider,
+  DEFAULT_MODELS,
+  OPENAI_SPEECH_VOICES,
+  fetchAiModels,
+  fetchGoogleSpeechVoices,
+  generateAiText,
+  generateGeminiMultimodalResponse,
+  generateProviderSpeech,
+  isAiProvider,
+  transcribeWithOpenAi,
+} from "@/lib/ai-providers";
 import { grammarTopics } from "@/lib/grammar";
+import {
+  GoogleSpeechVoice,
+  SpeechVoiceId,
+  clearSpeechCache,
+  getCachedSpeech,
+  isSpeechVoiceId,
+  saveCachedSpeech,
+} from "@/lib/speech";
 import { IllustrationIcon, IllustrationName } from "@/components/illustration-icon";
 import {
   CoursePackage,
@@ -20,8 +42,31 @@ import {
   removePersonalMaterial,
 } from "@/lib/personal-library";
 
-type Section = "home" | "practice" | "profiles" | "progress" | "placement" | "grammar" | "courses" | "library";
+type Section = "home" | "practice" | "profiles" | "progress" | "placement" | "grammar" | "courses" | "library" | "settings";
+type ApiKeyEntry = { id: string; label: string; value: string };
+type ProviderRecord<T> = Record<AiProvider, T>;
+type VersionCheckStatus = "checking" | "latest" | "update-available" | "error";
+const APP_VERSION = packageJson.version;
 const API_KEY_STORAGE = "lingua-gemini-api-key";
+const AI_SETTINGS_STORAGE = "lingua-ai-settings";
+const FONT_SCALE_STORAGE = "lingua-font-scale";
+const SPEECH_VOICE_STORAGE = "lingua-speech-voice";
+const GOOGLE_SPEECH_VOICES_STORAGE = "lingua-google-speech-voices";
+const SPEECH_SAMPLE = "The nurse is speaking to a patient. Please check the pressure carefully.";
+const OPENAI_ACCENTS = [
+  "American",
+  "Australian",
+  "British",
+  "Indian",
+  "Chinese",
+  "German",
+] as const;
+const QUICK_TEACHER_REQUESTS = [
+  { label: "Bắt đầu bài học", prompt: "Teach me a short lesson for my English level. Start with a simple explanation and one example, then ask me one practice question." },
+  { label: "Giải thích dễ hiểu hơn", prompt: "I do not fully understand the last point. Please explain it more simply, give me a different example, and check whether I understand." },
+  { label: "Luyện thêm bài tập", prompt: "Give me three extra practice questions about the topic we are studying. Ask one question at a time and wait for my answer." },
+  { label: "Ôn phát âm", prompt: "Help me practice pronunciation. Give me one short English sentence, mark the word stress, and ask me to repeat it." },
+];
 
 type Profile = {
   id: string;
@@ -295,14 +340,37 @@ function recordPractice(current: LearningProgress, minutes: number, newSession: 
 
 export default function Home() {
   const [section, setSection] = useState<Section>("home");
+  const [fontScale, setFontScale] = useState(125);
+  const [fontScaleLoaded, setFontScaleLoaded] = useState(false);
+  const [fontScaleError, setFontScaleError] = useState("");
+  const [versionCheckStatus, setVersionCheckStatus] = useState<VersionCheckStatus>("checking");
+  const [latestVersion, setLatestVersion] = useState("");
+  const [versionCheckError, setVersionCheckError] = useState("");
+  const [versionCheckAttempt, setVersionCheckAttempt] = useState(0);
   const [progress, setProgress] = useState<LearningProgress>(emptyProgress);
   const [progressLoaded, setProgressLoaded] = useState(false);
-  const [apiKey, setApiKey] = useState("");
+  const [aiSettingsLoaded, setAiSettingsLoaded] = useState(false);
+  const [aiProvider, setAiProvider] = useState<AiProvider>("google");
+  const [apiKeys, setApiKeys] = useState<ProviderRecord<ApiKeyEntry[]>>({ google: [], openai: [] });
+  const [activeKeyIds, setActiveKeyIds] = useState<ProviderRecord<string>>({ google: "", openai: "" });
+  const [selectedModels, setSelectedModels] = useState<ProviderRecord<string>>({ ...DEFAULT_MODELS });
+  const [modelCatalog, setModelCatalog] = useState<ProviderRecord<AiModel[]>>({ google: [], openai: [] });
   const [apiKeyDraft, setApiKeyDraft] = useState("");
-  const [apiKeyDialogOpen, setApiKeyDialogOpen] = useState(false);
+  const [apiKeyLabelDraft, setApiKeyLabelDraft] = useState("");
   const [apiKeyBusy, setApiKeyBusy] = useState(false);
   const [apiKeyError, setApiKeyError] = useState("");
   const [apiKeySaved, setApiKeySaved] = useState(false);
+  const [modelsBusy, setModelsBusy] = useState(false);
+  const [modelsError, setModelsError] = useState("");
+  const [googleSpeechVoices, setGoogleSpeechVoices] = useState<GoogleSpeechVoice[]>([]);
+  const [speechVoicesBusy, setSpeechVoicesBusy] = useState(false);
+  const [speechVoicesError, setSpeechVoicesError] = useState("");
+  const [speechVoice, setSpeechVoice] = useState<SpeechVoiceId>("Kore");
+  const [openAiSpeechVoice, setOpenAiSpeechVoice] = useState<string>("coral");
+  const [openAiSpeechAccent, setOpenAiSpeechAccent] = useState<string>("American");
+  const [speechBusy, setSpeechBusy] = useState(false);
+  const [speechError, setSpeechError] = useState("");
+  const [speechNotice, setSpeechNotice] = useState("");
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [draft, setDraft] = useState("");
   const [chatBusy, setChatBusy] = useState(false);
@@ -314,7 +382,7 @@ export default function Home() {
   const [voiceError, setVoiceError] = useState("");
   const [placementAnswers, setPlacementAnswers] = useState<number[]>([]);
   const [placementResult, setPlacementResult] = useState("");
-  const [grammarTopicId, setGrammarTopicId] = useState(grammarTopics[0].id);
+  const [grammarTopicId, setGrammarTopicId] = useState<string | null>(null);
   const [grammarAnswers, setGrammarAnswers] = useState<number[]>([]);
   const [grammarSubmitted, setGrammarSubmitted] = useState(false);
   const [grammarScores, setGrammarScores] = useState<Record<string, number>>({});
@@ -344,8 +412,17 @@ export default function Home() {
   const voiceChatChunksRef = useRef<Blob[]>([]);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
+  const speechAudioRef = useRef<HTMLAudioElement | null>(null);
+  const speechObjectUrlRef = useRef<string | null>(null);
   const materialInputRef = useRef<HTMLInputElement | null>(null);
+  const sectionHistoryRef = useRef<Section[]>([]);
 
+  const apiKey = apiKeys[aiProvider].find((entry) => entry.id === activeKeyIds[aiProvider])?.value ?? "";
+  const activeModel = selectedModels[aiProvider] || DEFAULT_MODELS[aiProvider];
+  const activeSpeechVoice = aiProvider === "google" ? speechVoice : openAiSpeechVoice;
+  const activeSpeechAccent = aiProvider === "google"
+    ? googleSpeechVoices.find((voice) => voice.id === speechVoice)?.accent ?? ""
+    : openAiSpeechAccent;
   const profile = profiles.find((item) => item.id === progress.profile) ?? profiles[0];
   const weekDays = Array.from({ length: 7 }, (_, index) => {
     const date = new Date();
@@ -363,7 +440,42 @@ export default function Home() {
       Number.isInteger(placementAnswers[index]) && placementAnswers[index] >= 0);
   const practiceSessionCounted = useRef(false);
 
+  function navigateToSection(nextSection: Section) {
+    if (nextSection === section) return;
+    sectionHistoryRef.current.push(section);
+    setSection(nextSection);
+  }
+
+  function returnToGrammarTopics() {
+    setGrammarTopicId(null);
+    setGrammarAnswers([]);
+    setGrammarSubmitted(false);
+    setGrammarError("");
+  }
+
+  function goBack() {
+    if (section === "grammar" && grammarTopicId) {
+      returnToGrammarTopics();
+      return;
+    }
+    const previousSection = sectionHistoryRef.current.pop();
+    if (previousSection) {
+      setSection(previousSection);
+      return;
+    }
+    if (section !== "home") setSection("home");
+  }
+
   useEffect(() => {
+    try {
+      const savedScale = Number(localStorage.getItem(FONT_SCALE_STORAGE));
+      if (Number.isFinite(savedScale) && savedScale >= 100 && savedScale <= 150) {
+        setFontScale(savedScale);
+      }
+    } catch {
+      setFontScaleError("Không thể đọc cỡ chữ đã lưu trên thiết bị này.");
+    }
+    setFontScaleLoaded(true);
     const savedProgress = loadProgress();
     setProgress(savedProgress);
     const selectedProfile = profiles.find((item) => item.id === savedProgress.profile);
@@ -371,12 +483,56 @@ export default function Home() {
       setMessages(loadMessages(selectedProfile.id) ?? [{ role: "assistant", content: selectedProfile.prompt }]);
     }
     try {
-      const savedApiKey = localStorage.getItem(API_KEY_STORAGE) ?? "";
-      setApiKey(savedApiKey);
-      setApiKeyDraft(savedApiKey);
-    } catch {
-      setApiKeyError("Trình duyệt không cho phép lưu API key trên thiết bị này.");
+      const savedSettings = localStorage.getItem(AI_SETTINGS_STORAGE);
+      const legacyApiKey = localStorage.getItem(API_KEY_STORAGE)?.trim() ?? "";
+      if (savedSettings) {
+        const parsed: unknown = JSON.parse(savedSettings);
+        if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+          throw new Error("Cài đặt AI đã lưu không đúng định dạng.");
+        }
+        const stored = parsed as Record<string, unknown>;
+        if (typeof stored.provider === "string" && isAiProvider(stored.provider)) setAiProvider(stored.provider);
+        if (typeof stored.keys === "object" && stored.keys !== null && !Array.isArray(stored.keys)) {
+          const storedKeys = stored.keys as Record<string, unknown>;
+          const validKeys = (value: unknown): ApiKeyEntry[] => Array.isArray(value)
+            ? value.flatMap((entry): ApiKeyEntry[] =>
+                typeof entry === "object" && entry !== null &&
+                "id" in entry && typeof entry.id === "string" &&
+                "label" in entry && typeof entry.label === "string" &&
+                "value" in entry && typeof entry.value === "string" && entry.value.trim()
+                  ? [{ id: entry.id, label: entry.label, value: entry.value.trim() }]
+                  : [])
+            : [];
+          const keys = { google: validKeys(storedKeys.google), openai: validKeys(storedKeys.openai) };
+          setApiKeys(keys);
+          const storedIds = typeof stored.activeKeyIds === "object" && stored.activeKeyIds !== null
+            ? stored.activeKeyIds as Record<string, unknown>
+            : {};
+          setActiveKeyIds({
+            google: typeof storedIds.google === "string" && keys.google.some((entry) => entry.id === storedIds.google)
+              ? storedIds.google : keys.google[0]?.id ?? "",
+            openai: typeof storedIds.openai === "string" && keys.openai.some((entry) => entry.id === storedIds.openai)
+              ? storedIds.openai : keys.openai[0]?.id ?? "",
+          });
+        }
+        if (typeof stored.selectedModels === "object" && stored.selectedModels !== null) {
+          const models = stored.selectedModels as Record<string, unknown>;
+          setSelectedModels({
+            google: typeof models.google === "string" ? models.google : DEFAULT_MODELS.google,
+            openai: typeof models.openai === "string" ? models.openai : DEFAULT_MODELS.openai,
+          });
+        }
+      } else if (legacyApiKey) {
+        const legacyEntry = { id: "legacy-google-key", label: "Gemini (cũ)", value: legacyApiKey };
+        setApiKeys({ google: [legacyEntry], openai: [] });
+        setActiveKeyIds({ google: legacyEntry.id, openai: "" });
+      }
+    } catch (error) {
+      setApiKeyError(error instanceof Error
+        ? error.message
+        : "Không thể đọc cài đặt AI đã lưu trên thiết bị.");
     }
+    setAiSettingsLoaded(true);
     try {
       const savedScores: unknown = JSON.parse(localStorage.getItem("lingua-grammar-scores") ?? "{}");
       if (typeof savedScores === "object" && savedScores !== null && !Array.isArray(savedScores)) {
@@ -415,6 +571,110 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (!fontScaleLoaded) return;
+    document.documentElement.style.setProperty("--font-scale", String(fontScale / 100));
+    try {
+      localStorage.setItem(FONT_SCALE_STORAGE, String(fontScale));
+    } catch {
+      setFontScaleError("Không thể lưu cỡ chữ trên thiết bị này.");
+    }
+  }, [fontScale, fontScaleLoaded]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+    async function checkLatestVersion() {
+      setVersionCheckStatus("checking");
+      setVersionCheckError("");
+      try {
+        const response = await fetch(`${basePath}/version.json?check=${Date.now()}`, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`Không thể kiểm tra phiên bản mới nhất (HTTP ${response.status}).`);
+        }
+        const versionInfo: unknown = await response.json();
+        if (
+          typeof versionInfo !== "object" ||
+          versionInfo === null ||
+          !("version" in versionInfo) ||
+          typeof versionInfo.version !== "string" ||
+          !/^\d+\.\d+\.\d+$/.test(versionInfo.version)
+        ) {
+          throw new Error("Thông tin phiên bản trên máy chủ không hợp lệ.");
+        }
+        if (cancelled) return;
+
+        const remoteVersion = versionInfo.version;
+        setLatestVersion(remoteVersion);
+        const current = APP_VERSION.split(".").map(Number);
+        const remote = remoteVersion.split(".").map(Number);
+        const isNewer = remote.some((part, index) => part > current[index] && remote.slice(0, index).every((value, priorIndex) => value === current[priorIndex]));
+        setVersionCheckStatus(isNewer ? "update-available" : "latest");
+      } catch (error) {
+        if (cancelled) return;
+        setVersionCheckError(error instanceof Error ? error.message : "Không thể kiểm tra phiên bản mới nhất.");
+        setVersionCheckStatus("error");
+      }
+    }
+
+    void checkLatestVersion();
+    return () => { cancelled = true; };
+  }, [versionCheckAttempt]);
+
+  useEffect(() => {
+    try {
+      const storedVoices: unknown = JSON.parse(localStorage.getItem(GOOGLE_SPEECH_VOICES_STORAGE) ?? "[]");
+      if (Array.isArray(storedVoices)) {
+        setGoogleSpeechVoices(storedVoices.filter((voice): voice is GoogleSpeechVoice =>
+          typeof voice === "object" && voice !== null &&
+          "id" in voice && typeof voice.id === "string" && isSpeechVoiceId(voice.id) &&
+          "label" in voice && typeof voice.label === "string" &&
+          "gender" in voice && (voice.gender === "male" || voice.gender === "female") &&
+          "accent" in voice && typeof voice.accent === "string" &&
+          "description" in voice && typeof voice.description === "string").slice(0, 20));
+      }
+      const savedVoice = localStorage.getItem(`${SPEECH_VOICE_STORAGE}-${aiProvider}`);
+      if (aiProvider === "google") {
+        const legacyVoice = localStorage.getItem(SPEECH_VOICE_STORAGE);
+        const googleVoice = savedVoice ?? legacyVoice;
+        if (googleVoice && isSpeechVoiceId(googleVoice)) setSpeechVoice(googleVoice);
+      } else if (savedVoice && OPENAI_SPEECH_VOICES.some((voice) => voice.id === savedVoice)) {
+        setOpenAiSpeechVoice(savedVoice);
+      }
+      const savedAccent = localStorage.getItem("lingua-speech-accent-openai");
+      if (savedAccent && OPENAI_ACCENTS.includes(savedAccent as (typeof OPENAI_ACCENTS)[number])) {
+        setOpenAiSpeechAccent(savedAccent);
+      }
+    } catch {
+      setSpeechError("Không thể đọc lựa chọn giọng đọc đã lưu trên thiết bị.");
+    }
+  }, [aiProvider]);
+
+  useEffect(() => {
+    if (googleSpeechVoices.length === 0) return;
+    try {
+      localStorage.setItem(GOOGLE_SPEECH_VOICES_STORAGE, JSON.stringify(googleSpeechVoices));
+    } catch {
+      setSpeechVoicesError("Không thể lưu danh sách giọng đọc trên thiết bị này.");
+    }
+  }, [googleSpeechVoices]);
+
+  useEffect(() => {
+    if (!aiSettingsLoaded) return;
+    try {
+      localStorage.setItem(AI_SETTINGS_STORAGE, JSON.stringify({
+        provider: aiProvider,
+        keys: apiKeys,
+        activeKeyIds,
+        selectedModels,
+      }));
+      localStorage.removeItem(API_KEY_STORAGE);
+    } catch {
+      setApiKeyError("Không thể lưu cài đặt AI trên trình duyệt này.");
+    }
+  }, [aiProvider, apiKeys, activeKeyIds, selectedModels, aiSettingsLoaded]);
+
+  useEffect(() => {
     if (process.env.NODE_ENV !== "production") return;
     if (!("serviceWorker" in navigator)) {
       setOfflineError("Trình duyệt này không hỗ trợ mở ứng dụng offline.");
@@ -451,7 +711,8 @@ export default function Home() {
   useEffect(() => () => {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     voiceChatStreamRef.current?.getTracks().forEach((track) => track.stop());
-    window.speechSynthesis?.cancel();
+    speechAudioRef.current?.pause();
+    if (speechObjectUrlRef.current) URL.revokeObjectURL(speechObjectUrlRef.current);
   }, []);
 
   useEffect(() => () => {
@@ -469,16 +730,43 @@ export default function Home() {
     setMessages(loadMessages(id) ?? [{ role: "assistant", content: nextProfile.prompt }]);
     setPronunciation(null);
     practiceSessionCounted.current = false;
-    setSection("practice");
+    navigateToSection("practice");
   }
 
-  async function sendMessage(event?: FormEvent) {
+  async function withAvailableApiKey<T>(operation: (key: string) => Promise<T>): Promise<T> {
+    const keys = apiKeys[aiProvider];
+    if (!keys.length) {
+      throw new Error(`Chưa có API key ${aiProvider === "google" ? "Google AI" : "OpenAI"}. Hãy thêm key trong mục Cài đặt.`);
+    }
+    const activeIndex = keys.findIndex((entry) => entry.id === activeKeyIds[aiProvider]);
+    const orderedKeys = activeIndex < 0
+      ? keys
+      : [...keys.slice(activeIndex), ...keys.slice(0, activeIndex)];
+    let lastError: unknown;
+    for (const [index, entry] of orderedKeys.entries()) {
+      try {
+        const result = await operation(entry.value);
+        if (activeKeyIds[aiProvider] !== entry.id) {
+          setActiveKeyIds((current) => ({ ...current, [aiProvider]: entry.id }));
+        }
+        return result;
+      } catch (error) {
+        lastError = error;
+        const canRotate = error instanceof Error &&
+          (/HTTP (401|403|429)\b/.test(error.message) ||
+            (/HTTP 400\b/.test(error.message) && /api[\s_-]?key|API_KEY_INVALID/i.test(error.message)));
+        if (!canRotate || index === orderedKeys.length - 1) throw error;
+      }
+    }
+    throw lastError instanceof Error ? lastError : new Error("Không thể hoàn tất yêu cầu với các API key đã lưu.");
+  }
+
+  async function sendMessage(event?: FormEvent, requestedPrompt?: string) {
     event?.preventDefault();
-    const content = draft.trim();
+    const content = (requestedPrompt ?? draft).trim();
     if (!content || chatBusy) return;
     if (!apiKey) {
-      setApiKeyDialogOpen(true);
-      setChatError("Hãy thêm Gemini API key của bạn trong phần Cài đặt AI để bắt đầu trò chuyện.");
+      setChatError(`Hãy thêm API key ${aiProvider === "google" ? "Google AI" : "OpenAI"} trong mục Cài đặt để bắt đầu trò chuyện.`);
       return;
     }
     const conversation = [...messages, { role: "user" as const, content }];
@@ -487,17 +775,13 @@ export default function Home() {
     setChatBusy(true);
     setChatError("");
     try {
-      if (!apiKey) throw new Error("Hãy thêm Gemini API key của bạn trong phần Cài đặt AI để bắt đầu trò chuyện.");
-      const transcript = conversation.map((message) =>
-        `${message.role === "user" ? "Người học" : "Gia sư"}: ${message.content}`).join("\n");
-      const reply = await generateWithGemini(apiKey, [{
-        text: `You are Maya, an encouraging English teacher for a Vietnamese learner. The learner chose "${profile.title}" and is estimated at CEFR ${progress.level}. Keep all lesson material, practice prompts, example sentences, and quiz-like questions in English only; never put Vietnamese translations beside English lesson content. If the learner explicitly asks for help in Vietnamese, briefly explain the point in Vietnamese separately, then return to English practice. Use English at the learner's level, gently correct one useful mistake, and ask one clear follow-up question. Keep replies under 100 words. Never claim to have measured pronunciation from text. Conversation:\n${transcript}\nReply as the coach.`,
-      }]);
+      const systemPrompt = `You are Maya, a warm, patient, interactive English tutor for a Vietnamese learner. The learner selected "${profile.title}" and is estimated at CEFR ${progress.level}. Teach at their level, adapt based on their answers, explain mistakes kindly, and ask one focused follow-up question at a time. Keep lesson material, exercises, examples, and quiz questions in English only; do not place Vietnamese translations beside them. If they ask in Vietnamese or explicitly request an explanation in Vietnamese, explain briefly in Vietnamese, then continue English practice. Never claim to measure pronunciation from text. Keep each answer under 120 words unless they ask for a detailed explanation.`;
+      const reply = await withAvailableApiKey((key) =>
+        generateAiText(aiProvider, key, activeModel, systemPrompt, conversation.slice(-12)));
       setMessages((current) => [...current, { role: "assistant", content: reply }]);
       setProgress((current) => recordPractice(current, 2, !practiceSessionCounted.current));
       practiceSessionCounted.current = true;
-      window.speechSynthesis?.cancel();
-      window.speechSynthesis?.speak(new SpeechSynthesisUtterance(reply));
+      void playSpeech(reply);
     } catch (error) {
       setChatError(error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
     } finally {
@@ -531,8 +815,7 @@ export default function Home() {
     setVoiceError("");
     if (chatBusy) return;
     if (!apiKey) {
-      setApiKeyDialogOpen(true);
-      setVoiceError("Hãy thêm Gemini API key của bạn trong phần Cài đặt AI để bắt đầu trò chuyện.");
+      setVoiceError(`Hãy thêm API key ${aiProvider === "google" ? "Google AI" : "OpenAI"} trong mục Cài đặt để bắt đầu trò chuyện.`);
       return;
     }
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
@@ -563,21 +846,34 @@ export default function Home() {
         try {
           const transcript = messages.slice(-12).map((message) =>
             `${message.role === "user" ? "Người học" : "Gia sư"}: ${message.content}`).join("\n");
-          const audio = await getAudioData(blob);
-          const response = await generateWithGemini(apiKey, [
-            {
-              text: `You are Maya, an encouraging English teacher for a Vietnamese learner. Their profile is "${profile.title}" and estimated CEFR level is "${progress.level}". Listen carefully. Transcribe English accurately; if the learner speaks Vietnamese, transcribe their request in Vietnamese. Keep all lesson material, practice prompts, examples, and quiz-like questions in English only, without Vietnamese translations beside them. If they explicitly request an explanation in Vietnamese, explain briefly and separately, then continue in English. Correct one useful mistake gently and invite one short answer in English. Keep your reply under 100 words. Conversation so far:\n${transcript}\nReturn ONLY valid JSON: {"transcript":"what the learner said","reply":"your level-appropriate coach response"}.`,
-            },
-            { inlineData: audio },
-          ]);
-          const data: unknown = JSON.parse(response.replace(/^```(?:json)?\s*|\s*```$/g, ""));
-          if (typeof data !== "object" || data === null || !("transcript" in data) ||
-              typeof data.transcript !== "string" || !("reply" in data) ||
-              typeof data.reply !== "string" || !data.transcript.trim() || !data.reply.trim()) {
-            throw new Error("Gia sư AI trả lời không đúng định dạng. Vui lòng thử lại.");
+          let learnerMessage = "";
+          let coachMessage = "";
+          if (aiProvider === "google") {
+            const audio = await getAudioData(blob);
+            const response = await withAvailableApiKey((key) => generateGeminiMultimodalResponse(key, [
+              {
+                text: `You are Maya, a warm English tutor for a Vietnamese learner. Their profile is "${profile.title}" and CEFR level is "${progress.level}". Transcribe what they said in the language they used, then reply as their teacher. Keep teaching material and practice in English; answer questions in Vietnamese when asked. Keep the reply under 100 words. Conversation so far:\n${transcript}\nReturn ONLY valid JSON: {"transcript":"what the learner said","reply":"your level-appropriate coach response"}.`,
+              },
+              { inlineData: audio },
+            ], activeModel));
+            const data: unknown = JSON.parse(response.replace(/^```(?:json)?\s*|\s*```$/g, ""));
+            if (typeof data !== "object" || data === null || !("transcript" in data) ||
+                typeof data.transcript !== "string" || !("reply" in data) ||
+                typeof data.reply !== "string" || !data.transcript.trim() || !data.reply.trim()) {
+              throw new Error("Gia sư AI trả lời không đúng định dạng. Vui lòng thử lại.");
+            }
+            learnerMessage = data.transcript.trim();
+            coachMessage = data.reply.trim();
+          } else {
+            learnerMessage = await withAvailableApiKey((key) => transcribeWithOpenAi(key, blob));
+            coachMessage = await withAvailableApiKey((key) => generateAiText(
+              aiProvider,
+              key,
+              activeModel,
+              `You are Maya, a warm English tutor for a Vietnamese learner studying "${profile.title}" at CEFR ${progress.level}. Respond to the learner's transcribed voice message in context. Adapt to their level, answer questions, and ask one focused follow-up question. Keep lessons and practice in English, but explain in Vietnamese when they ask. Keep your answer under 100 words.`,
+              [...messages.slice(-12), { role: "user", content: learnerMessage }],
+            ));
           }
-          const learnerMessage = data.transcript;
-          const coachMessage = data.reply;
           setMessages((current) => [
             ...current,
             { role: "user", content: learnerMessage },
@@ -585,8 +881,7 @@ export default function Home() {
           ]);
           setProgress((current) => recordPractice(current, 2, !practiceSessionCounted.current));
           practiceSessionCounted.current = true;
-          window.speechSynthesis?.cancel();
-          window.speechSynthesis?.speak(new SpeechSynthesisUtterance(coachMessage));
+          void playSpeech(coachMessage);
         } catch (error) {
           setChatError(error instanceof Error ? error.message : "Gia sư chưa thể xử lý bản ghi. Bạn vui lòng thử lại nhé.");
         } finally {
@@ -612,9 +907,12 @@ export default function Home() {
   async function startPronunciationRecording() {
     setPronunciation(null);
     setVoiceError("");
+    if (aiProvider !== "google") {
+      setVoiceError("Phản hồi phát âm trực tiếp từ âm thanh hiện cần chọn Google AI trong Cài đặt. OpenAI vẫn dùng được cho hội thoại và nhập giọng nói.");
+      return;
+    }
     if (!apiKey) {
-      setApiKeyDialogOpen(true);
-      setVoiceError("Hãy thêm Gemini API key của bạn trong phần Cài đặt AI để nhận góp ý phát âm.");
+      setVoiceError("Hãy thêm Google AI API key trong mục Cài đặt để nhận góp ý phát âm.");
       return;
     }
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
@@ -644,12 +942,12 @@ export default function Home() {
         setPronunciationBusy(true);
         try {
           const audio = await getAudioData(blob);
-          const response = await generateWithGemini(apiKey, [
+          const response = await withAvailableApiKey((key) => generateGeminiMultimodalResponse(key, [
             {
               text: `Listen to the learner's recording and evaluate how understandable their pronunciation is for the exact English phrase: "${profile.words[0]}". Be supportive and specific. Do not infer accent or identity. Treat this as an approximate AI coaching aid, not a certified pronunciation test. Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": short transcript of what you heard, "feedback": one or two concise sentences in Vietnamese, "soundsToPractice": array of at most 3 short English words or sounds}. If audio is unclear, say so in feedback and give a low-confidence score.`,
             },
             { inlineData: audio },
-          ]);
+          ], activeModel));
           const data: unknown = JSON.parse(response.replace(/^```(?:json)?\s*|\s*```$/g, ""));
           if (typeof data !== "object" || data === null || !("score" in data) ||
               typeof data.score !== "number" || !("heard" in data) || typeof data.heard !== "string" ||
@@ -690,17 +988,27 @@ export default function Home() {
     event.preventDefault();
     const candidate = apiKeyDraft.trim();
     if (!candidate) {
-      setApiKeyError("Vui lòng nhập Gemini API key.");
+      setApiKeyError(`Vui lòng nhập API key ${aiProvider === "google" ? "Google AI" : "OpenAI"}.`);
       return;
     }
     setApiKeyBusy(true);
     setApiKeyError("");
     setApiKeySaved(false);
     try {
-      await validateGeminiKey(candidate);
-      localStorage.setItem(API_KEY_STORAGE, candidate);
-      setApiKey(candidate);
-      setApiKeyDraft(candidate);
+      const models = await fetchAiModels(aiProvider, candidate);
+      const entry = {
+        id: crypto.randomUUID(),
+        label: apiKeyLabelDraft.trim() || `${aiProvider === "google" ? "Google" : "OpenAI"} key ${apiKeys[aiProvider].length + 1}`,
+        value: candidate,
+      };
+      setApiKeys((current) => ({ ...current, [aiProvider]: [...current[aiProvider], entry] }));
+      setActiveKeyIds((current) => ({ ...current, [aiProvider]: entry.id }));
+      setModelCatalog((current) => ({ ...current, [aiProvider]: models }));
+      if (!models.some((model) => model.id === selectedModels[aiProvider])) {
+        setSelectedModels((current) => ({ ...current, [aiProvider]: models[0]?.id ?? DEFAULT_MODELS[aiProvider] }));
+      }
+      setApiKeyDraft("");
+      setApiKeyLabelDraft("");
       setApiKeySaved(true);
     } catch (error) {
       setApiKeyError(error instanceof Error ? error.message : "Không thể xác thực API key. Vui lòng thử lại.");
@@ -709,15 +1017,176 @@ export default function Home() {
     }
   }
 
-  function removeApiKey() {
+  async function loadModels() {
+    if (!apiKey) {
+      setModelsError(`Hãy lưu ít nhất một API key ${aiProvider === "google" ? "Google AI" : "OpenAI"} trước.`);
+      return;
+    }
+    setModelsBusy(true);
+    setModelsError("");
     try {
-      localStorage.removeItem(API_KEY_STORAGE);
-      setApiKey("");
-      setApiKeyDraft("");
+      const models = await withAvailableApiKey((key) => fetchAiModels(aiProvider, key));
+      setModelCatalog((current) => ({ ...current, [aiProvider]: models }));
+      if (!models.some((model) => model.id === selectedModels[aiProvider])) {
+        setSelectedModels((current) => ({ ...current, [aiProvider]: models[0]?.id ?? DEFAULT_MODELS[aiProvider] }));
+      }
+    } catch (error) {
+      setModelsError(error instanceof Error ? error.message : "Không thể tải danh sách mô hình.");
+    } finally {
+      setModelsBusy(false);
+    }
+  }
+
+  async function loadSpeechVoices() {
+    if (aiProvider !== "google") {
+      setSpeechVoicesError("Danh sách giọng có thông tin giới tính và vùng phát âm hiện được cung cấp bởi Google Gemini.");
+      return;
+    }
+    if (!apiKey) {
+      setSpeechVoicesError("Hãy lưu API key Google AI trước khi tải danh sách giọng.");
+      return;
+    }
+    setSpeechVoicesBusy(true);
+    setSpeechVoicesError("");
+    try {
+      const voices = await withAvailableApiKey((key) => fetchGoogleSpeechVoices(key));
+      setGoogleSpeechVoices(voices);
+      if (!voices.some((voice) => voice.id === speechVoice)) {
+        setSpeechVoice(voices[0]?.id ?? "Kore");
+      }
+    } catch (error) {
+      setSpeechVoicesError(error instanceof Error ? error.message : "Không thể tải danh sách giọng đọc.");
+    } finally {
+      setSpeechVoicesBusy(false);
+    }
+  }
+
+  async function playSpeech(text: string) {
+    const phrase = text.trim();
+    if (!phrase || speechBusy) return;
+    if (phrase.length > 4000) {
+      setSpeechError("Đoạn nghe quá dài. Hãy chọn một đoạn ngắn hơn (tối đa 4.000 ký tự).");
+      return;
+    }
+
+    speechAudioRef.current?.pause();
+    speechAudioRef.current = null;
+    if (speechObjectUrlRef.current) {
+      URL.revokeObjectURL(speechObjectUrlRef.current);
+      speechObjectUrlRef.current = null;
+    }
+    setSpeechBusy(true);
+    setSpeechError("");
+    setSpeechNotice("");
+    let blob: Blob | null = null;
+    let storageWarning = "";
+    const speechCacheKey = `${aiProvider}:${activeModel}:${activeSpeechVoice}:${activeSpeechAccent}`;
+    try {
+      try {
+        blob = await getCachedSpeech(speechCacheKey, phrase);
+      } catch (error) {
+        storageWarning = error instanceof Error
+          ? `Không đọc được bộ nhớ âm thanh trên thiết bị: ${error.message}`
+          : "Không đọc được bộ nhớ âm thanh trên thiết bị.";
+      }
+      if (!blob) {
+        if (!apiKey) {
+          throw new Error(`Chưa có bản nghe lưu trên máy. Thêm API key ${aiProvider === "google" ? "Google AI" : "OpenAI"} trong Cài đặt để tạo giọng đọc.`);
+        }
+        blob = await withAvailableApiKey((key) =>
+          generateProviderSpeech(aiProvider, key, activeModel, activeSpeechVoice, phrase, activeSpeechAccent));
+        try {
+          await saveCachedSpeech(speechCacheKey, phrase, blob);
+        } catch (error) {
+          storageWarning = error instanceof Error
+            ? `Đã tạo được âm thanh nhưng không lưu offline: ${error.message}`
+            : "Đã tạo được âm thanh nhưng không lưu offline.";
+        }
+      }
+
+      const objectUrl = URL.createObjectURL(blob);
+      const audio = new Audio(objectUrl);
+      speechAudioRef.current = audio;
+      speechObjectUrlRef.current = objectUrl;
+      audio.onended = () => {
+        if (speechAudioRef.current === audio) {
+          speechAudioRef.current = null;
+          speechObjectUrlRef.current = null;
+          URL.revokeObjectURL(objectUrl);
+        }
+      };
+      void audio.play().catch((error: unknown) => {
+        if (speechAudioRef.current === audio) {
+          speechAudioRef.current = null;
+          speechObjectUrlRef.current = null;
+          URL.revokeObjectURL(objectUrl);
+        }
+        setSpeechNotice("");
+        setSpeechError(error instanceof Error
+          ? `Trình duyệt không phát được âm thanh: ${error.message}`
+          : "Trình duyệt không phát được âm thanh. Hãy thử nhấn nghe lại.");
+      });
+      setSpeechError(storageWarning);
+      setSpeechNotice(storageWarning ? "" : "Âm thanh đã được lưu trên thiết bị để nghe lại khi ngoại tuyến.");
+    } catch (error) {
+      setSpeechError(error instanceof Error ? error.message : "Không thể phát giọng đọc. Vui lòng thử lại.");
+    } finally {
+      setSpeechBusy(false);
+    }
+  }
+
+  function selectSpeechVoice(voice: string) {
+    if (aiProvider === "google") {
+      if (!isSpeechVoiceId(voice)) return;
+      setSpeechVoice(voice);
+    } else {
+      if (!OPENAI_SPEECH_VOICES.some((item) => item.id === voice)) return;
+      setOpenAiSpeechVoice(voice);
+    }
+    setSpeechError("");
+    setSpeechNotice("");
+    try {
+      localStorage.setItem(`${SPEECH_VOICE_STORAGE}-${aiProvider}`, voice);
+      if (aiProvider === "google" && isSpeechVoiceId(voice)) localStorage.setItem(SPEECH_VOICE_STORAGE, voice);
+    } catch {
+      setSpeechError("Không thể lưu lựa chọn giọng đọc trên thiết bị này.");
+    }
+  }
+
+  function selectOpenAiSpeechAccent(accent: string) {
+    if (!OPENAI_ACCENTS.includes(accent as (typeof OPENAI_ACCENTS)[number])) return;
+    setOpenAiSpeechAccent(accent);
+    setSpeechError("");
+    setSpeechNotice("");
+    try {
+      localStorage.setItem("lingua-speech-accent-openai", accent);
+    } catch {
+      setSpeechError("Không thể lưu lựa chọn giọng vùng trên thiết bị này.");
+    }
+  }
+
+  async function removeSavedSpeech() {
+    setSpeechError("");
+    setSpeechNotice("");
+    try {
+      await clearSpeechCache();
+      setSpeechNotice("Đã xóa các đoạn nghe đã lưu trên thiết bị.");
+    } catch (error) {
+      setSpeechError(error instanceof Error ? error.message : "Không thể xóa các đoạn nghe đã lưu.");
+    }
+  }
+
+  function removeApiKey(id: string) {
+    try {
+      const remaining = apiKeys[aiProvider].filter((entry) => entry.id !== id);
+      setApiKeys((current) => ({ ...current, [aiProvider]: remaining }));
+      if (activeKeyIds[aiProvider] === id) {
+        setActiveKeyIds((current) => ({ ...current, [aiProvider]: remaining[0]?.id ?? "" }));
+      }
       setApiKeySaved(false);
       setApiKeyError("");
-    } catch {
-      setApiKeyError("Không thể xóa API key khỏi bộ nhớ trình duyệt.");
+    } catch (error) {
+      setApiKeyError(error instanceof Error ? error.message : "Không thể xóa API key khỏi bộ nhớ trình duyệt.");
     }
   }
 
@@ -742,6 +1211,7 @@ export default function Home() {
     setGrammarAnswers([]);
     setGrammarSubmitted(false);
     setGrammarError("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function completeGrammarQuiz() {
@@ -778,7 +1248,7 @@ export default function Home() {
       setSelectedLessonId(course.lessons[0]?.id ?? "");
       setCourseAnswers([]);
       setCourseQuizSubmitted(false);
-      setSection("courses");
+      navigateToSection("courses");
     } catch (error) {
       setCourseError(error instanceof Error ? error.message : "Không thể tải giáo trình. Vui lòng thử lại.");
     } finally {
@@ -908,6 +1378,186 @@ export default function Home() {
     }
   }
 
+  function renderSettings() {
+    const keyEntries = apiKeys[aiProvider];
+    const maleVoices = googleSpeechVoices.filter((voice) => voice.gender === "male");
+    const femaleVoices = googleSpeechVoices.filter((voice) => voice.gender === "female");
+    return (
+      <>
+        <div className="page-intro">
+          <span className="eyebrow">CÀI ĐẶT CHUNG</span>
+          <h2>Cá nhân hóa gia sư AI.</h2>
+          <p>Chọn nhà cung cấp, quản lý nhiều API key, mô hình và giọng đọc. Các lựa chọn được lưu riêng trong trình duyệt này.</p>
+        </div>
+        <section className="panel settings-panel font-size-settings">
+          <div className="settings-section-heading">
+            <span className="settings-icon font-size-icon" aria-hidden="true">Aa</span>
+            <div><h3>Cỡ chữ</h3><p>Tăng chữ để nội dung dễ đọc hơn trên thiết bị này.</p></div>
+          </div>
+          <div className="font-scale-control">
+            <label className="settings-label" htmlFor="font-scale">Kích thước hiển thị</label>
+            <output className="font-scale-value" htmlFor="font-scale">{fontScale}%</output>
+            <input
+              id="font-scale"
+              className="font-scale-slider"
+              type="range"
+              min="100"
+              max="150"
+              step="5"
+              value={fontScale}
+              aria-valuetext={`${fontScale}%`}
+              onChange={(event) => setFontScale(Number(event.target.value))}
+            />
+            <div className="font-scale-endpoints"><span>100% · Mặc định</span><span>150% · Lớn nhất</span></div>
+          </div>
+          <p className="font-scale-preview">Bản xem trước: Chữ lớn hơn giúp bạn học tiếng Anh thoải mái hơn.</p>
+          <button type="button" className="button button-outline" onClick={() => setFontScale(125)} disabled={fontScale === 125}>
+            Đặt lại cỡ chữ gợi ý (125%)
+          </button>
+          {fontScaleError && <p className="error-message">{fontScaleError}</p>}
+        </section>
+        <section className="panel settings-panel">
+          <div className="settings-section-heading">
+            <span className="settings-icon"><IllustrationIcon name="key" /></span>
+            <div><h3>Nhà cung cấp AI</h3><p>API key được gửi trực tiếp từ trình duyệt tới nhà cung cấp đã chọn.</p></div>
+          </div>
+          <label className="settings-label" htmlFor="ai-provider">Nhà cung cấp</label>
+          <select id="ai-provider" className="settings-select" value={aiProvider} onChange={(event) => {
+            if (isAiProvider(event.target.value)) {
+              setAiProvider(event.target.value);
+              setApiKeyDraft("");
+              setApiKeyLabelDraft("");
+              setApiKeyError("");
+              setApiKeySaved(false);
+              setModelsError("");
+            }
+          }}>
+            <option value="google">Google Gemini</option>
+            <option value="openai">OpenAI / ChatGPT</option>
+          </select>
+          <div className="settings-key-list">
+            <label className="settings-label" htmlFor="active-ai-key">API key đang dùng</label>
+            <div className="settings-key-select-row">
+              <select id="active-ai-key" className="settings-select" value={activeKeyIds[aiProvider]} onChange={(event) =>
+                setActiveKeyIds((current) => ({ ...current, [aiProvider]: event.target.value }))}>
+                <option value="">Chưa có key</option>
+                {keyEntries.map((entry) => <option key={entry.id} value={entry.id}>{entry.label} · ••••{entry.value.slice(-4)}</option>)}
+              </select>
+              {activeKeyIds[aiProvider] && <button type="button" className="remove-key-button" onClick={() => removeApiKey(activeKeyIds[aiProvider])}>Xóa key đang chọn</button>}
+            </div>
+            {keyEntries.length > 1 && <small className="settings-hint">Khi API trả lỗi xác thực hoặc hết hạn mức, app sẽ tự thử các key còn lại đã lưu.</small>}
+          </div>
+          <form className="settings-key-form" onSubmit={(event) => { void saveApiKey(event); }}>
+            <label className="settings-label" htmlFor="api-key-label">Thêm API key mới</label>
+            <input id="api-key-label" className="settings-input" value={apiKeyLabelDraft} onChange={(event) => setApiKeyLabelDraft(event.target.value)} placeholder="Tên gợi nhớ, ví dụ: Key cá nhân" />
+            <label className="settings-label" htmlFor="ai-api-key">API key (được che khi nhập)</label>
+            <input id="ai-api-key" className="settings-input" type="password" autoComplete="off" value={apiKeyDraft} onChange={(event) => {
+              setApiKeyDraft(event.target.value);
+              setApiKeyError("");
+              setApiKeySaved(false);
+            }} placeholder={aiProvider === "google" ? "Dán Google AI API key" : "Dán OpenAI API key"} />
+            <a href={aiProvider === "google" ? "https://aistudio.google.com/app/apikey" : "https://platform.openai.com/api-keys"} target="_blank" rel="noreferrer">
+              Tạo API key {aiProvider === "google" ? "Google AI Studio" : "trên OpenAI"} ↗
+            </a>
+            <small className="settings-hint">Key chỉ lưu trên thiết bị này, không đặt trong mã nguồn. Không dùng trên thiết bị công cộng; nhà cung cấp có thể tính phí theo tài khoản của bạn.</small>
+            {apiKeyError && <p className="error-message" role="alert">{apiKeyError}</p>}
+            {apiKeySaved && <p className="api-key-success" role="status">Đã xác thực và lưu API key; danh sách mô hình đã được tải.</p>}
+            <button className="button button-primary" type="submit" disabled={apiKeyBusy || !apiKeyDraft.trim()}>
+              {apiKeyBusy ? "Đang xác thực key…" : "＋ Kiểm tra và lưu key"}
+            </button>
+          </form>
+        </section>
+
+        <section className="panel settings-panel">
+          <div className="settings-section-heading">
+            <span className="settings-icon"><IllustrationIcon name="sparkles" /></span>
+            <div><h3>Mô hình AI</h3><p>Chọn mô hình trong danh sách được API key của bạn hỗ trợ.</p></div>
+          </div>
+          <button type="button" className="button button-outline" onClick={() => { void loadModels(); }} disabled={modelsBusy || !apiKey}>
+            {modelsBusy ? "Đang tải mô hình…" : "↻ Tải danh sách mô hình"}
+          </button>
+          {modelsError && <p className="error-message" role="alert">{modelsError}</p>}
+          <label className="settings-label" htmlFor="ai-model">Mô hình hội thoại</label>
+          <select id="ai-model" className="settings-select" value={activeModel} onChange={(event) =>
+            setSelectedModels((current) => ({ ...current, [aiProvider]: event.target.value }))}>
+            {!modelCatalog[aiProvider].some((model) => model.id === activeModel) && <option value={activeModel}>{activeModel} · mặc định</option>}
+            {modelCatalog[aiProvider].map((model) => <option key={model.id} value={model.id}>{model.label}</option>)}
+          </select>
+        </section>
+
+        <section className="panel settings-panel">
+          <div className="settings-section-heading">
+            <span className="settings-icon"><IllustrationIcon name="speaker" /></span>
+            <div><h3>Giọng đọc và phát âm</h3><p>Chọn giọng rõ ràng để luyện nghe các kiểu phát âm tiếng Anh theo vùng.</p></div>
+          </div>
+          {aiProvider === "google" && (
+            <button type="button" className="button button-outline" onClick={() => { void loadSpeechVoices(); }} disabled={speechVoicesBusy || !apiKey}>
+              {speechVoicesBusy ? "Đang tải danh sách…" : "↻ Tải tối đa 10 giọng nam + 10 giọng nữ"}
+            </button>
+          )}
+          {speechVoicesError && <p className="error-message" role="alert">{speechVoicesError}</p>}
+          <label className="settings-label" htmlFor="speech-voice">Giọng đọc {aiProvider === "google" ? "Google" : "OpenAI"}</label>
+          <div className="settings-voice-row">
+            <select id="speech-voice" className="settings-select" value={activeSpeechVoice} onChange={(event) => selectSpeechVoice(event.target.value)}>
+              {aiProvider === "google" ? (
+                <>
+                  {googleSpeechVoices.length === 0 && <option value={speechVoice}>{speechVoice} · tải danh sách giọng để chọn theo vùng</option>}
+                  <optgroup label={`Nam · ${maleVoices.length}/10`}>
+                    {maleVoices.map((voice) => <option key={voice.id} value={voice.id}>{voice.label} · {voice.accent}</option>)}
+                  </optgroup>
+                  <optgroup label={`Nữ · ${femaleVoices.length}/10`}>
+                    {femaleVoices.map((voice) => <option key={voice.id} value={voice.id}>{voice.label} · {voice.accent}</option>)}
+                  </optgroup>
+                </>
+              ) : OPENAI_SPEECH_VOICES.map((voice) => <option key={voice.id} value={voice.id}>{voice.label}</option>)}
+            </select>
+            <button className="button button-outline" onClick={() => void playSpeech(SPEECH_SAMPLE)} disabled={speechBusy || !apiKey}>
+              {speechBusy ? "Đang tạo…" : "▶ Nghe thử"}
+            </button>
+          </div>
+          {aiProvider === "openai" && (
+            <>
+              <label className="settings-label" htmlFor="speech-accent">Kiểu phát âm vùng (hướng dẫn cho AI)</label>
+              <select id="speech-accent" className="settings-select" value={openAiSpeechAccent} onChange={(event) => selectOpenAiSpeechAccent(event.target.value)}>
+                {OPENAI_ACCENTS.map((accent) => <option key={accent} value={accent}>{accent} English</option>)}
+              </select>
+              <p className="settings-hint">Danh sách OpenAI không công bố giới tính hay vùng gốc cho từng voice; vùng phát âm ở đây được gửi như hướng dẫn tạo giọng, không phải bảo đảm tuyệt đối.</p>
+            </>
+          )}
+          {aiProvider === "google" && googleSpeechVoices.length > 0 && (
+            <p className="settings-hint">
+              Đã tải {maleVoices.length} giọng nam và {femaleVoices.length} giọng nữ
+              {maleVoices.length < 10 || femaleVoices.length < 10 ? " (số lượng tùy danh mục Google khả dụng cho API key)" : ""}.
+              Danh sách chỉ gồm thông tin giọng nhẹ; audio chỉ tạo và lưu khi bạn nhấn nghe.
+            </p>
+          )}
+          {!apiKey && <p className="settings-hint">Thêm API key để tạo audio. Các câu đã nghe được lưu trên thiết bị để phát lại offline (tối đa 100 đoạn).</p>}
+          {aiProvider === "openai" && <p className="settings-hint">Chấm phát âm trực tiếp hiện dùng Google Gemini; OpenAI hỗ trợ hội thoại, nhận dạng giọng nói và đọc văn bản.</p>}
+          <button className="remove-key-button settings-cache-clear" onClick={() => { void removeSavedSpeech(); }}>Xóa audio đã lưu trên thiết bị</button>
+        </section>
+        <section className="panel settings-panel app-version-panel">
+          <div className="settings-section-heading">
+            <span className="settings-icon version-icon" aria-hidden="true">v</span>
+            <div><h3>Phiên bản ứng dụng</h3><p>Phiên bản đang chạy: <strong>v{APP_VERSION}</strong></p></div>
+          </div>
+          <p className={`version-check-status ${versionCheckStatus}`} role="status" aria-live="polite">
+            {versionCheckStatus === "checking" && "Đang kiểm tra phiên bản mới nhất…"}
+            {versionCheckStatus === "latest" && `Bạn đang sử dụng phiên bản mới nhất${latestVersion ? ` (v${latestVersion})` : ""}.`}
+            {versionCheckStatus === "update-available" && `Đã có phiên bản mới v${latestVersion}. Tải lại ứng dụng để cập nhật.`}
+            {versionCheckStatus === "error" && versionCheckError}
+          </p>
+          {versionCheckStatus === "update-available" ? (
+            <button type="button" className="button button-primary" onClick={() => window.location.reload()}>Tải phiên bản mới</button>
+          ) : (
+            <button type="button" className="button button-outline" onClick={() => setVersionCheckAttempt((attempt) => attempt + 1)} disabled={versionCheckStatus === "checking"}>
+              {versionCheckStatus === "checking" ? "Đang kiểm tra…" : "Kiểm tra lại"}
+            </button>
+          )}
+        </section>
+      </>
+    );
+  }
+
   function renderPractice() {
     return (
       <div className="practice-layout">
@@ -920,6 +1570,9 @@ export default function Home() {
             <span className="eyebrow">THỬ NÓI CÂU NÀY</span>
             <strong>“{profile.words[0]}”</strong>
             <span className="phrase-translation">{phraseMeanings[profile.words[0]]}</span>
+            <button className="speak-button" onClick={() => void playSpeech(profile.words[0])} disabled={speechBusy}>
+              <IllustrationIcon name="speaker" /> Nghe mẫu phát âm
+            </button>
           </div>
           <button className="button button-outline full-button" onClick={startPronunciationRecording} disabled={recording || pronunciationBusy}>
             {pronunciationBusy ? "Đang nghe và đánh giá…" : <><IllustrationIcon name="microphone" /> Luyện phát âm</>}
@@ -943,11 +1596,18 @@ export default function Home() {
 
         <section className="panel chat-panel">
           <header className="chat-header">
-            <div className="coach-avatar">M<span>✦</span></div>
-            <div><strong>Maya</strong><p>Gia sư tiếng Anh AI <span className="online-dot" /> Sẵn sàng luyện tập</p></div>
+            <div className="coach-avatar"><IllustrationIcon name="teacher" /></div>
+            <div><strong>Cô Maya</strong><p>Gia sư AI · {aiProvider === "google" ? "Google AI" : "OpenAI"} <span className="online-dot" /> Sẵn sàng dạy bạn</p></div>
             <span className="level-chip">{progress.level}</span>
           </header>
           <div className="chat-context"><span>💬</span> {profile.title} <span>·</span> {profile.scene}</div>
+          <div className="teacher-quick-actions" aria-label="Yêu cầu nhanh với gia sư">
+            {QUICK_TEACHER_REQUESTS.map((request) => (
+              <button type="button" key={request.label} onClick={() => { void sendMessage(undefined, request.prompt); }} disabled={chatBusy}>
+                {request.label}
+              </button>
+            ))}
+          </div>
           <div className="message-list">
             {messages.map((message, index) => (
               <div className={`message-row ${message.role}`} key={`${index}-${message.role}`}>
@@ -955,7 +1615,7 @@ export default function Home() {
                 <div className="message-bubble">
                   <span className="speaker-label">{message.role === "assistant" ? "MAYA · GIA SƯ" : "BẠN"}</span>
                   <p>{message.content}</p>
-                  {message.role === "assistant" && <button aria-label="Nghe câu trả lời" className="speak-button" onClick={() => window.speechSynthesis?.speak(new SpeechSynthesisUtterance(message.content))}><IllustrationIcon name="speaker" /> Nghe câu trả lời</button>}
+                  {message.role === "assistant" && <button aria-label="Nghe câu trả lời" className="speak-button" onClick={() => void playSpeech(message.content)} disabled={speechBusy}><IllustrationIcon name="speaker" /> Nghe câu trả lời</button>}
                 </div>
               </div>
             ))}
@@ -1004,7 +1664,37 @@ export default function Home() {
   }
 
   function renderGrammar() {
-    const topic = grammarTopics.find((item) => item.id === grammarTopicId) ?? grammarTopics[0];
+    const topic = grammarTopics.find((item) => item.id === grammarTopicId);
+    if (!topic) {
+      return (
+        <>
+          <div className="page-intro">
+            <span className="eyebrow">LUYỆN NGỮ PHÁP THEO CẤU TRÚC</span>
+            <h2>Chọn cấu trúc bạn muốn học.</h2>
+            <p>Mở một bài để xem cách dùng, ví dụ và bài tập trắc nghiệm. Nội dung bài học và bài tập được trình bày bằng tiếng Anh.</p>
+          </div>
+          <div className="grammar-topic-catalog">
+            {(["A1", "A2", "B1", "B2"] as const).map((level) => (
+              <section className="panel grammar-level-panel" key={level}>
+                <div className="grammar-level-heading"><span className="level-chip">{level}</span><span className="eyebrow">CEFR</span></div>
+                {grammarTopics.filter((item) => item.level === level).map((item) => (
+                  <button key={item.id} className="grammar-topic-card" onClick={() => selectGrammarTopic(item.id)}>
+                    <span className="grammar-topic-art"><IllustrationIcon name="grammar" /></span>
+                    <span className="grammar-topic-copy">
+                      <strong>{item.title}</strong>
+                      <span>{item.structure}</span>
+                      {grammarScores[item.id] !== undefined && <small>Điểm cao nhất: {grammarScores[item.id]}%</small>}
+                    </span>
+                    <span className="grammar-topic-arrow" aria-hidden="true">→</span>
+                  </button>
+                ))}
+              </section>
+            ))}
+          </div>
+        </>
+      );
+    }
+
     const answeredAll = topic.questions.every((_, index) => Number.isInteger(grammarAnswers[index]));
     const score = topic.questions.reduce(
       (total, question, index) => total + (grammarAnswers[index] === question.answer ? 1 : 0),
@@ -1012,30 +1702,27 @@ export default function Home() {
     );
     return (
       <>
-        <div className="page-intro">
-          <span className="eyebrow">LUYỆN NGỮ PHÁP THEO CẤU TRÚC</span>
-          <h2>Học từng cấu trúc, luyện đến khi vững.</h2>
-          <p>Chọn trình độ và cấu trúc cần luyện. Câu hỏi, lựa chọn và giải thích trong bài tập đều bằng tiếng Anh; kết quả được lưu trên thiết bị.</p>
-        </div>
-        <div className="grammar-layout">
-          <section className="panel grammar-topics">
-            <span className="eyebrow">CHỌN CẤU TRÚC</span>
-            {(["A1", "A2", "B1", "B2"] as const).map((level) => (
-              <div className="grammar-level" key={level}>
-                <strong>{level} · CEFR</strong>
-                {grammarTopics.filter((item) => item.level === level).map((item) => (
-                  <button key={item.id} className={item.id === topic.id ? "grammar-topic selected" : "grammar-topic"} onClick={() => selectGrammarTopic(item.id)}>
-                    <span>{item.title}</span>
-                    {grammarScores[item.id] !== undefined && <small>Điểm cao nhất: {grammarScores[item.id]}%</small>}
-                  </button>
-                ))}
-              </div>
-            ))}
-          </section>
-          <section className="panel grammar-quiz">
-            <div className="grammar-quiz-heading"><span className="level-chip">{topic.level}</span><span className="eyebrow">GRAMMAR PRACTICE</span></div>
+        <div className="grammar-detail-page">
+          <button className="grammar-list-back" onClick={returnToGrammarTopics}>← Tất cả cấu trúc ngữ pháp</button>
+          <div className="page-intro grammar-detail-intro">
+            <span className="eyebrow">BÀI HỌC NGỮ PHÁP · CEFR {topic.level}</span>
+            <h2>{topic.title}</h2>
+            <p>Học cấu trúc, xem ví dụ, sau đó hoàn thành bài tập để kiểm tra mức độ nắm vững.</p>
+          </div>
+          <section className="panel grammar-lesson-guide">
+            <span className="eyebrow">STRUCTURE GUIDE</span>
             <h3>{topic.title}</h3>
             <p className="grammar-structure"><strong>Structure:</strong> {topic.structure}</p>
+            <p className="grammar-overview">{topic.overview}</p>
+            <div className="grammar-example-list">
+              <strong>Examples</strong>
+              {topic.examples.map((example) => <p key={example}><span>“{example}”</span><button className="speak-button" aria-label={`Nghe câu: ${example}`} onClick={() => void playSpeech(example)} disabled={speechBusy}><IllustrationIcon name="speaker" /> Nghe</button></p>)}
+            </div>
+          </section>
+          <section className="panel grammar-quiz grammar-detail-quiz">
+            <div className="grammar-quiz-heading"><span className="level-chip">{topic.level}</span><span className="eyebrow">GRAMMAR PRACTICE</span></div>
+            <h3>Practice the structure</h3>
+            <p className="grammar-structure">Choose the best answer for each question.</p>
             {topic.questions.map((question, questionIndex) => (
               <fieldset className="question-card" key={`${topic.id}-${questionIndex}`}>
                 <legend>{questionIndex + 1}. {question.prompt}</legend>
@@ -1081,7 +1768,7 @@ export default function Home() {
             <span className="eyebrow hero-eyebrow">MỖI NGÀY MỘT CHÚT <span>✦</span> {progress.streak ? `CHUỖI ${progress.streak} NGÀY` : "BẮT ĐẦU HÔM NAY"}</span>
             <h2>Tiến bộ từng chút.<br /><em>Tự tin hơn mỗi ngày.</em></h2>
             <p>Học theo cách của bạn. Cùng bắt đầu từ hôm nay nhé!</p>
-            <button className="button button-light" onClick={() => setSection("practice")}>Bắt đầu luyện nói <span>→</span></button>
+            <button className="button button-light" onClick={() => navigateToSection("practice")}>Bắt đầu luyện nói <span>→</span></button>
           </div>
           <div className="hero-art" aria-hidden="true">
             <div className="art-sun" /><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" />
@@ -1092,7 +1779,7 @@ export default function Home() {
 
         <div className="section-heading">
           <div><span className="eyebrow">LỘ TRÌNH HỌC CỦA BẠN</span><h2>Chọn lĩnh vực muốn học</h2></div>
-          <button className="text-button" onClick={() => setSection("profiles")}>Xem tất cả <span>→</span></button>
+          <button className="text-button" onClick={() => navigateToSection("profiles")}>Xem tất cả <span>→</span></button>
         </div>
         <div className="profile-grid">
           {profiles.slice(0, 4).map((item) => (
@@ -1118,10 +1805,10 @@ export default function Home() {
             <span className="eyebrow">GỢI Ý TIẾP THEO</span>
             <div className="next-lesson"><span className={`lesson-icon ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><div><strong>{profile.scene}</strong><span>5 phút · Luyện giao tiếp</span></div></div>
             <p>Luyện những câu giao tiếp thực tế theo lĩnh vực bạn đã chọn.</p>
-            <button className="button button-primary full-button" onClick={() => setSection("practice")}>Tiếp tục học <span>→</span></button>
+            <button className="button button-primary full-button" onClick={() => navigateToSection("practice")}>Tiếp tục học <span>→</span></button>
           </section>
         </div>
-        <section className="placement-banner"><span className="placement-icon"><IllustrationIcon name="compass" /></span><div><strong>Bạn mới bắt đầu học?</strong><p>Làm bài kiểm tra ngắn để Maya điều chỉnh bài học theo trình độ của bạn.</p></div><button onClick={() => { setPlacementAnswers([]); setPlacementResult(""); setSection("placement"); }}>Kiểm tra trình độ <span>→</span></button></section>
+        <section className="placement-banner"><span className="placement-icon"><IllustrationIcon name="compass" /></span><div><strong>Bạn mới bắt đầu học?</strong><p>Làm bài kiểm tra ngắn để Maya điều chỉnh bài học theo trình độ của bạn.</p></div><button onClick={() => { setPlacementAnswers([]); setPlacementResult(""); navigateToSection("placement"); }}>Kiểm tra trình độ <span>→</span></button></section>
       </>
     );
   }
@@ -1129,7 +1816,7 @@ export default function Home() {
   function renderProfiles() {
     return (
       <>
-        <div className="page-intro"><span className="eyebrow">HỌC ĐIỀU BẠN CẦN</span><h2>Học tiếng Anh theo lĩnh vực của bạn.</h2><p>Chọn một lĩnh vực để luyện hội thoại thực tế, học cụm từ hữu ích và tự tin hơn với mục tiêu của mình.</p><button className="button button-outline" onClick={() => setSection("courses")}>Tải giáo trình và audio offline →</button></div>
+        <div className="page-intro"><span className="eyebrow">HỌC ĐIỀU BẠN CẦN</span><h2>Học tiếng Anh theo lĩnh vực của bạn.</h2><p>Chọn một lĩnh vực để luyện hội thoại thực tế, học cụm từ hữu ích và tự tin hơn với mục tiêu của mình.</p><button className="button button-outline" onClick={() => navigateToSection("courses")}>Tải giáo trình và audio offline →</button></div>
         <div className="offline-status" role={offlineError ? "alert" : "status"}>
           <span>{offlineReady ? "✓" : offlineError ? "!" : "◌"}</span>
           <p>{offlineReady ? "Ứng dụng đã lưu phần khung để có thể mở lại khi offline. Hãy tải riêng gói giáo trình để lưu bài học và audio." : offlineError || "Đang chuẩn bị ứng dụng cho chế độ offline…"}</p>
@@ -1274,7 +1961,7 @@ export default function Home() {
           <span className="eyebrow">GIÁO TRÌNH TẢI THEO LĨNH VỰC</span>
           <h2>Chọn gói học cần lưu trên thiết bị.</h2>
           <p>Mỗi gói được thiết kế theo CEFR A1–B2, gồm bài học, câu hỏi luyện tập và audio nghe. Nội dung gói tải về dùng offline; hội thoại AI và chấm phát âm cần Internet.</p>
-          <button className="button button-outline" onClick={() => setSection("library")}>Mở thư viện tài liệu cá nhân →</button>
+          <button className="button button-outline" onClick={() => navigateToSection("library")}>Mở thư viện tài liệu cá nhân →</button>
         </div>
         <div className="offline-status" role={offlineError ? "alert" : "status"}>
           <span>{offlineReady ? "✓" : offlineError ? "!" : "◌"}</span>
@@ -1377,9 +2064,9 @@ export default function Home() {
             <div><span className="stat-icon peach"><IllustrationIcon name="sessions" /></span><strong>{progress.sessions}</strong><span>Buổi học</span></div>
             <div><span className="stat-icon mint"><IllustrationIcon name="level" /></span><strong>{progress.level}</strong><span>Trình độ hiện tại</span></div>
           </div></section>
-          <section className="panel streak-panel"><span className="streak-emoji"><IllustrationIcon name="streak" /></span><strong>{progress.streak} ngày liên tục</strong><p>Bạn đang tạo một thói quen tuyệt vời. Mỗi ngày luyện một chút sẽ tạo nên khác biệt.</p><button className="text-button" onClick={() => setSection("practice")}>Luyện tập hôm nay →</button></section>
+          <section className="panel streak-panel"><span className="streak-emoji"><IllustrationIcon name="streak" /></span><strong>{progress.streak} ngày liên tục</strong><p>Bạn đang tạo một thói quen tuyệt vời. Mỗi ngày luyện một chút sẽ tạo nên khác biệt.</p><button className="text-button" onClick={() => navigateToSection("practice")}>Luyện tập hôm nay →</button></section>
         </div>
-        <section className="panel milestone-panel"><span className="eyebrow">BƯỚC TIẾN TIẾP THEO</span><h3>Bạn đã sẵn sàng cho cuộc trò chuyện tiếp theo</h3><p>Hoàn thành một tình huống giao tiếp để duy trì thói quen và tăng sự tự tin.</p><button className="button button-primary" onClick={() => setSection("practice")}>Bắt đầu trò chuyện →</button></section>
+        <section className="panel milestone-panel"><span className="eyebrow">BƯỚC TIẾN TIẾP THEO</span><h3>Bạn đã sẵn sàng cho cuộc trò chuyện tiếp theo</h3><p>Hoàn thành một tình huống giao tiếp để duy trì thói quen và tăng sự tự tin.</p><button className="button button-primary" onClick={() => navigateToSection("practice")}>Bắt đầu trò chuyện →</button></section>
       </>
     );
   }
@@ -1392,66 +2079,54 @@ export default function Home() {
     { id: "library", icon: "library", label: "Tài liệu" },
     { id: "grammar", icon: "grammar", label: "Ngữ pháp" },
     { id: "progress", icon: "progress", label: "Tiến độ" },
+    { id: "settings", icon: "settings", label: "Cài đặt" },
   ];
+  const canGoBack = section !== "home" || sectionHistoryRef.current.length > 0 || grammarTopicId !== null;
 
   return (
     <main className="app-shell">
+      <button className="floating-back-button" type="button" onClick={goBack} disabled={!canGoBack} aria-label="Quay lại trang trước" title="Quay lại trang trước">
+        <IllustrationIcon name="back" />
+        <span>Quay lại</span>
+      </button>
       <aside className="sidebar">
-        <a className="brand" href="#" onClick={(event) => { event.preventDefault(); setSection("home"); }}><span className="brand-mark">L<span>✦</span></span><span>lingua<span className="brand-period">.</span><small>GIA SƯ TIẾNG ANH AI CỦA BẠN</small></span></a>
+        <a className="brand" href="#" onClick={(event) => { event.preventDefault(); navigateToSection("home"); }}><span className="brand-mark">L<span>✦</span></span><span>lingua<span className="brand-period">.</span><small>GIA SƯ TIẾNG ANH AI CỦA BẠN</small></span></a>
         <div className="side-label">HỌC TẬP</div>
-        <nav>{nav.map((item) => <button key={item.id} className={section === item.id ? "nav-item selected" : "nav-item"} onClick={() => setSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span>{item.label}{item.id === "practice" && <i className="nav-live" />}</button>)}</nav>
+        <nav>{nav.map((item) => <button key={item.id} className={section === item.id ? "nav-item selected" : "nav-item"} onClick={() => navigateToSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span>{item.label}{item.id === "practice" && <i className="nav-live" />}</button>)}</nav>
         <div className="sidebar-spacer" />
         <div className="streak-card"><span className="sidebar-streak-icon"><IllustrationIcon name="streak" /></span><div><strong>{progress.streak} ngày liên tục</strong><small>{progress.streak ? "Cố gắng duy trì nhé!" : "Bắt đầu với một bài học"}</small></div><span className="streak-arrow">↗</span></div>
-        <button className="sidebar-profile" onClick={() => setSection("profiles")}><span className="user-avatar">B</span><span><strong>Lộ trình học của bạn</strong><small>{profile.title}</small></span><span className="more-dots">···</span></button>
+        <button className="sidebar-profile" onClick={() => navigateToSection("profiles")}><span className="user-avatar">B</span><span><strong>Lộ trình học của bạn</strong><small>{profile.title}</small></span><span className="more-dots">···</span></button>
       </aside>
       <section className="main-content">
         <header className="topbar">
           <div className="breadcrumb"><span>Học tiếng Anh</span><span>/</span><strong>{nav.find((item) => item.id === section)?.label ?? (section === "placement" ? "Kiểm tra trình độ" : "Luyện tập")}</strong></div>
           <div className="topbar-actions">
             <span className="level-chip desktop-level">TRÌNH ĐỘ {progress.level}</span>
-            <button className={apiKey ? "ai-settings-button connected" : "ai-settings-button"} aria-label="Cài đặt API key Gemini" onClick={() => { setApiKeyDraft(apiKey); setApiKeyError(""); setApiKeySaved(false); setApiKeyDialogOpen(true); }}>
-              <span className="ai-key-icon"><IllustrationIcon name="key" /></span><span>{apiKey ? "AI đã kết nối" : "Kết nối AI"}</span>
+            <button className={apiKey ? "ai-settings-button connected" : "ai-settings-button"} aria-label="Mở cài đặt chung" onClick={() => navigateToSection("settings")}>
+              <span className="ai-key-icon"><IllustrationIcon name="settings" /></span><span>{apiKey ? "Cài đặt" : "Thiết lập AI"}</span>
             </button>
             <button className="profile-switch" onClick={() => setShowProfileMenu((open) => !open)}><span className={`profile-icon tiny ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><span>{profile.title}</span><span>⌄</span></button>
             {showProfileMenu && <div className="profile-menu">{profiles.map((item) => <button key={item.id} onClick={() => { selectProfile(item.id); setShowProfileMenu(false); }}><span className={`profile-menu-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>{item.title}</button>)}</div>}
           </div>
         </header>
         <div className="content-wrap">
-          {progressLoaded && !apiKey && <section className="api-reminder"><span className="reminder-key-icon"><IllustrationIcon name="key" /></span><div><strong>Kết nối AI để bắt đầu học cùng Maya</strong><p>Thêm Gemini API key riêng. Key và tiến độ chỉ lưu trên thiết bị này.</p></div><button onClick={() => { setApiKeyDialogOpen(true); setApiKeyError(""); }}>Thiết lập AI</button></section>}
+          {progressLoaded && !apiKey && section !== "settings" && <section className="api-reminder"><span className="reminder-key-icon"><IllustrationIcon name="key" /></span><div><strong>Kết nối AI để bắt đầu học cùng Maya</strong><p>Thêm API key Google AI hoặc OpenAI trong Cài đặt. Key chỉ lưu trên thiết bị này.</p></div><button onClick={() => navigateToSection("settings")}>Thiết lập AI</button></section>}
+          {speechBusy && <p className="speech-status" role="status">Đang tạo giọng đọc AI…</p>}
+          {speechError && <p className="error-message speech-status" role="alert">{speechError}</p>}
+          {speechNotice && <p className="speech-notice" role="status">{speechNotice}</p>}
           {section === "home" && renderHome()}
-          {section === "practice" && <><div className="section-heading practice-heading"><div><span className="eyebrow">NÓI, HỌC VÀ TIẾN BỘ</span><h2>Cùng nhau luyện tập nhé</h2></div><button className="text-button" onClick={() => setSection("profiles")}>Đổi lĩnh vực ↗</button></div>{renderPractice()}</>}
+          {section === "practice" && <><div className="section-heading practice-heading"><div><span className="eyebrow">NÓI, HỌC VÀ TIẾN BỘ</span><h2>Cùng nhau luyện tập nhé</h2></div><button className="text-button" onClick={() => navigateToSection("profiles")}>Đổi lĩnh vực ↗</button></div>{renderPractice()}</>}
           {section === "placement" && renderPlacement()}
           {section === "profiles" && renderProfiles()}
           {section === "progress" && renderProgress()}
           {section === "grammar" && renderGrammar()}
           {section === "courses" && renderCourses()}
           {section === "library" && renderPersonalLibrary()}
+          {section === "settings" && renderSettings()}
         </div>
-        <footer className="site-footer">Dành cho khoảnh khắc bạn nghĩ: “Mình làm được!” <span>✦</span></footer>
+        <footer className="site-footer">Dành cho khoảnh khắc bạn nghĩ: “Mình làm được!” <span>✦</span> <span className="site-version">v{APP_VERSION}</span></footer>
       </section>
-      <nav className="mobile-nav">{nav.map((item) => <button key={item.id} className={section === item.id ? "mobile-nav-item selected" : "mobile-nav-item"} onClick={() => setSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span><small>{item.label}</small></button>)}</nav>
-      {apiKeyDialogOpen && (
-        <div className="dialog-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setApiKeyDialogOpen(false); }}>
-          <section className="api-key-dialog" role="dialog" aria-modal="true" aria-labelledby="api-key-title">
-            <button className="dialog-close" aria-label="Đóng" onClick={() => setApiKeyDialogOpen(false)}>×</button>
-            <span className="api-key-icon"><IllustrationIcon name="key" /></span>
-            <span className="eyebrow">KẾT NỐI GIA SƯ AI</span>
-            <h2 id="api-key-title">Dùng Gemini API key của bạn</h2>
-            <p>Mỗi người học dùng API key riêng của mình. Ứng dụng gửi yêu cầu trực tiếp từ thiết bị của bạn tới Google Gemini, không qua máy chủ trung gian.</p>
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer">Tạo Gemini API key trên Google AI Studio ↗</a>
-            <form onSubmit={saveApiKey}>
-              <label htmlFor="gemini-api-key">Gemini API key</label>
-              <input id="gemini-api-key" type="password" autoComplete="off" value={apiKeyDraft} onChange={(event) => { setApiKeyDraft(event.target.value); setApiKeyError(""); setApiKeySaved(false); }} placeholder="Dán API key của bạn vào đây" />
-              <small>Key chỉ được lưu trong bộ nhớ trình duyệt trên thiết bị này. Không dùng trên thiết bị công cộng hoặc thiết bị dùng chung.</small>
-              {apiKeyError && <p className="error-message" role="alert">{apiKeyError}</p>}
-              {apiKeySaved && <p className="api-key-success" role="status">Đã xác thực và lưu key trên thiết bị này. Bạn có thể bắt đầu học!</p>}
-              <button className="button button-primary full-button" type="submit" disabled={apiKeyBusy}>{apiKeyBusy ? "Đang kiểm tra với Google…" : "Kiểm tra và lưu API key"}</button>
-            </form>
-            {apiKey && <button className="remove-key-button" onClick={removeApiKey}>Xóa API key khỏi thiết bị này</button>}
-            <p className="api-key-warning">API key do Google cấp, có thể bị giới hạn hoặc tính phí theo chính sách tài khoản Google của bạn. Xóa dữ liệu trình duyệt sẽ xóa key và tiến độ đã lưu.</p>
-          </section>
-        </div>
-      )}
+      <nav className="mobile-nav">{nav.filter((item) => item.id !== "settings").map((item) => <button key={item.id} className={section === item.id ? "mobile-nav-item selected" : "mobile-nav-item"} onClick={() => navigateToSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span><small>{item.label}</small></button>)}</nav>
     </main>
   );
 }

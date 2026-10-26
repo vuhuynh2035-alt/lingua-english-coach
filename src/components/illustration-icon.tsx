@@ -4,7 +4,7 @@ export type IllustrationName =
   | "business" | "travel" | "technology" | "healthcare" | "finance" | "everyday" | "refrigeration"
   | "home" | "practice" | "profiles" | "courses" | "library" | "grammar" | "progress"
   | "timer" | "sessions" | "level" | "streak" | "key" | "sparkles" | "books" | "pdf" | "text" | "audio"
-  | "microphone" | "stop" | "speaker" | "compass";
+  | "microphone" | "stop" | "speaker" | "compass" | "back" | "settings" | "teacher";
 
 const colors: Record<IllustrationName, [string, string, string]> = {
   business: ["#398de6", "#2252b8", "#bde5ff"],
@@ -35,6 +35,9 @@ const colors: Record<IllustrationName, [string, string, string]> = {
   stop: ["#ff8a83", "#d94c5c", "#ffe0da"],
   speaker: ["#63baff", "#596bda", "#e0ecff"],
   compass: ["#ffd16b", "#e58b43", "#fff2bf"],
+  back: ["#68d7ac", "#20866e", "#d9fff0"],
+  settings: ["#79c6ff", "#5079dc", "#e0f2ff"],
+  teacher: ["#ffb47e", "#ef7288", "#fff0d8"],
 };
 
 function Illustration({ name, gradientId }: { name: IllustrationName; gradientId: string }) {
@@ -95,6 +98,12 @@ function Illustration({ name, gradientId }: { name: IllustrationName; gradientId
       return <><path d="M12 25h10l15-12v38L22 39H12z" fill={main} /><path d="M44 24a12 12 0 0 1 0 16m4-23a21 21 0 0 1 0 30" fill="none" stroke={main} strokeWidth="4" strokeLinecap="round" /><path d="M16 28h6l9-7v23l-9-7h-6z" fill="#fff" fillOpacity=".28" /></>;
     case "compass":
       return <><circle cx="32" cy="32" r="22" fill={main} /><circle cx="32" cy="32" r="16" fill="none" stroke="#fff" strokeOpacity=".8" strokeWidth="2" /><path d="m39 23-5 13-10 5 5-13z" fill="#fff" /><circle cx="32" cy="32" r="3" fill={shineFill} /></>;
+    case "back":
+      return <><circle cx="32" cy="32" r="24" fill={main} /><path d="M35 20 23 32l12 12M24 32h19" fill="none" stroke="#fff" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" /><path d="M27 17h9" stroke="#fff" strokeOpacity=".5" strokeWidth="2" strokeLinecap="round" /></>;
+    case "settings":
+      return <><path d="m27 9 10 0 2 7 5 3 7-2 5 9-5 5v6l5 5-5 9-7-2-5 3-2 7H27l-2-7-5-3-7 2-5-9 5-5v-6l-5-5 5-9 7 2 5-3z" fill={main} transform="translate(0 -3) scale(.94)" /><circle cx="32" cy="31" r="9" fill="#fff" fillOpacity=".9" /><circle cx="32" cy="31" r="4" fill={main} /></>;
+    case "teacher":
+      return <><path d="M13 55c1-13 8-20 19-20s18 7 19 20z" fill={main} /><path d="M19 22a13 13 0 0 1 26 0v8a13 13 0 0 1-26 0z" fill="#ffd8b8" /><path d="M17 24c-1-12 7-19 16-19 9 0 16 7 14 19l-5-6-7-7c-4 6-10 9-18 9z" fill={main} /><path d="M25 27h3m8 0h3" stroke="#533d54" strokeWidth="2.4" strokeLinecap="round" /><path d="M28 34c2 2 6 2 8 0" fill="none" stroke="#df6c78" strokeWidth="2" strokeLinecap="round" /><circle cx="23" cy="32" r="3" fill="#f39c9c" fillOpacity=".65" /><circle cx="41" cy="32" r="3" fill="#f39c9c" fillOpacity=".65" /><path d="M27 39v9l5 5 5-5v-9" fill="#fff" fillOpacity=".87" /><path d="M31 47h2" stroke={main} strokeWidth="2" /></>;
   }
 }
 

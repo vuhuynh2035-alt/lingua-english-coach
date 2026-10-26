@@ -2,17 +2,21 @@ const MODEL = "gemini-2.5-flash";
 
 export type GeminiPart = { text: string } | { inlineData: { mimeType: string; data: string } };
 
-export async function validateGeminiKey(apiKey: string): Promise<void> {
+export async function validateGeminiKey(apiKey: string, model = MODEL): Promise<void> {
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}`,
     { headers: { "x-goog-api-key": apiKey }, signal: AbortSignal.timeout(15_000) },
   );
   if (!response.ok) throw new Error(await getGeminiError(response));
 }
 
-export async function generateWithGemini(apiKey: string, parts: GeminiPart[]): Promise<string> {
+export async function generateWithGemini(
+  apiKey: string,
+  parts: GeminiPart[],
+  model = MODEL,
+): Promise<string> {
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
@@ -78,11 +82,15 @@ async function getGeminiError(response: Response): Promise<string> {
     detail = "";
   }
 
-  if (response.status === 400 || response.status === 403) {
-    return "API key không hợp lệ hoặc chưa được cấp quyền. Hãy kiểm tra lại key trong phần Cài đặt AI.";
+  if (response.status === 400 || response.status === 401 || response.status === 403) {
+    return detail
+      ? `Google AI từ chối API key hoặc yêu cầu (HTTP ${response.status}): ${detail}`
+      : `Google AI từ chối API key hoặc yêu cầu (HTTP ${response.status}). Hãy kiểm tra key và mô hình trong Cài đặt.`;
   }
   if (response.status === 429) {
-    return "API key đã hết hạn mức hoặc đang bị giới hạn. Hãy kiểm tra gói sử dụng Gemini của bạn.";
+    return detail
+      ? `API key Google AI đã hết hạn mức hoặc đang bị giới hạn (HTTP 429): ${detail}`
+      : "API key đã hết hạn mức hoặc đang bị giới hạn (HTTP 429). Hãy chọn key khác trong Cài đặt hoặc kiểm tra gói Gemini.";
   }
   if (response.status === 503 || response.status === 504) {
     return "Dịch vụ AI hiện đang bận. Vui lòng thử lại sau.";
