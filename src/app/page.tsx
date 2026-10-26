@@ -606,7 +606,7 @@ export default function Home() {
   useEffect(() => {
     try {
       const savedScale = Number(localStorage.getItem(FONT_SCALE_STORAGE));
-      if (Number.isFinite(savedScale) && savedScale >= 100 && savedScale <= 150) {
+      if (Number.isFinite(savedScale) && savedScale >= 100 && savedScale <= 200) {
         setFontScale(savedScale);
       }
     } catch {
@@ -1764,18 +1764,30 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               className="font-scale-slider"
               type="range"
               min="100"
-              max="150"
+              max="180"
               step="5"
               value={fontScale}
               aria-valuetext={`${fontScale}%`}
               onChange={(event) => setFontScale(Number(event.target.value))}
             />
-            <div className="font-scale-endpoints"><span>100% · Mặc định</span><span>150% · Lớn nhất</span></div>
+            <div className="font-scale-endpoints"><span>100% · Tiêu chuẩn</span><span>140% · Gợi ý</span><span>180% · Rất lớn</span></div>
           </div>
-          <p className="font-scale-preview">Bản xem trước: Chữ lớn hơn giúp bạn học tiếng Anh thoải mái hơn.</p>
-          <button type="button" className="button button-outline" onClick={() => setFontScale(125)} disabled={fontScale === 125}>
-            Đặt lại cỡ chữ gợi ý (125%)
-          </button>
+          <div className="font-scale-preview" aria-hidden="true">
+            <p style={{ margin: "0 0 6px", fontWeight: "700" }}>Bản xem trước cỡ chữ thực tế ({fontScale}%):</p>
+            <p style={{ margin: "0 0 6px" }}>“Teacher AI: Hello! Let&apos;s practice English together today.”</p>
+            <small style={{ display: "block", color: "var(--theme-text, #315b49)", opacity: 0.85 }}>Cỡ chữ này được áp dụng đồng bộ ngay cho toàn bộ bài học, hội thoại cùng gia sư và giao diện.</small>
+          </div>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "10px" }}>
+            <button type="button" className="button button-outline" onClick={() => setFontScale(100)} disabled={fontScale === 100}>
+              Cỡ chuẩn (100%)
+            </button>
+            <button type="button" className="button button-outline" onClick={() => setFontScale(130)} disabled={fontScale === 130}>
+              Cỡ to dễ đọc (130%)
+            </button>
+            <button type="button" className="button button-outline" onClick={() => setFontScale(160)} disabled={fontScale === 160}>
+              Cỡ rất lớn (160%)
+            </button>
+          </div>
           {fontScaleError && <p className="error-message">{fontScaleError}</p>}
         </section>
         <section className="panel settings-panel app-theme-settings">
