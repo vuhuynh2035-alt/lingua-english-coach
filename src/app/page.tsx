@@ -823,7 +823,7 @@ export default function Home() {
             <span className="eyebrow">KẾT NỐI GIA SƯ AI</span>
             <h2 id="api-key-title">Dùng Gemini API key của bạn</h2>
             <p>Mỗi người học dùng API key riêng của mình. Ứng dụng gửi yêu cầu trực tiếp từ thiết bị của bạn tới Google Gemini, không qua máy chủ trung gian.</p>
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer">Lấy API key miễn phí từ Google AI Studio ↗</a>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer">Tạo Gemini API key trên Google AI Studio ↗</a>
             <form onSubmit={saveApiKey}>
               <label htmlFor="gemini-api-key">Gemini API key</label>
               <input id="gemini-api-key" type="password" autoComplete="off" value={apiKeyDraft} onChange={(event) => { setApiKeyDraft(event.target.value); setApiKeyError(""); setApiKeySaved(false); }} placeholder="Dán API key của bạn vào đây" />

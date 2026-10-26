@@ -12,4 +12,8 @@ if (-not (Test-Path "docs")) {
   New-Item -ItemType Directory -Path "docs" | Out-Null
 }
 
+if (Test-Path "docs\_next") {
+  Remove-Item "docs\_next" -Recurse -Force
+}
+
 Copy-Item -Path "out\*" -Destination "docs" -Recurse -Force
