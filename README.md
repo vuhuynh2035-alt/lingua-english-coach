@@ -31,7 +31,8 @@ Key do từng người nhập trong ứng dụng; không đặt key trong biến
 4. Commit và đẩy bản build lên GitHub:
 
    ```powershell
-   git add docs
+   git add .
+   git status
    git commit -m "Update published website"
    git push
    ```
