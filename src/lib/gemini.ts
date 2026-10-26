@@ -15,16 +15,61 @@ export async function generateWithGemini(
   parts: GeminiPart[],
   model = MODEL,
 ): Promise<string> {
+  return requestGemini(apiKey, model, {
+    contents: [{ role: "user", parts }],
+    generationConfig: { temperature: 0.7, maxOutputTokens: 700 },
+  });
+}
+
+export async function generateChatWithGemini(
+  apiKey: string,
+  model: string,
+  systemPrompt: string,
+  messages: { role: "user" | "assistant"; content: string }[],
+): Promise<string> {
+  const conversation = [...messages];
+  let context = systemPrompt;
+  if (conversation[0]?.role === "assistant") {
+    context += `\n\nThe tutor has already said: ${conversation.shift()?.content ?? ""}`;
+  }
+  const generationConfig: {
+    temperature: number;
+    maxOutputTokens: number;
+    thinkingConfig?: { thinkingBudget: number };
+  } = { temperature: 0.7, maxOutputTokens: 300 };
+  if (/^gemini-2\.5-flash(?:-|$)/i.test(model)) {
+    generationConfig.thinkingConfig = { thinkingBudget: 0 };
+  }
+  return requestGemini(apiKey, model, {
+    systemInstruction: { parts: [{ text: context }] },
+    contents: conversation.map((message) => ({
+      role: message.role === "assistant" ? "model" : "user",
+      parts: [{ text: message.content }],
+    })),
+    generationConfig,
+  });
+}
+
+async function requestGemini(
+  apiKey: string,
+  model: string,
+  request: {
+    systemInstruction?: { parts: { text: string }[] };
+    contents: { role: "user" | "model"; parts: GeminiPart[] }[];
+    generationConfig: {
+      temperature: number;
+      maxOutputTokens: number;
+      thinkingConfig?: { thinkingBudget: number };
+    };
+  },
+): Promise<string> {
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body: JSON.stringify({
-        contents: [{ role: "user", parts }],
-        generationConfig: { temperature: 0.7, maxOutputTokens: 700 },
-      }),
-      signal: AbortSignal.timeout(60_000),
+      body: JSON.stringify(request),
+      signal: AbortSignal.timeout(request.systemInstruction ? 30_000 : 60_000),
     },
   );
 

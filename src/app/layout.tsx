@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Lingua — Học tiếng Anh cùng AI",
+  title: "Teacher AI — Học tiếng Anh cùng AI",
   description: "Luyện giao tiếp tiếng Anh theo ngành nghề cùng gia sư AI, dành cho người Việt.",
   manifest: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/manifest.webmanifest`,
   icons: {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Lingua",
+    title: "Teacher AI",
   },
 };
 

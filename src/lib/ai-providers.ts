@@ -1,4 +1,4 @@
-import { GeminiPart, generateWithGemini } from "@/lib/gemini";
+import { GeminiPart, generateChatWithGemini, generateWithGemini } from "@/lib/gemini";
 import {
   GoogleSpeechVoice,
   SpeechDeliveryStyle,
@@ -157,9 +157,7 @@ export async function generateAiText(
   messages: { role: "user" | "assistant"; content: string }[],
 ): Promise<string> {
   if (provider === "google") {
-    const transcript = messages.map((message) =>
-      `${message.role === "user" ? "Người học" : "Gia sư"}: ${message.content}`).join("\n");
-    return generateWithGemini(apiKey, [{ text: `${systemPrompt}\n\nConversation:\n${transcript}\nReply as the teacher.` }], model);
+    return generateChatWithGemini(apiKey, model, systemPrompt, messages);
   }
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -171,9 +169,9 @@ export async function generateAiText(
         ...messages.map((message) => ({ role: message.role, content: message.content })),
       ],
       temperature: 0.7,
-      max_completion_tokens: 700,
+      max_completion_tokens: 300,
     }),
-    signal: AbortSignal.timeout(60_000),
+    signal: AbortSignal.timeout(30_000),
   });
   const result: unknown = await response.json().catch(() => null);
   if (!response.ok) throw new Error(getProviderError(provider, response.status, result));

@@ -5,7 +5,7 @@ self.addEventListener("install", (event) => {
     const shellUrl = self.registration.scope;
     const shellResponse = await fetch(shellUrl);
     if (!shellResponse.ok) {
-      throw new Error(`Unable to cache the Lingua app shell (HTTP ${shellResponse.status}).`);
+      throw new Error(`Unable to cache the Teacher AI app shell (HTTP ${shellResponse.status}).`);
     }
     const html = await shellResponse.clone().text();
     const assetUrls = [...html.matchAll(/(?:src|href)="([^"]+)"/g)]

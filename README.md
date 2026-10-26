@@ -1,4 +1,4 @@
-# Lingua — Học tiếng Anh cùng AI
+# Teacher AI — Học tiếng Anh cùng AI
 
 Web app học tiếng Anh dành cho người Việt. Chọn lộ trình theo lĩnh vực, luyện hội thoại và phát âm với AI, làm bài kiểm tra trình độ. Giao diện dùng được trên máy tính, Android và iPhone.
 
@@ -10,7 +10,9 @@ Web app học tiếng Anh dành cho người Việt. Chọn lộ trình theo lĩ
 4. Có thể lưu nhiều key, đổi key đang dùng, tải danh sách mô hình để chọn, và chọn giọng đọc.
 5. Chọn lĩnh vực, rồi trò chuyện bằng cách nhập câu hoặc dùng micro.
 
-Có thể cài Lingua lên màn hình chính: Chrome/Android dùng nút **Cài ứng dụng** khi trình duyệt cung cấp hoặc mở menu và chọn cài ứng dụng; iPhone/iPad mở trang bằng Safari, nhấn **Chia sẻ → Thêm vào MH chính**. Ứng dụng kiểm tra phiên bản mới khi mở và hiển thị nút cập nhật trong trang nếu có bản mới.
+Có thể cài Teacher AI lên màn hình chính: Chrome/Android dùng nút **Cài ứng dụng** khi trình duyệt cung cấp hoặc mở menu và chọn cài ứng dụng; iPhone/iPad mở trang bằng Safari, nhấn **Chia sẻ → Thêm vào MH chính**. Ứng dụng kiểm tra phiên bản mới khi mở và hiển thị nút cập nhật trong trang nếu có bản mới.
+
+Nút **?** ở thanh trên mở hướng dẫn theo từng trang, gồm cách luyện hội thoại, chọn lĩnh vực, học giáo trình và dùng các phần cài đặt.
 
 Mỗi người học dùng API key và hạn mức của riêng mình. Yêu cầu được gửi trực tiếp từ trình duyệt tới nhà cung cấp đã chọn; API key không được gửi tới máy chủ của ứng dụng hoặc lưu trong mã nguồn GitHub. Nếu một key bị từ chối hoặc hết hạn mức, app thử lần lượt các key còn lại đã lưu cho nhà cung cấp đó.
 
@@ -20,9 +22,11 @@ Trong **Cài đặt**, bạn có thể điều chỉnh cỡ chữ từ 100% đ�
 
 Trong **Cài đặt**, bạn có thể chọn nền trắng với màu khung và điểm nhấn **xanh mint**, **xanh dương** hoặc **đỏ bordeaux**. Giao diện xanh mint ban đầu vẫn được giữ lại; lựa chọn được lưu trên thiết bị hiện tại.
 
-Mục **Ngữ pháp** nằm trong danh sách **Lĩnh vực**; tài liệu riêng nằm trong **Giáo trình học**. Nút quay lại chỉ xuất hiện khi có trang trước để trở về.
+Khi chọn một **Lĩnh vực**, ứng dụng mở trang lựa chọn hai hình thức học: **Bài học offline** theo giáo trình hoặc **Gia sư AI online** để luyện hội thoại. Chọn lĩnh vực không tự động mở chat. Bài học chưa tải được hiển thị mờ và hướng dẫn vào **Cài đặt → Giáo trình offline**. Cài đặt được gom theo nhóm accordion, mỗi lần chỉ mở một nhóm; **Tài liệu cá nhân** nằm cùng nhóm giáo trình offline. Mục **Ngữ pháp** nằm trong danh sách **Lĩnh vực**.
 
-Phiên bản ứng dụng được quản lý trong `package.json`; khi phát hành bản điều chỉnh, hãy tăng phiên bản theo SemVer. Các lệnh `npm run dev` và `npm run build` tự tạo `public/version.json` từ giá trị đó. Ứng dụng hiển thị phiên bản đang chạy ở thanh đầu trang, chân trang và trong **Cài đặt**, đồng thời kiểm tra phiên bản đã triển khai để báo khi có bản mới.
+Trong giáo trình offline, hoàn thành mỗi bài cần đạt ít nhất 70%; hoàn thành toàn bộ bài của level để làm bài kiểm tra cuối level. Đạt ít nhất 90% bài kiểm tra cuối level sẽ mở level tiếp theo và cập nhật trình độ hiện tại. Điểm cao nhất và tiến độ được lưu trên thiết bị. Hiện repository chưa có các gói giáo trình JSON và audio để tải; giao diện sẽ báo rõ gói chưa sẵn sàng cho đến khi nội dung được bổ sung.
+
+Phiên bản ứng dụng được quản lý trong `package.json`; khi phát hành bản điều chỉnh, hãy tăng phiên bản theo SemVer. Các lệnh `npm run dev` và `npm run build` tự tạo `public/version.json` từ giá trị đó. Ứng dụng hiển thị phiên bản đang chạy ở thanh đầu trang và chân trang, đồng thời kiểm tra phiên bản đã triển khai để báo khi có bản mới.
 
 Các tình huống và câu mẫu được phân phối cùng ứng dụng; tiến độ và nội dung trò chuyện cá nhân được lưu cục bộ. Khi dùng trò chuyện bằng giọng nói, bản ghi được gửi thẳng tới Google Gemini hoặc dịch vụ phiên âm OpenAI tùy nhà cung cấp đang chọn. Góp ý/chấm phát âm trực tiếp từ âm thanh hiện hỗ trợ Google Gemini; nếu chọn OpenAI, ứng dụng hiện rõ yêu cầu đổi nhà cung cấp. Cần có kết nối Internet và quyền truy cập micro qua HTTPS.
 
@@ -30,7 +34,7 @@ Trong **Cài đặt**, người học có thể tải tối đa một giọng na
 
 ## Thư viện tài liệu cá nhân
 
-Trong **Giáo trình học → Tài liệu cá nhân**, bạn có thể thêm tệp PDF, audio thông dụng hoặc văn bản TXT/MD (tối đa 50 MB mỗi tệp). Tệp được lưu trong IndexedDB của trình duyệt trên thiết bị hiện tại; không được tải lên GitHub hoặc gửi tới máy chủ ứng dụng. Xóa dữ liệu website/trình duyệt có thể xóa cả bản lưu này, vì vậy hãy giữ tệp gốc riêng.
+Trong **Cài đặt → Giáo trình học offline → Tài liệu cá nhân**, bạn có thể thêm tệp PDF, audio thông dụng hoặc văn bản TXT/MD (tối đa 50 MB mỗi tệp). Tệp được lưu trong IndexedDB của trình duyệt trên thiết bị hiện tại; không được tải lên GitHub hoặc gửi tới máy chủ ứng dụng. Xóa dữ liệu website/trình duyệt có thể xóa cả bản lưu này, vì vậy hãy giữ tệp gốc riêng.
 
 Chỉ thêm tài liệu mà bạn có quyền lưu và sử dụng theo giấy phép áp dụng. Sách điện tử có DRM hoặc nội dung chỉ được cấp quyền đọc trong nền tảng của nhà xuất bản (ví dụ Oxford Learner’s Bookshelf) không thể nhập bằng cách vượt DRM; app này không trích xuất hay phân phối lại nội dung Oxford. Tính năng này là thư viện đọc cá nhân, không chuyển sách thành gói giáo trình có thể phát hành công khai.
 

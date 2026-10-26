@@ -104,7 +104,7 @@ function openSpeechDatabase(): Promise<IDBDatabase> {
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error ?? new Error("Không thể mở bộ nhớ âm thanh trên thiết bị."));
-    request.onblocked = () => reject(new Error("Hãy đóng các thẻ Lingua khác để mở bộ nhớ âm thanh."));
+    request.onblocked = () => reject(new Error("Hãy đóng các thẻ Teacher AI khác để mở bộ nhớ âm thanh."));
   });
 }
 

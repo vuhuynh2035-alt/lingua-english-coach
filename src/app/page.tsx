@@ -44,7 +44,13 @@ import {
   removePersonalMaterial,
 } from "@/lib/personal-library";
 
-type Section = "home" | "practice" | "profiles" | "progress" | "placement" | "grammar" | "courses" | "library" | "settings";
+type Section = "home" | "lessons" | "practice" | "profiles" | "progress" | "placement" | "grammar" | "library" | "settings";
+type CourseLevel = "A1" | "A2" | "B1" | "B2";
+const COURSE_LEVELS: CourseLevel[] = ["A1", "A2", "B1", "B2"];
+function isCourseLevel(value: string): value is CourseLevel {
+  return COURSE_LEVELS.includes(value as CourseLevel);
+}
+type HelpContent = { title: string; description: string; steps: string[] };
 type ApiKeyEntry = { id: string; label: string; value: string };
 type ProviderRecord<T> = Record<AiProvider, T>;
 type AppTheme = "mint" | "blue" | "burgundy";
@@ -52,6 +58,95 @@ type VersionCheckStatus = "checking" | "latest" | "update-available" | "error";
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
+};
+const PAGE_HELP: Record<Section, HelpContent> = {
+  home: {
+    title: "Trang chủ",
+    description: "Bắt đầu học, chọn lĩnh vực và xem nhanh tiến độ của bạn.",
+    steps: [
+      "Nhấn “Bắt đầu luyện nói” để vào cuộc trò chuyện với gia sư AI.",
+      "Chọn lĩnh vực ở các thẻ bên dưới để đổi tình huống và cụm từ luyện tập.",
+      "Dùng “Kiểm tra trình độ” để app gợi ý mức học ban đầu.",
+      "Chọn “Cài Teacher AI lên màn hình chính” để xem cách thêm ứng dụng vào thiết bị.",
+    ],
+  },
+  practice: {
+    title: "Gia sư AI online",
+    description: "Đây là khu vực hội thoại thực hành tiếng Anh theo lĩnh vực đang chọn. Gia sư AI sẽ trao đổi theo tình huống và trình độ của bạn.",
+    steps: [
+      "Đọc tình huống và câu mẫu ở khung bên trái; bấm “Nghe mẫu phát âm” để nghe.",
+      "Nhập câu trả lời tiếng Anh ở ô trò chuyện hoặc nhấn micro để trả lời bằng giọng nói.",
+      "Dùng các nút yêu cầu nhanh để bắt đầu bài học, hỏi giải thích, xin thêm bài tập hoặc ôn phát âm.",
+      "Nhấn “Luyện phát âm”, đọc câu gợi ý rồi dừng ghi âm để nhận góp ý từ AI. Cần cấp quyền micro và kết nối AI.",
+      "Đổi lĩnh vực từ mục “Lĩnh vực” nếu muốn luyện tình huống khác.",
+    ],
+  },
+  profiles: {
+    title: "Lĩnh vực muốn học",
+    description: "Chọn lĩnh vực trước, sau đó chọn học theo giáo trình offline hoặc luyện giao tiếp với gia sư AI.",
+    steps: [
+      "Chọn một thẻ lĩnh vực để đặt làm chủ đề học hiện tại.",
+      "Sau khi chọn, vào Bài học để học giáo trình offline hoặc Gia sư AI để luyện hội thoại online.",
+      "Mỗi lĩnh vực có tình huống, câu nói hữu ích và ngữ cảnh riêng cho gia sư AI.",
+      "Chọn thẻ “Tiếng Anh ngữ pháp” để mở bài học cấu trúc và bài tập.",
+      "Mở Cài đặt để tải giáo trình và audio dùng offline.",
+    ],
+  },
+  lessons: {
+    title: "Bài học theo giáo trình",
+    description: "Học theo lộ trình offline riêng, từng bài và từng cấp độ. Bài học cần được tải về trước trong Cài đặt.",
+    steps: [
+      "Chọn một lĩnh vực để xem hai cách học riêng: giáo trình offline và gia sư AI online.",
+      "Nếu thẻ giáo trình đang mờ, mở Cài đặt → Giáo trình offline để tải gói bài học.",
+      "Hoàn thành từng bài với ít nhất 70% để đánh dấu hoàn tất; làm bài kiểm tra cuối level đạt ít nhất 90% để mở level kế tiếp.",
+      "Chọn Gia sư AI khi muốn luyện hội thoại online theo lĩnh vực và trình độ.",
+    ],
+  },
+  progress: {
+    title: "Tiến độ học tập",
+    description: "Xem thời lượng, số buổi, trình độ ước tính và chuỗi ngày học được lưu trên thiết bị này.",
+    steps: [
+      "Các thống kê được cập nhật khi bạn hoàn thành hoạt động học trong ứng dụng.",
+      "Nhấn “Luyện tập hôm nay” hoặc “Bắt đầu trò chuyện” để tiếp tục học.",
+      "Tiến độ được lưu cục bộ trong trình duyệt, không tự đồng bộ sang thiết bị khác.",
+    ],
+  },
+  placement: {
+    title: "Kiểm tra trình độ",
+    description: "Bài sàng lọc ngắn giúp ước lượng mức bắt đầu từ A1 đến B2 để điều chỉnh việc học.",
+    steps: [
+      "Chọn một đáp án cho từng câu hỏi.",
+      "Khi đã trả lời đủ câu, nhấn “Xem trình độ của tôi”.",
+      "Kết quả chỉ mang tính tham khảo, không thay thế bài đánh giá CEFR chính thức; bạn có thể làm lại.",
+    ],
+  },
+  grammar: {
+    title: "Ngữ pháp",
+    description: "Chọn cấu trúc theo trình độ CEFR để học cách dùng, xem ví dụ và làm bài trắc nghiệm.",
+    steps: ["Chọn cấp độ A1, A2, B1 hoặc B2.", "Mở một cấu trúc để xem hướng dẫn, ví dụ và bài tập.", "Điểm cao nhất của từng chủ đề được lưu trên thiết bị."],
+  },
+  library: {
+    title: "Tài liệu cá nhân",
+    description: "Quản lý tài liệu học do bạn thêm vào bộ nhớ trình duyệt trên thiết bị này.",
+    steps: [
+      "Chọn thêm tài liệu và nhập tệp PDF, audio, TXT hoặc MD được hỗ trợ.",
+      "Chọn một tài liệu trong danh sách để mở hoặc phát.",
+      "Xóa dữ liệu website/trình duyệt có thể xóa các tệp đã lưu; hãy giữ bản gốc riêng.",
+    ],
+  },
+  settings: {
+    title: "Cài đặt chung",
+    description: "Điều chỉnh ứng dụng, nhà cung cấp AI, giọng đọc và các lựa chọn lưu trên thiết bị.",
+    steps: [
+      "Chọn giao diện và cỡ chữ phù hợp.",
+      "Nhấn vào từng nhóm cài đặt để mở danh sách chi tiết.",
+      "Tải, mở hoặc xóa giáo trình offline trong nhóm “Giáo trình offline”.",
+      "Thêm API key Google AI hoặc OpenAI để dùng hội thoại, giọng đọc và các tính năng AI; key được lưu trong trình duyệt này.",
+      "Chọn mô hình và giọng đọc. Audio được tạo khi bạn nghe thử/phát câu, rồi lưu trên thiết bị để nghe lại.",
+      "Xem phiên bản ứng dụng và kiểm tra bản cập nhật ở cuối trang.",
+      "Có thể cài Teacher AI lên màn hình chính theo hướng dẫn ở đầu trang.",
+    ],
+  },
 };
 const APP_VERSION = packageJson.version;
 const API_KEY_STORAGE = "lingua-gemini-api-key";
@@ -380,6 +475,7 @@ export default function Home() {
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
   const [appInstalled, setAppInstalled] = useState(false);
   const [installError, setInstallError] = useState("");
+  const [showHelp, setShowHelp] = useState(false);
   const [progress, setProgress] = useState<LearningProgress>(emptyProgress);
   const [progressLoaded, setProgressLoaded] = useState(false);
   const [aiSettingsLoaded, setAiSettingsLoaded] = useState(false);
@@ -432,6 +528,11 @@ export default function Home() {
   const [courseAnswers, setCourseAnswers] = useState<number[]>([]);
   const [courseQuizSubmitted, setCourseQuizSubmitted] = useState(false);
   const [courseProgress, setCourseProgress] = useState<Record<string, string[]>>({});
+  const [courseLessonScores, setCourseLessonScores] = useState<Record<string, Record<string, number>>>({});
+  const [courseLevelResults, setCourseLevelResults] = useState<Record<string, Partial<Record<CourseLevel, number>>>>({});
+  const [courseExamLevel, setCourseExamLevel] = useState<CourseLevel | null>(null);
+  const [courseExamAnswers, setCourseExamAnswers] = useState<number[]>([]);
+  const [courseExamSubmitted, setCourseExamSubmitted] = useState(false);
   const [offlineAudioUrl, setOfflineAudioUrl] = useState("");
   const [personalMaterials, setPersonalMaterials] = useState<PersonalMaterial[]>([]);
   const [selectedMaterial, setSelectedMaterial] = useState<PersonalMaterial | null>(null);
@@ -590,6 +691,43 @@ export default function Home() {
     } catch {
       setCourseError("Không thể đọc tiến độ giáo trình đã lưu trên thiết bị này.");
     }
+    try {
+      const savedLessonScores: unknown = JSON.parse(localStorage.getItem("lingua-course-lesson-scores") ?? "{}");
+      if (typeof savedLessonScores === "object" && savedLessonScores !== null && !Array.isArray(savedLessonScores)) {
+        const validScores = Object.fromEntries(
+          Object.entries(savedLessonScores).flatMap(([courseId, scores]) => {
+            if (typeof scores !== "object" || scores === null || Array.isArray(scores)) return [];
+            const lessonScores = Object.fromEntries(
+              Object.entries(scores).filter((entry): entry is [string, number] =>
+                typeof entry[1] === "number" && Number.isInteger(entry[1]) && entry[1] >= 0 && entry[1] <= 100),
+            );
+            return [[courseId, lessonScores]];
+          }),
+        );
+        setCourseLessonScores(validScores);
+      }
+    } catch {
+      setCourseError("Không thể đọc điểm bài học đã lưu trên thiết bị này.");
+    }
+    try {
+      const savedLevelResults: unknown = JSON.parse(localStorage.getItem("lingua-course-level-results") ?? "{}");
+      if (typeof savedLevelResults === "object" && savedLevelResults !== null && !Array.isArray(savedLevelResults)) {
+        const validResults = Object.fromEntries(
+          Object.entries(savedLevelResults).flatMap(([courseId, results]) => {
+            if (typeof results !== "object" || results === null || Array.isArray(results)) return [];
+            const validLevels = Object.fromEntries(
+              Object.entries(results).filter(([level, score]) =>
+                isCourseLevel(level) &&
+                typeof score === "number" && Number.isInteger(score) && score >= 0 && score <= 100),
+            ) as Partial<Record<CourseLevel, number>>;
+            return [[courseId, validLevels]];
+          }),
+        );
+        setCourseLevelResults(validResults);
+      }
+    } catch {
+      setCourseError("Không thể đọc kết quả kiểm tra level đã lưu trên thiết bị này.");
+    }
     void listDownloadedCourses()
       .then(setCoursePacks)
       .catch((error: unknown) => {
@@ -694,6 +832,15 @@ export default function Home() {
       window.removeEventListener("appinstalled", onAppInstalled);
     };
   }, []);
+
+  useEffect(() => {
+    if (!showHelp) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setShowHelp(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [showHelp]);
 
   useEffect(() => {
     try {
@@ -808,7 +955,12 @@ export default function Home() {
     setMessages(loadMessages(id) ?? [{ role: "assistant", content: nextProfile.prompt }]);
     setPronunciation(null);
     practiceSessionCounted.current = false;
-    navigateToSection("practice");
+    setSelectedCourseId("");
+    setSelectedLessonId("");
+    setCourseExamLevel(null);
+    setCourseExamAnswers([]);
+    setCourseExamSubmitted(false);
+    navigateToSection("lessons");
   }
 
   async function withAvailableApiKey<T>(operation: (key: string) => Promise<T>): Promise<T> {
@@ -861,7 +1013,11 @@ export default function Home() {
       practiceSessionCounted.current = true;
       void playSpeech(reply);
     } catch (error) {
-      setChatError(error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
+      const timedOut = error instanceof Error &&
+        (error.name === "TimeoutError" || /signal timed out|timed out|timeout/i.test(error.message));
+      setChatError(timedOut
+        ? "AI chưa phản hồi trong 30 giây. Hãy kiểm tra kết nối Internet, mô hình và API key trong Cài đặt rồi thử lại."
+        : error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
     } finally {
       setChatBusy(false);
     }
@@ -1339,12 +1495,27 @@ export default function Home() {
       const downloaded = await listDownloadedCourses();
       setCoursePacks(downloaded);
       setSelectedCourseId(course.id);
-      setSelectedLessonId(course.lessons[0]?.id ?? "");
+      setSelectedLessonId(
+        course.lessons.find((item) => item.level === progress.level)?.id ??
+        course.lessons[0]?.id ??
+        "",
+      );
+      const nextProfile = profiles.find((item) => item.id === courseId);
+      if (nextProfile) {
+        setProgress((current) => ({ ...current, profile: courseId }));
+        setMessages(loadMessages(courseId) ?? [{ role: "assistant", content: nextProfile.prompt }]);
+      }
       setCourseAnswers([]);
       setCourseQuizSubmitted(false);
-      navigateToSection("courses");
+      setCourseExamLevel(null);
+      setCourseExamAnswers([]);
+      setCourseExamSubmitted(false);
+      navigateToSection("lessons");
     } catch (error) {
-      setCourseError(error instanceof Error ? error.message : "Không thể tải giáo trình. Vui lòng thử lại.");
+      const message = error instanceof Error ? error.message : "";
+      setCourseError(/HTTP 404/.test(message)
+        ? "Gói giáo trình cho lĩnh vực này chưa được phát hành. Vui lòng thử lại sau khi có nội dung tải về."
+        : message || "Không thể tải giáo trình. Vui lòng thử lại.");
     } finally {
       setCourseBusyId("");
     }
@@ -1359,6 +1530,7 @@ export default function Home() {
         setSelectedCourseId("");
         setSelectedLessonId("");
         setOfflineAudioUrl("");
+        setCourseExamLevel(null);
       }
     } catch (error) {
       setCourseError(error instanceof Error ? error.message : "Không thể xóa giáo trình khỏi thiết bị.");
@@ -1416,17 +1588,33 @@ export default function Home() {
       return;
     }
     setSelectedCourseId(course.id);
-    setSelectedLessonId(course.lessons[0]?.id ?? "");
+    setSelectedLessonId(
+      course.lessons.find((item) => item.level === progress.level)?.id ??
+      course.lessons[0]?.id ??
+      "",
+    );
+    const nextProfile = profiles.find((item) => item.id === courseId);
+    if (nextProfile) {
+      setProgress((current) => ({ ...current, profile: courseId }));
+      setMessages(loadMessages(courseId) ?? [{ role: "assistant", content: nextProfile.prompt }]);
+    }
     setCourseAnswers([]);
     setCourseQuizSubmitted(false);
+    setCourseExamLevel(null);
+    setCourseExamAnswers([]);
+    setCourseExamSubmitted(false);
     setCourseError("");
     setOfflineAudioUrl("");
+    navigateToSection("lessons");
   }
 
   function openCourseLesson(lessonId: string) {
     setSelectedLessonId(lessonId);
     setCourseAnswers([]);
     setCourseQuizSubmitted(false);
+    setCourseExamLevel(null);
+    setCourseExamAnswers([]);
+    setCourseExamSubmitted(false);
     setCourseError("");
     setOfflineAudioUrl("");
   }
@@ -1454,21 +1642,32 @@ export default function Home() {
       0,
     );
     const passed = score >= Math.ceil(questions.length * 0.7);
+    const percentage = Math.round((score / questions.length) * 100);
     setCourseQuizSubmitted(true);
-    if (!passed) return;
+    const updatedScores = {
+      ...courseLessonScores,
+      [course.id]: {
+        ...courseLessonScores[course.id],
+        [lessonId]: Math.max(courseLessonScores[course.id]?.[lessonId] ?? 0, percentage),
+      },
+    };
     const updatedProgress = {
       ...courseProgress,
       [course.id]: courseProgress[course.id] ?? [],
     };
-    if (!updatedProgress[course.id].includes(lessonId)) {
+    if (passed && !updatedProgress[course.id].includes(lessonId)) {
       updatedProgress[course.id] = [...updatedProgress[course.id], lessonId];
     }
-    setCourseProgress(updatedProgress);
-    setCourseError("");
+    setCourseLessonScores(updatedScores);
+    if (passed) {
+      setCourseProgress(updatedProgress);
+    }
     try {
-      localStorage.setItem("lingua-course-progress", JSON.stringify(updatedProgress));
+      localStorage.setItem("lingua-course-lesson-scores", JSON.stringify(updatedScores));
+      if (passed) localStorage.setItem("lingua-course-progress", JSON.stringify(updatedProgress));
+      setCourseError("");
     } catch {
-      setCourseError("Không thể lưu tiến độ giáo trình trên thiết bị này.");
+      setCourseError("Không thể lưu điểm hoặc tiến độ bài học trên thiết bị này.");
     }
   }
 
@@ -1478,12 +1677,28 @@ export default function Home() {
     const femaleVoices = googleSpeechVoices.filter((voice) => voice.gender === "female");
     return (
       <>
-        {renderInstallAppPanel()}
         <div className="page-intro">
           <span className="eyebrow">CÀI ĐẶT CHUNG</span>
-          <h2>Cá nhân hóa gia sư AI.</h2>
-          <p>Chọn nhà cung cấp, quản lý nhiều API key, mô hình và giọng đọc. Các lựa chọn được lưu riêng trong trình duyệt này.</p>
+          <h2>Cài đặt ứng dụng.</h2>
+          <p>Chọn một nhóm để mở các tùy chọn chi tiết.</p>
         </div>
+        <details name="settings-groups" className="settings-group">
+          <summary className="settings-group-summary">
+            <span className="settings-icon"><IllustrationIcon name="courses" /></span>
+            <span><strong>Giáo trình offline</strong><small>Tải hoặc quản lý bài học trên thiết bị</small></span>
+            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div className="settings-group-content">
+            {renderCourses(true)}
+          </div>
+        </details>
+        <details name="settings-groups" className="settings-group">
+          <summary className="settings-group-summary">
+            <span className="settings-icon font-size-icon">Aa</span>
+            <span><strong>Giao diện & hiển thị</strong><small>Cỡ chữ và màu sắc ứng dụng</small></span>
+            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div className="settings-group-content">
         <section className="panel settings-panel font-size-settings">
           <div className="settings-section-heading">
             <span className="settings-icon font-size-icon" aria-hidden="true">Aa</span>
@@ -1550,6 +1765,15 @@ export default function Home() {
           </div>
           {appThemeError && <p className="error-message" role="alert">{appThemeError}</p>}
         </section>
+          </div>
+        </details>
+        <details name="settings-groups" className="settings-group">
+          <summary className="settings-group-summary">
+            <span className="settings-icon"><IllustrationIcon name="key" /></span>
+            <span><strong>Nhà cung cấp & mô hình AI</strong><small>{aiProvider === "google" ? "Google Gemini" : "OpenAI"} · {activeModel}</small></span>
+            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div className="settings-group-content">
         <section className="panel settings-panel">
           <div className="settings-section-heading">
             <span className="settings-icon"><IllustrationIcon name="key" /></span>
@@ -1618,7 +1842,15 @@ export default function Home() {
             {modelCatalog[aiProvider].map((model) => <option key={model.id} value={model.id}>{model.label}</option>)}
           </select>
         </section>
-
+          </div>
+        </details>
+        <details name="settings-groups" className="settings-group">
+          <summary className="settings-group-summary">
+            <span className="settings-icon"><IllustrationIcon name="speaker" /></span>
+            <span><strong>Giọng đọc & phát âm</strong><small>Voice, accent và sắc thái đọc</small></span>
+            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div className="settings-group-content">
         <section className="panel settings-panel">
           <div className="settings-section-heading">
             <span className="settings-icon"><IllustrationIcon name="speaker" /></span>
@@ -1674,25 +1906,18 @@ export default function Home() {
           {aiProvider === "openai" && <p className="settings-hint">Chấm phát âm trực tiếp hiện dùng Google Gemini; OpenAI hỗ trợ hội thoại, nhận dạng giọng nói và đọc văn bản.</p>}
           <button className="remove-key-button settings-cache-clear" onClick={() => { void removeSavedSpeech(); }}>Xóa audio đã lưu trên thiết bị</button>
         </section>
-        <section className="panel settings-panel app-version-panel">
-          <div className="settings-section-heading">
-            <span className="settings-icon version-icon" aria-hidden="true">v</span>
-            <div><h3>Phiên bản ứng dụng</h3><p>Phiên bản đang chạy: <strong>v{APP_VERSION}</strong></p></div>
           </div>
-          <p className={`version-check-status ${versionCheckStatus}`} role="status" aria-live="polite">
-            {versionCheckStatus === "checking" && "Đang kiểm tra phiên bản mới nhất…"}
-            {versionCheckStatus === "latest" && `Bạn đang sử dụng phiên bản mới nhất${latestVersion ? ` (v${latestVersion})` : ""}.`}
-            {versionCheckStatus === "update-available" && `Đã có phiên bản mới v${latestVersion}. Tải lại ứng dụng để cập nhật.`}
-            {versionCheckStatus === "error" && versionCheckError}
-          </p>
-          {versionCheckStatus === "update-available" ? (
-            <button type="button" className="button button-primary" onClick={() => window.location.reload()}>Tải phiên bản mới</button>
-          ) : (
-            <button type="button" className="button button-outline" onClick={() => setVersionCheckAttempt((attempt) => attempt + 1)} disabled={versionCheckStatus === "checking"}>
-              {versionCheckStatus === "checking" ? "Đang kiểm tra…" : "Kiểm tra lại"}
-            </button>
-          )}
-        </section>
+        </details>
+        <details name="settings-groups" className="settings-group">
+          <summary className="settings-group-summary">
+            <span className="settings-icon"><IllustrationIcon name="settings" /></span>
+            <span><strong>Cài đặt ứng dụng</strong><small>Hướng dẫn cài ứng dụng lên màn hình chính</small></span>
+            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div className="settings-group-content">
+        {renderInstallAppPanel()}
+          </div>
+        </details>
       </>
     );
   }
@@ -1791,9 +2016,9 @@ export default function Home() {
   function renderInstallAppPanel() {
     if (appInstalled) return null;
     return (
-      <section className="install-app-panel" aria-label="Cài Lingua lên màn hình chính">
+      <section className="install-app-panel" aria-label="Cài Teacher AI lên màn hình chính">
         <div>
-          <strong>Cài Lingua lên màn hình chính</strong>
+          <strong>Cài Teacher AI lên màn hình chính</strong>
           <p>Thêm biểu tượng ứng dụng để mở nhanh như app trên điện thoại.</p>
           {!installPrompt && <small>Android/Chrome: mở menu trình duyệt và chọn “Cài đặt ứng dụng” hoặc “Thêm vào màn hình chính”. iPhone/iPad: mở bằng Safari, nhấn Chia sẻ rồi chọn “Thêm vào MH chính”.</small>}
           {installError && <p className="error-message" role="alert">{installError}</p>}
@@ -1937,7 +2162,7 @@ export default function Home() {
             <span className="eyebrow hero-eyebrow">MỖI NGÀY MỘT CHÚT <span>✦</span> {progress.streak ? `CHUỖI ${progress.streak} NGÀY` : "BẮT ĐẦU HÔM NAY"}</span>
             <h2>Tiến bộ từng chút.<br /><em>Tự tin hơn mỗi ngày.</em></h2>
             <p>Học theo cách của bạn. Cùng bắt đầu từ hôm nay nhé!</p>
-            <button className="button button-light" onClick={() => navigateToSection("practice")}>Bắt đầu luyện nói <span>→</span></button>
+            <button className="button button-light" onClick={() => navigateToSection("practice")}>Gia sư AI online <span>→</span></button>
           </div>
           <div className="hero-art" aria-hidden="true">
             <div className="art-sun" /><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" />
@@ -1962,6 +2187,26 @@ export default function Home() {
           ))}
         </div>
 
+        <div className="section-heading">
+          <div><span className="eyebrow">HAI CÁCH HỌC RIÊNG BIỆT</span><h2>Tiếp tục với {profile.title}</h2></div>
+        </div>
+        <div className="learning-path-grid">
+          <button type="button" className="panel learning-path-card home-learning-choice" onClick={() => navigateToSection("lessons")}>
+            <span className="learning-path-icon"><IllustrationIcon name="courses" /></span>
+            <span className="eyebrow">HỌC BÀI BẢN · OFFLINE</span>
+            <h3>Bài học theo giáo trình</h3>
+            <p>Học từng bài theo level, làm bài kiểm tra và theo dõi tiến độ học tập.</p>
+            <span className="button button-outline">Mở lộ trình bài học <span>→</span></span>
+          </button>
+          <button type="button" className="panel learning-path-card home-learning-choice" onClick={() => navigateToSection("practice")}>
+            <span className="learning-path-icon"><IllustrationIcon name="practice" /></span>
+            <span className="eyebrow">LUYỆN GIAO TIẾP · ONLINE</span>
+            <h3>Gia sư AI</h3>
+            <p>Trò chuyện với Maya theo chủ đề và trình độ hiện tại; nhận giải thích và góp ý.</p>
+            <span className="button button-primary">Bắt đầu trò chuyện <span>→</span></span>
+          </button>
+        </div>
+
         <div className="dashboard-lower">
           <section className="panel progress-panel">
             <div className="panel-title"><div><span className="eyebrow">TUẦN NÀY</span><h3>Tiến độ học tập</h3></div><span className="progress-decoration">↗</span></div>
@@ -1974,9 +2219,9 @@ export default function Home() {
           </section>
           <section className="panel next-panel">
             <span className="eyebrow">GỢI Ý TIẾP THEO</span>
-            <div className="next-lesson"><span className={`lesson-icon ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><div><strong>Luyện hội thoại: {profile.title}</strong><span>5 phút · Tình huống thực tế</span></div></div>
+            <div className="next-lesson"><span className={`lesson-icon ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><div><strong>Gia sư AI: {profile.title}</strong><span>5 phút · Tình huống thực tế</span></div></div>
             <p>Thực hành giao tiếp theo lĩnh vực bạn đã chọn. Gia sư AI sẽ trò chuyện và góp ý cho bạn.</p>
-            <button className="button button-primary full-button" onClick={() => navigateToSection("practice")}>Tiếp tục học <span>→</span></button>
+            <button className="button button-primary full-button" onClick={() => navigateToSection("practice")}>Tiếp tục với gia sư AI <span>→</span></button>
           </section>
         </div>
         <section className="placement-banner"><span className="placement-icon"><IllustrationIcon name="compass" /></span><div><strong>Bạn mới bắt đầu học?</strong><p>Làm bài kiểm tra ngắn để Maya điều chỉnh bài học theo trình độ của bạn.</p></div><button onClick={() => { setPlacementAnswers([]); setPlacementResult(""); navigateToSection("placement"); }}>Kiểm tra trình độ <span>→</span></button></section>
@@ -1987,7 +2232,7 @@ export default function Home() {
   function renderProfiles() {
     return (
       <>
-        <div className="page-intro"><span className="eyebrow">HỌC ĐIỀU BẠN CẦN</span><h2>Học tiếng Anh theo lĩnh vực của bạn.</h2><p>Chọn một lĩnh vực để luyện hội thoại thực tế, học cụm từ hữu ích và tự tin hơn với mục tiêu của mình.</p><button className="button button-outline" onClick={() => navigateToSection("courses")}>Tải giáo trình và audio offline →</button></div>
+        <div className="page-intro"><span className="eyebrow">HỌC ĐIỀU BẠN CẦN</span><h2>Chọn lĩnh vực học tập.</h2><p>Chọn lĩnh vực trước. Ở bước tiếp theo, bạn có thể học theo giáo trình offline hoặc mở gia sư AI để luyện giao tiếp online.</p></div>
         <div className="offline-status" role={offlineError ? "alert" : "status"}>
           <span>{offlineReady ? "✓" : offlineError ? "!" : "◌"}</span>
           <p>{offlineReady ? "Ứng dụng đã lưu phần khung để có thể mở lại khi offline. Hãy tải riêng gói giáo trình để lưu bài học và audio." : offlineError || "Đang chuẩn bị ứng dụng cho chế độ offline…"}</p>
@@ -2011,9 +2256,94 @@ export default function Home() {
     );
   }
 
-  function renderCourses() {
-    const course = coursePacks.find((item) => item.id === selectedCourseId);
-    if (selectedCourseId && !course) {
+  function completeCourseExam(
+    course: CoursePackage,
+    level: CourseLevel,
+    questions: CoursePackage["lessons"][number]["questions"],
+  ) {
+    if (!questions.length || courseExamAnswers.length !== questions.length ||
+        courseExamAnswers.some((answer) => !Number.isInteger(answer) || answer < 0)) return;
+    const score = questions.reduce(
+      (total, question, index) => total + (courseExamAnswers[index] === question.answer ? 1 : 0),
+      0,
+    );
+    const percentage = Math.round((score / questions.length) * 100);
+    setCourseExamSubmitted(true);
+    const updatedResults = {
+      ...courseLevelResults,
+      [course.id]: {
+        ...courseLevelResults[course.id],
+        [level]: Math.max(courseLevelResults[course.id]?.[level] ?? 0, percentage),
+      },
+    };
+    setCourseLevelResults(updatedResults);
+    const levelIndex = COURSE_LEVELS.indexOf(level);
+    const currentLevelIndex = COURSE_LEVELS.findIndex((currentLevel) => currentLevel === progress.level);
+    if (
+      percentage >= 90 &&
+      levelIndex < COURSE_LEVELS.length - 1 &&
+      levelIndex >= currentLevelIndex
+    ) {
+      setProgress((current) => ({ ...current, level: COURSE_LEVELS[levelIndex + 1] }));
+    }
+    setCourseError("");
+    try {
+      localStorage.setItem("lingua-course-level-results", JSON.stringify(updatedResults));
+    } catch {
+      setCourseError("Không thể lưu kết quả kiểm tra level trên thiết bị này.");
+    }
+  }
+
+  function renderLessons() {
+    const course = coursePacks.find((item) => item.id === progress.profile);
+    const selectedCourse = coursePacks.find((item) => item.id === selectedCourseId);
+    if (course && selectedCourse?.id === course.id) return renderCourses();
+    return (
+      <>
+        <div className="page-intro">
+          <span className="eyebrow">LỘ TRÌNH HỌC CỦA BẠN · CEFR {progress.level}</span>
+          <h2>{profile.title}</h2>
+          <p>Chọn cách học phù hợp: theo bài bản offline hoặc luyện giao tiếp cùng gia sư AI online.</p>
+        </div>
+        <div className="learning-path-grid">
+          <section className={`panel learning-path-card${course ? "" : " unavailable"}`}>
+            <span className="learning-path-icon"><IllustrationIcon name="courses" /></span>
+            <span className="eyebrow">HỌC THEO LỘ TRÌNH</span>
+            <h3>Bài học offline</h3>
+            {course ? (
+              <>
+                <p>{course.overview}</p>
+                <p className="learning-path-note">{course.lessons.length} bài · CEFR {course.framework} · Có thể học không cần mạng.</p>
+                <button type="button" className="button button-primary" onClick={() => openDownloadedCourse(course.id)}>Tiếp tục giáo trình <span>→</span></button>
+              </>
+            ) : (
+              <>
+                <p>Giáo trình cho lĩnh vực này chưa có trên thiết bị. Tải gói trong Cài đặt để mở các bài học, bài kiểm tra và lộ trình lên level.</p>
+                <button type="button" className="button button-outline" onClick={() => navigateToSection("settings")}>Vào Cài đặt để tải giáo trình</button>
+              </>
+            )}
+          </section>
+          <section className="panel learning-path-card">
+            <span className="learning-path-icon"><IllustrationIcon name="practice" /></span>
+            <span className="eyebrow">LUYỆN TẬP TRỰC TIẾP</span>
+            <h3>Gia sư AI online</h3>
+            <p>Trò chuyện theo chủ đề <strong>{profile.title}</strong> ở trình độ {progress.level}. AI có thể giải thích câu sai, trả lời thắc mắc và luyện phát âm cùng bạn.</p>
+            {!apiKey && <p className="learning-path-note">Cần kết nối API key trong Cài đặt để bắt đầu.</p>}
+            <button type="button" className="button button-primary" onClick={() => navigateToSection("practice")}>Bắt đầu với gia sư AI <span>→</span></button>
+          </section>
+        </div>
+        {!course && (
+          <p className="course-storage-note" role="status">
+            Chưa có gói giáo trình tải về cho lĩnh vực này. Các file nội dung cần thiết chưa được phát hành cùng ứng dụng; danh sách tải sẽ báo rõ khi gói chưa sẵn sàng.
+          </p>
+        )}
+      </>
+    );
+  }
+
+  function renderCourses(catalogOnly = false) {
+    const course = catalogOnly ? undefined : coursePacks.find((item) => item.id === selectedCourseId);
+    if (selectedCourseId && !course && !catalogOnly) {
       return (
         <section className="panel course-empty-state">
           <h2>Không tìm thấy giáo trình offline</h2>
@@ -2025,43 +2355,100 @@ export default function Home() {
     if (course) {
       const lesson = course.lessons.find((item) => item.id === selectedLessonId) ?? course.lessons[0];
       const completedLessons = courseProgress[course.id] ?? [];
+      const lessonScores = courseLessonScores[course.id] ?? {};
+      const levelResults = courseLevelResults[course.id] ?? {};
+      const startingLevelIndex = COURSE_LEVELS.findIndex((level) => level === progress.level);
+      const firstLevelToAdvance = startingLevelIndex < 0 ? 0 : startingLevelIndex;
+      let highestUnlockedLevelIndex = firstLevelToAdvance;
+      while (
+        highestUnlockedLevelIndex < COURSE_LEVELS.length - 1 &&
+        (levelResults[COURSE_LEVELS[highestUnlockedLevelIndex]] ?? 0) >= 90
+      ) {
+        highestUnlockedLevelIndex += 1;
+      }
       const answeredAll = lesson.questions.every((_, index) => Number.isInteger(courseAnswers[index]));
       const correctCount = lesson.questions.reduce(
         (total, question, index) => total + (courseAnswers[index] === question.answer ? 1 : 0),
         0,
       );
       const passed = correctCount >= Math.ceil(lesson.questions.length * 0.7);
+      const examLessons = courseExamLevel
+        ? course.lessons.filter((item) => item.level === courseExamLevel)
+        : [];
+      const examQuestions = examLessons.flatMap((item) => item.questions);
+      const examAnsweredAll = examQuestions.length > 0 &&
+        examQuestions.every((_, index) => Number.isInteger(courseExamAnswers[index]));
+      const examCorrectCount = examQuestions.reduce(
+        (total, question, index) => total + (courseExamAnswers[index] === question.answer ? 1 : 0),
+        0,
+      );
+      const examPercentage = examQuestions.length
+        ? Math.round((examCorrectCount / examQuestions.length) * 100)
+        : 0;
       const linkedAudio = course.audio.filter((audio) => lesson.audioIds.includes(audio.id));
       return (
         <>
           <div className="page-intro">
-            <button className="text-button" onClick={() => { setSelectedCourseId(""); setSelectedLessonId(""); setOfflineAudioUrl(""); }}>← Tất cả giáo trình</button>
+            <button className="text-button" onClick={() => { setSelectedCourseId(""); setSelectedLessonId(""); setOfflineAudioUrl(""); setCourseExamLevel(null); }}>← Lộ trình học</button>
             <span className="eyebrow">{course.framework} · PHIÊN BẢN {course.version}</span>
             <h2>{course.title}</h2>
             <p>{course.overview}</p>
             <p className="course-license">Giấy phép nội dung: {course.contentLicense}</p>
+            <button type="button" className="button button-outline" onClick={() => navigateToSection("practice")}>Chuyển sang Gia sư AI online</button>
           </div>
           <div className="course-curriculum-layout">
             <section className="panel course-lesson-list">
               <span className="eyebrow">LỘ TRÌNH A1–B2</span>
-              {(["A1", "A2", "B1", "B2"] as const).map((level) => {
+              {COURSE_LEVELS.map((level) => {
                 const levelLessons = course.lessons.filter((item) => item.level === level);
                 if (!levelLessons.length) return null;
+                const levelIndex = COURSE_LEVELS.indexOf(level);
+                const levelUnlocked = levelIndex <= highestUnlockedLevelIndex;
+                const levelComplete = levelLessons.every((item) => completedLessons.includes(item.id));
                 return (
                   <div className="course-level" key={level}>
-                    <strong>{level}</strong>
-                    {levelLessons.map((item) => {
+                    <strong>{level} {levelResults[level] !== undefined && `· Bài kiểm tra: ${levelResults[level]}%`}</strong>
+                    {levelLessons.map((item, lessonIndex) => {
                       const complete = completedLessons.includes(item.id);
+                      const lessonUnlocked = levelUnlocked &&
+                        (lessonIndex === 0 || completedLessons.includes(levelLessons[lessonIndex - 1].id));
                       return (
-                        <button key={item.id} className={item.id === lesson.id ? "course-lesson selected" : "course-lesson"} onClick={() => openCourseLesson(item.id)}>
-                          <span>{complete ? "✓" : "○"}</span><span>{item.title}</span>
+                        <button
+                          key={item.id}
+                          type="button"
+                          className={`course-lesson${item.id === lesson.id ? " selected" : ""}`}
+                          disabled={!lessonUnlocked}
+                          onClick={() => openCourseLesson(item.id)}
+                        >
+                          <span>{complete ? "✓" : "○"}</span>
+                          <span>
+                            {item.title}
+                            {lessonScores[item.id] !== undefined && <small>Điểm cao nhất: {lessonScores[item.id]}%</small>}
+                          </span>
                         </button>
                       );
                     })}
+                    {levelUnlocked && (
+                      <button
+                        type="button"
+                        className="button button-outline course-level-exam"
+                        disabled={!levelComplete}
+                        onClick={() => {
+                          setCourseExamLevel(level);
+                          setCourseExamAnswers([]);
+                          setCourseExamSubmitted(false);
+                          setCourseAnswers([]);
+                          setCourseQuizSubmitted(false);
+                        }}
+                      >
+                        {levelResults[level] !== undefined ? `Làm lại kiểm tra ${level}` : `Kiểm tra cuối ${level}`}
+                      </button>
+                    )}
                   </div>
                 );
               })}
               <p className="course-progress-note">{completedLessons.length}/{course.lessons.length} bài đạt yêu cầu</p>
+              <p className="course-progress-note">Đạt 70% mỗi bài để hoàn tất; đạt 90% bài kiểm tra cuối level để mở level tiếp theo.</p>
               <div className="course-references">
                 <strong>Nguồn và giấy phép</strong>
                 {course.references.map((reference) => (
@@ -2070,6 +2457,69 @@ export default function Home() {
               </div>
             </section>
             <section className="panel course-lesson">
+              {courseExamLevel ? (
+                <div className="course-final-exam">
+                  <span className="level-chip">{courseExamLevel}</span>
+                  <span className="eyebrow">KIỂM TRA CUỐI LEVEL</span>
+                  <h3>Đạt ít nhất 90% để mở level kế tiếp</h3>
+                  <p className="course-objective">Bài kiểm tra tổng hợp câu hỏi của các bài thuộc level {courseExamLevel}.</p>
+                  {examQuestions.map((question, questionIndex) => (
+                    <fieldset className="question-card" key={`${courseExamLevel}-exam-${questionIndex}`}>
+                      <legend>{questionIndex + 1}. {question.prompt}</legend>
+                      <div className="answer-options">
+                        {question.options.map((option, optionIndex) => {
+                          const selected = courseExamAnswers[questionIndex] === optionIndex;
+                          const correct = courseExamSubmitted && question.answer === optionIndex;
+                          const incorrect = courseExamSubmitted && selected && !correct;
+                          return (
+                            <button
+                              type="button"
+                              key={option}
+                              className={`answer-option${selected ? " selected" : ""}${correct ? " correct" : ""}${incorrect ? " incorrect" : ""}`}
+                              onClick={() => {
+                                if (courseExamSubmitted) return;
+                                setCourseExamAnswers((answers) => {
+                                  const updated = [...answers];
+                                  updated[questionIndex] = optionIndex;
+                                  return updated;
+                                });
+                              }}
+                            >
+                              <span>{String.fromCharCode(65 + optionIndex)}</span>{option}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {courseExamSubmitted && <p className="grammar-explanation">{question.explanation}</p>}
+                    </fieldset>
+                  ))}
+                  {courseExamSubmitted ? (
+                    <div className="placement-result" role="status">
+                      Kết quả: {examCorrectCount}/{examQuestions.length} ({examPercentage}%).
+                      {examPercentage >= 90
+                        ? " Đã đạt yêu cầu; level tiếp theo đã được mở."
+                        : " Cần đạt ít nhất 90%. Hãy ôn lại bài rồi thử lại."}
+                      <button
+                        type="button"
+                        className="button button-outline"
+                        onClick={() => { setCourseExamAnswers([]); setCourseExamSubmitted(false); }}
+                      >
+                        Làm lại kiểm tra
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="button button-primary"
+                      disabled={!examAnsweredAll}
+                      onClick={() => completeCourseExam(course, courseExamLevel, examQuestions)}
+                    >
+                      Nộp bài kiểm tra
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <>
               <span className="level-chip">{lesson.level}</span>
               <span className="eyebrow">{lesson.unit}</span>
               <h3>{lesson.title}</h3>
@@ -2122,11 +2572,13 @@ export default function Home() {
                 ))}
                 {courseQuizSubmitted
                   ? <div className="placement-result" role="status">
-                      Score: {correctCount}/{lesson.questions.length}. {passed ? "Lesson completed." : "You need 70% to complete this lesson. Review the explanations and try again."}
+                      Kết quả: {correctCount}/{lesson.questions.length} ({Math.round((correctCount / lesson.questions.length) * 100)}%). {passed ? "Đã hoàn thành bài học." : "Cần đạt ít nhất 70% để hoàn thành bài. Hãy xem lại giải thích rồi thử lại."}
                       {!passed && <button className="button button-outline" onClick={() => { setCourseAnswers([]); setCourseQuizSubmitted(false); }}>Làm lại bài <span>↻</span></button>}
                     </div>
                   : <button className="button button-primary" disabled={!answeredAll} onClick={() => completeCourseQuiz(course, lesson.id, lesson.questions)}>Chấm bài <span>→</span></button>}
               </div>
+                </>
+              )}
             </section>
           </div>
           {courseError && <p className="error-message" role="alert">{courseError}</p>}
@@ -2139,7 +2591,7 @@ export default function Home() {
         <div className="page-intro">
           <span className="eyebrow">GIÁO TRÌNH TẢI THEO LĨNH VỰC</span>
           <h2>Chọn giáo trình muốn tải về thiết bị.</h2>
-          <p>Mỗi giáo trình được thiết kế theo CEFR A1–B2, gồm bài học, câu hỏi luyện tập và audio nghe. Giáo trình đã tải có thể dùng offline; hội thoại AI và chấm phát âm cần Internet.</p>
+          <p>Mỗi giáo trình gồm bài học, câu hỏi và audio nghe. Tải xuống cần kết nối Internet; nội dung đã tải có thể học offline.</p>
         </div>
         <div className="offline-status" role={offlineError ? "alert" : "status"}>
           <span>{offlineReady ? "✓" : offlineError ? "!" : "◌"}</span>
@@ -2259,23 +2711,30 @@ export default function Home() {
 
   const nav: { id: Section; icon: IllustrationName; label: string }[] = [
     { id: "home", icon: "home", label: "Trang chủ" },
-    { id: "practice", icon: "practice", label: "Luyện tập" },
+    { id: "lessons", icon: "courses", label: "Bài học" },
+    { id: "practice", icon: "practice", label: "Gia sư AI" },
     { id: "profiles", icon: "profiles", label: "Lĩnh vực" },
-    { id: "courses", icon: "courses", label: "Giáo trình học" },
     { id: "progress", icon: "progress", label: "Tiến độ" },
     { id: "settings", icon: "settings", label: "Cài đặt" },
   ];
   const sectionLabels: Record<Section, string> = {
     home: "Trang chủ",
-    practice: "Luyện tập",
+    lessons: "Bài học offline",
+    practice: "Gia sư AI online",
     profiles: "Lĩnh vực",
     progress: "Tiến độ",
     placement: "Kiểm tra trình độ",
     grammar: "Ngữ pháp",
-    courses: "Giáo trình học",
     library: "Tài liệu cá nhân",
     settings: "Cài đặt",
   };
+  const helpContent: HelpContent = section === "grammar" && grammarTopicId
+    ? {
+      title: "Bài học ngữ pháp",
+      description: "Bài học này giải thích cấu trúc đã chọn, đưa ví dụ rồi giúp bạn kiểm tra mức độ hiểu.",
+      steps: ["Đọc phần giải thích và ví dụ; bấm “Nghe” để luyện nghe câu mẫu.", "Chọn đáp án cho các câu hỏi rồi nhấn “Chấm bài”.", "Đọc phần giải thích sau khi chấm và chọn “Làm lại bài tập” để luyện thêm."],
+    }
+      : PAGE_HELP[section];
   const canGoBack = sectionHistoryRef.current.length > 0 || (section === "grammar" && grammarTopicId !== null);
 
   return (
@@ -2284,8 +2743,26 @@ export default function Home() {
         <IllustrationIcon name="back" />
         <span>Quay lại</span>
       </button>}
+      {showHelp && (
+        <div className="help-dialog-backdrop" onClick={() => setShowHelp(false)}>
+          <section
+            className="help-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="page-help-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button type="button" className="help-dialog-close" aria-label="Đóng hướng dẫn" onClick={() => setShowHelp(false)}>×</button>
+            <span className="eyebrow">HƯỚNG DẪN SỬ DỤNG</span>
+            <h2 id="page-help-title">{helpContent.title}</h2>
+            <p>{helpContent.description}</p>
+            <ol>{helpContent.steps.map((step) => <li key={step}>{step}</li>)}</ol>
+            <button type="button" className="button button-primary" onClick={() => setShowHelp(false)}>Đã hiểu</button>
+          </section>
+        </div>
+      )}
       <aside className="sidebar">
-        <a className="brand" href="#" onClick={(event) => { event.preventDefault(); navigateToSection("home"); }}><span className="brand-mark">L<span>✦</span></span><span>lingua<span className="brand-period">.</span><small>GIA SƯ TIẾNG ANH AI CỦA BẠN</small></span></a>
+        <a className="brand" href="#" onClick={(event) => { event.preventDefault(); navigateToSection("home"); }}><span className="brand-mark">T<span>✦</span></span><span>Teacher AI<small>GIA SƯ TIẾNG ANH AI CỦA BẠN</small></span></a>
         <div className="side-label">HỌC TẬP</div>
         <nav>{nav.map((item) => <button key={item.id} className={section === item.id ? "nav-item selected" : "nav-item"} onClick={() => navigateToSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span>{item.label}{item.id === "practice" && <i className="nav-live" />}</button>)}</nav>
         <div className="sidebar-spacer" />
@@ -2298,6 +2775,7 @@ export default function Home() {
           <div className="topbar-actions">
             <span className="level-chip desktop-level">TRÌNH ĐỘ {progress.level}</span>
             <span className="topbar-version" aria-label={`Phiên bản ${APP_VERSION}`}>v{APP_VERSION}</span>
+            <button type="button" className="help-button" aria-label={`Hướng dẫn: ${sectionLabels[section]}`} title="Hướng dẫn trang này" onClick={() => setShowHelp(true)}>?</button>
             <button className={apiKey ? "ai-settings-button connected" : "ai-settings-button"} aria-label="Mở cài đặt chung" onClick={() => navigateToSection("settings")}>
               <span className="ai-key-icon"><IllustrationIcon name="settings" /></span><span>{apiKey ? "Cài đặt" : "Thiết lập AI"}</span>
             </button>
@@ -2310,17 +2788,23 @@ export default function Home() {
               <button type="button" className="button button-primary" onClick={() => window.location.reload()}>Cập nhật ngay</button>
             </aside>
           )}
+          {versionCheckStatus === "error" && (
+            <aside className="update-available-banner" role="alert">
+              <span>{versionCheckError}</span>
+              <button type="button" className="button button-outline" onClick={() => setVersionCheckAttempt((attempt) => attempt + 1)}>Kiểm tra lại</button>
+            </aside>
+          )}
           {progressLoaded && !apiKey && section !== "settings" && <section className="api-reminder"><span className="reminder-key-icon"><IllustrationIcon name="key" /></span><div><strong>Kết nối AI để bắt đầu học cùng Maya</strong><p>Thêm API key Google AI hoặc OpenAI trong Cài đặt. Key chỉ lưu trên thiết bị này.</p></div><button onClick={() => navigateToSection("settings")}>Thiết lập AI</button></section>}
           {speechBusy && <p className="speech-status" role="status">Đang tạo giọng đọc AI…</p>}
           {speechError && <p className="error-message speech-status" role="alert">{speechError}</p>}
           {speechNotice && <p className="speech-notice" role="status">{speechNotice}</p>}
           {section === "home" && renderHome()}
-          {section === "practice" && <><div className="section-heading practice-heading"><div><span className="eyebrow">NÓI, HỌC VÀ TIẾN BỘ</span><h2>Cùng nhau luyện tập nhé</h2></div><button className="text-button" onClick={() => navigateToSection("profiles")}>Đổi lĩnh vực ↗</button></div>{renderPractice()}</>}
+          {section === "lessons" && renderLessons()}
+          {section === "practice" && <><div className="section-heading practice-heading"><div><span className="eyebrow">GIA SƯ AI · HỌC ONLINE</span><h2>Trò chuyện cùng Cô Maya</h2></div><button className="text-button" onClick={() => navigateToSection("profiles")}>Đổi lĩnh vực ↗</button></div>{renderPractice()}</>}
           {section === "placement" && renderPlacement()}
           {section === "profiles" && renderProfiles()}
           {section === "progress" && renderProgress()}
           {section === "grammar" && renderGrammar()}
-          {section === "courses" && renderCourses()}
           {section === "library" && renderPersonalLibrary()}
           {section === "settings" && renderSettings()}
         </div>

@@ -24,7 +24,7 @@ function openDatabase(): Promise<IDBDatabase> {
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error ?? new Error("Không thể mở thư viện tài liệu trên thiết bị."));
-    request.onblocked = () => reject(new Error("Hãy đóng các thẻ Lingua khác rồi thử lại."));
+    request.onblocked = () => reject(new Error("Hãy đóng các thẻ Teacher AI khác rồi thử lại."));
   });
 }
 

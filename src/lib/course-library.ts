@@ -63,7 +63,7 @@ function openCourseDatabase(): Promise<IDBDatabase> {
     };
     request.onsuccess = () => resolve(request.result);
     request.onerror = () => reject(request.error ?? new Error("Unable to open offline course storage."));
-    request.onblocked = () => reject(new Error("Close other Lingua tabs to update offline course storage."));
+    request.onblocked = () => reject(new Error("Close other Teacher AI tabs to update offline course storage."));
   });
 }
 
