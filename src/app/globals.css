@@ -542,3 +542,77 @@ button:focus-visible, input:focus-visible { outline-color: #43c59c; }
   .personal-material-card .button { padding: 0 8px; }
   .personal-library-panel, .personal-material-viewer { padding: 11px; }
 }
+
+.illustration-icon { display: block; width: 100%; height: 100%; overflow: visible; }
+.profile-icon, .lesson-icon, .personal-material-icon, .nav-icon, .stat-icon, .streak-emoji,
+.sidebar-streak-icon, .ai-key-icon, .reminder-key-icon, .api-key-icon, .profile-menu-icon,
+.library-empty-icon, .placement-icon, .art-sparkles {
+  display: grid;
+  place-items: center;
+}
+.profile-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 11px;
+  overflow: visible;
+  border: 1px solid #fff;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #fff, #f2faf6);
+  box-shadow: 0 4px 0 #d9ebe2, 0 7px 12px #376d5116;
+}
+.profile-icon .illustration-icon { width: 44px; height: 44px; }
+.profile-icon.tiny { flex: 0 0 30px; width: 30px; height: 30px; margin: 0; border-radius: 9px; box-shadow: none; }
+.profile-icon.tiny .illustration-icon { width: 28px; height: 28px; }
+.large-profile .profile-icon { width: 52px; height: 52px; }
+.large-profile .profile-icon .illustration-icon { width: 48px; height: 48px; }
+.lesson-icon { width: 46px; height: 46px; overflow: visible; border: 1px solid #fff; border-radius: 13px; background: #fff; box-shadow: 0 3px 0 #dceee5; }
+.lesson-icon .illustration-icon { width: 44px; height: 44px; }
+.nav-icon { flex: 0 0 28px; width: 28px; height: 28px; }
+.nav-icon .illustration-icon { width: 28px; height: 28px; }
+.nav-item > .nav-icon { text-align: initial; }
+.mobile-nav-item > .nav-icon { font-size: initial; }
+.stat-icon { width: 34px; height: 34px; overflow: visible; border-radius: 11px; background: #fff; box-shadow: 0 2px 0 #e2eee8; }
+.stat-icon .illustration-icon { width: 32px; height: 32px; }
+.scene-art > .illustration-icon { z-index: 1; width: 75px; height: 75px; filter: drop-shadow(0 8px 6px #164d3229); }
+.scene-art i { color: #5cbd91; opacity: .2; }
+.streak-emoji { width: 46px; height: 46px; }
+.streak-emoji .illustration-icon, .sidebar-streak-icon .illustration-icon { width: 40px; height: 40px; }
+.sidebar-streak-icon { flex: 0 0 34px; width: 34px; height: 36px; }
+.sidebar-streak-icon .illustration-icon { width: 34px; height: 34px; }
+.nav-item.selected .nav-icon { filter: drop-shadow(0 2px 4px #13815b40); }
+.mobile-nav-item.selected .nav-icon { transform: translateY(-1px); }
+.ai-key-icon { flex: 0 0 20px; width: 20px; height: 20px; }
+.ai-key-icon .illustration-icon { width: 24px; height: 24px; }
+.reminder-key-icon { flex: 0 0 34px; width: 34px; height: 34px; }
+.reminder-key-icon .illustration-icon { width: 36px; height: 36px; }
+.api-key-icon { width: 54px; height: 54px; overflow: visible; border-radius: 16px; background: linear-gradient(145deg, #fff8dd, #e6faed); box-shadow: 0 4px 0 #d8eddf; }
+.api-key-icon .illustration-icon { width: 48px; height: 48px; }
+.profile-menu-icon { flex: 0 0 30px; width: 30px; height: 30px; overflow: visible; border-radius: 9px; background: #fff; box-shadow: 0 2px 0 #dbece3; }
+.profile-menu-icon .illustration-icon { width: 28px; height: 28px; }
+.personal-material-icon { overflow: visible; border: 1px solid #fff; background: #f4fbf7; box-shadow: 0 2px 0 #dcece4; }
+.personal-material-icon .illustration-icon { width: 36px; height: 36px; }
+.personal-library-empty .library-empty-icon { width: 64px; height: 64px; border-radius: 19px; background: linear-gradient(145deg, #fff, #e9f8ef); box-shadow: 0 5px 0 #dceee4, 0 9px 18px #36754e18; }
+.personal-library-empty .illustration-icon { width: 54px; height: 54px; }
+.placement-icon { flex: 0 0 44px; width: 44px; height: 44px; }
+.placement-icon .illustration-icon { width: 44px; height: 44px; }
+.art-sparkles { grid-row: span 2; width: 34px; height: 34px; }
+.art-sparkles .illustration-icon { width: 34px; height: 34px; }
+.art-star { width: 30px; height: 30px; }
+.art-star .illustration-icon { width: 100%; height: 100%; }
+.star-two { width: 38px; height: 38px; }
+.speak-button { display: inline-flex; align-items: center; gap: 5px; }
+.speak-button .illustration-icon { width: 17px; height: 17px; }
+.mic-button .illustration-icon { width: 26px; height: 26px; }
+.button-recording .illustration-icon, .scene-panel .button-outline .illustration-icon { width: 21px; height: 21px; }
+.api-reminder .reminder-key-icon .illustration-icon { width: 36px; height: 36px; }
+
+@media (max-width: 760px) {
+  .profile-icon { width: 42px; height: 42px; }
+  .profile-icon .illustration-icon { width: 39px; height: 39px; }
+  .large-profile .profile-icon { width: 45px; height: 45px; }
+  .large-profile .profile-icon .illustration-icon { width: 42px; height: 42px; }
+  .nav-icon, .nav-icon .illustration-icon { width: 26px; height: 26px; }
+  .mobile-nav-item .nav-icon { width: 29px; height: 29px; }
+  .mobile-nav-item .nav-icon .illustration-icon { width: 29px; height: 29px; }
+  .scene-art > .illustration-icon { width: 68px; height: 68px; }
+}

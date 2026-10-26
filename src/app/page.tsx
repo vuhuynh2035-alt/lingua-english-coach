@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { generateWithGemini, getAudioData, validateGeminiKey } from "@/lib/gemini";
 import { grammarTopics } from "@/lib/grammar";
+import { IllustrationIcon, IllustrationName } from "@/components/illustration-icon";
 import {
   CoursePackage,
   StoredCourse,
@@ -26,7 +27,7 @@ type Profile = {
   id: string;
   title: string;
   subtitle: string;
-  icon: string;
+  icon: IllustrationName;
   color: string;
   scene: string;
   prompt: string;
@@ -67,7 +68,7 @@ const profiles: Profile[] = [
     id: "business",
     title: "Tiếng Anh công sở",
     subtitle: "Họp hành, email và đàm phán",
-    icon: "💼",
+    icon: "business",
     color: "blue",
     scene: "Cuộc họp dự án",
     prompt: "Hello! I’ll be your colleague in a project meeting. Let’s practice in English. Start by completing: “Our team is working on...” What is your team working on this week?",
@@ -77,7 +78,7 @@ const profiles: Profile[] = [
     id: "travel",
     title: "Tiếng Anh du lịch",
     subtitle: "Tự tin giao tiếp khi đi du lịch",
-    icon: "✈️",
+    icon: "travel",
     color: "orange",
     scene: "Làm thủ tục nhận phòng",
     prompt: "Welcome! I’m the receptionist at your hotel. Let’s practice checking in. Do you have a reservation?",
@@ -87,7 +88,7 @@ const profiles: Profile[] = [
     id: "technology",
     title: "Tiếng Anh ngành công nghệ",
     subtitle: "Làm việc nhóm, thuyết trình và phỏng vấn",
-    icon: "💻",
+    icon: "technology",
     color: "purple",
     scene: "Phỏng vấn vị trí lập trình viên",
     prompt: "Hello! I’m interviewing you for a technology role. Tell me about a technical problem you solved. You can begin: “I solved a problem with...”",
@@ -97,7 +98,7 @@ const profiles: Profile[] = [
     id: "healthcare",
     title: "Tiếng Anh chuyên ngành y khoa",
     subtitle: "Giao tiếp lâm sàng và chăm sóc bệnh nhân",
-    icon: "🩺",
+    icon: "healthcare",
     color: "green",
     scene: "Hỏi thăm bệnh nhân",
     prompt: "Hello. I’m a patient at the clinic. Please ask me in English: “What brings you in today?” Then ask one clear follow-up question about my symptoms.",
@@ -107,7 +108,7 @@ const profiles: Profile[] = [
     id: "finance",
     title: "Tiếng Anh ngành tài chính",
     subtitle: "Báo cáo, khách hàng và ngân hàng",
-    icon: "📈",
+    icon: "finance",
     color: "pink",
     scene: "Trình bày báo cáo tháng",
     prompt: "Let’s practice presenting a financial report in English. Begin with: “Revenue increased by...” What changed in your figures this month?",
@@ -117,7 +118,7 @@ const profiles: Profile[] = [
     id: "everyday",
     title: "Tiếng Anh giao tiếp hằng ngày",
     subtitle: "Trò chuyện tự nhiên và tự tin",
-    icon: "☕",
+    icon: "everyday",
     color: "yellow",
     scene: "Làm quen với người mới",
     prompt: "Hi! It’s nice to meet you. What do you like to do in your free time? You can begin: “I like...”",
@@ -127,7 +128,7 @@ const profiles: Profile[] = [
     id: "refrigeration",
     title: "Tiếng Anh kỹ thuật lạnh",
     subtitle: "Thiết bị lạnh, bảo trì và an toàn",
-    icon: "❄️",
+    icon: "refrigeration",
     color: "blue",
     scene: "Bàn giao thiết bị lạnh",
     prompt: "Hello! I’m a customer reporting an issue with a refrigeration unit. Ask me about the equipment, the symptoms, and when the problem started. Use clear technical English.",
@@ -912,7 +913,7 @@ export default function Home() {
       <div className="practice-layout">
         <section className="panel scene-panel">
           <span className="eyebrow">TÌNH HUỐNG HÔM NAY</span>
-          <div className={`scene-art ${profile.color}`}><span>{profile.icon}</span><i>✦</i></div>
+          <div className={`scene-art ${profile.color}`}><IllustrationIcon name={profile.icon} /><i>✦</i></div>
           <h2>{profile.scene}</h2>
           <p>Luyện giao tiếp với Maya qua những tình huống thực tế. Cứ mạnh dạn thử, mắc lỗi cũng không sao — mình sẽ cùng bạn tiến bộ.</p>
           <div className="phrase-box">
@@ -921,9 +922,9 @@ export default function Home() {
             <span className="phrase-translation">{phraseMeanings[profile.words[0]]}</span>
           </div>
           <button className="button button-outline full-button" onClick={startPronunciationRecording} disabled={recording || pronunciationBusy}>
-            {pronunciationBusy ? "Đang nghe và đánh giá…" : "🎙 Luyện phát âm"}
+            {pronunciationBusy ? "Đang nghe và đánh giá…" : <><IllustrationIcon name="microphone" /> Luyện phát âm</>}
           </button>
-          {recording && <button className="button button-recording full-button" onClick={stopPronunciationRecording}>⏹ Dừng ghi âm</button>}
+          {recording && <button className="button button-recording full-button" onClick={stopPronunciationRecording}><IllustrationIcon name="stop" /> Dừng ghi âm</button>}
           <p className="small-note">{recording ? "Đang ghi âm… hãy nói rõ câu gợi ý, rồi nhấn dừng để nhận góp ý." : "Ghi âm câu nói để gia sư AI nghe và góp ý."}</p>
           {pronunciation && (
             <div className="pronunciation-result">
@@ -954,7 +955,7 @@ export default function Home() {
                 <div className="message-bubble">
                   <span className="speaker-label">{message.role === "assistant" ? "MAYA · GIA SƯ" : "BẠN"}</span>
                   <p>{message.content}</p>
-                  {message.role === "assistant" && <button aria-label="Nghe câu trả lời" className="speak-button" onClick={() => window.speechSynthesis?.speak(new SpeechSynthesisUtterance(message.content))}>🔊 Nghe câu trả lời</button>}
+                  {message.role === "assistant" && <button aria-label="Nghe câu trả lời" className="speak-button" onClick={() => window.speechSynthesis?.speak(new SpeechSynthesisUtterance(message.content))}><IllustrationIcon name="speaker" /> Nghe câu trả lời</button>}
                 </div>
               </div>
             ))}
@@ -963,11 +964,11 @@ export default function Home() {
           {chatError && <p className="error-message chat-error">{chatError}</p>}
           <form className="composer" onSubmit={sendMessage}>
             <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Nhập câu trả lời bằng tiếng Anh…" aria-label="Câu trả lời của bạn" />
-            <button type="button" className={voiceChatRecording ? "mic-button recording" : "mic-button"} aria-label={voiceChatRecording ? "Dừng ghi âm" : "Trả lời bằng giọng nói"} onClick={voiceChatRecording ? stopVoiceChatRecording : startVoiceInput} disabled={chatBusy}>{voiceChatRecording ? "⏹" : "🎤"}</button>
+            <button type="button" className={voiceChatRecording ? "mic-button recording" : "mic-button"} aria-label={voiceChatRecording ? "Dừng ghi âm" : "Trả lời bằng giọng nói"} onClick={voiceChatRecording ? stopVoiceChatRecording : startVoiceInput} disabled={chatBusy}><IllustrationIcon name={voiceChatRecording ? "stop" : "microphone"} /></button>
             <button type="submit" className="send-button" disabled={chatBusy || !draft.trim()}>Gửi <span>↑</span></button>
           </form>
           {voiceError && !recording && <p className="error-message voice-inline">{voiceError}</p>}
-          <p className="chat-footnote">{voiceChatRecording ? "Đang ghi âm… nhấn ⏹ khi bạn nói xong." : "Cứ tự nhiên nhé — đây là nơi an toàn để bạn luyện tập ✨"}</p>
+          <p className="chat-footnote">{voiceChatRecording ? "Đang ghi âm… nhấn nút dừng khi bạn nói xong." : "Cứ tự nhiên nhé — đây là nơi an toàn để bạn luyện tập."}</p>
         </section>
       </div>
     );
@@ -1084,8 +1085,8 @@ export default function Home() {
           </div>
           <div className="hero-art" aria-hidden="true">
             <div className="art-sun" /><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" />
-            <div className="art-card"><span>✨</span><strong>Bạn đang<br />tiến bộ!</strong><small>Từng cuộc trò chuyện một</small></div>
-            <div className="art-star star-one">✦</div><div className="art-star star-two">✧</div>
+            <div className="art-card"><span className="art-sparkles"><IllustrationIcon name="sparkles" /></span><strong>Bạn đang<br />tiến bộ!</strong><small>Từng cuộc trò chuyện một</small></div>
+            <div className="art-star star-one"><IllustrationIcon name="sparkles" /></div><div className="art-star star-two"><IllustrationIcon name="sparkles" /></div>
           </div>
         </section>
 
@@ -1096,7 +1097,7 @@ export default function Home() {
         <div className="profile-grid">
           {profiles.slice(0, 4).map((item) => (
             <button className={`profile-card ${item.id === progress.profile ? "active-profile" : ""}`} key={item.id} onClick={() => selectProfile(item.id)}>
-              <span className={`profile-icon ${item.color}`}>{item.icon}</span>
+              <span className={`profile-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>
               <strong>{item.title}</strong><span>{item.subtitle}</span>
               {item.id === progress.profile && <i>ĐANG CHỌN</i>}
             </button>
@@ -1107,20 +1108,20 @@ export default function Home() {
           <section className="panel progress-panel">
             <div className="panel-title"><div><span className="eyebrow">TUẦN NÀY</span><h3>Tiến độ học tập</h3></div><span className="progress-decoration">↗</span></div>
             <div className="stats-grid">
-              <div><span className="stat-icon lavender">◷</span><strong>{progress.minutes}<small> phút</small></strong><span>Thời gian luyện tập</span></div>
-              <div><span className="stat-icon peach">✦</span><strong>{progress.sessions}</strong><span>Buổi học</span></div>
-              <div><span className="stat-icon mint">↗</span><strong>{progress.level}</strong><span>Trình độ ước tính</span></div>
+              <div><span className="stat-icon lavender"><IllustrationIcon name="timer" /></span><strong>{progress.minutes}<small> phút</small></strong><span>Thời gian luyện tập</span></div>
+              <div><span className="stat-icon peach"><IllustrationIcon name="sessions" /></span><strong>{progress.sessions}</strong><span>Buổi học</span></div>
+              <div><span className="stat-icon mint"><IllustrationIcon name="level" /></span><strong>{progress.level}</strong><span>Trình độ ước tính</span></div>
             </div>
             <div className="week-bars" aria-label="Thời gian luyện tập trong tuần">{weekDays.map((day) => <div key={day.key} title={`${day.minutes} phút luyện tập`}><span style={{ height: `${day.minutes ? Math.max(12, day.minutes / maxDailyMinutes * 100) : 5}%` }} className={day.key === todayKey() ? "today-bar" : ""} /><small>{day.label}</small></div>)}</div>
           </section>
           <section className="panel next-panel">
             <span className="eyebrow">GỢI Ý TIẾP THEO</span>
-            <div className="next-lesson"><span className={`lesson-icon ${profile.color}`}>{profile.icon}</span><div><strong>{profile.scene}</strong><span>5 phút · Luyện giao tiếp</span></div></div>
+            <div className="next-lesson"><span className={`lesson-icon ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><div><strong>{profile.scene}</strong><span>5 phút · Luyện giao tiếp</span></div></div>
             <p>Luyện những câu giao tiếp thực tế theo lĩnh vực bạn đã chọn.</p>
             <button className="button button-primary full-button" onClick={() => setSection("practice")}>Tiếp tục học <span>→</span></button>
           </section>
         </div>
-        <section className="placement-banner"><span>🧭</span><div><strong>Bạn mới bắt đầu học?</strong><p>Làm bài kiểm tra ngắn để Maya điều chỉnh bài học theo trình độ của bạn.</p></div><button onClick={() => { setPlacementAnswers([]); setPlacementResult(""); setSection("placement"); }}>Kiểm tra trình độ <span>→</span></button></section>
+        <section className="placement-banner"><span className="placement-icon"><IllustrationIcon name="compass" /></span><div><strong>Bạn mới bắt đầu học?</strong><p>Làm bài kiểm tra ngắn để Maya điều chỉnh bài học theo trình độ của bạn.</p></div><button onClick={() => { setPlacementAnswers([]); setPlacementResult(""); setSection("placement"); }}>Kiểm tra trình độ <span>→</span></button></section>
       </>
     );
   }
@@ -1135,7 +1136,7 @@ export default function Home() {
         </div>
         <div className="all-profiles-grid">{profiles.map((item) => (
           <button key={item.id} className={`profile-card large-profile ${item.id === progress.profile ? "active-profile" : ""}`} onClick={() => selectProfile(item.id)}>
-            <span className={`profile-icon ${item.color}`}>{item.icon}</span><strong>{item.title}</strong><span>{item.subtitle}</span>
+            <span className={`profile-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span><strong>{item.title}</strong><span>{item.subtitle}</span>
             <div className="profile-preview"><span>Tình huống luyện tập</span><strong>{item.scene}</strong></div>
             <i>{item.id === progress.profile ? "ĐANG CHỌN" : "CHỌN LỘ TRÌNH NÀY →"}</i>
           </button>
@@ -1286,7 +1287,7 @@ export default function Home() {
             const busy = courseBusyId === item.id;
             return (
               <section className="panel course-catalog-card" key={item.id}>
-                <span className={`profile-icon ${item.color}`}>{item.icon}</span>
+                <span className={`profile-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>
                 <div className="course-catalog-copy">
                   <strong>{item.title}</strong>
                   <span>{item.subtitle}</span>
@@ -1335,11 +1336,11 @@ export default function Home() {
           </div>
           {materialError && <p className="error-message" role="alert">{materialError}</p>}
           {personalMaterials.length === 0
-            ? <div className="personal-library-empty"><span>📚</span><strong>Thư viện chưa có tài liệu</strong><p>Thêm một PDF, bài nghe hoặc ghi chú để học trên thiết bị này.</p></div>
+            ? <div className="personal-library-empty"><span className="library-empty-icon"><IllustrationIcon name="books" /></span><strong>Thư viện chưa có tài liệu</strong><p>Thêm một PDF, bài nghe hoặc ghi chú để học trên thiết bị này.</p></div>
             : <div className="personal-material-list">
                 {personalMaterials.map((material) => (
                   <article className={`personal-material-card${selectedMaterial?.id === material.id ? " selected" : ""}`} key={material.id}>
-                    <span className="personal-material-icon">{material.type === "pdf" ? "PDF" : material.type === "audio" ? "♫" : "TXT"}</span>
+                    <span className="personal-material-icon"><IllustrationIcon name={material.type === "pdf" ? "pdf" : material.type === "audio" ? "audio" : "text"} /></span>
                     <div className="personal-material-info">
                       <strong title={material.name}>{material.name}</strong>
                       <span>{(material.size / (1024 * 1024)).toFixed(material.size < 1024 * 1024 ? 3 : 1)} MB · {new Date(material.addedAt).toLocaleDateString("vi-VN")}</span>
@@ -1372,25 +1373,25 @@ export default function Home() {
         <div className="page-intro"><span className="eyebrow">NHÌN LẠI HÀNH TRÌNH CỦA BẠN</span><h2>Tiến bộ, không cần hoàn hảo.</h2><p>Mỗi cuộc trò chuyện giúp bạn thêm tự tin một chút.</p></div>
         <div className="progress-overview">
           <section className="panel progress-panel"><span className="eyebrow">THỐNG KÊ HỌC TẬP</span><div className="stats-grid">
-            <div><span className="stat-icon lavender">◷</span><strong>{progress.minutes}<small> phút</small></strong><span>Thời gian luyện tập</span></div>
-            <div><span className="stat-icon peach">✦</span><strong>{progress.sessions}</strong><span>Buổi học</span></div>
-            <div><span className="stat-icon mint">↗</span><strong>{progress.level}</strong><span>Trình độ hiện tại</span></div>
+            <div><span className="stat-icon lavender"><IllustrationIcon name="timer" /></span><strong>{progress.minutes}<small> phút</small></strong><span>Thời gian luyện tập</span></div>
+            <div><span className="stat-icon peach"><IllustrationIcon name="sessions" /></span><strong>{progress.sessions}</strong><span>Buổi học</span></div>
+            <div><span className="stat-icon mint"><IllustrationIcon name="level" /></span><strong>{progress.level}</strong><span>Trình độ hiện tại</span></div>
           </div></section>
-          <section className="panel streak-panel"><span className="streak-emoji">🔥</span><strong>{progress.streak} ngày liên tục</strong><p>Bạn đang tạo một thói quen tuyệt vời. Mỗi ngày luyện một chút sẽ tạo nên khác biệt.</p><button className="text-button" onClick={() => setSection("practice")}>Luyện tập hôm nay →</button></section>
+          <section className="panel streak-panel"><span className="streak-emoji"><IllustrationIcon name="streak" /></span><strong>{progress.streak} ngày liên tục</strong><p>Bạn đang tạo một thói quen tuyệt vời. Mỗi ngày luyện một chút sẽ tạo nên khác biệt.</p><button className="text-button" onClick={() => setSection("practice")}>Luyện tập hôm nay →</button></section>
         </div>
         <section className="panel milestone-panel"><span className="eyebrow">BƯỚC TIẾN TIẾP THEO</span><h3>Bạn đã sẵn sàng cho cuộc trò chuyện tiếp theo</h3><p>Hoàn thành một tình huống giao tiếp để duy trì thói quen và tăng sự tự tin.</p><button className="button button-primary" onClick={() => setSection("practice")}>Bắt đầu trò chuyện →</button></section>
       </>
     );
   }
 
-  const nav: { id: Section; icon: string; label: string }[] = [
-    { id: "home", icon: "⌂", label: "Trang chủ" },
-    { id: "practice", icon: "◉", label: "Luyện tập" },
-    { id: "profiles", icon: "✧", label: "Lộ trình" },
-    { id: "courses", icon: "▣", label: "Giáo trình" },
-    { id: "library", icon: "▤", label: "Tài liệu" },
-    { id: "grammar", icon: "Aa", label: "Ngữ pháp" },
-    { id: "progress", icon: "↗", label: "Tiến độ" },
+  const nav: { id: Section; icon: IllustrationName; label: string }[] = [
+    { id: "home", icon: "home", label: "Trang chủ" },
+    { id: "practice", icon: "practice", label: "Luyện tập" },
+    { id: "profiles", icon: "profiles", label: "Lộ trình" },
+    { id: "courses", icon: "courses", label: "Giáo trình" },
+    { id: "library", icon: "library", label: "Tài liệu" },
+    { id: "grammar", icon: "grammar", label: "Ngữ pháp" },
+    { id: "progress", icon: "progress", label: "Tiến độ" },
   ];
 
   return (
@@ -1398,9 +1399,9 @@ export default function Home() {
       <aside className="sidebar">
         <a className="brand" href="#" onClick={(event) => { event.preventDefault(); setSection("home"); }}><span className="brand-mark">L<span>✦</span></span><span>lingua<span className="brand-period">.</span><small>GIA SƯ TIẾNG ANH AI CỦA BẠN</small></span></a>
         <div className="side-label">HỌC TẬP</div>
-        <nav>{nav.map((item) => <button key={item.id} className={section === item.id ? "nav-item selected" : "nav-item"} onClick={() => setSection(item.id)}><span>{item.icon}</span>{item.label}{item.id === "practice" && <i className="nav-live" />}</button>)}</nav>
+        <nav>{nav.map((item) => <button key={item.id} className={section === item.id ? "nav-item selected" : "nav-item"} onClick={() => setSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span>{item.label}{item.id === "practice" && <i className="nav-live" />}</button>)}</nav>
         <div className="sidebar-spacer" />
-        <div className="streak-card"><span>🔥</span><div><strong>{progress.streak} ngày liên tục</strong><small>{progress.streak ? "Cố gắng duy trì nhé!" : "Bắt đầu với một bài học"}</small></div><span className="streak-arrow">↗</span></div>
+        <div className="streak-card"><span className="sidebar-streak-icon"><IllustrationIcon name="streak" /></span><div><strong>{progress.streak} ngày liên tục</strong><small>{progress.streak ? "Cố gắng duy trì nhé!" : "Bắt đầu với một bài học"}</small></div><span className="streak-arrow">↗</span></div>
         <button className="sidebar-profile" onClick={() => setSection("profiles")}><span className="user-avatar">B</span><span><strong>Lộ trình học của bạn</strong><small>{profile.title}</small></span><span className="more-dots">···</span></button>
       </aside>
       <section className="main-content">
@@ -1409,14 +1410,14 @@ export default function Home() {
           <div className="topbar-actions">
             <span className="level-chip desktop-level">TRÌNH ĐỘ {progress.level}</span>
             <button className={apiKey ? "ai-settings-button connected" : "ai-settings-button"} aria-label="Cài đặt API key Gemini" onClick={() => { setApiKeyDraft(apiKey); setApiKeyError(""); setApiKeySaved(false); setApiKeyDialogOpen(true); }}>
-              <span>🔑</span><span>{apiKey ? "AI đã kết nối" : "Kết nối AI"}</span>
+              <span className="ai-key-icon"><IllustrationIcon name="key" /></span><span>{apiKey ? "AI đã kết nối" : "Kết nối AI"}</span>
             </button>
-            <button className="profile-switch" onClick={() => setShowProfileMenu((open) => !open)}><span className={`profile-icon tiny ${profile.color}`}>{profile.icon}</span><span>{profile.title}</span><span>⌄</span></button>
-            {showProfileMenu && <div className="profile-menu">{profiles.map((item) => <button key={item.id} onClick={() => { selectProfile(item.id); setShowProfileMenu(false); }}><span>{item.icon}</span>{item.title}</button>)}</div>}
+            <button className="profile-switch" onClick={() => setShowProfileMenu((open) => !open)}><span className={`profile-icon tiny ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><span>{profile.title}</span><span>⌄</span></button>
+            {showProfileMenu && <div className="profile-menu">{profiles.map((item) => <button key={item.id} onClick={() => { selectProfile(item.id); setShowProfileMenu(false); }}><span className={`profile-menu-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>{item.title}</button>)}</div>}
           </div>
         </header>
         <div className="content-wrap">
-          {progressLoaded && !apiKey && <section className="api-reminder"><span>🔑</span><div><strong>Kết nối AI để bắt đầu học cùng Maya</strong><p>Thêm Gemini API key riêng. Key và tiến độ chỉ lưu trên thiết bị này.</p></div><button onClick={() => { setApiKeyDialogOpen(true); setApiKeyError(""); }}>Thiết lập AI</button></section>}
+          {progressLoaded && !apiKey && <section className="api-reminder"><span className="reminder-key-icon"><IllustrationIcon name="key" /></span><div><strong>Kết nối AI để bắt đầu học cùng Maya</strong><p>Thêm Gemini API key riêng. Key và tiến độ chỉ lưu trên thiết bị này.</p></div><button onClick={() => { setApiKeyDialogOpen(true); setApiKeyError(""); }}>Thiết lập AI</button></section>}
           {section === "home" && renderHome()}
           {section === "practice" && <><div className="section-heading practice-heading"><div><span className="eyebrow">NÓI, HỌC VÀ TIẾN BỘ</span><h2>Cùng nhau luyện tập nhé</h2></div><button className="text-button" onClick={() => setSection("profiles")}>Đổi lĩnh vực ↗</button></div>{renderPractice()}</>}
           {section === "placement" && renderPlacement()}
@@ -1428,12 +1429,12 @@ export default function Home() {
         </div>
         <footer className="site-footer">Dành cho khoảnh khắc bạn nghĩ: “Mình làm được!” <span>✦</span></footer>
       </section>
-      <nav className="mobile-nav">{nav.map((item) => <button key={item.id} className={section === item.id ? "mobile-nav-item selected" : "mobile-nav-item"} onClick={() => setSection(item.id)}><span>{item.icon}</span><small>{item.label}</small></button>)}</nav>
+      <nav className="mobile-nav">{nav.map((item) => <button key={item.id} className={section === item.id ? "mobile-nav-item selected" : "mobile-nav-item"} onClick={() => setSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span><small>{item.label}</small></button>)}</nav>
       {apiKeyDialogOpen && (
         <div className="dialog-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) setApiKeyDialogOpen(false); }}>
           <section className="api-key-dialog" role="dialog" aria-modal="true" aria-labelledby="api-key-title">
             <button className="dialog-close" aria-label="Đóng" onClick={() => setApiKeyDialogOpen(false)}>×</button>
-            <span className="api-key-icon">🔑</span>
+            <span className="api-key-icon"><IllustrationIcon name="key" /></span>
             <span className="eyebrow">KẾT NỐI GIA SƯ AI</span>
             <h2 id="api-key-title">Dùng Gemini API key của bạn</h2>
             <p>Mỗi người học dùng API key riêng của mình. Ứng dụng gửi yêu cầu trực tiếp từ thiết bị của bạn tới Google Gemini, không qua máy chủ trung gian.</p>
