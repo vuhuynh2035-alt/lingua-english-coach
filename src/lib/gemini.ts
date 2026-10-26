@@ -1,0 +1,93 @@
+const MODEL = "gemini-2.5-flash";
+
+export type GeminiPart = { text: string } | { inlineData: { mimeType: string; data: string } };
+
+export async function validateGeminiKey(apiKey: string): Promise<void> {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}`,
+    { headers: { "x-goog-api-key": apiKey }, signal: AbortSignal.timeout(15_000) },
+  );
+  if (!response.ok) throw new Error(await getGeminiError(response));
+}
+
+export async function generateWithGemini(apiKey: string, parts: GeminiPart[]): Promise<string> {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts }],
+        generationConfig: { temperature: 0.7, maxOutputTokens: 700 },
+      }),
+      signal: AbortSignal.timeout(60_000),
+    },
+  );
+
+  if (!response.ok) throw new Error(await getGeminiError(response));
+  const result: unknown = await response.json();
+
+  if (typeof result !== "object" || result === null || !("candidates" in result) ||
+      !Array.isArray(result.candidates)) {
+    throw new Error("AI trả về kết quả không đúng định dạng.");
+  }
+  const candidate = result.candidates[0];
+  if (typeof candidate !== "object" || candidate === null || !("content" in candidate) ||
+      typeof candidate.content !== "object" || candidate.content === null ||
+      !("parts" in candidate.content) || !Array.isArray(candidate.content.parts)) {
+    throw new Error("Gia sư AI chưa có câu trả lời. Vui lòng thử lại.");
+  }
+  const responseParts: unknown[] = candidate.content.parts;
+  const text = responseParts
+    .filter((part): part is { text: string } =>
+      typeof part === "object" && part !== null && "text" in part && typeof part.text === "string")
+    .map((part) => part.text)
+    .join("")
+    .trim();
+  if (!text) throw new Error("Gia sư AI chưa có câu trả lời. Vui lòng thử lại.");
+  return text;
+}
+
+export async function getAudioData(audio: Blob): Promise<{ mimeType: string; data: string }> {
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Không thể đọc bản ghi âm trên thiết bị này."));
+    reader.onload = () => {
+      if (typeof reader.result !== "string") {
+        reject(new Error("Không thể đọc bản ghi âm trên thiết bị này."));
+        return;
+      }
+      resolve(reader.result);
+    };
+    reader.readAsDataURL(audio);
+  });
+  const separator = dataUrl.indexOf(",");
+  if (separator < 0) throw new Error("Bản ghi âm không đúng định dạng.");
+  return { mimeType: audio.type || "audio/mp4", data: dataUrl.slice(separator + 1) };
+}
+
+async function getGeminiError(response: Response): Promise<string> {
+  let detail = "";
+  try {
+    const result: unknown = await response.json();
+    if (typeof result === "object" && result !== null && "error" in result &&
+        typeof result.error === "object" && result.error !== null && "message" in result.error) {
+      detail = String(result.error.message);
+    }
+  } catch {
+    detail = "";
+  }
+
+  if (response.status === 400 || response.status === 403) {
+    return "API key không hợp lệ hoặc chưa được cấp quyền. Hãy kiểm tra lại key trong phần Cài đặt AI.";
+  }
+  if (response.status === 429) {
+    return "API key đã hết hạn mức hoặc đang bị giới hạn. Hãy kiểm tra gói sử dụng Gemini của bạn.";
+  }
+  if (response.status === 503 || response.status === 504) {
+    return "Dịch vụ AI hiện đang bận. Vui lòng thử lại sau.";
+  }
+  return detail
+    ? `Không gửi được yêu cầu tới Gemini (mã ${response.status}): ${detail}`
+    : `Không gửi được yêu cầu tới Gemini (mã ${response.status}).`;
+}
