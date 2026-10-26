@@ -10,7 +10,7 @@ export type AiProvider = "google" | "openai";
 export type AiModel = { id: string; label: string };
 
 export const DEFAULT_MODELS: Record<AiProvider, string> = {
-  google: "gemini-2.5-flash",
+  google: "gemini-2.0-flash",
   openai: "gpt-4o-mini",
 };
 

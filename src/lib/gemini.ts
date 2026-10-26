@@ -1,4 +1,4 @@
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-2.0-flash";
 
 export type GeminiPart = { text: string } | { inlineData: { mimeType: string; data: string } };
 
@@ -36,18 +36,48 @@ export async function generateChatWithGemini(
     temperature: number;
     maxOutputTokens: number;
     thinkingConfig?: { thinkingBudget: number };
-  } = { temperature: 0.7, maxOutputTokens: 300 };
-  if (/^gemini-2\.5-flash(?:-|$)/i.test(model)) {
+  } = { temperature: 0.7, maxOutputTokens: 800 };
+
+  // Set thinkingBudget: 0 for all models that might engage thinking mode
+  if (/gemini-(?:2|flash|thinking)/i.test(model)) {
     generationConfig.thinkingConfig = { thinkingBudget: 0 };
   }
-  return requestGemini(apiKey, model, {
+
+  const payload = {
     systemInstruction: { parts: [{ text: context }] },
     contents: conversation.map((message) => ({
-      role: message.role === "assistant" ? "model" : "user",
+      role: message.role === "assistant" ? ("model" as const) : ("user" as const),
       parts: [{ text: message.content }],
     })),
     generationConfig,
-  });
+  };
+
+  try {
+    return await requestGemini(apiKey, model, payload);
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    // If thinkingConfig is rejected by Google API (HTTP 400), retry immediately without it
+    if (payload.generationConfig.thinkingConfig && /thinking/i.test(errorMsg)) {
+      const fallbackPayload = {
+        ...payload,
+        generationConfig: { temperature: 0.7, maxOutputTokens: 800 },
+      };
+      return await requestGemini(apiKey, model, fallbackPayload);
+    }
+    // If systemInstruction is rejected (HTTP 400), embed it into the first user message
+    if (/system(?:_|\s)?instruction/i.test(errorMsg)) {
+      const fallbackContents = payload.contents.map((msg, index) =>
+        index === 0 && msg.role === "user"
+          ? { ...msg, parts: [{ text: `[Hướng dẫn sư phạm: ${context}]\n\n${(msg.parts[0] as { text: string }).text}` }] }
+          : msg
+      );
+      return await requestGemini(apiKey, model, {
+        contents: fallbackContents,
+        generationConfig: payload.generationConfig,
+      });
+    }
+    throw error;
+  }
 }
 
 async function requestGemini(
@@ -69,7 +99,7 @@ async function requestGemini(
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       body: JSON.stringify(request),
-      signal: AbortSignal.timeout(request.systemInstruction ? 30_000 : 60_000),
+      signal: AbortSignal.timeout(60_000),
     },
   );
 

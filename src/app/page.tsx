@@ -1032,7 +1032,7 @@ Your teaching principles:
       const timedOut = error instanceof Error &&
         (error.name === "TimeoutError" || /signal timed out|timed out|timeout/i.test(error.message));
       setChatError(timedOut
-        ? "AI chưa phản hồi trong 30 giây. Hãy kiểm tra kết nối Internet, mô hình và API key trong Cài đặt rồi thử lại."
+        ? "AI chưa phản hồi trong 60 giây. Hãy kiểm tra kết nối Internet, thử đổi mô hình (ví dụ: gemini-2.0-flash hoặc gemini-1.5-flash) hoặc kiểm tra API key trong Cài đặt."
         : error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
     } finally {
       setChatBusy(false);
@@ -2638,7 +2638,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                 ))}
               </div>
             </section>
-            <section className="panel course-lesson">
+            <section className="panel course-lesson-panel">
               {courseExamLevel ? (
                 <div className="course-final-exam">
                   <span className="level-chip">{courseExamLevel}</span>
