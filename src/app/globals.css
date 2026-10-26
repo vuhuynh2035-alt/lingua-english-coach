@@ -1027,3 +1027,89 @@ html[data-theme] .mobile-nav-item.selected small { color: var(--theme-primary); 
 @media (max-width: 760px) {
   .theme-options { grid-template-columns: 1fr; }
 }
+
+.ask-tutor-inline-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 5px 11px;
+  border: 1px dashed var(--theme-border, #45bd90);
+  border-radius: 6px;
+  background: var(--theme-soft, #f7fcf9);
+  color: var(--theme-primary, #148565);
+  font-size: 0.5625rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.ask-tutor-inline-btn:hover {
+  background: var(--theme-soft-strong, #e1f5eb);
+  transform: translateY(-1px);
+}
+.lesson-tutor-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--theme-soft, #f4faf6);
+  border: 1px solid var(--theme-border, #d2ede0);
+}
+.vocab-action-btns {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: auto;
+}
+.vocab-mini-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border: 1px solid #dcece4;
+  border-radius: 5px;
+  background: #ffffff;
+  color: #276749;
+  font-size: 0.5rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.vocab-mini-btn:hover {
+  background: #edf7f2;
+}
+.pronunciation-custom-input {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+.pronunciation-custom-input input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.625rem;
+  color: var(--ink);
+  background: #ffffff;
+}
+.phrase-chip-active {
+  border-color: var(--theme-primary, #168364) !important;
+  background: var(--theme-soft, #edf8f2) !important;
+  font-weight: bold;
+}
+.practice-phrase-btn {
+  margin-top: 6px;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  background: #fafafa;
+  color: #4a5568;
+  font-size: 0.5rem;
+  cursor: pointer;
+}
+.practice-phrase-btn:hover {
+  background: #edf2f7;
+  color: #2b6cb0;
+}

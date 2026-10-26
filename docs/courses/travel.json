@@ -1,0 +1,198 @@
+{
+  "id": "travel",
+  "title": "Tiếng Anh du lịch",
+  "version": "1.0.0",
+  "framework": "CEFR A1–B2",
+  "overview": "Các tình huống thiết yếu khi đi du lịch nước ngoài: sân bay, khách sạn, nhà hàng, hỏi đường và mua sắm.",
+  "contentLicense": "CC-BY-4.0 / Teacher AI Curated Curriculum",
+  "references": [
+    {
+      "title": "Teacher AI Official Curriculum - Tiếng Anh du lịch",
+      "url": "https://github.com/vuhuynh2035-alt/lingua-english-coach",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "travel-a1-1",
+      "level": "A1",
+      "unit": "Bài 1 (A1)",
+      "title": "Làm thủ tục nhận phòng khách sạn",
+      "objective": "Biết cách xuất trình hộ chiếu, xác nhận đặt phòng và hỏi về giờ bữa sáng.",
+      "reading": "Receptionist: Welcome to Sunset Hotel! How can I help you?\nGuest: Hello, I have a reservation under the name of Nguyen. Here is my passport.\nReceptionist: Thank you. Your room is 402 on the fourth floor. Breakfast is served from 6:30 to 9:30 AM in the main dining hall.",
+      "vocabulary": [
+        {
+          "term": "Reservation",
+          "definition": "Đặt chỗ / Đặt phòng trước"
+        },
+        {
+          "term": "Passport",
+          "definition": "Hộ chiếu"
+        },
+        {
+          "term": "Served",
+          "definition": "Được phục vụ"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What is the guest's room number?",
+          "options": [
+            "Room 204",
+            "Room 402",
+            "Room 301"
+          ],
+          "answer": 1,
+          "explanation": "Lễ tân thông báo: 'Your room is 402'."
+        },
+        {
+          "prompt": "When is breakfast available?",
+          "options": [
+            "7:00 to 11:00 AM",
+            "6:30 to 9:30 AM",
+            "All day"
+          ],
+          "answer": 1,
+          "explanation": "'Breakfast is served from 6:30 to 9:30 AM'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "travel-a2-1",
+      "level": "A2",
+      "unit": "Bài 2 (A2)",
+      "title": "Hỏi đường và di chuyển bằng phương tiện công cộng",
+      "objective": "Hỏi đường đến ga tàu, bến xe buýt và mua vé di chuyển.",
+      "reading": "Tourist: Excuse me, could you tell me how to get to the central train station?\nLocal: Sure. Walk straight down this avenue for two blocks, then turn left at the traffic lights. The station entrance will be directly on your right.",
+      "vocabulary": [
+        {
+          "term": "Excuse me",
+          "definition": "Xin lỗi cho tôi hỏi..."
+        },
+        {
+          "term": "Avenue",
+          "definition": "Đại lộ / con đường lớn"
+        },
+        {
+          "term": "Traffic lights",
+          "definition": "Đèn giao thông"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Where does the tourist want to go?",
+          "options": [
+            "To the airport",
+            "To the central train station",
+            "To a museum"
+          ],
+          "answer": 1,
+          "explanation": "Khách hỏi: 'how to get to the central train station?'."
+        },
+        {
+          "prompt": "Where should the tourist turn left?",
+          "options": [
+            "At the bridge",
+            "At the traffic lights",
+            "At the hospital"
+          ],
+          "answer": 1,
+          "explanation": "Chỉ dẫn: 'turn left at the traffic lights'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "travel-b1-1",
+      "level": "B1",
+      "unit": "Bài 3 (B1)",
+      "title": "Xử lý sự cố hành lý và thủ tục hải quan tại sân bay",
+      "objective": "Khai báo hành lý thất lạc hoặc chuyến bay bị hoãn hủy.",
+      "reading": "Upon arrival at Heathrow, my checked baggage did not appear on carousel 4. I immediately reported to the Lost and Found counter, where the officer provided a property irregularity report and promised delivery within 24 hours.",
+      "vocabulary": [
+        {
+          "term": "Checked baggage",
+          "definition": "Hành lý ký gửi"
+        },
+        {
+          "term": "Baggage carousel",
+          "definition": "Băng chuyền hành lý"
+        },
+        {
+          "term": "Lost and Found",
+          "definition": "Quầy tìm kiếm đồ thất lạc"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What happened to the passenger's baggage?",
+          "options": [
+            "It was damaged",
+            "It did not appear on the carousel",
+            "It was stolen at the hotel"
+          ],
+          "answer": 1,
+          "explanation": "Hành khách cho biết: 'my checked baggage did not appear on carousel 4'."
+        },
+        {
+          "prompt": "When did the officer promise delivery?",
+          "options": [
+            "Within 24 hours",
+            "Next week",
+            "In one month"
+          ],
+          "answer": 0,
+          "explanation": "Họ cam kết: 'promised delivery within 24 hours'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "travel-b2-1",
+      "level": "B2",
+      "unit": "Bài 4 (B2)",
+      "title": "Du lịch bền vững và Trải nghiệm văn hóa bản địa",
+      "objective": "Thảo luận về bảo tồn văn hóa, du lịch sinh thái và tôn trọng phong tục địa phương.",
+      "reading": "Responsible travel extends beyond sightseeing; it involves respecting indigenous traditions, minimizing single-use plastic waste, and patronizing locally owned enterprises to ensure sustainable economic benefits for host communities.",
+      "vocabulary": [
+        {
+          "term": "Responsible travel",
+          "definition": "Du lịch có trách nhiệm"
+        },
+        {
+          "term": "Indigenous traditions",
+          "definition": "Truyền thống bản địa"
+        },
+        {
+          "term": "Sustainable",
+          "definition": "Bền vững"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What is one core aspect of responsible travel?",
+          "options": [
+            "Taking only photos",
+            "Patronizing locally owned enterprises",
+            "Avoiding conversations with locals"
+          ],
+          "answer": 1,
+          "explanation": "Bài đọc nhấn mạnh: 'patronizing locally owned enterprises'."
+        },
+        {
+          "prompt": "Why should travelers support local businesses?",
+          "options": [
+            "To ensure sustainable economic benefits for host communities",
+            "To get free souvenirs",
+            "To shorten the trip"
+          ],
+          "answer": 0,
+          "explanation": "Mục đích: 'to ensure sustainable economic benefits for host communities'."
+        }
+      ],
+      "audioIds": []
+    }
+  ],
+  "audio": []
+}

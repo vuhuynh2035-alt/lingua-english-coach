@@ -1,0 +1,198 @@
+{
+  "id": "finance",
+  "title": "Tiếng Anh ngành tài chính",
+  "version": "1.0.0",
+  "framework": "CEFR A1–B2",
+  "overview": "Báo cáo tài chính, thuật ngữ ngân hàng, phân tích đầu tư, quản trị rủi ro và dự toán ngân sách.",
+  "contentLicense": "CC-BY-4.0 / Teacher AI Curated Curriculum",
+  "references": [
+    {
+      "title": "Teacher AI Official Curriculum - Tiếng Anh ngành tài chính",
+      "url": "https://github.com/vuhuynh2035-alt/lingua-english-coach",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "fin-a1-1",
+      "level": "A1",
+      "unit": "Bài 1 (A1)",
+      "title": "Giao dịch ngân hàng cơ bản",
+      "objective": "Mở tài khoản, nạp rút tiền và hỏi số dư tài khoản.",
+      "reading": "Teller: Good afternoon. How can I assist you?\nCustomer: Hello, I would like to deposit two hundred dollars into my checking account, please.\nTeller: Certainly. Please sign the deposit slip here.",
+      "vocabulary": [
+        {
+          "term": "Deposit",
+          "definition": "Gửi tiền vào tài khoản"
+        },
+        {
+          "term": "Checking account",
+          "definition": "Tài khoản thanh toán / vãng lai"
+        },
+        {
+          "term": "Deposit slip",
+          "definition": "Phiếu nộp tiền"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "How much does the customer want to deposit?",
+          "options": [
+            "One hundred dollars",
+            "Two hundred dollars",
+            "Five hundred dollars"
+          ],
+          "answer": 1,
+          "explanation": "Khách hàng nói: 'deposit two hundred dollars'."
+        },
+        {
+          "prompt": "Where should the customer sign?",
+          "options": [
+            "On the deposit slip",
+            "On the passport",
+            "Nowhere"
+          ],
+          "answer": 0,
+          "explanation": "Giao dịch viên hướng dẫn: 'Please sign the deposit slip here'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "fin-a2-1",
+      "level": "A2",
+      "unit": "Bài 2 (A2)",
+      "title": "Theo dõi chi phí và Lập ngân sách tháng",
+      "objective": "Phân loại chi phí cố định, chi phí biến đổi và đối chiếu số liệu.",
+      "reading": "Our monthly operating expenses rose by five percent in October. Rent and utilities remained stable, but travel costs and advertising expenditures increased substantially.",
+      "vocabulary": [
+        {
+          "term": "Operating expenses",
+          "definition": "Chi phí hoạt động"
+        },
+        {
+          "term": "Utilities",
+          "definition": "Tiền điện nước, tiện ích"
+        },
+        {
+          "term": "Expenditures",
+          "definition": "Khoản chi tiêu"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "By how much did operating expenses increase?",
+          "options": [
+            "2%",
+            "5%",
+            "15%"
+          ],
+          "answer": 1,
+          "explanation": "Báo cáo nêu: 'rose by five percent in October'."
+        },
+        {
+          "prompt": "Which expenses remained stable?",
+          "options": [
+            "Advertising and flights",
+            "Rent and utilities",
+            "Staff bonuses"
+          ],
+          "answer": 1,
+          "explanation": "'Rent and utilities remained stable'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "fin-b1-1",
+      "level": "B1",
+      "unit": "Bài 3 (B1)",
+      "title": "Phân tích Báo cáo kết quả kinh doanh (P&L Analysis)",
+      "objective": "Trình bày doanh thu thuần, giá vốn hàng bán và lợi nhuận gộp.",
+      "reading": "Despite inflationary headwinds, net revenue reached twelve million dollars, yielding a gross profit margin of thirty-five percent. Cost reduction measures in supply chain logistics contributed significantly to bottom-line profitability.",
+      "vocabulary": [
+        {
+          "term": "Gross profit margin",
+          "definition": "Biên lợi nhuận gộp"
+        },
+        {
+          "term": "Net revenue",
+          "definition": "Doanh thu thuần"
+        },
+        {
+          "term": "Profitability",
+          "definition": "Khả năng sinh lời"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What was the gross profit margin?",
+          "options": [
+            "12%",
+            "35%",
+            "50%"
+          ],
+          "answer": 1,
+          "explanation": "Số liệu: 'yielding a gross profit margin of thirty-five percent'."
+        },
+        {
+          "prompt": "What contributed to bottom-line profitability?",
+          "options": [
+            "Cost reduction in logistics",
+            "Raising employee salaries",
+            "Borrowing bank loans"
+          ],
+          "answer": 0,
+          "explanation": "'Cost reduction measures in supply chain logistics contributed significantly'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "fin-b2-1",
+      "level": "B2",
+      "unit": "Bài 4 (B2)",
+      "title": "Chiến lược Quản trị rủi ro danh mục và Thị trường vốn",
+      "objective": "Thảo luận về đa dạng hóa danh mục đầu tư, phái sinh tài chính và bảo hiểm rủi ro (hedging).",
+      "reading": "In response to heightened currency volatility, institutional investors employ foreign exchange forward contracts and interest rate swaps to hedge against downside valuation risks across international emerging market portfolios.",
+      "vocabulary": [
+        {
+          "term": "Currency volatility",
+          "definition": "Biến động tỷ giá hối đoái"
+        },
+        {
+          "term": "Hedge",
+          "definition": "Phòng hộ / Bảo hiểm rủi ro"
+        },
+        {
+          "term": "Portfolio",
+          "definition": "Danh mục đầu tư"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Why do investors employ forward contracts and swaps?",
+          "options": [
+            "To hedge against downside valuation risks",
+            "To speculate on lottery tickets",
+            "To eliminate all taxes"
+          ],
+          "answer": 0,
+          "explanation": "Mục đích: 'to hedge against downside valuation risks'."
+        },
+        {
+          "prompt": "What market condition prompted this strategy?",
+          "options": [
+            "Zero inflation",
+            "Heightened currency volatility",
+            "Low interest rates"
+          ],
+          "answer": 1,
+          "explanation": "Nguyên nhân: 'In response to heightened currency volatility'."
+        }
+      ],
+      "audioIds": []
+    }
+  ],
+  "audio": []
+}

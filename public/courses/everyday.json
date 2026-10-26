@@ -1,0 +1,198 @@
+{
+  "id": "everyday",
+  "title": "Tiếng Anh giao tiếp hằng ngày",
+  "version": "1.0.0",
+  "framework": "CEFR A1–B2",
+  "overview": "Giáo trình giao tiếp thực tế từ làm quen, chào hỏi, gọi món, mua sắm đến trò chuyện sâu hơn trong cuộc sống.",
+  "contentLicense": "CC-BY-4.0 / Teacher AI Curated Curriculum",
+  "references": [
+    {
+      "title": "Teacher AI Official Curriculum - Tiếng Anh giao tiếp hằng ngày",
+      "url": "https://github.com/vuhuynh2035-alt/lingua-english-coach",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "everyday-a1-1",
+      "level": "A1",
+      "unit": "Bài 1 (A1)",
+      "title": "Chào hỏi và tự giới thiệu bản thân",
+      "objective": "Biết cách chào hỏi lịch sự và giới thiệu tên tuổi, nghề nghiệp cơ bản.",
+      "reading": "Hello! My name is Nam. I am twenty-five years old and I live in Hanoi. I am an office worker. In my free time, I like drinking coffee with my friends and listening to music. Nice to meet you!",
+      "vocabulary": [
+        {
+          "term": "Nice to meet you",
+          "definition": "Rất vui được gặp bạn"
+        },
+        {
+          "term": "Office worker",
+          "definition": "Nhân viên văn phòng"
+        },
+        {
+          "term": "Free time",
+          "definition": "Thời gian rảnh rỗi"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Where does Nam live?",
+          "options": [
+            "In Danang",
+            "In Hanoi",
+            "In Ho Chi Minh City"
+          ],
+          "answer": 1,
+          "explanation": "Trong bài đọc, Nam nói rõ: 'I live in Hanoi'."
+        },
+        {
+          "prompt": "What does Nam like doing in his free time?",
+          "options": [
+            "Playing football",
+            "Drinking coffee and listening to music",
+            "Reading books"
+          ],
+          "answer": 1,
+          "explanation": "Nam chia sẻ: 'I like drinking coffee with my friends and listening to music'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "everyday-a2-1",
+      "level": "A2",
+      "unit": "Bài 2 (A2)",
+      "title": "Gọi món tại nhà hàng và quán cà phê",
+      "objective": "Tự tin gọi đồ ăn, thức uống và yêu cầu hóa đơn bằng tiếng Anh.",
+      "reading": "Waiter: Good evening! Are you ready to order?\nCustomer: Yes, please. Could I have a grilled chicken salad and a bottle of mineral water?\nWaiter: Would you like anything for dessert?\nCustomer: Not right now, thank you. Could we also have the bill when you are ready?",
+      "vocabulary": [
+        {
+          "term": "Ready to order",
+          "definition": "Sẵn sàng gọi món"
+        },
+        {
+          "term": "Grilled chicken",
+          "definition": "Gà nướng"
+        },
+        {
+          "term": "Could we have the bill?",
+          "definition": "Cho chúng tôi xin hóa đơn tính tiền nhé?"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What main dish does the customer order?",
+          "options": [
+            "Beef steak",
+            "Grilled chicken salad",
+            "Seafood pasta"
+          ],
+          "answer": 1,
+          "explanation": "Khách hàng nói: 'Could I have a grilled chicken salad'."
+        },
+        {
+          "prompt": "What phrase is used to ask for the bill?",
+          "options": [
+            "Give me money",
+            "Could we also have the bill?",
+            "I want to go home"
+          ],
+          "answer": 1,
+          "explanation": "Cách diễn đạt lịch sự khi thanh toán là: 'Could we also have the bill?'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "everyday-b1-1",
+      "level": "B1",
+      "unit": "Bài 3 (B1)",
+      "title": "Chia sẻ trải nghiệm và kế hoạch cuối tuần",
+      "objective": "Sử dụng thì hiện tại hoàn thành và tương lai để trao đổi về sở thích và dự định cá nhân.",
+      "reading": "Lan has lived in Da Nang for three years. She enjoys the beach and the fresh air. This weekend, she is going to visit Ba Na Hills with her family if the weather is sunny. She has never been on the cable car there before, so she is very excited.",
+      "vocabulary": [
+        {
+          "term": "Cable car",
+          "definition": "Cáp treo"
+        },
+        {
+          "term": "Excited",
+          "definition": "Hào hứng, phấn khích"
+        },
+        {
+          "term": "Have lived for",
+          "definition": "Đã sống được (khoảng thời gian)"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "How long has Lan lived in Da Nang?",
+          "options": [
+            "For three months",
+            "For three years",
+            "Since last week"
+          ],
+          "answer": 1,
+          "explanation": "Bài đọc ghi: 'Lan has lived in Da Nang for three years'."
+        },
+        {
+          "prompt": "Has Lan ever taken the cable car before?",
+          "options": [
+            "Yes, many times",
+            "No, she has never been on it",
+            "She doesn't know"
+          ],
+          "answer": 1,
+          "explanation": "'She has never been on the cable car there before'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "everyday-b2-1",
+      "level": "B2",
+      "unit": "Bài 4 (B2)",
+      "title": "Bày tỏ quan điểm và giải quyết bất đồng",
+      "objective": "Học cách thảo luận vấn đề xã hội hoặc gia đình một cách lịch sự, thuyết phục.",
+      "reading": "When discussing different viewpoints, it is essential to listen actively before defending your position. Using phrases such as 'I understand your perspective, however...' helps maintain mutual respect and prevents unnecessary conflict.",
+      "vocabulary": [
+        {
+          "term": "Active listening",
+          "definition": "Lắng nghe chủ động"
+        },
+        {
+          "term": "Perspective",
+          "definition": "Góc nhìn, quan điểm"
+        },
+        {
+          "term": "Mutual respect",
+          "definition": "Sự tôn trọng lẫn nhau"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What is recommended before defending your position?",
+          "options": [
+            "Interrupt immediately",
+            "Listen actively",
+            "Change the subject"
+          ],
+          "answer": 1,
+          "explanation": "Tác giả khuyên: 'it is essential to listen actively before defending your position'."
+        },
+        {
+          "prompt": "Why should you use polite transition phrases?",
+          "options": [
+            "To confuse the listener",
+            "To maintain mutual respect and prevent conflict",
+            "To speak faster"
+          ],
+          "answer": 1,
+          "explanation": "Cụm từ này giúp 'maintain mutual respect and prevents unnecessary conflict'."
+        }
+      ],
+      "audioIds": []
+    }
+  ],
+  "audio": []
+}

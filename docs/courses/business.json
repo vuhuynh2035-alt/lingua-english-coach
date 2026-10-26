@@ -1,0 +1,198 @@
+{
+  "id": "business",
+  "title": "Tiếng Anh công sở",
+  "version": "1.0.0",
+  "framework": "CEFR A1–B2",
+  "overview": "Giáo trình giao tiếp chuyên nghiệp: viết email, tham gia cuộc họp, đàm phán hợp đồng và báo cáo công việc.",
+  "contentLicense": "CC-BY-4.0 / Teacher AI Curated Curriculum",
+  "references": [
+    {
+      "title": "Teacher AI Official Curriculum - Tiếng Anh công sở",
+      "url": "https://github.com/vuhuynh2035-alt/lingua-english-coach",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "business-a1-1",
+      "level": "A1",
+      "unit": "Bài 1 (A1)",
+      "title": "Gặp gỡ đồng nghiệp và khách hàng",
+      "objective": "Chào hỏi chuyên nghiệp trong môi trường văn phòng và trao đổi danh thiếp.",
+      "reading": "Good morning. I am David from the Marketing Department. Here is my business card. Let me know if you need any assistance regarding our new campaign.",
+      "vocabulary": [
+        {
+          "term": "Department",
+          "definition": "Phòng ban"
+        },
+        {
+          "term": "Business card",
+          "definition": "Danh thiếp"
+        },
+        {
+          "term": "Assistance",
+          "definition": "Sự hỗ trợ"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Which department does David work in?",
+          "options": [
+            "Human Resources",
+            "Marketing",
+            "Accounting"
+          ],
+          "answer": 1,
+          "explanation": "David nói: 'I am David from the Marketing Department'."
+        },
+        {
+          "prompt": "What does David give to the listener?",
+          "options": [
+            "A report",
+            "His business card",
+            "A contract"
+          ],
+          "answer": 1,
+          "explanation": "David nói: 'Here is my business card'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "business-a2-1",
+      "level": "A2",
+      "unit": "Bài 2 (A2)",
+      "title": "Viết email xác nhận cuộc họp",
+      "objective": "Soạn email ngắn gọn xác nhận thời gian, địa điểm và nội dung cuộc họp.",
+      "reading": "Dear Mr. Smith,\nThank you for your prompt response. I would like to confirm our meeting on Thursday at 2:00 PM in Conference Room B. Please find the attached agenda for your review.\nBest regards,\nHa Nguyen",
+      "vocabulary": [
+        {
+          "term": "Prompt response",
+          "definition": "Phản hồi nhanh chóng"
+        },
+        {
+          "term": "Confirm",
+          "definition": "Xác nhận"
+        },
+        {
+          "term": "Attached agenda",
+          "definition": "Chương trình họp đính kèm"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "When is the meeting scheduled?",
+          "options": [
+            "Friday at 10 AM",
+            "Thursday at 2:00 PM",
+            "Monday at 2:00 PM"
+          ],
+          "answer": 1,
+          "explanation": "Email nêu rõ: 'on Thursday at 2:00 PM'."
+        },
+        {
+          "prompt": "Where will the meeting take place?",
+          "options": [
+            "Room A",
+            "Conference Room B",
+            "Online only"
+          ],
+          "answer": 1,
+          "explanation": "Địa điểm là: 'in Conference Room B'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "business-b1-1",
+      "level": "B1",
+      "unit": "Bài 3 (B1)",
+      "title": "Báo cáo tiến độ dự án và giải quyết trở ngại",
+      "objective": "Trình bày các mốc dự án đã hoàn thành, sự cố phát sinh và hướng xử lý.",
+      "reading": "During the weekly review, the project lead announced that the team has completed phase one ahead of schedule. However, supplier delays might affect phase two unless alternate vendors are secured by Friday.",
+      "vocabulary": [
+        {
+          "term": "Ahead of schedule",
+          "definition": "Trước tiến độ dự kiến"
+        },
+        {
+          "term": "Supplier delay",
+          "definition": "Chậm trễ từ nhà cung cấp"
+        },
+        {
+          "term": "Alternate vendors",
+          "definition": "Các nhà cung ứng thay thế"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What is the status of phase one?",
+          "options": [
+            "Delayed by two weeks",
+            "Completed ahead of schedule",
+            "Cancelled"
+          ],
+          "answer": 1,
+          "explanation": "Dự án: 'completed phase one ahead of schedule'."
+        },
+        {
+          "prompt": "What could affect phase two?",
+          "options": [
+            "Supplier delays",
+            "Lack of staff",
+            "Budget cuts"
+          ],
+          "answer": 0,
+          "explanation": "Nguyên nhân rủi ro: 'supplier delays might affect phase two'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "business-b2-1",
+      "level": "B2",
+      "unit": "Bài 4 (B2)",
+      "title": "Đàm phán hợp đồng và điều khoản thanh toán",
+      "objective": "Thương lượng giá cả, điều khoản chiết khấu và quyền lợi đôi bên.",
+      "reading": "We appreciate your proposed terms; nevertheless, our company requires a minimum 10% volume discount for orders exceeding ten thousand units, alongside net-60 payment terms to accommodate cash flow requirements.",
+      "vocabulary": [
+        {
+          "term": "Volume discount",
+          "definition": "Chiết khấu theo số lượng lớn"
+        },
+        {
+          "term": "Payment terms",
+          "definition": "Điều khoản thanh toán"
+        },
+        {
+          "term": "Cash flow",
+          "definition": "Dòng tiền"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What discount rate is requested?",
+          "options": [
+            "5%",
+            "At least 10%",
+            "20%"
+          ],
+          "answer": 1,
+          "explanation": "Bên mua yêu cầu: 'a minimum 10% volume discount'."
+        },
+        {
+          "prompt": "Why are net-60 payment terms needed?",
+          "options": [
+            "To delay indefinitely",
+            "To accommodate cash flow requirements",
+            "To cancel the contract"
+          ],
+          "answer": 1,
+          "explanation": "Mục đích là: 'to accommodate cash flow requirements'."
+        }
+      ],
+      "audioIds": []
+    }
+  ],
+  "audio": []
+}

@@ -1,0 +1,198 @@
+{
+  "id": "healthcare",
+  "title": "Tiếng Anh chuyên ngành y khoa",
+  "version": "1.0.0",
+  "framework": "CEFR A1–B2",
+  "overview": "Tiếng Anh giao tiếp trong bệnh viện, thăm khám lâm sàng, hỏi triệu chứng, giải thích toa thuốc và chăm sóc bệnh nhân.",
+  "contentLicense": "CC-BY-4.0 / Teacher AI Curated Curriculum",
+  "references": [
+    {
+      "title": "Teacher AI Official Curriculum - Tiếng Anh chuyên ngành y khoa",
+      "url": "https://github.com/vuhuynh2035-alt/lingua-english-coach",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "health-a1-1",
+      "level": "A1",
+      "unit": "Bài 1 (A1)",
+      "title": "Hỏi thăm triệu chứng cơ bản của bệnh nhân",
+      "objective": "Học cách hỏi vị trí đau và các dấu hiệu sốt, ho, mệt mỏi.",
+      "reading": "Doctor: Good morning. What brings you to the clinic today?\nPatient: Doctor, I have a sore throat and a mild headache since yesterday morning.\nDoctor: Let me check your temperature and listen to your breathing.",
+      "vocabulary": [
+        {
+          "term": "Sore throat",
+          "definition": "Đau họng / viêm họng"
+        },
+        {
+          "term": "Headache",
+          "definition": "Đau đầu"
+        },
+        {
+          "term": "Temperature",
+          "definition": "Nhiệt độ cơ thể / thân nhiệt"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What symptoms does the patient describe?",
+          "options": [
+            "Stomach ache",
+            "Sore throat and mild headache",
+            "Sprained ankle"
+          ],
+          "answer": 1,
+          "explanation": "Bệnh nhân nói: 'I have a sore throat and a mild headache'."
+        },
+        {
+          "prompt": "When did the symptoms begin?",
+          "options": [
+            "Yesterday morning",
+            "Last week",
+            "One hour ago"
+          ],
+          "answer": 0,
+          "explanation": "Thời gian: 'since yesterday morning'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "health-a2-1",
+      "level": "A2",
+      "unit": "Bài 2 (A2)",
+      "title": "Hướng dẫn sử dụng thuốc an toàn",
+      "objective": "Giải thích liều lượng, thời điểm uống thuốc và cách bảo quản.",
+      "reading": "Pharmacist: Take one tablet twice daily after meals with a full glass of water. Do not consume alcohol while taking this medication. Store the bottle in a cool, dry place away from direct sunlight.",
+      "vocabulary": [
+        {
+          "term": "Tablet",
+          "definition": "Viên thuốc"
+        },
+        {
+          "term": "Twice daily",
+          "definition": "Hai lần mỗi ngày"
+        },
+        {
+          "term": "Consume alcohol",
+          "definition": "Uống bia rượu"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "How often should the patient take the tablet?",
+          "options": [
+            "Once a week",
+            "Twice daily after meals",
+            "Every hour"
+          ],
+          "answer": 1,
+          "explanation": "Dược sĩ dặn: 'Take one tablet twice daily after meals'."
+        },
+        {
+          "prompt": "What should the patient avoid?",
+          "options": [
+            "Drinking water",
+            "Consuming alcohol",
+            "Sleeping"
+          ],
+          "answer": 1,
+          "explanation": "Lưu ý kiêng cữ: 'Do not consume alcohol while taking this medication'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "health-b1-1",
+      "level": "B1",
+      "unit": "Bài 3 (B1)",
+      "title": "Khai thác tiền sử bệnh và dị ứng (Medical History)",
+      "objective": "Thu thập thông tin tiền sử dị ứng thuốc, bệnh mãn tính và phẫu thuật.",
+      "reading": "Before initiating intravenous antibiotic therapy, the nurse must verify whether the patient has any known drug allergies, particularly to penicillin or cephalosporins, and record their baseline blood pressure.",
+      "vocabulary": [
+        {
+          "term": "Drug allergies",
+          "definition": "Dị ứng thuốc"
+        },
+        {
+          "term": "Antibiotic therapy",
+          "definition": "Liệu trình kháng sinh"
+        },
+        {
+          "term": "Blood pressure",
+          "definition": "Huyết áp"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What must the nurse check before giving antibiotics?",
+          "options": [
+            "The patient's shoe size",
+            "Any known drug allergies",
+            "The room temperature"
+          ],
+          "answer": 1,
+          "explanation": "Quy trình: 'must verify whether the patient has any known drug allergies'."
+        },
+        {
+          "prompt": "Which specific antibiotic family is mentioned?",
+          "options": [
+            "Penicillin",
+            "Vitamins",
+            "Aspirin"
+          ],
+          "answer": 0,
+          "explanation": "Đoạn văn nêu: 'particularly to penicillin or cephalosporins'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "health-b2-1",
+      "level": "B2",
+      "unit": "Bài 4 (B2)",
+      "title": "Giải thích phác đồ điều trị và Sự đồng thuận (Informed Consent)",
+      "objective": "Trình bày rủi ro, lợi ích của thủ thuật ngoại khoa và quyền của bệnh nhân.",
+      "reading": "Informed consent requires a comprehensive discussion regarding the surgical procedure, potential risks such as infection or hemorrhage, therapeutic alternatives, and postoperative rehabilitation expectations so the patient can make an autonomous decision.",
+      "vocabulary": [
+        {
+          "term": "Informed consent",
+          "definition": "Sự đồng thuận sau khi được giải thích rõ"
+        },
+        {
+          "term": "Potential risks",
+          "definition": "Các nguy cơ tiềm ẩn"
+        },
+        {
+          "term": "Postoperative rehabilitation",
+          "definition": "Phục hồi chức năng sau mổ"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What is the primary purpose of informed consent?",
+          "options": [
+            "To rush the patient into surgery",
+            "To allow the patient to make an autonomous informed decision",
+            "To reduce nurse workload"
+          ],
+          "answer": 1,
+          "explanation": "Mục đích là: 'so the patient can make an autonomous decision'."
+        },
+        {
+          "prompt": "Which risks are specifically identified?",
+          "options": [
+            "Infection or hemorrhage",
+            "Hunger and thirst",
+            "Poor weather"
+          ],
+          "answer": 0,
+          "explanation": "Các nguy cơ: 'potential risks such as infection or hemorrhage'."
+        }
+      ],
+      "audioIds": []
+    }
+  ],
+  "audio": []
+}

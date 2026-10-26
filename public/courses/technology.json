@@ -1,0 +1,198 @@
+{
+  "id": "technology",
+  "title": "Tiếng Anh ngành công nghệ",
+  "version": "1.0.0",
+  "framework": "CEFR A1–B2",
+  "overview": "Thuật ngữ chuyên ngành IT, họp Scrum/Agile, thảo luận kiến trúc hệ thống, code review và xử lý lỗi.",
+  "contentLicense": "CC-BY-4.0 / Teacher AI Curated Curriculum",
+  "references": [
+    {
+      "title": "Teacher AI Official Curriculum - Tiếng Anh ngành công nghệ",
+      "url": "https://github.com/vuhuynh2035-alt/lingua-english-coach",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "tech-a1-1",
+      "level": "A1",
+      "unit": "Bài 1 (A1)",
+      "title": "Báo cáo sự cố phần cứng và phần mềm cơ bản",
+      "objective": "Mô tả trạng thái thiết bị và phần mềm hoạt động hay gặp lỗi.",
+      "reading": "The monitor is not turning on. I checked the power cable and the connection is tight. Could IT support look at this computer?",
+      "vocabulary": [
+        {
+          "term": "Monitor",
+          "definition": "Màn hình máy tính"
+        },
+        {
+          "term": "Power cable",
+          "definition": "Dây nguồn"
+        },
+        {
+          "term": "IT support",
+          "definition": "Bộ phận hỗ trợ kỹ thuật"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What is the problem?",
+          "options": [
+            "The keyboard is broken",
+            "The monitor is not turning on",
+            "The internet is slow"
+          ],
+          "answer": 1,
+          "explanation": "Đoạn văn nêu: 'The monitor is not turning on'."
+        },
+        {
+          "prompt": "What did the user already check?",
+          "options": [
+            "The power cable",
+            "The mouse",
+            "The sound"
+          ],
+          "answer": 0,
+          "explanation": "Người dùng đã: 'checked the power cable'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "tech-a2-1",
+      "level": "A2",
+      "unit": "Bài 2 (A2)",
+      "title": "Họp cập nhật tiến độ (Daily Stand-up)",
+      "objective": "Báo cáo những việc đã làm hôm qua, kế hoạch hôm nay và các điểm tắc nghẽn (blockers).",
+      "reading": "Yesterday, I fixed the user login bug on the mobile app. Today, I am going to write unit tests for the payment module. I currently have no blockers.",
+      "vocabulary": [
+        {
+          "term": "Bug",
+          "definition": "Lỗi phần mềm"
+        },
+        {
+          "term": "Unit test",
+          "definition": "Kiểm thử đơn vị"
+        },
+        {
+          "term": "Blocker",
+          "definition": "Rào cản / trở ngại công việc"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What did the developer finish yesterday?",
+          "options": [
+            "The login bug",
+            "The database redesign",
+            "The marketing slide"
+          ],
+          "answer": 0,
+          "explanation": "'Yesterday, I fixed the user login bug on the mobile app'."
+        },
+        {
+          "prompt": "Are there any blockers?",
+          "options": [
+            "Yes, the server is down",
+            "No blockers",
+            "Waiting for client approval"
+          ],
+          "answer": 1,
+          "explanation": "Lập trình viên nói rõ: 'I currently have no blockers'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "tech-b1-1",
+      "level": "B1",
+      "unit": "Bài 3 (B1)",
+      "title": "Thảo luận Code Review và Tối ưu hiệu năng",
+      "objective": "Đưa ra nhận xét phản biện mang tính xây dựng trên pull request.",
+      "reading": "Please review pull request #142. We noticed that fetching all user records in a single database query causes high memory consumption. Let's implement pagination and indexing on the created_at column.",
+      "vocabulary": [
+        {
+          "term": "Memory consumption",
+          "definition": "Mức tiêu thụ bộ nhớ RAM"
+        },
+        {
+          "term": "Pagination",
+          "definition": "Phân trang dữ liệu"
+        },
+        {
+          "term": "Indexing",
+          "definition": "Đánh chỉ mục cơ sở dữ liệu"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What issue was identified in pull request #142?",
+          "options": [
+            "High memory consumption",
+            "Syntax error",
+            "Missing password"
+          ],
+          "answer": 0,
+          "explanation": "Vấn đề là: 'causes high memory consumption'."
+        },
+        {
+          "prompt": "What solution is suggested?",
+          "options": [
+            "Delete the database",
+            "Implement pagination and indexing",
+            "Restart the server"
+          ],
+          "answer": 1,
+          "explanation": "Giải pháp: 'Let's implement pagination and indexing'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "tech-b2-1",
+      "level": "B2",
+      "unit": "Bài 4 (B2)",
+      "title": "Kiến trúc hệ thống và Khả năng chịu tải (Scalability)",
+      "objective": "Phân tích kiến trúc vi dịch vụ (Microservices), cơ chế cân bằng tải và tính sẵn sàng cao.",
+      "reading": "To guarantee high availability and fault tolerance, the engineering team decided to decouple the monolithic service into event-driven microservices utilizing Kafka message queues and containerized deployments with Kubernetes.",
+      "vocabulary": [
+        {
+          "term": "High availability",
+          "definition": "Tính sẵn sàng cao của hệ thống"
+        },
+        {
+          "term": "Decouple",
+          "definition": "Tách rời các thành phần liên kết"
+        },
+        {
+          "term": "Message queue",
+          "definition": "Hàng đợi tin nhắn"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Why was the monolithic service decoupled?",
+          "options": [
+            "To lower internet speed",
+            "To guarantee high availability and fault tolerance",
+            "To reduce code readability"
+          ],
+          "answer": 1,
+          "explanation": "Mục đích là: 'To guarantee high availability and fault tolerance'."
+        },
+        {
+          "prompt": "What technology is utilized for message queues?",
+          "options": [
+            "Kafka",
+            "FTP",
+            "Bluetooth"
+          ],
+          "answer": 0,
+          "explanation": "Bài đọc ghi rõ: 'utilizing Kafka message queues'."
+        }
+      ],
+      "audioIds": []
+    }
+  ],
+  "audio": []
+}

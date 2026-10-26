@@ -1,0 +1,202 @@
+{
+  "id": "refrigeration",
+  "title": "Tiếng Anh kỹ thuật lạnh",
+  "version": "1.0.0",
+  "framework": "CEFR A1–B2",
+  "overview": "Từ vựng chuyên ngành điện lạnh: nguyên lý chu trình lạnh, máy nén, môi chất, bảo trì hệ thống HVAC và an toàn lao động.",
+  "contentLicense": "CC-BY-4.0 / Teacher AI Curated Curriculum",
+  "references": [
+    {
+      "title": "Teacher AI Official Curriculum - Tiếng Anh kỹ thuật lạnh",
+      "url": "https://github.com/vuhuynh2035-alt/lingua-english-coach",
+      "license": "CC-BY-4.0"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "ref-a1-1",
+      "level": "A1",
+      "unit": "Bài 1 (A1)",
+      "title": "Các bộ phận chính của hệ thống làm lạnh",
+      "objective": "Gọi tên 4 bộ phận cốt lõi: máy nén, dàn ngưng, van tiết lưu, dàn bay hơi.",
+      "reading": "A basic refrigeration system consists of four main components: the compressor, the condenser, the expansion valve, and the evaporator. The compressor pumps refrigerant vapor through the closed circuit.",
+      "vocabulary": [
+        {
+          "term": "Compressor",
+          "definition": "Máy nén"
+        },
+        {
+          "term": "Condenser",
+          "definition": "Dàn ngưng tụ (dàn nóng)"
+        },
+        {
+          "term": "Evaporator",
+          "definition": "Dàn bay hơi (dàn lạnh)"
+        },
+        {
+          "term": "Refrigerant",
+          "definition": "Môi chất lạnh (gas lạnh)"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "How many main components make up a basic refrigeration system?",
+          "options": [
+            "Two",
+            "Three",
+            "Four"
+          ],
+          "answer": 2,
+          "explanation": "Đoạn văn nêu: 'consists of four main components'."
+        },
+        {
+          "prompt": "What does the compressor pump?",
+          "options": [
+            "Water only",
+            "Refrigerant vapor",
+            "Air"
+          ],
+          "answer": 1,
+          "explanation": "'The compressor pumps refrigerant vapor through the closed circuit'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "ref-a2-1",
+      "level": "A2",
+      "unit": "Bài 2 (A2)",
+      "title": "Kiểm tra áp suất và Phát hiện rò rỉ gas",
+      "objective": "Sử dụng đồng hồ đo áp suất (manifold gauge) và xử lý xì gas lạnh.",
+      "reading": "Connect the manifold gauge set to the service ports. If the suction pressure drops below normal operating thresholds, inspect the pipe joints with an electronic leak detector or soapy water solution to identify refrigerant leaks.",
+      "vocabulary": [
+        {
+          "term": "Manifold gauge",
+          "definition": "Đồng hồ đo áp suất chuyên dụng"
+        },
+        {
+          "term": "Suction pressure",
+          "definition": "Áp suất hút (phía áp thấp)"
+        },
+        {
+          "term": "Leak detector",
+          "definition": "Thiết bị dò rò rỉ gas"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What tool is connected to the service ports?",
+          "options": [
+            "A thermometer",
+            "A manifold gauge set",
+            "A screwdriver"
+          ],
+          "answer": 1,
+          "explanation": "Chỉ dẫn: 'Connect the manifold gauge set to the service ports'."
+        },
+        {
+          "prompt": "What indicates a possible refrigerant leak?",
+          "options": [
+            "Suction pressure dropping below normal",
+            "The pipe gets warm",
+            "The display lights up"
+          ],
+          "answer": 0,
+          "explanation": "'If the suction pressure drops below normal operating thresholds'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "ref-b1-1",
+      "level": "B1",
+      "unit": "Bài 3 (B1)",
+      "title": "Bảo dưỡng định kỳ và Xử lý sự cố đóng tuyết dàn lạnh",
+      "objective": "Phân tích nguyên nhân dàn lạnh bị đóng băng, kiểm tra quạt và chu trình xả đá (defrost).",
+      "reading": "Excessive frost buildup on the evaporator coils indicates restricted airflow, defective defrost heaters, or faulty fan motors. Technicians should verify that the defrost timer and bimetal thermostat cycle correctly before recharging refrigerant.",
+      "vocabulary": [
+        {
+          "term": "Frost buildup",
+          "definition": "Tích tụ tuyết / bám đá"
+        },
+        {
+          "term": "Defrost heater",
+          "definition": "Điện trở xả đá"
+        },
+        {
+          "term": "Airflow",
+          "definition": "Lưu lượng luồng không khí"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "What can cause excessive frost on the evaporator?",
+          "options": [
+            "Restricted airflow or defective defrost heaters",
+            "Too much room lighting",
+            "Clean filters"
+          ],
+          "answer": 0,
+          "explanation": "'indicates restricted airflow, defective defrost heaters, or faulty fan motors'."
+        },
+        {
+          "prompt": "What component controls the defrost cycle schedule?",
+          "options": [
+            "The defrost timer",
+            "The water tap",
+            "The expansion tube"
+          ],
+          "answer": 0,
+          "explanation": "Kỹ thuật viên cần: 'verify that the defrost timer... cycle correctly'."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "ref-b2-1",
+      "level": "B2",
+      "unit": "Bài 4 (B2)",
+      "title": "Quy định An toàn Môi chất Lạnh & Tiêu chuẩn Xanh (Eco-friendly Refrigerants)",
+      "objective": "Hiểu về GWP (Global Warming Potential), ODP (Ozone Depletion Potential) và thu hồi môi chất an toàn.",
+      "reading": "International environmental protocols mandate the phase-out of high-GWP hydrofluorocarbons (HFCs) in favor of natural refrigerants such as ammonia (R-717), carbon dioxide (R-744), and propane (R-290), demanding stringent recovery procedures and specialized flammability safety training.",
+      "vocabulary": [
+        {
+          "term": "Phase-out",
+          "definition": "Lộ trình loại bỏ dần"
+        },
+        {
+          "term": "Global Warming Potential (GWP)",
+          "definition": "Chỉ số làm nóng lên toàn cầu"
+        },
+        {
+          "term": "Recovery procedure",
+          "definition": "Quy trình thu hồi gas thải"
+        }
+      ],
+      "questions": [
+        {
+          "prompt": "Why are high-GWP refrigerants being phased out?",
+          "options": [
+            "To lower machine weight",
+            "To comply with international environmental protection protocols",
+            "Because they are too cheap"
+          ],
+          "answer": 1,
+          "explanation": "Quy định: 'International environmental protocols mandate the phase-out'."
+        },
+        {
+          "prompt": "Which natural refrigerant is classified as R-744?",
+          "options": [
+            "Ammonia",
+            "Carbon dioxide (CO2)",
+            "Propane"
+          ],
+          "answer": 1,
+          "explanation": "'carbon dioxide (R-744)'."
+        }
+      ],
+      "audioIds": []
+    }
+  ],
+  "audio": []
+}
