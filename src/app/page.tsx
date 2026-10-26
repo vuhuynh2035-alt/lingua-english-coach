@@ -1,9 +1,25 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { generateWithGemini, getAudioData, validateGeminiKey } from "@/lib/gemini";
+import { grammarTopics } from "@/lib/grammar";
+import {
+  CoursePackage,
+  StoredCourse,
+  downloadCoursePackage,
+  getDownloadedAudio,
+  listDownloadedCourses,
+  removeDownloadedCourse,
+} from "@/lib/course-library";
+import {
+  PersonalMaterial,
+  addPersonalMaterial,
+  getPersonalMaterial,
+  listPersonalMaterials,
+  removePersonalMaterial,
+} from "@/lib/personal-library";
 
-type Section = "home" | "practice" | "profiles" | "progress" | "placement";
+type Section = "home" | "practice" | "profiles" | "progress" | "placement" | "grammar" | "courses" | "library";
 const API_KEY_STORAGE = "lingua-gemini-api-key";
 
 type Profile = {
@@ -54,7 +70,7 @@ const profiles: Profile[] = [
     icon: "💼",
     color: "blue",
     scene: "Cuộc họp dự án",
-    prompt: "Chào bạn! Mình sẽ đóng vai đồng nghiệp trong một cuộc họp dự án. Bạn có thể trả lời bằng tiếng Anh; nếu cần, cứ xen tiếng Việt nhé. Hãy thử nói: “Our team is working on...” (Nhóm mình đang làm...). Tuần này nhóm bạn đang làm gì?",
+    prompt: "Hello! I’ll be your colleague in a project meeting. Let’s practice in English. Start by completing: “Our team is working on...” What is your team working on this week?",
     words: ["Could you clarify that?", "Let's get started.", "I see your point."],
   },
   {
@@ -64,7 +80,7 @@ const profiles: Profile[] = [
     icon: "✈️",
     color: "orange",
     scene: "Làm thủ tục nhận phòng",
-    prompt: "Xin chào! Mình là nhân viên lễ tân khách sạn. Mình sẽ hướng dẫn bạn bằng tiếng Việt nếu cần. Câu hỏi tiếng Anh đầu tiên là: “Do you have a reservation?” (Bạn đã đặt phòng trước chưa?) Bạn thử trả lời bằng tiếng Anh nhé!",
+    prompt: "Welcome! I’m the receptionist at your hotel. Let’s practice checking in. Do you have a reservation?",
     words: ["I'd like to check in.", "Is breakfast included?", "Could I have a receipt?"],
   },
   {
@@ -74,17 +90,17 @@ const profiles: Profile[] = [
     icon: "💻",
     color: "purple",
     scene: "Phỏng vấn vị trí lập trình viên",
-    prompt: "Chào bạn! Mình sẽ đóng vai nhà tuyển dụng cho vị trí công nghệ. Bạn có thể trả lời bằng tiếng Anh; mình sẽ giải thích từ khó bằng tiếng Việt. Hãy kể về một vấn đề kỹ thuật bạn từng giải quyết nhé. Có thể bắt đầu: “I solved a problem with...” (Tôi đã giải quyết vấn đề về...).",
+    prompt: "Hello! I’m interviewing you for a technology role. Tell me about a technical problem you solved. You can begin: “I solved a problem with...”",
     words: ["I narrowed down the cause.", "The issue was resolved.", "It scales well."],
   },
   {
     id: "healthcare",
-    title: "Tiếng Anh ngành y tế",
-    subtitle: "Giao tiếp thân thiện với bệnh nhân",
+    title: "Tiếng Anh chuyên ngành y khoa",
+    subtitle: "Giao tiếp lâm sàng và chăm sóc bệnh nhân",
     icon: "🩺",
     color: "green",
     scene: "Hỏi thăm bệnh nhân",
-    prompt: "Xin chào! Mình sẽ đóng vai nhân viên y tế tiếp đón bệnh nhân. Hãy thử hỏi bằng tiếng Anh: “What brings you in today?” (Hôm nay bạn đến khám vì vấn đề gì?) Nếu chưa biết nói thế nào, cứ hỏi mình bằng tiếng Việt nhé.",
+    prompt: "Hello. I’m a patient at the clinic. Please ask me in English: “What brings you in today?” Then ask one clear follow-up question about my symptoms.",
     words: ["Where does it hurt?", "How long have you felt this way?", "Take a deep breath."],
   },
   {
@@ -94,7 +110,7 @@ const profiles: Profile[] = [
     icon: "📈",
     color: "pink",
     scene: "Trình bày báo cáo tháng",
-    prompt: "Chào bạn! Hãy cùng luyện trình bày báo cáo tài chính bằng tiếng Anh. Bạn có thể bắt đầu bằng: “Revenue increased by...” (Doanh thu tăng...). Tháng này có thay đổi số liệu nào bạn muốn trình bày không? Mình sẽ giải thích bằng tiếng Việt nếu bạn cần.",
+    prompt: "Let’s practice presenting a financial report in English. Begin with: “Revenue increased by...” What changed in your figures this month?",
     words: ["Revenue increased by…", "Compared with last month…", "The main driver was…"],
   },
   {
@@ -104,8 +120,18 @@ const profiles: Profile[] = [
     icon: "☕",
     color: "yellow",
     scene: "Làm quen với người mới",
-    prompt: "Xin chào! Rất vui được làm quen với bạn. Mình sẽ trò chuyện bằng tiếng Anh đơn giản và giải thích bằng tiếng Việt khi cần. Bạn thích làm gì lúc rảnh? Có thể bắt đầu: “I like...” (Tôi thích...).",
+    prompt: "Hi! It’s nice to meet you. What do you like to do in your free time? You can begin: “I like...”",
     words: ["That sounds interesting.", "How about you?", "I haven't tried that yet."],
+  },
+  {
+    id: "refrigeration",
+    title: "Tiếng Anh kỹ thuật lạnh",
+    subtitle: "Thiết bị lạnh, bảo trì và an toàn",
+    icon: "❄️",
+    color: "blue",
+    scene: "Bàn giao thiết bị lạnh",
+    prompt: "Hello! I’m a customer reporting an issue with a refrigeration unit. Ask me about the equipment, the symptoms, and when the problem started. Use clear technical English.",
+    words: ["The unit is not cooling properly.", "Please switch off the power.", "Could you describe the noise?"],
   },
 ];
 
@@ -128,26 +154,59 @@ const phraseMeanings: Record<string, string> = {
   "That sounds interesting.": "Nghe thú vị đấy.",
   "How about you?": "Còn bạn thì sao?",
   "I haven't tried that yet.": "Tôi vẫn chưa thử điều đó.",
+  "The unit is not cooling properly.": "Thiết bị không làm lạnh đúng cách.",
+  "Please switch off the power.": "Vui lòng ngắt nguồn điện.",
+  "Could you describe the noise?": "Bạn có thể mô tả tiếng ồn không?",
 };
 
 const placementQuestions = [
   {
-    question: "Chọn câu tiếng Anh đúng:",
-    options: ["She go to work every day. (Cô ấy đi làm mỗi ngày.)", "She goes to work every day. (Cô ấy đi làm mỗi ngày.)", "She going to work every day. (Cô ấy đi làm mỗi ngày.)"],
+    question: "Choose the grammatically correct sentence.",
+    options: ["She go to work every day.", "She goes to work every day.", "She going to work every day."],
     answer: 1,
-    explanation: "Câu đúng là “She goes to work every day.” Với he, she, it, động từ ở thì hiện tại đơn thường thêm -s hoặc -es.",
+    explanation: "With he, she, or it in the present simple, most verbs take -s or -es.",
   },
   {
-    question: "Câu “Could you give me a hand?” có nghĩa là gì?",
-    options: ["Bạn có thể giúp tôi không?", "Bạn có thể vỗ tay không?", "Bạn có thể cho tôi mượn tiền không?"],
+    question: "Complete the sentence: “There ___ two appointments this afternoon.”",
+    options: ["is", "are", "be"],
+    answer: 1,
+    explanation: "Use are with a plural noun in there is/are sentences.",
+  },
+  {
+    question: "Choose the correct negative sentence.",
+    options: ["We didn't received the email.", "We don't received the email.", "We didn't receive the email."],
+    answer: 2,
+    explanation: "Use did not + the base form of the verb in the past simple.",
+  },
+  {
+    question: "Choose the best response: “Could you give me a hand?”",
+    options: ["“Of course. What do you need?”", "“I have two hands.”", "“It is in my wallet.”"],
     answer: 0,
-    explanation: "“Give me a hand” là cách nói thân mật, có nghĩa là “giúp tôi một tay”.",
+    explanation: "“Give me a hand” is an informal request for help.",
   },
   {
-    question: "Điền từ còn thiếu: “If I ___ more time, I would travel.” (Nếu tôi có thêm thời gian, tôi sẽ đi du lịch.)",
+    question: "Complete the sentence: “I ___ this equipment before.”",
+    options: ["have used", "used yesterday", "am using"],
+    answer: 0,
+    explanation: "Use the present perfect to describe experience without naming a finished time.",
+  },
+  {
+    question: "Choose the sentence with the correct modal verb.",
+    options: ["You must to wear safety glasses.", "You must wear safety glasses.", "You must wearing safety glasses."],
+    answer: 1,
+    explanation: "A modal verb such as must is followed by the base form without to.",
+  },
+  {
+    question: "Complete the sentence: “If I ___ more time, I would review the report.”",
     options: ["have", "will have", "had"],
     answer: 2,
-    explanation: "Đáp án là “had”. Câu giả định này dùng “If + quá khứ đơn”, sau đó là “would + động từ nguyên mẫu”.",
+    explanation: "The second conditional uses if + past simple, followed by would + base verb.",
+  },
+  {
+    question: "Complete the formal recommendation: “The device ___ inspected before use.”",
+    options: ["should be", "should to be", "should being"],
+    answer: 0,
+    explanation: "Use modal + be + past participle to form a passive recommendation.",
   },
 ];
 
@@ -254,6 +313,29 @@ export default function Home() {
   const [voiceError, setVoiceError] = useState("");
   const [placementAnswers, setPlacementAnswers] = useState<number[]>([]);
   const [placementResult, setPlacementResult] = useState("");
+  const [grammarTopicId, setGrammarTopicId] = useState(grammarTopics[0].id);
+  const [grammarAnswers, setGrammarAnswers] = useState<number[]>([]);
+  const [grammarSubmitted, setGrammarSubmitted] = useState(false);
+  const [grammarScores, setGrammarScores] = useState<Record<string, number>>({});
+  const [grammarError, setGrammarError] = useState("");
+  const [offlineReady, setOfflineReady] = useState(false);
+  const [offlineError, setOfflineError] = useState("");
+  const [coursePacks, setCoursePacks] = useState<StoredCourse[]>([]);
+  const [courseBusyId, setCourseBusyId] = useState("");
+  const [courseDownloadProgress, setCourseDownloadProgress] = useState({ completed: 0, total: 0 });
+  const [courseError, setCourseError] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [selectedLessonId, setSelectedLessonId] = useState("");
+  const [courseAnswers, setCourseAnswers] = useState<number[]>([]);
+  const [courseQuizSubmitted, setCourseQuizSubmitted] = useState(false);
+  const [courseProgress, setCourseProgress] = useState<Record<string, string[]>>({});
+  const [offlineAudioUrl, setOfflineAudioUrl] = useState("");
+  const [personalMaterials, setPersonalMaterials] = useState<PersonalMaterial[]>([]);
+  const [selectedMaterial, setSelectedMaterial] = useState<PersonalMaterial | null>(null);
+  const [materialUrl, setMaterialUrl] = useState("");
+  const [materialText, setMaterialText] = useState("");
+  const [materialBusy, setMaterialBusy] = useState(false);
+  const [materialError, setMaterialError] = useState("");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const voiceChatRecorderRef = useRef<MediaRecorder | null>(null);
@@ -261,6 +343,7 @@ export default function Home() {
   const voiceChatChunksRef = useRef<Blob[]>([]);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
+  const materialInputRef = useRef<HTMLInputElement | null>(null);
 
   const profile = profiles.find((item) => item.id === progress.profile) ?? profiles[0];
   const weekDays = Array.from({ length: 7 }, (_, index) => {
@@ -293,7 +376,57 @@ export default function Home() {
     } catch {
       setApiKeyError("Trình duyệt không cho phép lưu API key trên thiết bị này.");
     }
+    try {
+      const savedScores: unknown = JSON.parse(localStorage.getItem("lingua-grammar-scores") ?? "{}");
+      if (typeof savedScores === "object" && savedScores !== null && !Array.isArray(savedScores)) {
+        const validScores = Object.fromEntries(
+          Object.entries(savedScores).filter((entry): entry is [string, number] =>
+            typeof entry[1] === "number" && Number.isInteger(entry[1]) && entry[1] >= 0 && entry[1] <= 100),
+        );
+        setGrammarScores(validScores);
+      }
+    } catch {
+      setGrammarError("Không thể đọc kết quả ngữ pháp đã lưu trên thiết bị này.");
+    }
+    try {
+      const savedCourseProgress: unknown = JSON.parse(localStorage.getItem("lingua-course-progress") ?? "{}");
+      if (typeof savedCourseProgress === "object" && savedCourseProgress !== null && !Array.isArray(savedCourseProgress)) {
+        const validProgress = Object.fromEntries(
+          Object.entries(savedCourseProgress).filter((entry): entry is [string, string[]] =>
+            Array.isArray(entry[1]) && entry[1].every((lessonId) => typeof lessonId === "string")),
+        );
+        setCourseProgress(validProgress);
+      }
+    } catch {
+      setCourseError("Không thể đọc tiến độ giáo trình đã lưu trên thiết bị này.");
+    }
+    void listDownloadedCourses()
+      .then(setCoursePacks)
+      .catch((error: unknown) => {
+        setCourseError(error instanceof Error ? error.message : "Không thể đọc các gói học offline trên thiết bị.");
+      });
+    void listPersonalMaterials()
+      .then(setPersonalMaterials)
+      .catch((error: unknown) => {
+        setMaterialError(error instanceof Error ? error.message : "Không thể đọc thư viện cá nhân trên thiết bị.");
+      });
     setProgressLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
+    if (!("serviceWorker" in navigator)) {
+      setOfflineError("Trình duyệt này không hỗ trợ mở ứng dụng offline.");
+      return;
+    }
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+    void navigator.serviceWorker
+      .register(`${basePath}/sw.js`, { scope: `${basePath}/` })
+      .then(() => navigator.serviceWorker.ready)
+      .then(() => setOfflineReady(true))
+      .catch((error: unknown) => {
+        setOfflineError(error instanceof Error ? error.message : "Không thể chuẩn bị ứng dụng để dùng offline.");
+      });
   }, []);
 
   useEffect(() => {
@@ -319,6 +452,14 @@ export default function Home() {
     voiceChatStreamRef.current?.getTracks().forEach((track) => track.stop());
     window.speechSynthesis?.cancel();
   }, []);
+
+  useEffect(() => () => {
+    if (offlineAudioUrl) URL.revokeObjectURL(offlineAudioUrl);
+  }, [offlineAudioUrl]);
+
+  useEffect(() => () => {
+    if (materialUrl) URL.revokeObjectURL(materialUrl);
+  }, [materialUrl]);
 
   function selectProfile(id: string) {
     const nextProfile = profiles.find((item) => item.id === id);
@@ -349,7 +490,7 @@ export default function Home() {
       const transcript = conversation.map((message) =>
         `${message.role === "user" ? "Người học" : "Gia sư"}: ${message.content}`).join("\n");
       const reply = await generateWithGemini(apiKey, [{
-        text: `You are Maya, an encouraging, lively English teacher for a Vietnamese beginner. The learner chose the profile "${profile.title}" and estimated level "${progress.level}". Always make instructions and explanations understandable to a Vietnamese speaker who may know no English: explain unfamiliar phrases in simple Vietnamese, give Vietnamese meanings for important new English, and accept questions in Vietnamese. Keep the learner practicing natural English at their level, increasing difficulty gently. Keep replies under 100 words. Ask one clear follow-up question. Gently correct one useful mistake in Vietnamese, then continue. Never claim to have measured pronunciation from text. Conversation:\n${transcript}\nReply as the coach.`,
+        text: `You are Maya, an encouraging English teacher for a Vietnamese learner. The learner chose "${profile.title}" and is estimated at CEFR ${progress.level}. Keep all lesson material, practice prompts, example sentences, and quiz-like questions in English only; never put Vietnamese translations beside English lesson content. If the learner explicitly asks for help in Vietnamese, briefly explain the point in Vietnamese separately, then return to English practice. Use English at the learner's level, gently correct one useful mistake, and ask one clear follow-up question. Keep replies under 100 words. Never claim to have measured pronunciation from text. Conversation:\n${transcript}\nReply as the coach.`,
       }]);
       setMessages((current) => [...current, { role: "assistant", content: reply }]);
       setProgress((current) => recordPractice(current, 2, !practiceSessionCounted.current));
@@ -424,7 +565,7 @@ export default function Home() {
           const audio = await getAudioData(blob);
           const response = await generateWithGemini(apiKey, [
             {
-              text: `You are Maya, an encouraging, lively English teacher for a Vietnamese beginner. Their profile is "${profile.title}" and estimated level is "${progress.level}". Listen to the attached audio carefully. The learner may speak English or ask for help in Vietnamese. Transcribe their English words accurately; when they speak Vietnamese, provide a short Vietnamese transcription or translation of their request. Respond as a friendly tutor, primarily using simple English with Vietnamese translations for important phrases. Accept Vietnamese questions, explain vocabulary and grammar in Vietnamese, correct one useful mistake gently, and invite one short answer in English. Keep your reply under 100 words. Conversation so far:\n${transcript}\nReturn ONLY valid JSON: {"transcript":"what the learner said or its Vietnamese meaning","reply":"your bilingual, level-appropriate coach response"}.`,
+              text: `You are Maya, an encouraging English teacher for a Vietnamese learner. Their profile is "${profile.title}" and estimated CEFR level is "${progress.level}". Listen carefully. Transcribe English accurately; if the learner speaks Vietnamese, transcribe their request in Vietnamese. Keep all lesson material, practice prompts, examples, and quiz-like questions in English only, without Vietnamese translations beside them. If they explicitly request an explanation in Vietnamese, explain briefly and separately, then continue in English. Correct one useful mistake gently and invite one short answer in English. Keep your reply under 100 words. Conversation so far:\n${transcript}\nReturn ONLY valid JSON: {"transcript":"what the learner said","reply":"your level-appropriate coach response"}.`,
             },
             { inlineData: audio },
           ]);
@@ -584,15 +725,186 @@ export default function Home() {
       (total, answer, index) => total + (answer === placementQuestions[index].answer ? 1 : 0),
       0,
     );
-    const level = score === 3 ? "B1" : score === 2 ? "A2" : "A1";
+    const level = score >= 7 ? "B2" : score >= 5 ? "B1" : score >= 3 ? "A2" : "A1";
     setProgress((current) => ({ ...current, level }));
     const corrections = placementQuestions
       .filter((question, index) => placementAnswers[index] !== question.answer)
       .map((question) => question.explanation);
     setPlacementResult(
       `Bạn trả lời đúng ${score}/${placementQuestions.length} câu. Trình độ bắt đầu của bạn là ${level}. Gia sư sẽ điều chỉnh bài luyện tập cho phù hợp.` +
-      (corrections.length ? `\n\nCùng học thêm nhé:\n${corrections.map((item) => `• ${item}`).join("\n")}` : "\n\nTuyệt lắm, bạn đã trả lời đúng cả 3 câu!"),
+      (corrections.length ? `\n\nCùng học thêm nhé:\n${corrections.map((item) => `• ${item}`).join("\n")}` : `\n\nTuyệt lắm, bạn đã trả lời đúng cả ${placementQuestions.length} câu!`),
     );
+  }
+
+  function selectGrammarTopic(topicId: string) {
+    setGrammarTopicId(topicId);
+    setGrammarAnswers([]);
+    setGrammarSubmitted(false);
+    setGrammarError("");
+  }
+
+  function completeGrammarQuiz() {
+    const topic = grammarTopics.find((item) => item.id === grammarTopicId);
+    if (!topic || grammarAnswers.length !== topic.questions.length) return;
+    const score = topic.questions.reduce(
+      (total, question, index) => total + (grammarAnswers[index] === question.answer ? 1 : 0),
+      0,
+    );
+    const percentage = Math.round((score / topic.questions.length) * 100);
+    const updatedScores = { ...grammarScores, [topic.id]: Math.max(grammarScores[topic.id] ?? 0, percentage) };
+    setGrammarScores(updatedScores);
+    setGrammarSubmitted(true);
+    setGrammarError("");
+    try {
+      localStorage.setItem("lingua-grammar-scores", JSON.stringify(updatedScores));
+    } catch {
+      setGrammarError("Không thể lưu kết quả trên thiết bị này. Hãy kiểm tra dung lượng bộ nhớ trình duyệt.");
+    }
+  }
+
+  async function downloadCourse(courseId: string) {
+    setCourseBusyId(courseId);
+    setCourseDownloadProgress({ completed: 0, total: 0 });
+    setCourseError("");
+    try {
+      const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+      const course = await downloadCoursePackage(courseId, basePath, (completed, total) => {
+        setCourseDownloadProgress({ completed, total });
+      });
+      const downloaded = await listDownloadedCourses();
+      setCoursePacks(downloaded);
+      setSelectedCourseId(course.id);
+      setSelectedLessonId(course.lessons[0]?.id ?? "");
+      setCourseAnswers([]);
+      setCourseQuizSubmitted(false);
+      setSection("courses");
+    } catch (error) {
+      setCourseError(error instanceof Error ? error.message : "Không thể tải giáo trình. Vui lòng thử lại.");
+    } finally {
+      setCourseBusyId("");
+    }
+  }
+
+  async function removeCourse(courseId: string) {
+    setCourseError("");
+    try {
+      await removeDownloadedCourse(courseId);
+      setCoursePacks(await listDownloadedCourses());
+      if (selectedCourseId === courseId) {
+        setSelectedCourseId("");
+        setSelectedLessonId("");
+        setOfflineAudioUrl("");
+      }
+    } catch (error) {
+      setCourseError(error instanceof Error ? error.message : "Không thể xóa gói học khỏi thiết bị.");
+    }
+  }
+
+  async function importPersonalMaterial(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = "";
+    if (!file) return;
+    setMaterialBusy(true);
+    setMaterialError("");
+    try {
+      const added = await addPersonalMaterial(file);
+      setPersonalMaterials((current) => [added, ...current]);
+    } catch (error) {
+      setMaterialError(error instanceof Error ? error.message : "Không thể lưu tệp vào thư viện cá nhân.");
+    } finally {
+      setMaterialBusy(false);
+    }
+  }
+
+  async function openPersonalMaterial(material: PersonalMaterial) {
+    setMaterialError("");
+    try {
+      const stored = await getPersonalMaterial(material.id);
+      if (!stored) throw new Error("Không tìm thấy tệp trên thiết bị. Có thể dữ liệu trình duyệt đã bị xóa.");
+      setSelectedMaterial(material);
+      setMaterialText(material.type === "text" ? await stored.file.text() : "");
+      setMaterialUrl(material.type === "text" ? "" : URL.createObjectURL(stored.file));
+    } catch (error) {
+      setMaterialError(error instanceof Error ? error.message : "Không thể mở tài liệu đã lưu.");
+    }
+  }
+
+  async function deletePersonalMaterial(id: string) {
+    setMaterialError("");
+    try {
+      await removePersonalMaterial(id);
+      setPersonalMaterials((current) => current.filter((item) => item.id !== id));
+      if (selectedMaterial?.id === id) {
+        setSelectedMaterial(null);
+        setMaterialText("");
+        setMaterialUrl("");
+      }
+    } catch (error) {
+      setMaterialError(error instanceof Error ? error.message : "Không thể xóa tài liệu khỏi thiết bị.");
+    }
+  }
+
+  function openDownloadedCourse(courseId: string) {
+    const course = coursePacks.find((item) => item.id === courseId);
+    if (!course) {
+      setCourseError("Không tìm thấy gói học trên thiết bị này. Hãy tải lại gói học khi có mạng.");
+      return;
+    }
+    setSelectedCourseId(course.id);
+    setSelectedLessonId(course.lessons[0]?.id ?? "");
+    setCourseAnswers([]);
+    setCourseQuizSubmitted(false);
+    setCourseError("");
+    setOfflineAudioUrl("");
+  }
+
+  function openCourseLesson(lessonId: string) {
+    setSelectedLessonId(lessonId);
+    setCourseAnswers([]);
+    setCourseQuizSubmitted(false);
+    setCourseError("");
+    setOfflineAudioUrl("");
+  }
+
+  async function playOfflineAudio(courseId: string, audioId: string) {
+    setCourseError("");
+    try {
+      const blob = await getDownloadedAudio(courseId, audioId);
+      if (!blob) throw new Error("Không tìm thấy audio offline. Hãy xóa và tải lại gói giáo trình này.");
+      setOfflineAudioUrl(URL.createObjectURL(blob));
+    } catch (error) {
+      setCourseError(error instanceof Error ? error.message : "Không thể mở audio đã tải về.");
+    }
+  }
+
+  function completeCourseQuiz(
+    course: CoursePackage,
+    lessonId: string,
+    questions: CoursePackage["lessons"][number]["questions"],
+  ) {
+    if (!questions.length || courseAnswers.length !== questions.length ||
+        courseAnswers.some((answer) => !Number.isInteger(answer) || answer < 0)) return;
+    const score = questions.reduce(
+      (total, question, index) => total + (courseAnswers[index] === question.answer ? 1 : 0),
+      0,
+    );
+    const passed = score >= Math.ceil(questions.length * 0.7);
+    setCourseQuizSubmitted(true);
+    if (!passed) return;
+    const updatedProgress = {
+      ...courseProgress,
+      [course.id]: courseProgress[course.id] ?? [],
+    };
+    if (!updatedProgress[course.id].includes(lessonId)) {
+      updatedProgress[course.id] = [...updatedProgress[course.id], lessonId];
+    }
+    setCourseProgress(updatedProgress);
+    setCourseError("");
+    try {
+      localStorage.setItem("lingua-course-progress", JSON.stringify(updatedProgress));
+    } catch {
+      setCourseError("Không thể lưu tiến độ giáo trình trên thiết bị này.");
+    }
   }
 
   function renderPractice() {
@@ -666,7 +978,7 @@ export default function Home() {
       <section className="panel placement-panel">
         <span className="eyebrow">BƯỚC ĐẦU TIÊN</span>
         <h2>Cùng tìm trình độ tiếng Anh của bạn</h2>
-        <p>Trả lời 3 câu hỏi ngắn để Maya chọn từ vựng và tốc độ phù hợp. Đây chỉ là ước lượng ban đầu, bạn có thể làm lại bất cứ lúc nào.</p>
+        <p>Trả lời 8 câu hỏi bằng tiếng Anh để ước lượng mức bắt đầu từ A1 đến B2. Đây là bài sàng lọc ngắn, không thay thế bài đánh giá CEFR chính thức; bạn có thể làm lại bất cứ lúc nào.</p>
         {placementQuestions.map((item, questionIndex) => (
           <fieldset className="question-card" key={item.question}>
             <legend>{questionIndex + 1}. {item.question}</legend>
@@ -687,6 +999,76 @@ export default function Home() {
         <button className="button button-primary" onClick={completePlacement} disabled={!placementComplete}>Xem trình độ của tôi <span>→</span></button>
         {placementResult && <div className="placement-result">🎉 {placementResult}</div>}
       </section>
+    );
+  }
+
+  function renderGrammar() {
+    const topic = grammarTopics.find((item) => item.id === grammarTopicId) ?? grammarTopics[0];
+    const answeredAll = topic.questions.every((_, index) => Number.isInteger(grammarAnswers[index]));
+    const score = topic.questions.reduce(
+      (total, question, index) => total + (grammarAnswers[index] === question.answer ? 1 : 0),
+      0,
+    );
+    return (
+      <>
+        <div className="page-intro">
+          <span className="eyebrow">LUYỆN NGỮ PHÁP THEO CẤU TRÚC</span>
+          <h2>Học từng cấu trúc, luyện đến khi vững.</h2>
+          <p>Chọn trình độ và cấu trúc cần luyện. Câu hỏi, lựa chọn và giải thích trong bài tập đều bằng tiếng Anh; kết quả được lưu trên thiết bị.</p>
+        </div>
+        <div className="grammar-layout">
+          <section className="panel grammar-topics">
+            <span className="eyebrow">CHỌN CẤU TRÚC</span>
+            {(["A1", "A2", "B1", "B2"] as const).map((level) => (
+              <div className="grammar-level" key={level}>
+                <strong>{level} · CEFR</strong>
+                {grammarTopics.filter((item) => item.level === level).map((item) => (
+                  <button key={item.id} className={item.id === topic.id ? "grammar-topic selected" : "grammar-topic"} onClick={() => selectGrammarTopic(item.id)}>
+                    <span>{item.title}</span>
+                    {grammarScores[item.id] !== undefined && <small>Điểm cao nhất: {grammarScores[item.id]}%</small>}
+                  </button>
+                ))}
+              </div>
+            ))}
+          </section>
+          <section className="panel grammar-quiz">
+            <div className="grammar-quiz-heading"><span className="level-chip">{topic.level}</span><span className="eyebrow">GRAMMAR PRACTICE</span></div>
+            <h3>{topic.title}</h3>
+            <p className="grammar-structure"><strong>Structure:</strong> {topic.structure}</p>
+            {topic.questions.map((question, questionIndex) => (
+              <fieldset className="question-card" key={`${topic.id}-${questionIndex}`}>
+                <legend>{questionIndex + 1}. {question.prompt}</legend>
+                <div className="answer-options">
+                  {question.options.map((option, optionIndex) => {
+                    const selected = grammarAnswers[questionIndex] === optionIndex;
+                    const correct = grammarSubmitted && question.answer === optionIndex;
+                    const incorrect = grammarSubmitted && selected && !correct;
+                    return (
+                      <button type="button" key={option} className={`answer-option${selected ? " selected" : ""}${correct ? " correct" : ""}${incorrect ? " incorrect" : ""}`}
+                        onClick={() => {
+                          if (grammarSubmitted) return;
+                          setGrammarAnswers((answers) => {
+                            const updated = [...answers];
+                            updated[questionIndex] = optionIndex;
+                            return updated;
+                          });
+                        }}>
+                        <span>{String.fromCharCode(65 + optionIndex)}</span>{option}
+                      </button>
+                    );
+                  })}
+                </div>
+                {grammarSubmitted && <p className="grammar-explanation">{question.explanation}</p>}
+              </fieldset>
+            ))}
+            {grammarSubmitted
+              ? <button className="button button-outline" onClick={() => { setGrammarAnswers([]); setGrammarSubmitted(false); }}>Làm lại bài tập <span>↻</span></button>
+              : <button className="button button-primary" onClick={completeGrammarQuiz} disabled={!answeredAll}>Chấm bài <span>→</span></button>}
+            {grammarSubmitted && <div className="placement-result" role="status">Score: {score}/{topic.questions.length}. {score === topic.questions.length ? "Excellent work!" : "Review the explanations and try again to improve your score."}</div>}
+            {grammarError && <p className="error-message" role="alert">{grammarError}</p>}
+          </section>
+        </div>
+      </>
     );
   }
 
@@ -746,7 +1128,11 @@ export default function Home() {
   function renderProfiles() {
     return (
       <>
-        <div className="page-intro"><span className="eyebrow">HỌC ĐIỀU BẠN CẦN</span><h2>Học tiếng Anh theo lĩnh vực của bạn.</h2><p>Chọn một lĩnh vực để luyện hội thoại thực tế, học cụm từ hữu ích và tự tin hơn với mục tiêu của mình.</p></div>
+        <div className="page-intro"><span className="eyebrow">HỌC ĐIỀU BẠN CẦN</span><h2>Học tiếng Anh theo lĩnh vực của bạn.</h2><p>Chọn một lĩnh vực để luyện hội thoại thực tế, học cụm từ hữu ích và tự tin hơn với mục tiêu của mình.</p><button className="button button-outline" onClick={() => setSection("courses")}>Tải giáo trình và audio offline →</button></div>
+        <div className="offline-status" role={offlineError ? "alert" : "status"}>
+          <span>{offlineReady ? "✓" : offlineError ? "!" : "◌"}</span>
+          <p>{offlineReady ? "Ứng dụng đã lưu phần khung để có thể mở lại khi offline. Hãy tải riêng gói giáo trình để lưu bài học và audio." : offlineError || "Đang chuẩn bị ứng dụng cho chế độ offline…"}</p>
+        </div>
         <div className="all-profiles-grid">{profiles.map((item) => (
           <button key={item.id} className={`profile-card large-profile ${item.id === progress.profile ? "active-profile" : ""}`} onClick={() => selectProfile(item.id)}>
             <span className={`profile-icon ${item.color}`}>{item.icon}</span><strong>{item.title}</strong><span>{item.subtitle}</span>
@@ -754,6 +1140,228 @@ export default function Home() {
             <i>{item.id === progress.profile ? "ĐANG CHỌN" : "CHỌN LỘ TRÌNH NÀY →"}</i>
           </button>
         ))}</div>
+      </>
+    );
+  }
+
+  function renderCourses() {
+    const course = coursePacks.find((item) => item.id === selectedCourseId);
+    if (selectedCourseId && !course) {
+      return (
+        <section className="panel course-empty-state">
+          <h2>Không tìm thấy gói học offline</h2>
+          <p>{courseError || "Gói học này chưa được tải về thiết bị."}</p>
+          <button className="button button-outline" onClick={() => { setSelectedCourseId(""); setCourseError(""); }}>Quay lại thư viện</button>
+        </section>
+      );
+    }
+    if (course) {
+      const lesson = course.lessons.find((item) => item.id === selectedLessonId) ?? course.lessons[0];
+      const completedLessons = courseProgress[course.id] ?? [];
+      const answeredAll = lesson.questions.every((_, index) => Number.isInteger(courseAnswers[index]));
+      const correctCount = lesson.questions.reduce(
+        (total, question, index) => total + (courseAnswers[index] === question.answer ? 1 : 0),
+        0,
+      );
+      const passed = correctCount >= Math.ceil(lesson.questions.length * 0.7);
+      const linkedAudio = course.audio.filter((audio) => lesson.audioIds.includes(audio.id));
+      return (
+        <>
+          <div className="page-intro">
+            <button className="text-button" onClick={() => { setSelectedCourseId(""); setSelectedLessonId(""); setOfflineAudioUrl(""); }}>← Tất cả giáo trình</button>
+            <span className="eyebrow">{course.framework} · PHIÊN BẢN {course.version}</span>
+            <h2>{course.title}</h2>
+            <p>{course.overview}</p>
+            <p className="course-license">Giấy phép nội dung: {course.contentLicense}</p>
+          </div>
+          <div className="course-curriculum-layout">
+            <section className="panel course-lesson-list">
+              <span className="eyebrow">LỘ TRÌNH A1–B2</span>
+              {(["A1", "A2", "B1", "B2"] as const).map((level) => {
+                const levelLessons = course.lessons.filter((item) => item.level === level);
+                if (!levelLessons.length) return null;
+                return (
+                  <div className="course-level" key={level}>
+                    <strong>{level}</strong>
+                    {levelLessons.map((item) => {
+                      const complete = completedLessons.includes(item.id);
+                      return (
+                        <button key={item.id} className={item.id === lesson.id ? "course-lesson selected" : "course-lesson"} onClick={() => openCourseLesson(item.id)}>
+                          <span>{complete ? "✓" : "○"}</span><span>{item.title}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+              <p className="course-progress-note">{completedLessons.length}/{course.lessons.length} bài đạt yêu cầu</p>
+              <div className="course-references">
+                <strong>Nguồn và giấy phép</strong>
+                {course.references.map((reference) => (
+                  <a key={reference.url} href={reference.url} target="_blank" rel="noreferrer">{reference.title} · {reference.license} ↗</a>
+                ))}
+              </div>
+            </section>
+            <section className="panel course-lesson">
+              <span className="level-chip">{lesson.level}</span>
+              <span className="eyebrow">{lesson.unit}</span>
+              <h3>{lesson.title}</h3>
+              <p className="course-objective"><strong>Learning objective:</strong> {lesson.objective}</p>
+              <div className="course-reading">{lesson.reading}</div>
+              <div className="course-vocabulary">
+                <h4>Key vocabulary</h4>
+                {lesson.vocabulary.map((item) => <p key={item.term}><strong>{item.term}</strong><span>{item.definition}</span></p>)}
+              </div>
+              {linkedAudio.length > 0 && (
+                <div className="course-audio">
+                  <h4>Listening practice</h4>
+                  {linkedAudio.map((audio) => (
+                    <div className="course-audio-item" key={audio.id}>
+                      <button className="button button-outline" onClick={() => { void playOfflineAudio(course.id, audio.id); }}>▶ Nghe audio offline</button>
+                      <span>{audio.title} · {Math.round(audio.durationSeconds / 60)} phút</span>
+                      <small>{audio.attribution} · {audio.license}</small>
+                    </div>
+                  ))}
+                  {offlineAudioUrl && <audio controls preload="metadata" src={offlineAudioUrl}>Trình duyệt không hỗ trợ phát audio.</audio>}
+                </div>
+              )}
+              <div className="course-quiz">
+                <span className="eyebrow">PRACTICE · ENGLISH ONLY</span>
+                {lesson.questions.map((question, questionIndex) => (
+                  <fieldset className="question-card" key={`${lesson.id}-${questionIndex}`}>
+                    <legend>{questionIndex + 1}. {question.prompt}</legend>
+                    <div className="answer-options">
+                      {question.options.map((option, optionIndex) => {
+                        const selected = courseAnswers[questionIndex] === optionIndex;
+                        const correct = courseQuizSubmitted && question.answer === optionIndex;
+                        const incorrect = courseQuizSubmitted && selected && !correct;
+                        return (
+                          <button type="button" key={option} className={`answer-option${selected ? " selected" : ""}${correct ? " correct" : ""}${incorrect ? " incorrect" : ""}`}
+                            onClick={() => {
+                              if (courseQuizSubmitted) return;
+                              setCourseAnswers((answers) => {
+                                const updated = [...answers];
+                                updated[questionIndex] = optionIndex;
+                                return updated;
+                              });
+                            }}>
+                            <span>{String.fromCharCode(65 + optionIndex)}</span>{option}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {courseQuizSubmitted && <p className="grammar-explanation">{question.explanation}</p>}
+                  </fieldset>
+                ))}
+                {courseQuizSubmitted
+                  ? <div className="placement-result" role="status">
+                      Score: {correctCount}/{lesson.questions.length}. {passed ? "Lesson completed." : "You need 70% to complete this lesson. Review the explanations and try again."}
+                      {!passed && <button className="button button-outline" onClick={() => { setCourseAnswers([]); setCourseQuizSubmitted(false); }}>Làm lại bài <span>↻</span></button>}
+                    </div>
+                  : <button className="button button-primary" disabled={!answeredAll} onClick={() => completeCourseQuiz(course, lesson.id, lesson.questions)}>Chấm bài <span>→</span></button>}
+              </div>
+            </section>
+          </div>
+          {courseError && <p className="error-message" role="alert">{courseError}</p>}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div className="page-intro">
+          <span className="eyebrow">GIÁO TRÌNH TẢI THEO LĨNH VỰC</span>
+          <h2>Chọn gói học cần lưu trên thiết bị.</h2>
+          <p>Mỗi gói được thiết kế theo CEFR A1–B2, gồm bài học, câu hỏi luyện tập và audio nghe. Nội dung gói tải về dùng offline; hội thoại AI và chấm phát âm cần Internet.</p>
+          <button className="button button-outline" onClick={() => setSection("library")}>Mở thư viện tài liệu cá nhân →</button>
+        </div>
+        <div className="offline-status" role={offlineError ? "alert" : "status"}>
+          <span>{offlineReady ? "✓" : offlineError ? "!" : "◌"}</span>
+          <p>{offlineReady ? "Ứng dụng đã lưu phần khung để có thể mở lại khi offline." : offlineError || "Đang chuẩn bị ứng dụng cho chế độ offline…"}</p>
+        </div>
+        {courseError && <p className="error-message" role="alert">{courseError}</p>}
+        <div className="course-catalog">
+          {profiles.map((item) => {
+            const downloaded = coursePacks.find((pack) => pack.id === item.id);
+            const busy = courseBusyId === item.id;
+            return (
+              <section className="panel course-catalog-card" key={item.id}>
+                <span className={`profile-icon ${item.color}`}>{item.icon}</span>
+                <div className="course-catalog-copy">
+                  <strong>{item.title}</strong>
+                  <span>{item.subtitle}</span>
+                  {downloaded && <small>{downloaded.lessons.length} bài học · {downloaded.audio.length} audio · phiên bản {downloaded.version}</small>}
+                </div>
+                {downloaded
+                  ? <div className="course-catalog-actions">
+                      <button className="button button-primary" onClick={() => openDownloadedCourse(item.id)}>Học offline <span>→</span></button>
+                      <button className="remove-key-button" onClick={() => { void removeCourse(item.id); }}>Xóa gói tải về</button>
+                    </div>
+                  : <button className="button button-primary" disabled={Boolean(courseBusyId)} onClick={() => { void downloadCourse(item.id); }}>
+                      {busy ? `Đang tải audio ${courseDownloadProgress.completed}/${courseDownloadProgress.total || "…"}` : "Tải gói học"}
+                    </button>}
+              </section>
+            );
+          })}
+        </div>
+        <p className="course-storage-note">Gói học và audio được lưu trong IndexedDB trên thiết bị này. Việc tải/xóa gói không ảnh hưởng tiến độ học hoặc API key.</p>
+      </>
+    );
+  }
+
+  function renderPersonalLibrary() {
+    return (
+      <>
+        <div className="page-intro">
+          <span className="eyebrow">THƯ VIỆN RIÊNG TRÊN THIẾT BỊ</span>
+          <h2>Tài liệu học của bạn.</h2>
+          <p>Thêm PDF, audio hoặc tệp văn bản mà bạn có quyền lưu trên thiết bị. Tệp chỉ lưu trong trình duyệt này, không đưa lên GitHub, không gửi tới máy chủ và không đồng bộ giữa các thiết bị.</p>
+        </div>
+        <section className="panel personal-library-panel">
+          <input
+            ref={materialInputRef}
+            type="file"
+            accept=".pdf,.mp3,.m4a,.wav,.ogg,.opus,.aac,.flac,.txt,.md,application/pdf,text/plain,audio/*"
+            className="visually-hidden-input"
+            aria-label="Chọn tài liệu cá nhân"
+            onChange={(event) => { void importPersonalMaterial(event); }}
+          />
+          <button className="button button-primary" onClick={() => materialInputRef.current?.click()} disabled={materialBusy}>
+            {materialBusy ? "Đang lưu vào thiết bị…" : "＋ Thêm tài liệu"}
+          </button>
+          <div className="personal-library-warning">
+            <strong>Chỉ nhập tài liệu bạn được phép sử dụng.</strong>
+            <span>Với sách Oxford, chỉ chọn tệp không bị DRM và việc lưu bản cá nhân đó được giấy phép cho phép. Không thể nhập hoặc phá bảo vệ sách trong Oxford Learner’s Bookshelf.</span>
+          </div>
+          {materialError && <p className="error-message" role="alert">{materialError}</p>}
+          {personalMaterials.length === 0
+            ? <div className="personal-library-empty"><span>📚</span><strong>Thư viện chưa có tài liệu</strong><p>Thêm một PDF, bài nghe hoặc ghi chú để học trên thiết bị này.</p></div>
+            : <div className="personal-material-list">
+                {personalMaterials.map((material) => (
+                  <article className={`personal-material-card${selectedMaterial?.id === material.id ? " selected" : ""}`} key={material.id}>
+                    <span className="personal-material-icon">{material.type === "pdf" ? "PDF" : material.type === "audio" ? "♫" : "TXT"}</span>
+                    <div className="personal-material-info">
+                      <strong title={material.name}>{material.name}</strong>
+                      <span>{(material.size / (1024 * 1024)).toFixed(material.size < 1024 * 1024 ? 3 : 1)} MB · {new Date(material.addedAt).toLocaleDateString("vi-VN")}</span>
+                    </div>
+                    <button className="button button-outline" onClick={() => { void openPersonalMaterial(material); }}>Mở</button>
+                    <button className="personal-material-delete" aria-label={`Xóa ${material.name}`} onClick={() => { void deletePersonalMaterial(material.id); }}>Xóa</button>
+                  </article>
+                ))}
+              </div>}
+        </section>
+        {selectedMaterial && (
+          <section className="panel personal-material-viewer">
+            <div className="personal-viewer-heading">
+              <div><span className="eyebrow">ĐANG MỞ TÀI LIỆU CÁ NHÂN</span><h3>{selectedMaterial.name}</h3></div>
+              <button className="button button-outline" onClick={() => { setSelectedMaterial(null); setMaterialText(""); setMaterialUrl(""); }}>Đóng</button>
+            </div>
+            {selectedMaterial.type === "pdf" && materialUrl && <iframe title={selectedMaterial.name} src={materialUrl} />}
+            {selectedMaterial.type === "audio" && materialUrl && <audio className="personal-audio-player" controls src={materialUrl}>Trình duyệt này không hỗ trợ phát tệp audio.</audio>}
+            {selectedMaterial.type === "text" && <pre className="personal-text-viewer">{materialText}</pre>}
+          </section>
+        )}
+        <p className="course-storage-note">Thư viện cá nhân nằm trong bộ nhớ website của trình duyệt này. Xóa dữ liệu website hoặc đổi trình duyệt/thiết bị có thể làm mất bản lưu; hãy giữ bản gốc riêng.</p>
       </>
     );
   }
@@ -779,6 +1387,9 @@ export default function Home() {
     { id: "home", icon: "⌂", label: "Trang chủ" },
     { id: "practice", icon: "◉", label: "Luyện tập" },
     { id: "profiles", icon: "✧", label: "Lộ trình" },
+    { id: "courses", icon: "▣", label: "Giáo trình" },
+    { id: "library", icon: "▤", label: "Tài liệu" },
+    { id: "grammar", icon: "Aa", label: "Ngữ pháp" },
     { id: "progress", icon: "↗", label: "Tiến độ" },
   ];
 
@@ -811,6 +1422,9 @@ export default function Home() {
           {section === "placement" && renderPlacement()}
           {section === "profiles" && renderProfiles()}
           {section === "progress" && renderProgress()}
+          {section === "grammar" && renderGrammar()}
+          {section === "courses" && renderCourses()}
+          {section === "library" && renderPersonalLibrary()}
         </div>
         <footer className="site-footer">Dành cho khoảnh khắc bạn nghĩ: “Mình làm được!” <span>✦</span></footer>
       </section>

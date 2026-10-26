@@ -15,6 +15,12 @@ API key, hồ sơ, tiến độ và lịch sử trò chuyện được lưu tron
 
 Các tình huống và câu mẫu được phân phối cùng ứng dụng; tiến độ và nội dung trò chuyện cá nhân được lưu cục bộ. Khi dùng trò chuyện bằng giọng nói hoặc luyện phát âm, bản ghi được gửi thẳng đến Gemini để xử lý. Cần có kết nối Internet và quyền truy cập micro qua HTTPS.
 
+## Thư viện tài liệu cá nhân
+
+Trong mục **Tài liệu**, bạn có thể thêm tệp PDF, audio thông dụng hoặc văn bản TXT/MD (tối đa 50 MB mỗi tệp). Tệp được lưu trong IndexedDB của trình duyệt trên thiết bị hiện tại; không được tải lên GitHub hoặc gửi tới máy chủ ứng dụng. Xóa dữ liệu website/trình duyệt có thể xóa cả bản lưu này, vì vậy hãy giữ tệp gốc riêng.
+
+Chỉ thêm tài liệu mà bạn có quyền lưu và sử dụng theo giấy phép áp dụng. Sách điện tử có DRM hoặc nội dung chỉ được cấp quyền đọc trong nền tảng của nhà xuất bản (ví dụ Oxford Learner’s Bookshelf) không thể nhập bằng cách vượt DRM; app này không trích xuất hay phân phối lại nội dung Oxford. Tính năng này là thư viện đọc cá nhân, không chuyển sách thành gói giáo trình có thể phát hành công khai.
+
 ## Chạy trên máy để phát triển
 
 1. Cài Node.js phiên bản 20 trở lên.
