@@ -1,5 +1,10 @@
 import { GeminiPart, generateWithGemini } from "@/lib/gemini";
-import { GoogleSpeechVoice, isSpeechVoiceId } from "@/lib/speech";
+import {
+  GoogleSpeechVoice,
+  SpeechDeliveryStyle,
+  getSpeechDeliveryInstruction,
+  isSpeechVoiceId,
+} from "@/lib/speech";
 
 export type AiProvider = "google" | "openai";
 export type AiModel = { id: string; label: string };
@@ -25,7 +30,26 @@ export const OPENAI_SPEECH_VOICES = [
   { id: "cedar", label: "Cedar" },
 ] as const;
 
-const GOOGLE_ACCENT_FILTERS = ["American", "Australian", "British", "Indian", "Chinese", "German"];
+const GOOGLE_ACCENT_FILTERS = ["American", "Australian", "British", "Indian", "Chinese", "German"] as const;
+
+export type GoogleSpeechVoiceCatalog = {
+  voices: GoogleSpeechVoice[];
+  failedRegions: (typeof GOOGLE_ACCENT_FILTERS)[number][];
+};
+
+function accentMatchesRegion(accent: string, region: string): boolean {
+  const normalized = accent.toLowerCase();
+  const terms: Record<(typeof GOOGLE_ACCENT_FILTERS)[number], string[]> = {
+    American: ["american", "united states", "u.s.", "usa"],
+    Australian: ["australian", "australia"],
+    British: ["british", "united kingdom", "uk", "england"],
+    Indian: ["indian", "india"],
+    Chinese: ["chinese", "china"],
+    German: ["german", "germany"],
+  };
+  return terms[region as (typeof GOOGLE_ACCENT_FILTERS)[number]]
+    .some((term) => normalized.includes(term));
+}
 
 export function isAiProvider(value: string): value is AiProvider {
   return value === "google" || value === "openai";
@@ -72,61 +96,57 @@ export async function fetchAiModels(provider: AiProvider, apiKey: string): Promi
   return models.sort((first, second) => second.id.localeCompare(first.id));
 }
 
-export async function fetchGoogleSpeechVoices(apiKey: string): Promise<GoogleSpeechVoice[]> {
-  const query = new URLSearchParams({ type: "prebuilt", page_size: "100" });
-  for (const gender of ["male", "female"]) query.append("gender", gender);
-  for (const accent of GOOGLE_ACCENT_FILTERS) query.append("accent", accent);
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/voices?${query}`, {
-    headers: { "x-goog-api-key": apiKey },
-    signal: AbortSignal.timeout(30_000),
-  });
-  const result: unknown = await response.json().catch(() => null);
-  if (!response.ok) throw new Error(getProviderError("google", response.status, result));
-  if (!isRecord(result) || !Array.isArray(result.voices)) {
-    throw new Error("Google không trả về danh sách giọng đọc đúng định dạng.");
-  }
-  const voices = result.voices.flatMap((item): GoogleSpeechVoice[] => {
-    if (!isRecord(item) || typeof item.id !== "string" ||
-        (item.gender !== "male" && item.gender !== "female") ||
-        typeof item.accent !== "string" || !item.accent.trim()) return [];
-    const accentValue = item.accent;
-    if (!GOOGLE_ACCENT_FILTERS.some((accent) =>
-      accentValue.toLowerCase().includes(accent.toLowerCase()))) return [];
-    const id = item.id;
-    if (!isSpeechVoiceId(id)) return [];
-    return [{
-      id,
-      gender: item.gender,
-      accent: accentValue,
-      label: typeof item.displayName === "string" && item.displayName.trim()
-        ? item.displayName.trim()
-        : id,
-      description: typeof item.description === "string" ? item.description : "",
-    }];
-  });
-  const uniqueVoices = [...new Map(voices.map((voice) => [voice.id, voice])).values()];
-  if (!uniqueVoices.length) {
-    throw new Error("Chưa tìm thấy giọng nam/nữ tiếng Anh theo các vùng đã chọn. Hãy kiểm tra API key hoặc thử lại sau.");
-  }
+export async function fetchGoogleSpeechVoices(apiKey: string): Promise<GoogleSpeechVoiceCatalog> {
+  const accentResults = await Promise.allSettled(GOOGLE_ACCENT_FILTERS.map(async (accent) => {
+    const query = new URLSearchParams({ type: "prebuilt", page_size: "100", accent });
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/voices?${query}`, {
+      headers: { "x-goog-api-key": apiKey },
+      signal: AbortSignal.timeout(30_000),
+    });
+    const result: unknown = await response.json().catch(() => null);
+    if (!response.ok) throw new Error(getProviderError("google", response.status, result));
+    if (!isRecord(result) || !Array.isArray(result.voices)) {
+      throw new Error(`Google không trả về danh sách giọng ${accent} đúng định dạng.`);
+    }
+
+    const voices = result.voices.flatMap((item): GoogleSpeechVoice[] => {
+      if (!isRecord(item) || typeof item.id !== "string" ||
+          (item.gender !== "male" && item.gender !== "female") ||
+          typeof item.accent !== "string" || !accentMatchesRegion(item.accent, accent)) return [];
+      const id = item.id;
+      if (!isSpeechVoiceId(id)) return [];
+      return [{
+        id,
+        gender: item.gender,
+        accent: item.accent,
+        label: typeof item.displayName === "string" && item.displayName.trim()
+          ? item.displayName.trim()
+          : id,
+        description: typeof item.description === "string" ? item.description : "",
+      }];
+    });
+    return { accent, voices };
+  }));
+
   const selected: GoogleSpeechVoice[] = [];
-  for (const gender of ["male", "female"] as const) {
-    const group = uniqueVoices.filter((voice) => voice.gender === gender);
-    const usedIds = new Set<string>();
-    for (const accent of GOOGLE_ACCENT_FILTERS) {
-      const voice = group.find((item) => item.accent.toLowerCase().includes(accent.toLowerCase()));
-      if (voice && !usedIds.has(voice.id)) {
-        selected.push(voice);
-        usedIds.add(voice.id);
-      }
-    }
-    for (const voice of group) {
-      if (usedIds.has(voice.id)) continue;
-      selected.push(voice);
-      usedIds.add(voice.id);
-      if (usedIds.size === 10) break;
+  const failedRegions = accentResults.flatMap((result, index) =>
+    result.status === "rejected" ? [GOOGLE_ACCENT_FILTERS[index]] : []);
+  const successfulResults = accentResults.flatMap((result) =>
+    result.status === "fulfilled" ? [result.value] : []);
+  for (const { voices } of successfulResults) {
+    for (const gender of ["male", "female"] as const) {
+      const voice = voices
+        .filter((item) => item.gender === gender)
+        .sort((first, second) => first.id.localeCompare(second.id))[0];
+      if (voice && !selected.some((item) => item.id === voice.id)) selected.push(voice);
     }
   }
-  return selected;
+  if (!selected.length) {
+    const firstFailure = accentResults.find((result): result is PromiseRejectedResult => result.status === "rejected");
+    if (firstFailure) throw firstFailure.reason;
+    throw new Error("Chưa tìm thấy giọng nam/nữ theo các vùng đã chọn. Hãy kiểm tra API key hoặc thử lại sau.");
+  }
+  return { voices: selected, failedRegions };
 }
 
 export async function generateAiText(
@@ -197,11 +217,12 @@ export async function generateProviderSpeech(
   voice: string,
   text: string,
   accent = "",
+  deliveryStyle: SpeechDeliveryStyle = "balanced",
 ): Promise<Blob> {
   if (provider === "google") {
     const { generateSpeech } = await import("@/lib/speech");
     if (!isSpeechVoiceId(voice)) throw new Error("Hãy chọn một giọng đọc Google hợp lệ trong Cài đặt.");
-    return generateSpeech(apiKey, text, voice, accent);
+    return generateSpeech(apiKey, text, voice, accent, deliveryStyle);
   }
   const response = await fetch("https://api.openai.com/v1/audio/speech", {
     method: "POST",
@@ -210,7 +231,7 @@ export async function generateProviderSpeech(
       model: "gpt-4o-mini-tts",
       voice,
       input: text,
-      instructions: `Read clearly and naturally at a moderate pace for an English learner.${accent ? ` Use a clear ${accent} English accent.` : ""}`,
+      instructions: `Read in English for a language learner. ${getSpeechDeliveryInstruction(deliveryStyle)}${accent ? ` Preserve a clear ${accent} English accent.` : ""}`,
     }),
     signal: AbortSignal.timeout(90_000),
   });

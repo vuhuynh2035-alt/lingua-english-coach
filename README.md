@@ -16,15 +16,19 @@ API key, lựa chọn nhà cung cấp/mô hình/giọng đọc, hồ sơ, tiến
 
 Trong **Cài đặt**, bạn có thể điều chỉnh cỡ chữ từ 100% đến 150%. Lựa chọn này được lưu trên từng thiết bị và áp dụng cho toàn bộ giao diện.
 
-Phiên bản ứng dụng được quản lý trong `package.json`; khi phát hành bản điều chỉnh, hãy tăng phiên bản theo SemVer. Các lệnh `npm run dev` và `npm run build` tự tạo `public/version.json` từ giá trị đó. Ứng dụng hiển thị phiên bản đang chạy ở chân trang và trong **Cài đặt**, đồng thời kiểm tra phiên bản đã triển khai để báo khi có bản mới.
+Trong **Cài đặt**, bạn có thể chọn nền trắng với màu khung và điểm nhấn **xanh mint**, **xanh dương** hoặc **đỏ bordeaux**. Giao diện xanh mint ban đầu vẫn được giữ lại; lựa chọn được lưu trên thiết bị hiện tại.
+
+Mục **Ngữ pháp** nằm trong danh sách **Lĩnh vực**; tài liệu riêng nằm trong **Giáo trình học**. Nút quay lại chỉ xuất hiện khi có trang trước để trở về.
+
+Phiên bản ứng dụng được quản lý trong `package.json`; khi phát hành bản điều chỉnh, hãy tăng phiên bản theo SemVer. Các lệnh `npm run dev` và `npm run build` tự tạo `public/version.json` từ giá trị đó. Ứng dụng hiển thị phiên bản đang chạy ở thanh đầu trang, chân trang và trong **Cài đặt**, đồng thời kiểm tra phiên bản đã triển khai để báo khi có bản mới.
 
 Các tình huống và câu mẫu được phân phối cùng ứng dụng; tiến độ và nội dung trò chuyện cá nhân được lưu cục bộ. Khi dùng trò chuyện bằng giọng nói, bản ghi được gửi thẳng tới Google Gemini hoặc dịch vụ phiên âm OpenAI tùy nhà cung cấp đang chọn. Góp ý/chấm phát âm trực tiếp từ âm thanh hiện hỗ trợ Google Gemini; nếu chọn OpenAI, ứng dụng hiện rõ yêu cầu đổi nhà cung cấp. Cần có kết nối Internet và quyền truy cập micro qua HTTPS.
 
-Trong **Cài đặt**, người học có thể tải danh mục tối đa 10 giọng nam và 10 giọng nữ từ Google, được lọc theo các vùng Mỹ, Úc, Anh, Ấn Độ, Trung Quốc và Đức; số giọng thực tế tùy danh mục mà Google cung cấp cho API key. Đây chỉ là danh sách metadata nhỏ, không tải trước giọng hay audio. OpenAI cung cấp danh sách voice riêng và có thể nhận chỉ dẫn accent vùng, nhưng không công bố metadata giới tính/vùng cho từng voice. Audio chỉ được tạo khi người học nghe thử hoặc phát câu, rồi được lưu trên thiết bị để nghe ngoại tuyến (tối đa 100 đoạn gần đây, phân biệt theo nhà cung cấp/mô hình/giọng). Ứng dụng không tải mô hình giọng nói về máy. Việc tạo AI/audio có thể sử dụng hạn mức hoặc phát sinh phí theo tài khoản của nhà cung cấp.
+Trong **Cài đặt**, người học có thể tải tối đa một giọng nam và một giọng nữ cho mỗi vùng từ Google (Mỹ, Úc, Anh, Ấn Độ, Trung Quốc và Đức); các vùng không có giọng phù hợp sẽ không bị gán nhãn thay thế. Danh mục chỉ chứa metadata nhỏ, không tải trước giọng hay audio. Có thể chọn sắc thái đọc rõ/dứt khoát, tự nhiên/cân bằng hoặc êm/nhẹ nhàng; sắc thái là hướng dẫn tạo audio và kết quả còn tùy voice/nhà cung cấp. OpenAI cung cấp danh sách voice riêng và có thể nhận chỉ dẫn accent vùng, nhưng không công bố metadata giới tính/vùng cho từng voice. Audio chỉ được tạo khi người học nghe thử hoặc phát câu, rồi được lưu trên thiết bị để nghe ngoại tuyến (tối đa 100 đoạn gần đây, phân biệt theo nhà cung cấp/mô hình/giọng/sắc thái). Ứng dụng không tải mô hình giọng nói về máy. Việc tạo AI/audio có thể sử dụng hạn mức hoặc phát sinh phí theo tài khoản của nhà cung cấp.
 
 ## Thư viện tài liệu cá nhân
 
-Trong mục **Tài liệu**, bạn có thể thêm tệp PDF, audio thông dụng hoặc văn bản TXT/MD (tối đa 50 MB mỗi tệp). Tệp được lưu trong IndexedDB của trình duyệt trên thiết bị hiện tại; không được tải lên GitHub hoặc gửi tới máy chủ ứng dụng. Xóa dữ liệu website/trình duyệt có thể xóa cả bản lưu này, vì vậy hãy giữ tệp gốc riêng.
+Trong **Giáo trình học → Tài liệu cá nhân**, bạn có thể thêm tệp PDF, audio thông dụng hoặc văn bản TXT/MD (tối đa 50 MB mỗi tệp). Tệp được lưu trong IndexedDB của trình duyệt trên thiết bị hiện tại; không được tải lên GitHub hoặc gửi tới máy chủ ứng dụng. Xóa dữ liệu website/trình duyệt có thể xóa cả bản lưu này, vì vậy hãy giữ tệp gốc riêng.
 
 Chỉ thêm tài liệu mà bạn có quyền lưu và sử dụng theo giấy phép áp dụng. Sách điện tử có DRM hoặc nội dung chỉ được cấp quyền đọc trong nền tảng của nhà xuất bản (ví dụ Oxford Learner’s Bookshelf) không thể nhập bằng cách vượt DRM; app này không trích xuất hay phân phối lại nội dung Oxford. Tính năng này là thư viện đọc cá nhân, không chuyển sách thành gói giáo trình có thể phát hành công khai.
 

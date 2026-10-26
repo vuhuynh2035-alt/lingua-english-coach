@@ -19,6 +19,8 @@ import {
 import { grammarTopics } from "@/lib/grammar";
 import {
   GoogleSpeechVoice,
+  SPEECH_DELIVERY_STYLES,
+  SpeechDeliveryStyle,
   SpeechVoiceId,
   clearSpeechCache,
   getCachedSpeech,
@@ -45,14 +47,35 @@ import {
 type Section = "home" | "practice" | "profiles" | "progress" | "placement" | "grammar" | "courses" | "library" | "settings";
 type ApiKeyEntry = { id: string; label: string; value: string };
 type ProviderRecord<T> = Record<AiProvider, T>;
+type AppTheme = "mint" | "blue" | "burgundy";
 type VersionCheckStatus = "checking" | "latest" | "update-available" | "error";
 const APP_VERSION = packageJson.version;
 const API_KEY_STORAGE = "lingua-gemini-api-key";
 const AI_SETTINGS_STORAGE = "lingua-ai-settings";
 const FONT_SCALE_STORAGE = "lingua-font-scale";
+const APP_THEME_STORAGE = "lingua-app-theme";
 const SPEECH_VOICE_STORAGE = "lingua-speech-voice";
-const GOOGLE_SPEECH_VOICES_STORAGE = "lingua-google-speech-voices";
+const GOOGLE_SPEECH_VOICES_STORAGE = "lingua-google-speech-voices-v2";
+const SPEECH_DELIVERY_STYLE_STORAGE = "lingua-speech-delivery-style";
 const SPEECH_SAMPLE = "The nurse is speaking to a patient. Please check the pressure carefully.";
+const GOOGLE_ACCENT_LABELS: Record<string, string> = {
+  American: "Mỹ",
+  Australian: "Úc",
+  British: "Anh",
+  Indian: "Ấn Độ",
+  Chinese: "Trung Quốc",
+  German: "Đức",
+};
+function getGoogleAccentLabel(accent: string): string {
+  const normalized = accent.toLowerCase();
+  if (normalized.includes("american") || normalized.includes("united states") || normalized.includes("usa")) return "Mỹ";
+  if (normalized.includes("australian") || normalized.includes("australia")) return "Úc";
+  if (normalized.includes("british") || normalized.includes("united kingdom") || normalized.includes("uk")) return "Anh";
+  if (normalized.includes("indian") || normalized.includes("india")) return "Ấn Độ";
+  if (normalized.includes("chinese") || normalized.includes("china")) return "Trung Quốc";
+  if (normalized.includes("german") || normalized.includes("germany")) return "Đức";
+  return GOOGLE_ACCENT_LABELS[accent] ?? accent;
+}
 const OPENAI_ACCENTS = [
   "American",
   "Australian",
@@ -115,7 +138,7 @@ const profiles: Profile[] = [
     subtitle: "Họp hành, email và đàm phán",
     icon: "business",
     color: "blue",
-    scene: "Cuộc họp dự án",
+    scene: "Trao đổi trong cuộc họp",
     prompt: "Hello! I’ll be your colleague in a project meeting. Let’s practice in English. Start by completing: “Our team is working on...” What is your team working on this week?",
     words: ["Could you clarify that?", "Let's get started.", "I see your point."],
   },
@@ -343,6 +366,9 @@ export default function Home() {
   const [fontScale, setFontScale] = useState(125);
   const [fontScaleLoaded, setFontScaleLoaded] = useState(false);
   const [fontScaleError, setFontScaleError] = useState("");
+  const [appTheme, setAppTheme] = useState<AppTheme>("mint");
+  const [appThemeLoaded, setAppThemeLoaded] = useState(false);
+  const [appThemeError, setAppThemeError] = useState("");
   const [versionCheckStatus, setVersionCheckStatus] = useState<VersionCheckStatus>("checking");
   const [latestVersion, setLatestVersion] = useState("");
   const [versionCheckError, setVersionCheckError] = useState("");
@@ -366,6 +392,7 @@ export default function Home() {
   const [speechVoicesBusy, setSpeechVoicesBusy] = useState(false);
   const [speechVoicesError, setSpeechVoicesError] = useState("");
   const [speechVoice, setSpeechVoice] = useState<SpeechVoiceId>("Kore");
+  const [speechDeliveryStyle, setSpeechDeliveryStyle] = useState<SpeechDeliveryStyle>("balanced");
   const [openAiSpeechVoice, setOpenAiSpeechVoice] = useState<string>("coral");
   const [openAiSpeechAccent, setOpenAiSpeechAccent] = useState<string>("American");
   const [speechBusy, setSpeechBusy] = useState(false);
@@ -405,7 +432,6 @@ export default function Home() {
   const [materialText, setMaterialText] = useState("");
   const [materialBusy, setMaterialBusy] = useState(false);
   const [materialError, setMaterialError] = useState("");
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const voiceChatRecorderRef = useRef<MediaRecorder | null>(null);
   const voiceChatStreamRef = useRef<MediaStream | null>(null);
@@ -560,7 +586,7 @@ export default function Home() {
     void listDownloadedCourses()
       .then(setCoursePacks)
       .catch((error: unknown) => {
-        setCourseError(error instanceof Error ? error.message : "Không thể đọc các gói học offline trên thiết bị.");
+        setCourseError(error instanceof Error ? error.message : "Không thể đọc các giáo trình offline trên thiết bị.");
       });
     void listPersonalMaterials()
       .then(setPersonalMaterials)
@@ -579,6 +605,28 @@ export default function Home() {
       setFontScaleError("Không thể lưu cỡ chữ trên thiết bị này.");
     }
   }, [fontScale, fontScaleLoaded]);
+
+  useEffect(() => {
+    try {
+      const savedTheme = localStorage.getItem(APP_THEME_STORAGE);
+      if (savedTheme === "mint" || savedTheme === "burgundy" || savedTheme === "blue") {
+        setAppTheme(savedTheme);
+      }
+    } catch {
+      setAppThemeError("Không thể đọc giao diện đã lưu trên thiết bị này.");
+    }
+    setAppThemeLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!appThemeLoaded) return;
+    document.documentElement.dataset.theme = appTheme;
+    try {
+      localStorage.setItem(APP_THEME_STORAGE, appTheme);
+    } catch {
+      setAppThemeError("Không thể lưu giao diện trên thiết bị này.");
+    }
+  }, [appTheme, appThemeLoaded]);
 
   useEffect(() => {
     let cancelled = false;
@@ -644,6 +692,10 @@ export default function Home() {
       const savedAccent = localStorage.getItem("lingua-speech-accent-openai");
       if (savedAccent && OPENAI_ACCENTS.includes(savedAccent as (typeof OPENAI_ACCENTS)[number])) {
         setOpenAiSpeechAccent(savedAccent);
+      }
+      const savedDeliveryStyle = localStorage.getItem(SPEECH_DELIVERY_STYLE_STORAGE);
+      if (SPEECH_DELIVERY_STYLES.some((style) => style.id === savedDeliveryStyle)) {
+        setSpeechDeliveryStyle(savedDeliveryStyle as SpeechDeliveryStyle);
       }
     } catch {
       setSpeechError("Không thể đọc lựa chọn giọng đọc đã lưu trên thiết bị.");
@@ -1049,8 +1101,12 @@ export default function Home() {
     setSpeechVoicesBusy(true);
     setSpeechVoicesError("");
     try {
-      const voices = await withAvailableApiKey((key) => fetchGoogleSpeechVoices(key));
+      const catalog = await withAvailableApiKey((key) => fetchGoogleSpeechVoices(key));
+      const voices = catalog.voices;
       setGoogleSpeechVoices(voices);
+      setSpeechVoicesError(catalog.failedRegions.length
+        ? `Không tải được danh mục cho các vùng: ${catalog.failedRegions.map(getGoogleAccentLabel).join(", ")}.`
+        : "");
       if (!voices.some((voice) => voice.id === speechVoice)) {
         setSpeechVoice(voices[0]?.id ?? "Kore");
       }
@@ -1080,7 +1136,7 @@ export default function Home() {
     setSpeechNotice("");
     let blob: Blob | null = null;
     let storageWarning = "";
-    const speechCacheKey = `${aiProvider}:${activeModel}:${activeSpeechVoice}:${activeSpeechAccent}`;
+    const speechCacheKey = `${aiProvider}:${activeModel}:${activeSpeechVoice}:${activeSpeechAccent}:${speechDeliveryStyle}`;
     try {
       try {
         blob = await getCachedSpeech(speechCacheKey, phrase);
@@ -1094,7 +1150,7 @@ export default function Home() {
           throw new Error(`Chưa có bản nghe lưu trên máy. Thêm API key ${aiProvider === "google" ? "Google AI" : "OpenAI"} trong Cài đặt để tạo giọng đọc.`);
         }
         blob = await withAvailableApiKey((key) =>
-          generateProviderSpeech(aiProvider, key, activeModel, activeSpeechVoice, phrase, activeSpeechAccent));
+          generateProviderSpeech(aiProvider, key, activeModel, activeSpeechVoice, phrase, activeSpeechAccent, speechDeliveryStyle));
         try {
           await saveCachedSpeech(speechCacheKey, phrase, blob);
         } catch (error) {
@@ -1162,6 +1218,18 @@ export default function Home() {
       localStorage.setItem("lingua-speech-accent-openai", accent);
     } catch {
       setSpeechError("Không thể lưu lựa chọn giọng vùng trên thiết bị này.");
+    }
+  }
+
+  function selectSpeechDeliveryStyle(style: string) {
+    if (!SPEECH_DELIVERY_STYLES.some((item) => item.id === style)) return;
+    setSpeechDeliveryStyle(style as SpeechDeliveryStyle);
+    setSpeechError("");
+    setSpeechNotice("");
+    try {
+      localStorage.setItem(SPEECH_DELIVERY_STYLE_STORAGE, style);
+    } catch {
+      setSpeechError("Không thể lưu sắc thái giọng đọc trên thiết bị này.");
     }
   }
 
@@ -1267,7 +1335,7 @@ export default function Home() {
         setOfflineAudioUrl("");
       }
     } catch (error) {
-      setCourseError(error instanceof Error ? error.message : "Không thể xóa gói học khỏi thiết bị.");
+      setCourseError(error instanceof Error ? error.message : "Không thể xóa giáo trình khỏi thiết bị.");
     }
   }
 
@@ -1318,7 +1386,7 @@ export default function Home() {
   function openDownloadedCourse(courseId: string) {
     const course = coursePacks.find((item) => item.id === courseId);
     if (!course) {
-      setCourseError("Không tìm thấy gói học trên thiết bị này. Hãy tải lại gói học khi có mạng.");
+      setCourseError("Không tìm thấy giáo trình trên thiết bị này. Hãy tải lại khi có mạng.");
       return;
     }
     setSelectedCourseId(course.id);
@@ -1416,6 +1484,45 @@ export default function Home() {
           </button>
           {fontScaleError && <p className="error-message">{fontScaleError}</p>}
         </section>
+        <section className="panel settings-panel app-theme-settings">
+          <div className="settings-section-heading">
+            <span className="settings-icon theme-icon" aria-hidden="true">◐</span>
+            <div><h3>Giao diện màu sắc</h3><p>Nền trắng, chọn màu khung và điểm nhấn theo sở thích.</p></div>
+          </div>
+          <div className="theme-options" role="group" aria-label="Chọn giao diện màu sắc">
+            <button
+              type="button"
+              className={`theme-option mint-theme${appTheme === "mint" ? " selected" : ""}`}
+              aria-pressed={appTheme === "mint"}
+              onClick={() => setAppTheme("mint")}
+            >
+              <span className="theme-swatch" aria-hidden="true"><span /></span>
+              <span className="theme-option-copy"><strong>Nền trắng / Khung xanh mint</strong><small>Giao diện xanh mint ban đầu</small></span>
+              <span className="theme-option-check" aria-hidden="true">{appTheme === "mint" ? "✓" : ""}</span>
+            </button>
+            <button
+              type="button"
+              className={`theme-option burgundy-theme${appTheme === "burgundy" ? " selected" : ""}`}
+              aria-pressed={appTheme === "burgundy"}
+              onClick={() => setAppTheme("burgundy")}
+            >
+              <span className="theme-swatch" aria-hidden="true"><span /></span>
+              <span className="theme-option-copy"><strong>Nền trắng / Khung đỏ bordeaux</strong><small>Tông đỏ rượu vang thanh lịch</small></span>
+              <span className="theme-option-check" aria-hidden="true">{appTheme === "burgundy" ? "✓" : ""}</span>
+            </button>
+            <button
+              type="button"
+              className={`theme-option blue-theme${appTheme === "blue" ? " selected" : ""}`}
+              aria-pressed={appTheme === "blue"}
+              onClick={() => setAppTheme("blue")}
+            >
+              <span className="theme-swatch" aria-hidden="true"><span /></span>
+              <span className="theme-option-copy"><strong>Nền trắng / Khung xanh dương</strong><small>Tông xanh tươi sáng, dễ nhìn</small></span>
+              <span className="theme-option-check" aria-hidden="true">{appTheme === "blue" ? "✓" : ""}</span>
+            </button>
+          </div>
+          {appThemeError && <p className="error-message" role="alert">{appThemeError}</p>}
+        </section>
         <section className="panel settings-panel">
           <div className="settings-section-heading">
             <span className="settings-icon"><IllustrationIcon name="key" /></span>
@@ -1492,7 +1599,7 @@ export default function Home() {
           </div>
           {aiProvider === "google" && (
             <button type="button" className="button button-outline" onClick={() => { void loadSpeechVoices(); }} disabled={speechVoicesBusy || !apiKey}>
-              {speechVoicesBusy ? "Đang tải danh sách…" : "↻ Tải tối đa 10 giọng nam + 10 giọng nữ"}
+              {speechVoicesBusy ? "Đang tải giọng theo từng vùng…" : "↻ Tải 1 giọng nam + 1 giọng nữ cho mỗi vùng"}
             </button>
           )}
           {speechVoicesError && <p className="error-message" role="alert">{speechVoicesError}</p>}
@@ -1502,11 +1609,11 @@ export default function Home() {
               {aiProvider === "google" ? (
                 <>
                   {googleSpeechVoices.length === 0 && <option value={speechVoice}>{speechVoice} · tải danh sách giọng để chọn theo vùng</option>}
-                  <optgroup label={`Nam · ${maleVoices.length}/10`}>
-                    {maleVoices.map((voice) => <option key={voice.id} value={voice.id}>{voice.label} · {voice.accent}</option>)}
+                  <optgroup label={`Nam · ${maleVoices.length}/6 vùng`}>
+                    {maleVoices.map((voice) => <option key={voice.id} value={voice.id}>{getGoogleAccentLabel(voice.accent)} · {voice.label}</option>)}
                   </optgroup>
-                  <optgroup label={`Nữ · ${femaleVoices.length}/10`}>
-                    {femaleVoices.map((voice) => <option key={voice.id} value={voice.id}>{voice.label} · {voice.accent}</option>)}
+                  <optgroup label={`Nữ · ${femaleVoices.length}/6 vùng`}>
+                    {femaleVoices.map((voice) => <option key={voice.id} value={voice.id}>{getGoogleAccentLabel(voice.accent)} · {voice.label}</option>)}
                   </optgroup>
                 </>
               ) : OPENAI_SPEECH_VOICES.map((voice) => <option key={voice.id} value={voice.id}>{voice.label}</option>)}
@@ -1515,6 +1622,11 @@ export default function Home() {
               {speechBusy ? "Đang tạo…" : "▶ Nghe thử"}
             </button>
           </div>
+          <label className="settings-label" htmlFor="speech-delivery-style">Sắc thái giọng tiếng Anh chuẩn</label>
+          <select id="speech-delivery-style" className="settings-select" value={speechDeliveryStyle} onChange={(event) => selectSpeechDeliveryStyle(event.target.value)}>
+            {SPEECH_DELIVERY_STYLES.map((style) => <option key={style.id} value={style.id}>{style.label}</option>)}
+          </select>
+          <p className="settings-hint">Chọn cách đọc rõ, tự nhiên hoặc êm nhẹ. Đây là hướng dẫn cho AI tạo giọng, không phải bản ghi âm giọng riêng; chất giọng thực tế còn tùy voice và nhà cung cấp.</p>
           {aiProvider === "openai" && (
             <>
               <label className="settings-label" htmlFor="speech-accent">Kiểu phát âm vùng (hướng dẫn cho AI)</label>
@@ -1526,8 +1638,8 @@ export default function Home() {
           )}
           {aiProvider === "google" && googleSpeechVoices.length > 0 && (
             <p className="settings-hint">
-              Đã tải {maleVoices.length} giọng nam và {femaleVoices.length} giọng nữ
-              {maleVoices.length < 10 || femaleVoices.length < 10 ? " (số lượng tùy danh mục Google khả dụng cho API key)" : ""}.
+              Đã tải {maleVoices.length} giọng nam và {femaleVoices.length} giọng nữ, tối đa một giọng mỗi vùng để tránh danh sách bị tập trung vào một nước.
+              {maleVoices.length < 6 || femaleVoices.length < 6 ? " Một số vùng chưa có giọng phù hợp trong danh mục API key này." : ""}
               Danh sách chỉ gồm thông tin giọng nhẹ; audio chỉ tạo và lưu khi bạn nhấn nghe.
             </p>
           )}
@@ -1803,8 +1915,8 @@ export default function Home() {
           </section>
           <section className="panel next-panel">
             <span className="eyebrow">GỢI Ý TIẾP THEO</span>
-            <div className="next-lesson"><span className={`lesson-icon ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><div><strong>{profile.scene}</strong><span>5 phút · Luyện giao tiếp</span></div></div>
-            <p>Luyện những câu giao tiếp thực tế theo lĩnh vực bạn đã chọn.</p>
+            <div className="next-lesson"><span className={`lesson-icon ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><div><strong>Luyện hội thoại: {profile.title}</strong><span>5 phút · Tình huống thực tế</span></div></div>
+            <p>Thực hành giao tiếp theo lĩnh vực bạn đã chọn. Gia sư AI sẽ trò chuyện và góp ý cho bạn.</p>
             <button className="button button-primary full-button" onClick={() => navigateToSection("practice")}>Tiếp tục học <span>→</span></button>
           </section>
         </div>
@@ -1827,7 +1939,15 @@ export default function Home() {
             <div className="profile-preview"><span>Tình huống luyện tập</span><strong>{item.scene}</strong></div>
             <i>{item.id === progress.profile ? "ĐANG CHỌN" : "CHỌN LỘ TRÌNH NÀY →"}</i>
           </button>
-        ))}</div>
+        ))}
+          <button type="button" className="profile-card large-profile grammar-profile-card" onClick={() => navigateToSection("grammar")}>
+            <span className="profile-icon"><IllustrationIcon name="grammar" /></span>
+            <strong>Tiếng Anh ngữ pháp</strong>
+            <span>Học cấu trúc câu và làm bài tập theo trình độ</span>
+            <div className="profile-preview"><span>Lĩnh vực học</span><strong>Ngữ pháp tiếng Anh</strong></div>
+            <i>KHÁM PHÁ BÀI HỌC →</i>
+          </button>
+        </div>
       </>
     );
   }
@@ -1837,9 +1957,9 @@ export default function Home() {
     if (selectedCourseId && !course) {
       return (
         <section className="panel course-empty-state">
-          <h2>Không tìm thấy gói học offline</h2>
-          <p>{courseError || "Gói học này chưa được tải về thiết bị."}</p>
-          <button className="button button-outline" onClick={() => { setSelectedCourseId(""); setCourseError(""); }}>Quay lại thư viện</button>
+          <h2>Không tìm thấy giáo trình offline</h2>
+          <p>{courseError || "Giáo trình này chưa được tải về thiết bị."}</p>
+          <button className="button button-outline" onClick={() => { setSelectedCourseId(""); setCourseError(""); }}>Quay lại danh sách giáo trình</button>
         </section>
       );
     }
@@ -1959,9 +2079,8 @@ export default function Home() {
       <>
         <div className="page-intro">
           <span className="eyebrow">GIÁO TRÌNH TẢI THEO LĨNH VỰC</span>
-          <h2>Chọn gói học cần lưu trên thiết bị.</h2>
-          <p>Mỗi gói được thiết kế theo CEFR A1–B2, gồm bài học, câu hỏi luyện tập và audio nghe. Nội dung gói tải về dùng offline; hội thoại AI và chấm phát âm cần Internet.</p>
-          <button className="button button-outline" onClick={() => navigateToSection("library")}>Mở thư viện tài liệu cá nhân →</button>
+          <h2>Chọn giáo trình muốn tải về thiết bị.</h2>
+          <p>Mỗi giáo trình được thiết kế theo CEFR A1–B2, gồm bài học, câu hỏi luyện tập và audio nghe. Giáo trình đã tải có thể dùng offline; hội thoại AI và chấm phát âm cần Internet.</p>
         </div>
         <div className="offline-status" role={offlineError ? "alert" : "status"}>
           <span>{offlineReady ? "✓" : offlineError ? "!" : "◌"}</span>
@@ -1986,13 +2105,21 @@ export default function Home() {
                       <button className="remove-key-button" onClick={() => { void removeCourse(item.id); }}>Xóa gói tải về</button>
                     </div>
                   : <button className="button button-primary" disabled={Boolean(courseBusyId)} onClick={() => { void downloadCourse(item.id); }}>
-                      {busy ? `Đang tải audio ${courseDownloadProgress.completed}/${courseDownloadProgress.total || "…"}` : "Tải gói học"}
+                      {busy ? `Đang tải audio ${courseDownloadProgress.completed}/${courseDownloadProgress.total || "…"}` : "Tải giáo trình"}
                     </button>}
               </section>
             );
           })}
+          <button type="button" className="panel course-catalog-card personal-library-entry" onClick={() => navigateToSection("library")}>
+            <span className="profile-icon"><IllustrationIcon name="library" /></span>
+            <span className="course-catalog-copy">
+              <strong>Tài liệu cá nhân</strong>
+              <span>Mở hoặc thêm PDF, audio và ghi chú lưu trên thiết bị này.</span>
+            </span>
+            <span className="button button-outline">Mở tài liệu <span>→</span></span>
+          </button>
         </div>
-        <p className="course-storage-note">Gói học và audio được lưu trong IndexedDB trên thiết bị này. Việc tải/xóa gói không ảnh hưởng tiến độ học hoặc API key.</p>
+        <p className="course-storage-note">Giáo trình và audio được lưu trong IndexedDB trên thiết bị này. Việc tải/xóa giáo trình không ảnh hưởng tiến độ học hoặc API key.</p>
       </>
     );
   }
@@ -2002,7 +2129,7 @@ export default function Home() {
       <>
         <div className="page-intro">
           <span className="eyebrow">THƯ VIỆN RIÊNG TRÊN THIẾT BỊ</span>
-          <h2>Tài liệu học của bạn.</h2>
+          <h2>Tài liệu cá nhân.</h2>
           <p>Thêm PDF, audio hoặc tệp văn bản mà bạn có quyền lưu trên thiết bị. Tệp chỉ lưu trong trình duyệt này, không đưa lên GitHub, không gửi tới máy chủ và không đồng bộ giữa các thiết bị.</p>
         </div>
         <section className="panel personal-library-panel">
@@ -2074,21 +2201,30 @@ export default function Home() {
   const nav: { id: Section; icon: IllustrationName; label: string }[] = [
     { id: "home", icon: "home", label: "Trang chủ" },
     { id: "practice", icon: "practice", label: "Luyện tập" },
-    { id: "profiles", icon: "profiles", label: "Lộ trình" },
-    { id: "courses", icon: "courses", label: "Giáo trình" },
-    { id: "library", icon: "library", label: "Tài liệu" },
-    { id: "grammar", icon: "grammar", label: "Ngữ pháp" },
+    { id: "profiles", icon: "profiles", label: "Lĩnh vực" },
+    { id: "courses", icon: "courses", label: "Giáo trình học" },
     { id: "progress", icon: "progress", label: "Tiến độ" },
     { id: "settings", icon: "settings", label: "Cài đặt" },
   ];
-  const canGoBack = section !== "home" || sectionHistoryRef.current.length > 0 || grammarTopicId !== null;
+  const sectionLabels: Record<Section, string> = {
+    home: "Trang chủ",
+    practice: "Luyện tập",
+    profiles: "Lĩnh vực",
+    progress: "Tiến độ",
+    placement: "Kiểm tra trình độ",
+    grammar: "Ngữ pháp",
+    courses: "Giáo trình học",
+    library: "Tài liệu cá nhân",
+    settings: "Cài đặt",
+  };
+  const canGoBack = sectionHistoryRef.current.length > 0 || (section === "grammar" && grammarTopicId !== null);
 
   return (
     <main className="app-shell">
-      <button className="floating-back-button" type="button" onClick={goBack} disabled={!canGoBack} aria-label="Quay lại trang trước" title="Quay lại trang trước">
+      {canGoBack && <button className="floating-back-button" type="button" onClick={goBack} aria-label="Quay lại trang trước" title="Quay lại trang trước">
         <IllustrationIcon name="back" />
         <span>Quay lại</span>
-      </button>
+      </button>}
       <aside className="sidebar">
         <a className="brand" href="#" onClick={(event) => { event.preventDefault(); navigateToSection("home"); }}><span className="brand-mark">L<span>✦</span></span><span>lingua<span className="brand-period">.</span><small>GIA SƯ TIẾNG ANH AI CỦA BẠN</small></span></a>
         <div className="side-label">HỌC TẬP</div>
@@ -2099,14 +2235,13 @@ export default function Home() {
       </aside>
       <section className="main-content">
         <header className="topbar">
-          <div className="breadcrumb"><span>Học tiếng Anh</span><span>/</span><strong>{nav.find((item) => item.id === section)?.label ?? (section === "placement" ? "Kiểm tra trình độ" : "Luyện tập")}</strong></div>
+          <div className="breadcrumb"><span>Học tiếng Anh</span><span>/</span><strong>{sectionLabels[section]}</strong></div>
           <div className="topbar-actions">
             <span className="level-chip desktop-level">TRÌNH ĐỘ {progress.level}</span>
+            <span className="topbar-version" aria-label={`Phiên bản ${APP_VERSION}`}>v{APP_VERSION}</span>
             <button className={apiKey ? "ai-settings-button connected" : "ai-settings-button"} aria-label="Mở cài đặt chung" onClick={() => navigateToSection("settings")}>
               <span className="ai-key-icon"><IllustrationIcon name="settings" /></span><span>{apiKey ? "Cài đặt" : "Thiết lập AI"}</span>
             </button>
-            <button className="profile-switch" onClick={() => setShowProfileMenu((open) => !open)}><span className={`profile-icon tiny ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><span>{profile.title}</span><span>⌄</span></button>
-            {showProfileMenu && <div className="profile-menu">{profiles.map((item) => <button key={item.id} onClick={() => { selectProfile(item.id); setShowProfileMenu(false); }}><span className={`profile-menu-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>{item.title}</button>)}</div>}
           </div>
         </header>
         <div className="content-wrap">

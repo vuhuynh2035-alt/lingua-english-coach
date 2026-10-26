@@ -1,4 +1,16 @@
 export type SpeechVoiceId = string;
+export const SPEECH_DELIVERY_STYLES = [
+  { id: "clear", label: "Rõ, dứt khoát", instruction: "Use crisp consonants, clear enunciation, and a confident, slightly firm delivery." },
+  { id: "balanced", label: "Tự nhiên, cân bằng", instruction: "Use a natural conversational rhythm with balanced warmth and clarity." },
+  { id: "gentle", label: "Êm, nhẹ nhàng", instruction: "Use a gentle, warm tone, smooth phrasing, and a relaxed moderate pace." },
+] as const;
+export type SpeechDeliveryStyle = (typeof SPEECH_DELIVERY_STYLES)[number]["id"];
+
+export function getSpeechDeliveryInstruction(style: SpeechDeliveryStyle): string {
+  return SPEECH_DELIVERY_STYLES.find((item) => item.id === style)?.instruction
+    ?? SPEECH_DELIVERY_STYLES[1].instruction;
+}
+
 export type GoogleSpeechVoice = {
   id: string;
   label: string;
@@ -23,6 +35,7 @@ export async function generateSpeech(
   text: string,
   voice: SpeechVoiceId,
   accent = "",
+  deliveryStyle: SpeechDeliveryStyle = "balanced",
 ): Promise<Blob> {
   const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
     method: "POST",
@@ -36,7 +49,7 @@ export async function generateSpeech(
           text,
           annotations: [{
             type: "speech_metadata",
-            style: `Read the English text clearly and naturally at a moderate pace, with careful pronunciation for an English learner.${accent ? ` Preserve the voice's ${accent} English accent.` : ""}`,
+            style: `Read the English text carefully for an English learner. ${getSpeechDeliveryInstruction(deliveryStyle)}${accent ? ` Preserve the voice's ${accent} English accent.` : ""}`,
           }],
         }],
       }],
