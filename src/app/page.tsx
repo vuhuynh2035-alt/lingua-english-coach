@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import packageJson from "../../package.json";
 import { getAudioData } from "@/lib/gemini";
+import { splitBilingualText } from "@/lib/speech";
 import {
   AiModel,
   AiProvider,
@@ -185,10 +186,10 @@ const OPENAI_ACCENTS = [
   "German",
 ] as const;
 const QUICK_TEACHER_REQUESTS = [
-  { label: "Bắt đầu bài học", prompt: "Teach me a short lesson for my English level. Start with a simple explanation and one example, then ask me one practice question." },
-  { label: "Giải thích dễ hiểu hơn", prompt: "I do not fully understand the last point. Please explain it more simply, give me a different example, and check whether I understand." },
-  { label: "Luyện thêm bài tập", prompt: "Give me three extra practice questions about the topic we are studying. Ask one question at a time and wait for my answer." },
-  { label: "Ôn phát âm", prompt: "Help me practice pronunciation. Give me one short English sentence, mark the word stress, and ask me to repeat it." },
+  { label: "🎯 Dạy bài học mới", prompt: "Cô Maya ơi, hãy bắt đầu dạy em một bài học mới theo trình độ của em nhé. Giải thích rõ bằng tiếng Việt, cho câu ví dụ tiếng Anh và hướng dẫn em cách trả lời từng bước." },
+  { label: "💡 Giải thích dễ hiểu hơn", prompt: "Cô giải thích lại phần vừa rồi bằng tiếng Việt dễ hiểu hơn giúp em với, và cho em một câu ví dụ tiếng Anh đơn giản nhé." },
+  { label: "📝 Cho em câu hỏi tiếp theo", prompt: "Cô hãy đặt cho em một câu hỏi tình huống tiếng Anh tiếp theo để em tự trả lời và sửa lỗi giúp em nhé." },
+  { label: "🎙️ Luyện phát âm câu này", prompt: "Cô hướng dẫn em cách phát âm chuẩn câu mẫu vừa rồi, chỉ ra các từ cần nhấn trọng âm để em đọc lại nhé." },
 ];
 
 type Profile = {
@@ -239,7 +240,7 @@ const profiles: Profile[] = [
     icon: "business",
     color: "blue",
     scene: "Trao đổi trong cuộc họp",
-    prompt: "Hello! I’ll be your colleague in a project meeting. Let’s practice in English. Start by completing: “Our team is working on...” What is your team working on this week?",
+    prompt: "Chào bạn! Cô là Maya, gia sư tiếng Anh của bạn. Hôm nay chúng ta sẽ luyện tập tiếng Anh công sở trong tình huống: \"Trao đổi trong cuộc họp\". Cô sẽ là đồng nghiệp của bạn nhé. Đầu tiên, hãy hoàn thành câu chào này: \"Good morning, everyone. Our team is working on...\" (Hãy điền tiếp công việc của nhóm bạn nhé!)",
     words: ["Could you clarify that?", "Let's get started.", "I see your point."],
   },
   {
@@ -249,7 +250,7 @@ const profiles: Profile[] = [
     icon: "travel",
     color: "orange",
     scene: "Làm thủ tục nhận phòng",
-    prompt: "Welcome! I’m the receptionist at your hotel. Let’s practice checking in. Do you have a reservation?",
+    prompt: "Chào bạn! Cô là Maya. Hôm nay chúng ta cùng luyện tiếng Anh du lịch trong tình huống: \"Làm thủ tục nhận phòng khách sạn\". Cô là nhân viên lễ tân nhé: \"Welcome to Grand Hotel! Do you have a reservation under your name?\" Bạn hãy thử trả lời câu hỏi này nhé (Ví dụ: \"Yes, I have a reservation under the name Nam.\").",
     words: ["I'd like to check in.", "Is breakfast included?", "Could I have a receipt?"],
   },
   {
@@ -259,7 +260,7 @@ const profiles: Profile[] = [
     icon: "technology",
     color: "purple",
     scene: "Phỏng vấn vị trí lập trình viên",
-    prompt: "Hello! I’m interviewing you for a technology role. Tell me about a technical problem you solved. You can begin: “I solved a problem with...”",
+    prompt: "Chào bạn! Cô là Maya. Hôm nay chúng ta sẽ luyện phỏng vấn tiếng Anh ngành công nghệ (IT). Cô là người phỏng vấn bạn nhé: \"Welcome! Could you briefly introduce yourself and the main technologies you use?\" (Hãy giới thiệu ngắn về bản thân và công nghệ bạn dùng nhé!).",
     words: ["I narrowed down the cause.", "The issue was resolved.", "It scales well."],
   },
   {
@@ -269,7 +270,7 @@ const profiles: Profile[] = [
     icon: "healthcare",
     color: "green",
     scene: "Hỏi thăm bệnh nhân",
-    prompt: "Hello. I’m a patient at the clinic. Please ask me in English: “What brings you in today?” Then ask one clear follow-up question about my symptoms.",
+    prompt: "Chào bạn! Cô là Maya. Hôm nay chúng ta cùng thực hành giao tiếp tiếng Anh y tế trong tình huống: \"Hỏi thăm triệu chứng bệnh nhân\". Bạn là bác sĩ/y tá, hãy bắt đầu bằng câu: \"Good morning, what brings you in today?\" (Chào buổi sáng, điều gì khiến bạn đến khám hôm nay?). Bạn hãy thử nói câu này nhé!",
     words: ["Where does it hurt?", "How long have you felt this way?", "Take a deep breath."],
   },
   {
@@ -460,6 +461,159 @@ function recordPractice(current: LearningProgress, minutes: number, newSession: 
     dailyMinutes: { ...current.dailyMinutes, [today]: (current.dailyMinutes[today] ?? 0) + minutes },
   };
 }
+
+function TeacherMascot({
+  status = "idle",
+  size = 52,
+  className = "",
+}: {
+  status?: "idle" | "thinking" | "speaking" | "listening";
+  size?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`teacher-mascot-wrap status-${status} ${className}`.trim()}
+      style={{ width: size, height: size }}
+      title={
+        status === "speaking"
+          ? "Cô Maya đang nói..."
+          : status === "thinking"
+          ? "Cô Maya đang suy nghĩ..."
+          : status === "listening"
+          ? "Cô Maya đang lắng nghe bạn..."
+          : "Cô Maya - Gia sư AI đã kết nối thành công"
+      }
+      aria-label="Hình đại diện gia sư Maya"
+    >
+      <svg
+        viewBox="0 0 100 100"
+        width={size}
+        height={size}
+        className="teacher-mascot-svg"
+      >
+        <defs>
+          <linearGradient id="mascotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#4fd1a5" />
+            <stop offset="50%" stopColor="#20b2aa" />
+            <stop offset="100%" stopColor="#0d7377" />
+          </linearGradient>
+          <linearGradient id="faceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#f0fdf4" />
+          </linearGradient>
+          <filter id="mascotGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        {/* Listening wave ripples */}
+        {status === "listening" && (
+          <>
+            <circle cx="50" cy="50" r="46" className="mascot-ripple ripple-1" />
+            <circle cx="50" cy="50" r="48" className="mascot-ripple ripple-2" />
+          </>
+        )}
+
+        {/* Head / Body */}
+        <circle cx="50" cy="50" r="42" fill="url(#mascotGrad)" filter="url(#mascotGlow)" />
+        <circle cx="50" cy="52" r="35" fill="url(#faceGrad)" />
+
+        {/* Cute Ears / Tufts */}
+        <path d="M 22 26 Q 16 12 30 18 Z" fill="#20b2aa" />
+        <path d="M 78 26 Q 84 12 70 18 Z" fill="#20b2aa" />
+
+        {/* Glasses bridge */}
+        <path d="M 44 48 Q 50 46 56 48" stroke="#134e4a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+
+        {/* Glasses frame left */}
+        <rect x="25" y="38" width="20" height="18" rx="6" fill="#ecfdf5" stroke="#134e4a" strokeWidth="2.5" />
+        {/* Glasses frame right */}
+        <rect x="55" y="38" width="20" height="18" rx="6" fill="#ecfdf5" stroke="#134e4a" strokeWidth="2.5" />
+
+        {/* Eyes */}
+        {status === "thinking" ? (
+          <>
+            <circle cx="37" cy="44" r="4.5" fill="#134e4a" />
+            <circle cx="67" cy="44" r="4.5" fill="#134e4a" />
+            <circle cx="38.5" cy="42.5" r="1.5" fill="#ffffff" />
+            <circle cx="68.5" cy="42.5" r="1.5" fill="#ffffff" />
+          </>
+        ) : (
+          <g className="mascot-eyes">
+            <circle cx="35" cy="47" r="4.5" fill="#134e4a" />
+            <circle cx="65" cy="47" r="4.5" fill="#134e4a" />
+            <circle cx="33.5" cy="45.5" r="1.5" fill="#ffffff" />
+            <circle cx="63.5" cy="45.5" r="1.5" fill="#ffffff" />
+          </g>
+        )}
+
+        {/* Cute blush cheeks */}
+        <ellipse cx="28" cy="59" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.75" />
+        <ellipse cx="72" cy="59" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.75" />
+
+        {/* Mouth */}
+        {status === "speaking" ? (
+          <ellipse cx="50" cy="62" rx="4.5" ry="5.5" fill="#e11d48" className="mascot-mouth-speaking" />
+        ) : (
+          <path d="M 45 61 Q 50 66 55 61" stroke="#134e4a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+        )}
+
+        {/* Graduation cap */}
+        <polygon points="50,12 72,20 50,28 28,20" fill="#1e293b" />
+        <path d="M 72 20 L 75 32" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="75" cy="33" r="2" fill="#f59e0b" />
+      </svg>
+      <span className={`mascot-status-dot status-${status}`} />
+    </div>
+  );
+}
+
+const PROFILE_SUGGESTIONS: Record<string, string[]> = {
+  business: [
+    "Our team is working on the new quarterly budget.",
+    "Could you please explain that in simpler terms?",
+    "Cô giải thích lại bằng tiếng Việt giúp em với.",
+    "Yes, I agree with your proposal.",
+  ],
+  travel: [
+    "Yes, I have a reservation under the name Nam.",
+    "Could you recommend a good local restaurant nearby?",
+    "Nhờ cô hướng dẫn em cách phát âm câu vừa rồi.",
+    "What time is checkout tomorrow morning?",
+  ],
+  technology: [
+    "I solved an issue with API latency by adding caching.",
+    "Could you give me an example answer for this question?",
+    "Cô chỉ ra lỗi ngữ pháp giúp em nhé.",
+    "We use microservices and Docker containers.",
+  ],
+  healthcare: [
+    "Good morning. Where does it hurt the most?",
+    "How long have you been experiencing these symptoms?",
+    "Cô đọc lại câu mẫu bằng tiếng Anh giúp em nhé.",
+    "Please take a deep breath and relax.",
+  ],
+  finance: [
+    "I would like to open a business savings account.",
+    "Could you clarify the annual interest rate?",
+    "Cô cho em một ví dụ thực tế trong ngân hàng nhé.",
+    "What documents do I need to prepare?",
+  ],
+  refrigeration: [
+    "The refrigerant pressure is too low, we should check for leaks.",
+    "Could you repeat the technical term in English?",
+    "Cô giải thích từ chuyên ngành này giúp em.",
+    "The compressor temperature seems normal now.",
+  ],
+  everyday: [
+    "Hi Maya! I had a very busy and productive day.",
+    "What is the most natural way to say this in English?",
+    "Cô dạy em mẫu câu giao tiếp tiếp theo nhé.",
+    "Nice to meet you! How are you doing today?",
+  ],
+};
 
 export default function Home() {
   const [section, setSection] = useState<Section>("home");
@@ -1003,32 +1157,57 @@ export default function Home() {
       return;
     }
     const conversation = [...messages, { role: "user" as const, content }];
-    setMessages(conversation);
+    // Insert empty assistant placeholder for instant streaming
+    setMessages([...conversation, { role: "assistant" as const, content: "" }]);
     setDraft("");
     setChatBusy(true);
     setChatError("");
     try {
-      const systemPrompt = `You are Maya, a warm, patient, and motivating English tutor for a Vietnamese learner.
+      const systemPrompt = `You are Maya, an ACTIVE, PROACTIVE, and warm English teacher for a Vietnamese learner.
 Learner profile: "${profile.title}", CEFR level: ${progress.level}.
 
-Your teaching principles:
-1. ADAPTIVE LEVEL: Teach and converse at CEFR ${progress.level}. Use clear, natural sentences.
-2. SANDWICH FEEDBACK: When the learner speaks or writes in English:
-   - First, warmly acknowledge their message or praise their effort.
-   - If they made a grammar error, spelling mistake, or awkward literal translation from Vietnamese ("Vietlish"), gently point it out, provide the natural English alternative, and briefly explain why in Vietnamese.
-   - Keep the practice going by asking ONE focused, engaging follow-up question.
-3. IN-LESSON & GRAMMAR ASSISTANCE:
-   - When the learner asks about a lesson, quiz question, vocabulary word, or grammar rule, explain the concept clearly and concisely in Vietnamese with practical examples, then prompt them to try using it in an English sentence.
-4. LANGUAGE BALANCE:
-   - For explanations and feedback, use Vietnamese when helpful. For roleplay dialogues and practice, keep conversations in English.
-   - Keep responses under 130 words unless detailed explanation is asked. Never claim to measure pronunciation from text alone.`;
+CRITICAL PEDAGOGICAL PRINCIPLES:
+1. LEAD AND INSTRUCT (Do NOT just passively answer):
+   - You are the teacher guiding the session. Every turn, you must guide the learner what to do next.
+   - For A1-A2 (Beginners): Provide explanations in Vietnamese first. Teach 1 useful sentence structure/phrase, provide the Vietnamese translation, and explicitly ask the learner to repeat or answer with a clear example.
+   - For B1-B2 (Intermediate): Lead a realistic roleplay dialogue in English related to "${profile.title}". Set the scene, speak your line, and ask a targeted question for the learner to reply.
+
+2. ALWAYS END WITH A CLEAR NEXT PROMPT:
+   - Never end your turn with just a statement. Always finish with ONE clear question, roleplay response, or practice request so the learner always knows what to say next.
+   - Provide a brief hint in parentheses if helpful: e.g. "(Gợi ý: bạn có thể trả lời: 'I usually...')"
+
+3. SANDWICH FEEDBACK:
+   - When the learner speaks or writes:
+     1. Praise: Warmly acknowledge their effort ("Very good!", "Tuyệt vời!").
+     2. Correct: If there are grammar mistakes or "Vietlish" word-for-word translation, kindly point it out and provide the natural native English phrasing, with a quick explanation in Vietnamese.
+     3. Next Step: Continue the dialogue by asking the next question.
+
+4. BILINGUAL CLARITY:
+   - Put English practice sentences, examples, and key phrases inside quotation marks "..." so the learner (and the speech engine) can distinguish them clearly from Vietnamese explanations.
+   - Keep responses encouraging, bite-sized (under 120 words), and tailored to ${progress.level}.`;
+
+      let streamedText = "";
       const reply = await withAvailableApiKey((key) =>
-        generateAiText(aiProvider, key, activeModel, systemPrompt, conversation.slice(-12)));
-      setMessages((current) => [...current, { role: "assistant", content: reply }]);
+        generateAiText(
+          aiProvider,
+          key,
+          activeModel,
+          systemPrompt,
+          conversation.slice(-12),
+          (chunk) => {
+            streamedText = chunk;
+            setMessages([...conversation, { role: "assistant", content: chunk }]);
+          }
+        )
+      );
+
+      const finalReply = reply || streamedText;
+      setMessages([...conversation, { role: "assistant", content: finalReply }]);
       setProgress((current) => recordPractice(current, 2, !practiceSessionCounted.current));
       practiceSessionCounted.current = true;
-      void playSpeech(reply);
+      void playSpeech(finalReply);
     } catch (error) {
+      setMessages(conversation);
       const timedOut = error instanceof Error &&
         (error.name === "TimeoutError" || /signal timed out|timed out|timeout/i.test(error.message));
       setChatError(timedOut
@@ -1319,21 +1498,26 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     }
   }
 
-  function playNativeSpeech(text: string): Promise<void> {
+  function playNativeUtterance(text: string, lang: "vi" | "en"): Promise<void> {
     return new Promise((resolve) => {
       if (typeof window === "undefined" || !("speechSynthesis" in window)) {
         resolve();
         return;
       }
-      window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "en-US";
-      utterance.rate = 0.92;
+      utterance.rate = lang === "en" ? 0.92 : 1.0;
       const voices = window.speechSynthesis.getVoices();
-      const englishVoice =
-        voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Samantha") || v.name.includes("Daniel") || v.name.includes("US") || v.name.includes("UK"))) ||
-        voices.find((v) => v.lang.startsWith("en"));
-      if (englishVoice) utterance.voice = englishVoice;
+      if (lang === "vi") {
+        utterance.lang = "vi-VN";
+        const viVoice = voices.find((v) => v.lang.startsWith("vi") || v.lang.includes("VN"));
+        if (viVoice) utterance.voice = viVoice;
+      } else {
+        utterance.lang = "en-US";
+        const enVoice =
+          voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Samantha") || v.name.includes("Daniel") || v.name.includes("US") || v.name.includes("UK"))) ||
+          voices.find((v) => v.lang.startsWith("en"));
+        if (enVoice) utterance.voice = enVoice;
+      }
       utterance.onend = () => resolve();
       utterance.onerror = () => resolve();
       window.speechSynthesis.speak(utterance);
@@ -1350,6 +1534,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
     speechAudioRef.current?.pause();
     speechAudioRef.current = null;
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
     if (speechObjectUrlRef.current) {
       URL.revokeObjectURL(speechObjectUrlRef.current);
       speechObjectUrlRef.current = null;
@@ -1357,69 +1544,73 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     setSpeechBusy(true);
     setSpeechError("");
     setSpeechNotice("");
-    let blob: Blob | null = null;
-    let storageWarning = "";
-    const speechCacheKey = `${aiProvider}:${activeModel}:${activeSpeechVoice}:${activeSpeechAccent}:${speechDeliveryStyle}`;
+
     try {
-      try {
-        blob = await getCachedSpeech(speechCacheKey, phrase);
-      } catch (error) {
-        storageWarning = error instanceof Error
-          ? `Không đọc được bộ nhớ âm thanh trên thiết bị: ${error.message}`
-          : "Không đọc được bộ nhớ âm thanh trên thiết bị.";
-      }
-      if (!blob) {
-        if (!apiKey) {
-          await playNativeSpeech(phrase);
-          setSpeechNotice("Đang phát bằng giọng đọc có sẵn trên thiết bị (hoạt động ngoại tuyến).");
-          return;
-        }
+      const segments = splitBilingualText(phrase);
+
+      // If it is a single pure English sentence and online key is available, use provider TTS if possible:
+      if (segments.length === 1 && segments[0].lang === "en" && apiKey) {
+        let blob: Blob | null = null;
+        const speechCacheKey = `${aiProvider}:${activeModel}:${activeSpeechVoice}:${activeSpeechAccent}:${speechDeliveryStyle}`;
         try {
-          blob = await withAvailableApiKey((key) =>
-            generateProviderSpeech(aiProvider, key, activeModel, activeSpeechVoice, phrase, activeSpeechAccent, speechDeliveryStyle));
+          blob = await getCachedSpeech(speechCacheKey, phrase);
+        } catch {}
+        if (!blob) {
           try {
-            await saveCachedSpeech(speechCacheKey, phrase, blob);
-          } catch (error) {
-            storageWarning = error instanceof Error
-              ? `Đã tạo được âm thanh nhưng không lưu offline: ${error.message}`
-              : "Đã tạo được âm thanh nhưng không lưu offline.";
+            blob = await withAvailableApiKey((key) =>
+              generateProviderSpeech(aiProvider, key, activeModel, activeSpeechVoice, phrase, activeSpeechAccent, speechDeliveryStyle));
+            try {
+              await saveCachedSpeech(speechCacheKey, phrase, blob);
+            } catch {}
+          } catch {
+            await playNativeUtterance(phrase, "en");
+            setSpeechNotice("Đang phát bằng giọng Tiếng Anh chuẩn trên thiết bị.");
+            return;
           }
-        } catch {
-          await playNativeSpeech(phrase);
-          setSpeechNotice("Dịch vụ giọng đọc trực tuyến bận, đã chuyển sang giọng đọc thiết bị.");
+        }
+        if (blob) {
+          const objectUrl = URL.createObjectURL(blob);
+          const audio = new Audio(objectUrl);
+          speechAudioRef.current = audio;
+          speechObjectUrlRef.current = objectUrl;
+          await new Promise<void>((resolve) => {
+            audio.onended = () => {
+              if (speechAudioRef.current === audio) {
+                speechAudioRef.current = null;
+                speechObjectUrlRef.current = null;
+                URL.revokeObjectURL(objectUrl);
+              }
+              resolve();
+            };
+            audio.onerror = async () => {
+              await playNativeUtterance(phrase, "en");
+              resolve();
+            };
+            audio.play().catch(async () => {
+              await playNativeUtterance(phrase, "en");
+              resolve();
+            });
+          });
           return;
         }
       }
 
-      const objectUrl = URL.createObjectURL(blob);
-      const audio = new Audio(objectUrl);
-      speechAudioRef.current = audio;
-      speechObjectUrlRef.current = objectUrl;
-      audio.onended = () => {
-        if (speechAudioRef.current === audio) {
-          speechAudioRef.current = null;
-          speechObjectUrlRef.current = null;
-          URL.revokeObjectURL(objectUrl);
-        }
-      };
-      void audio.play().catch(async () => {
-        if (speechAudioRef.current === audio) {
-          speechAudioRef.current = null;
-          speechObjectUrlRef.current = null;
-          URL.revokeObjectURL(objectUrl);
-        }
-        await playNativeSpeech(phrase);
-        setSpeechNotice("Đang phát bằng giọng đọc có sẵn trên thiết bị.");
-      });
-      setSpeechError(storageWarning);
-      setSpeechNotice(storageWarning ? "" : "Âm thanh đã được lưu trên thiết bị để nghe lại khi ngoại tuyến.");
-    } catch (error) {
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        await playNativeSpeech(phrase);
-        setSpeechNotice("Đang phát bằng giọng đọc có sẵn trên thiết bị.");
-      } else {
-        setSpeechError(error instanceof Error ? error.message : "Không thể phát giọng đọc. Vui lòng thử lại.");
+      // Bilingual sequential playback:
+      for (const segment of segments) {
+        if (!segment.text.trim()) continue;
+        await playNativeUtterance(segment.text, segment.lang);
       }
+      const hasVi = segments.some((s) => s.lang === "vi");
+      const hasEn = segments.some((s) => s.lang === "en");
+      setSpeechNotice(
+        hasVi && hasEn
+          ? "Đang phát đọc song ngữ: Tiếng Việt giải thích & Tiếng Anh chuẩn cho câu mẫu."
+          : hasVi
+          ? "Đang phát bằng giọng Tiếng Việt."
+          : "Đang phát bằng giọng Tiếng Anh chuẩn."
+      );
+    } catch (error) {
+      setSpeechError(error instanceof Error ? error.message : "Không thể phát giọng đọc.");
     } finally {
       setSpeechBusy(false);
     }
@@ -2107,8 +2298,24 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
 
         <section className="panel chat-panel">
           <header className="chat-header">
-            <div className="coach-avatar"><IllustrationIcon name="teacher" /></div>
-            <div><strong>Cô Maya</strong><p>Gia sư AI · {aiProvider === "google" ? "Google AI" : "OpenAI"} <span className="online-dot" /> Sẵn sàng dạy bạn</p></div>
+            <div className="coach-avatar">
+              <TeacherMascot
+                status={
+                  speechBusy
+                    ? "speaking"
+                    : chatBusy
+                    ? "thinking"
+                    : voiceChatRecording
+                    ? "listening"
+                    : "idle"
+                }
+                size={50}
+              />
+            </div>
+            <div>
+              <strong>Cô Maya {speechBusy && <span className="mascot-speaking-badge">🔊 Đang nói…</span>}</strong>
+              <p>Gia sư AI · {aiProvider === "google" ? "Google AI (Phản hồi tức thì)" : "OpenAI"} <span className="online-dot" /> Đã kết nối</p>
+            </div>
             <span className="level-chip">{progress.level}</span>
           </header>
           <div className="chat-context"><span>💬</span> {profile.title} <span>·</span> {profile.scene}</div>
@@ -2150,8 +2357,28 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             {chatBusy && <div className="typing-indicator"><span /> <span /> <span /> Maya đang suy nghĩ…</div>}
           </div>
           {chatError && <p className="error-message chat-error">{chatError}</p>}
+          <div className="suggested-replies-wrap">
+            <span className="suggested-label">💡 Gợi ý trả lời cho bạn:</span>
+            <div className="suggested-chips">
+              {(PROFILE_SUGGESTIONS[profile.id] || PROFILE_SUGGESTIONS.everyday).map((replyText) => (
+                <button
+                  type="button"
+                  key={replyText}
+                  className="suggested-chip"
+                  onClick={() => {
+                    setDraft(replyText);
+                    void sendMessage(undefined, replyText);
+                  }}
+                  disabled={chatBusy}
+                  title="Bấm để gửi nhanh câu này"
+                >
+                  {replyText}
+                </button>
+              ))}
+            </div>
+          </div>
           <form className="composer" onSubmit={sendMessage}>
-            <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Nhập câu trả lời bằng tiếng Anh…" aria-label="Câu trả lời của bạn" />
+            <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Nhập câu trả lời bằng tiếng Anh hoặc chọn gợi ý ở trên…" aria-label="Câu trả lời của bạn" />
             <button type="button" className={voiceChatRecording ? "mic-button recording" : "mic-button"} aria-label={voiceChatRecording ? "Dừng ghi âm" : "Trả lời bằng giọng nói"} onClick={voiceChatRecording ? stopVoiceChatRecording : startVoiceInput} disabled={chatBusy}><IllustrationIcon name={voiceChatRecording ? "stop" : "microphone"} /></button>
             <button type="submit" className="send-button" disabled={chatBusy || !draft.trim()}>Gửi <span>↑</span></button>
           </form>

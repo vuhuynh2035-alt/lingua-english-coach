@@ -80,6 +80,111 @@ export async function generateChatWithGemini(
   }
 }
 
+export async function streamChatWithGemini(
+  apiKey: string,
+  model: string,
+  systemPrompt: string,
+  messages: { role: "user" | "assistant"; content: string }[],
+  onChunk: (accumulatedText: string) => void,
+): Promise<string> {
+  const conversation = [...messages];
+  let context = systemPrompt;
+  if (conversation[0]?.role === "assistant") {
+    context += `\n\nThe tutor has already said: ${conversation.shift()?.content ?? ""}`;
+  }
+  const generationConfig: {
+    temperature: number;
+    maxOutputTokens: number;
+    thinkingConfig?: { thinkingBudget: number };
+  } = { temperature: 0.7, maxOutputTokens: 800 };
+
+  if (/gemini-(?:2|flash|thinking)/i.test(model)) {
+    generationConfig.thinkingConfig = { thinkingBudget: 0 };
+  }
+
+  const payload = {
+    systemInstruction: { parts: [{ text: context }] },
+    contents: conversation.map((message) => ({
+      role: message.role === "assistant" ? ("model" as const) : ("user" as const),
+      parts: [{ text: message.content }],
+    })),
+    generationConfig,
+  };
+
+  try {
+    return await requestGeminiStream(apiKey, model, payload, onChunk);
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    if (payload.generationConfig.thinkingConfig && /thinking/i.test(errorMsg)) {
+      const fallbackPayload = {
+        ...payload,
+        generationConfig: { temperature: 0.7, maxOutputTokens: 800 },
+      };
+      return await requestGeminiStream(apiKey, model, fallbackPayload, onChunk);
+    }
+    // Fall back to non-streaming if stream connection encounters an error
+    const nonStreamed = await generateChatWithGemini(apiKey, model, systemPrompt, messages);
+    onChunk(nonStreamed);
+    return nonStreamed;
+  }
+}
+
+async function requestGeminiStream(
+  apiKey: string,
+  model: string,
+  requestPayload: unknown,
+  onChunk: (text: string) => void,
+): Promise<string> {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:streamGenerateContent?alt=sse`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify(requestPayload),
+      signal: AbortSignal.timeout(60_000),
+    },
+  );
+
+  if (!response.ok) throw new Error(await getGeminiError(response));
+  if (!response.body) throw new Error("Không thể kết nối luồng dữ liệu từ Google AI.");
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+  let fullText = "";
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split("\n");
+    buffer = lines.pop() ?? "";
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed.startsWith("data: ")) continue;
+      const jsonStr = trimmed.slice(6).trim();
+      if (!jsonStr || jsonStr === "[DONE]") continue;
+      try {
+        const chunk = JSON.parse(jsonStr);
+        const parts = chunk?.candidates?.[0]?.content?.parts;
+        if (Array.isArray(parts)) {
+          for (const part of parts) {
+            if (typeof part?.text === "string") {
+              fullText += part.text;
+              onChunk(fullText);
+            }
+          }
+        }
+      } catch {
+        // partial chunk, skip
+      }
+    }
+  }
+
+  if (!fullText.trim()) throw new Error("Gia sư AI chưa có câu trả lời. Vui lòng thử lại.");
+  return fullText.trim();
+}
+
 async function requestGemini(
   apiKey: string,
   model: string,

@@ -1,4 +1,4 @@
-import { GeminiPart, generateChatWithGemini, generateWithGemini } from "@/lib/gemini";
+import { GeminiPart, generateChatWithGemini, generateWithGemini, streamChatWithGemini } from "@/lib/gemini";
 import {
   GoogleSpeechVoice,
   SpeechDeliveryStyle,
@@ -155,10 +155,69 @@ export async function generateAiText(
   model: string,
   systemPrompt: string,
   messages: { role: "user" | "assistant"; content: string }[],
+  onChunk?: (text: string) => void,
 ): Promise<string> {
   if (provider === "google") {
+    if (onChunk) {
+      return streamChatWithGemini(apiKey, model, systemPrompt, messages, onChunk);
+    }
     return generateChatWithGemini(apiKey, model, systemPrompt, messages);
   }
+
+  // OpenAI implementation with optional streaming
+  if (onChunk) {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages.map((message) => ({ role: message.role, content: message.content })),
+        ],
+        temperature: 0.7,
+        max_completion_tokens: 450,
+        stream: true,
+      }),
+      signal: AbortSignal.timeout(60_000),
+    });
+
+    if (!response.ok) {
+      const errResult = await response.json().catch(() => null);
+      throw new Error(getProviderError(provider, response.status, errResult));
+    }
+    if (!response.body) throw new Error("Không thể kết nối luồng phản hồi từ OpenAI.");
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder("utf-8");
+    let buffer = "";
+    let fullText = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed.startsWith("data: ")) continue;
+        const jsonStr = trimmed.slice(6).trim();
+        if (!jsonStr || jsonStr === "[DONE]") continue;
+        try {
+          const parsed = JSON.parse(jsonStr);
+          const chunk = parsed?.choices?.[0]?.delta?.content;
+          if (typeof chunk === "string") {
+            fullText += chunk;
+            onChunk(fullText);
+          }
+        } catch {}
+      }
+    }
+    if (!fullText.trim()) throw new Error("OpenAI chưa trả về nội dung. Vui lòng thử lại.");
+    return fullText.trim();
+  }
+
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
@@ -169,9 +228,9 @@ export async function generateAiText(
         ...messages.map((message) => ({ role: message.role, content: message.content })),
       ],
       temperature: 0.7,
-      max_completion_tokens: 300,
+      max_completion_tokens: 450,
     }),
-    signal: AbortSignal.timeout(30_000),
+    signal: AbortSignal.timeout(45_000),
   });
   const result: unknown = await response.json().catch(() => null);
   if (!response.ok) throw new Error(getProviderError(provider, response.status, result));

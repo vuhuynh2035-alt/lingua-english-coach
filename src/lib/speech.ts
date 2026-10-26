@@ -183,3 +183,80 @@ export async function clearSpeechCache(): Promise<void> {
     };
   });
 }
+
+export type SpeechSegment = {
+  text: string;
+  lang: "vi" | "en";
+};
+
+export function splitBilingualText(text: string): SpeechSegment[] {
+  const trimmed = text.trim();
+  if (!trimmed) return [];
+
+  const viRegex = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
+  const hasVietnamese = viRegex.test(trimmed);
+  if (!hasVietnamese) {
+    return [{ text: trimmed, lang: "en" }];
+  }
+
+  const hasEnglish = /[a-zA-Z]{2,}/.test(trimmed);
+  if (!hasEnglish) {
+    return [{ text: trimmed, lang: "vi" }];
+  }
+
+  // Split quotes: "...", “...”, '...', `...`
+  const tokens = trimmed.split(/(["“`'][^"”`']+["”`'])/);
+  const rawSegments: SpeechSegment[] = [];
+
+  for (const token of tokens) {
+    const s = token.trim();
+    if (!s) continue;
+
+    // Quoted text
+    if (/^["“`'].*["”`']$/.test(s)) {
+      const inner = s.slice(1, -1).trim();
+      if (!inner) continue;
+      const innerHasVi = viRegex.test(inner);
+      rawSegments.push({ text: inner, lang: innerHasVi ? "vi" : "en" });
+      continue;
+    }
+
+    // Split unquoted text into clauses
+    const subClauses = s.split(/([.!?\n]+)/);
+    let currentClause = "";
+    for (const sub of subClauses) {
+      if (!sub) continue;
+      if (/^[.!?\n]+$/.test(sub)) {
+        currentClause += sub;
+        const clauseTrimmed = currentClause.trim();
+        if (clauseTrimmed) {
+          const isVi = viRegex.test(clauseTrimmed);
+          const hasEn = /[a-zA-Z]{2,}/.test(clauseTrimmed);
+          rawSegments.push({ text: clauseTrimmed, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
+        }
+        currentClause = "";
+      } else {
+        currentClause += sub;
+      }
+    }
+    if (currentClause.trim()) {
+      const clauseTrimmed = currentClause.trim();
+      const isVi = viRegex.test(clauseTrimmed);
+      const hasEn = /[a-zA-Z]{2,}/.test(clauseTrimmed);
+      rawSegments.push({ text: clauseTrimmed, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
+    }
+  }
+
+  // Merge consecutive segments of the same language
+  const merged: SpeechSegment[] = [];
+  for (const seg of rawSegments) {
+    if (!seg.text.trim()) continue;
+    if (merged.length > 0 && merged[merged.length - 1].lang === seg.lang) {
+      merged[merged.length - 1].text += " " + seg.text;
+    } else {
+      merged.push({ text: seg.text, lang: seg.lang });
+    }
+  }
+
+  return merged.length > 0 ? merged : [{ text: trimmed, lang: hasVietnamese ? "vi" : "en" }];
+}
