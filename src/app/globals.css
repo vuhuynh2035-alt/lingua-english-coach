@@ -138,6 +138,13 @@ button:focus-visible, input:focus-visible { outline: 3px solid #afa2fa; outline-
 .api-reminder strong { font-size: 0.625rem; }
 .api-reminder p { margin: 2px 0 0; color: #858198; font-size: 0.5625rem; }
 .api-reminder button { padding: 8px 11px; border: 0; border-radius: 8px; color: #fff; background: #7867d4; font-size: 0.5625rem; font-weight: 700; white-space: nowrap; }
+.update-available-banner { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 0 0 16px; padding: 12px 15px; border: 1px solid #e6c875; border-radius: 11px; color: #684b12; background: #fff8df; font-size: .75rem; font-weight: 700; }
+.update-available-banner .button { flex: 0 0 auto; }
+.install-app-panel { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 16px 0; padding: 13px 16px; border: 1px solid var(--theme-border, #bde5d2); border-radius: 12px; color: var(--theme-text, #174b3b); background: #fff; box-shadow: 0 3px 0 color-mix(in srgb, var(--theme-border, #bde5d2) 45%, #fff); }
+.install-app-panel strong { font-size: .8125rem; }
+.install-app-panel p { margin: 3px 0 0; color: var(--muted); font-size: .6875rem; }
+.install-app-panel small { display: block; margin-top: 5px; color: var(--muted); font-size: .625rem; line-height: 1.5; }
+.install-app-panel .button { flex: 0 0 auto; }
 .practice-heading { margin-top: 0; }
 .practice-layout { display: grid; grid-template-columns: minmax(225px,.8fr) minmax(350px,1.35fr); gap: 14px; }
 .scene-panel { padding: 18px; }
@@ -338,6 +345,8 @@ button:focus-visible, input:focus-visible { outline: 3px solid #afa2fa; outline-
   .mobile-nav-item > span { font-size: 1.0625rem; }
   .mobile-nav-item small { font-size: 0.5rem; }
   .mobile-nav-item.selected { color: #7664ce; }
+  .update-available-banner, .install-app-panel { align-items: stretch; flex-direction: column; }
+  .update-available-banner .button, .install-app-panel .button { width: 100%; }
 }
 @media (max-width: 380px) {
   .hero-art { opacity: .52; }

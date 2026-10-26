@@ -49,6 +49,10 @@ type ApiKeyEntry = { id: string; label: string; value: string };
 type ProviderRecord<T> = Record<AiProvider, T>;
 type AppTheme = "mint" | "blue" | "burgundy";
 type VersionCheckStatus = "checking" | "latest" | "update-available" | "error";
+type InstallPromptEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
+};
 const APP_VERSION = packageJson.version;
 const API_KEY_STORAGE = "lingua-gemini-api-key";
 const AI_SETTINGS_STORAGE = "lingua-ai-settings";
@@ -373,6 +377,9 @@ export default function Home() {
   const [latestVersion, setLatestVersion] = useState("");
   const [versionCheckError, setVersionCheckError] = useState("");
   const [versionCheckAttempt, setVersionCheckAttempt] = useState(0);
+  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
+  const [appInstalled, setAppInstalled] = useState(false);
+  const [installError, setInstallError] = useState("");
   const [progress, setProgress] = useState<LearningProgress>(emptyProgress);
   const [progressLoaded, setProgressLoaded] = useState(false);
   const [aiSettingsLoaded, setAiSettingsLoaded] = useState(false);
@@ -668,6 +675,25 @@ export default function Home() {
     void checkLatestVersion();
     return () => { cancelled = true; };
   }, [versionCheckAttempt]);
+
+  useEffect(() => {
+    const onBeforeInstallPrompt = (event: Event) => {
+      event.preventDefault();
+      setInstallPrompt(event as InstallPromptEvent);
+    };
+    const onAppInstalled = () => {
+      setAppInstalled(true);
+      setInstallPrompt(null);
+      setInstallError("");
+    };
+    setAppInstalled(window.matchMedia("(display-mode: standalone)").matches);
+    window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+    window.addEventListener("appinstalled", onAppInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", onAppInstalled);
+    };
+  }, []);
 
   useEffect(() => {
     try {
@@ -1452,6 +1478,7 @@ export default function Home() {
     const femaleVoices = googleSpeechVoices.filter((voice) => voice.gender === "female");
     return (
       <>
+        {renderInstallAppPanel()}
         <div className="page-intro">
           <span className="eyebrow">CÀI ĐẶT CHUNG</span>
           <h2>Cá nhân hóa gia sư AI.</h2>
@@ -1746,6 +1773,36 @@ export default function Home() {
     );
   }
 
+  async function installApp() {
+    if (!installPrompt) return;
+    setInstallError("");
+    try {
+      await installPrompt.prompt();
+      const choice = await installPrompt.userChoice;
+      if (choice.outcome === "accepted") {
+        setAppInstalled(true);
+        setInstallPrompt(null);
+      }
+    } catch (error) {
+      setInstallError(error instanceof Error ? error.message : "Không thể mở hộp thoại cài đặt ứng dụng.");
+    }
+  }
+
+  function renderInstallAppPanel() {
+    if (appInstalled) return null;
+    return (
+      <section className="install-app-panel" aria-label="Cài Lingua lên màn hình chính">
+        <div>
+          <strong>Cài Lingua lên màn hình chính</strong>
+          <p>Thêm biểu tượng ứng dụng để mở nhanh như app trên điện thoại.</p>
+          {!installPrompt && <small>Android/Chrome: mở menu trình duyệt và chọn “Cài đặt ứng dụng” hoặc “Thêm vào màn hình chính”. iPhone/iPad: mở bằng Safari, nhấn Chia sẻ rồi chọn “Thêm vào MH chính”.</small>}
+          {installError && <p className="error-message" role="alert">{installError}</p>}
+        </div>
+        {installPrompt && <button type="button" className="button button-primary" onClick={() => { void installApp(); }}>Cài ứng dụng</button>}
+      </section>
+    );
+  }
+
   function renderPlacement() {
     return (
       <section className="panel placement-panel">
@@ -1888,6 +1945,8 @@ export default function Home() {
             <div className="art-star star-one"><IllustrationIcon name="sparkles" /></div><div className="art-star star-two"><IllustrationIcon name="sparkles" /></div>
           </div>
         </section>
+
+        {renderInstallAppPanel()}
 
         <div className="section-heading">
           <div><span className="eyebrow">LỘ TRÌNH HỌC CỦA BẠN</span><h2>Chọn lĩnh vực muốn học</h2></div>
@@ -2245,6 +2304,12 @@ export default function Home() {
           </div>
         </header>
         <div className="content-wrap">
+          {versionCheckStatus === "update-available" && (
+            <aside className="update-available-banner" role="alert">
+              <span>Đã có phiên bản mới v{latestVersion}. Tải lại ứng dụng để cập nhật.</span>
+              <button type="button" className="button button-primary" onClick={() => window.location.reload()}>Cập nhật ngay</button>
+            </aside>
+          )}
           {progressLoaded && !apiKey && section !== "settings" && <section className="api-reminder"><span className="reminder-key-icon"><IllustrationIcon name="key" /></span><div><strong>Kết nối AI để bắt đầu học cùng Maya</strong><p>Thêm API key Google AI hoặc OpenAI trong Cài đặt. Key chỉ lưu trên thiết bị này.</p></div><button onClick={() => navigateToSection("settings")}>Thiết lập AI</button></section>}
           {speechBusy && <p className="speech-status" role="status">Đang tạo giọng đọc AI…</p>}
           {speechError && <p className="error-message speech-status" role="alert">{speechError}</p>}
@@ -2261,7 +2326,7 @@ export default function Home() {
         </div>
         <footer className="site-footer">Dành cho khoảnh khắc bạn nghĩ: “Mình làm được!” <span>✦</span> <span className="site-version">v{APP_VERSION}</span></footer>
       </section>
-      <nav className="mobile-nav">{nav.filter((item) => item.id !== "settings").map((item) => <button key={item.id} className={section === item.id ? "mobile-nav-item selected" : "mobile-nav-item"} onClick={() => navigateToSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span><small>{item.label}</small></button>)}</nav>
+      <nav className="mobile-nav">{nav.map((item) => <button key={item.id} className={section === item.id ? "mobile-nav-item selected" : "mobile-nav-item"} onClick={() => navigateToSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span><small>{item.label}</small></button>)}</nav>
     </main>
   );
 }

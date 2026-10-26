@@ -10,6 +10,8 @@ Web app học tiếng Anh dành cho người Việt. Chọn lộ trình theo lĩ
 4. Có thể lưu nhiều key, đổi key đang dùng, tải danh sách mô hình để chọn, và chọn giọng đọc.
 5. Chọn lĩnh vực, rồi trò chuyện bằng cách nhập câu hoặc dùng micro.
 
+Có thể cài Lingua lên màn hình chính: Chrome/Android dùng nút **Cài ứng dụng** khi trình duyệt cung cấp hoặc mở menu và chọn cài ứng dụng; iPhone/iPad mở trang bằng Safari, nhấn **Chia sẻ → Thêm vào MH chính**. Ứng dụng kiểm tra phiên bản mới khi mở và hiển thị nút cập nhật trong trang nếu có bản mới.
+
 Mỗi người học dùng API key và hạn mức của riêng mình. Yêu cầu được gửi trực tiếp từ trình duyệt tới nhà cung cấp đã chọn; API key không được gửi tới máy chủ của ứng dụng hoặc lưu trong mã nguồn GitHub. Nếu một key bị từ chối hoặc hết hạn mức, app thử lần lượt các key còn lại đã lưu cho nhà cung cấp đó.
 
 API key, lựa chọn nhà cung cấp/mô hình/giọng đọc, hồ sơ, tiến độ và lịch sử trò chuyện được lưu trong bộ nhớ trình duyệt trên thiết bị hiện tại. Dữ liệu không được đồng bộ giữa các thiết bị. Nếu xóa dữ liệu trang web/trình duyệt, key và tiến độ trên thiết bị đó cũng bị xóa. Không lưu key trên thiết bị công cộng hoặc thiết bị dùng chung.
