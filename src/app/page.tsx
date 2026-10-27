@@ -2764,9 +2764,17 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         <div className="profile-grid">
           {profiles.slice(0, 4).map((item) => (
             <button className={`profile-card ${item.id === progress.profile ? "active-profile" : ""}`} key={item.id} onClick={() => selectProfile(item.id)}>
-              <span className={`profile-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>
-              <strong>{item.title}</strong><span>{item.subtitle}</span>
-              {item.id === progress.profile && <i>ĐANG CHỌN</i>}
+              <div className="profile-header-row">
+                <span className={`profile-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>
+                {item.id === progress.profile && <span className="profile-badge-chip active">✓ Đang chọn</span>}
+              </div>
+              <strong className="profile-card-title">{item.title}</strong>
+              <span className="profile-card-subtitle">{item.subtitle}</span>
+              <div className="profile-card-footer">
+                <span className={`profile-select-pill-mini ${item.id === progress.profile ? "active" : ""}`}>
+                  {item.id === progress.profile ? "✓ Đang chọn" : "Chọn →"}
+                </span>
+              </div>
             </button>
           ))}
         </div>
@@ -2823,17 +2831,39 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         </div>
         <div className="all-profiles-grid">{profiles.map((item) => (
           <button key={item.id} className={`profile-card large-profile ${item.id === progress.profile ? "active-profile" : ""}`} onClick={() => selectProfile(item.id)}>
-            <span className={`profile-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span><strong>{item.title}</strong><span>{item.subtitle}</span>
-            <div className="profile-preview"><span>Tình huống luyện tập</span><strong>{item.scene}</strong></div>
-            <i>{item.id === progress.profile ? "ĐANG CHỌN" : "CHỌN LỘ TRÌNH NÀY →"}</i>
+            <div className="profile-header-row">
+              <span className={`profile-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>
+              {item.id === progress.profile && <span className="profile-badge-chip active">✓ Đang chọn</span>}
+            </div>
+            <strong className="profile-card-title">{item.title}</strong>
+            <span className="profile-card-subtitle">{item.subtitle}</span>
+            <div className="profile-preview">
+              <span className="preview-label">Tình huống luyện tập</span>
+              <strong className="preview-scene">{item.scene}</strong>
+            </div>
+            <div className="profile-card-footer">
+              <span className={`profile-select-pill ${item.id === progress.profile ? "active" : ""}`}>
+                {item.id === progress.profile ? "✓ ĐANG CHỌN" : "CHỌN LỘ TRÌNH NÀY →"}
+              </span>
+            </div>
           </button>
         ))}
           <button type="button" className="profile-card large-profile grammar-profile-card" onClick={() => navigateToSection("grammar")}>
-            <span className="profile-icon"><IllustrationIcon name="grammar" /></span>
-            <strong>Tiếng Anh ngữ pháp</strong>
-            <span>Học cấu trúc câu và làm bài tập theo trình độ</span>
-            <div className="profile-preview"><span>Lĩnh vực học</span><strong>Ngữ pháp tiếng Anh</strong></div>
-            <i>KHÁM PHÁ BÀI HỌC →</i>
+            <div className="profile-header-row">
+              <span className="profile-icon"><IllustrationIcon name="grammar" /></span>
+              <span className="profile-badge-chip grammar">Ngữ pháp</span>
+            </div>
+            <strong className="profile-card-title">Tiếng Anh ngữ pháp</strong>
+            <span className="profile-card-subtitle">Học cấu trúc câu và làm bài tập theo trình độ</span>
+            <div className="profile-preview">
+              <span className="preview-label">Lĩnh vực học</span>
+              <strong className="preview-scene">Ngữ pháp tiếng Anh</strong>
+            </div>
+            <div className="profile-card-footer">
+              <span className="profile-select-pill">
+                KHÁM PHÁ BÀI HỌC →
+              </span>
+            </div>
           </button>
         </div>
       </>

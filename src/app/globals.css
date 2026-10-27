@@ -95,7 +95,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid #afa2fa; outline-
 .text-button { padding: 5px 0; border: 0; color: #7160ce; background: transparent; font-size: 0.9375rem; font-weight: 700; }
 .text-button span { margin-left: 6px; }
 .profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; width: 100%; }
-.profile-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; min-height: 140px; padding: 15px; border: 1px solid #eeedf0; border-radius: 13px; text-align: left; background: #fff; transition: .18s ease; }
+.profile-card { position: relative; display: flex !important; flex-direction: column !important; align-items: stretch !important; min-height: auto !important; height: 100%; padding: 16px !important; border: 1px solid #eeedf0; border-radius: 14px; text-align: left; background: #fff; transition: .18s ease; box-sizing: border-box; }
 .profile-card:hover { border-color: #cfc8f1; box-shadow: 0 6px 20px #55458c0d; transform: translateY(-2px); }
 .profile-card.active-profile { border-color: #a699ed; box-shadow: inset 0 0 0 1px #a699ed; }
 .profile-icon { display: grid; place-items: center; width: 36px; height: 36px; margin-bottom: 12px; border-radius: 11px; font-size: 1.0625rem; }
@@ -107,7 +107,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid #afa2fa; outline-
 .profile-icon.yellow, .lesson-icon.yellow, .scene-art.yellow { background: #fff4d9; }
 .profile-card > strong { font: 700 1rem var(--font-display); }
 .profile-card > span:not(.profile-icon) { margin-top: 4px; color: #9998a7; font-size: 1.1875rem; }
-.profile-card > i { position: absolute; top: 13px; right: 10px; color: #8171d2; font-size: 1.0625rem; font-style: normal; font-weight: 700; letter-spacing: .5px; }
+.profile-card > i { position: static !important; display: inline-flex !important; align-self: flex-end; margin-top: auto; color: var(--theme-primary, #19835f); font-size: 0.8125rem; font-style: normal; font-weight: 700; letter-spacing: .5px; }
 .dashboard-lower { display: grid; grid-template-columns: 1.45fr 1fr; gap: 13px; margin-top: 16px; }
 .panel { border: 1px solid #eeedf0; border-radius: 14px; background: #fff; min-width: 0; max-width: 100%; box-sizing: border-box; }
 .progress-panel, .next-panel { padding: 17px 19px; }
@@ -227,14 +227,22 @@ button:focus-visible, input:focus-visible { outline: 3px solid #afa2fa; outline-
 .page-intro h2 { margin-top: 7px; font-size: 1.5625rem; }
 .page-intro > p, .placement-panel > p { max-width: 520px; color: #908f9e; font-size: 1rem; }
 .all-profiles-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 13px; }
-.large-profile { min-height: 200px; padding: 18px; }
-.large-profile .profile-icon { width: 42px; height: 42px; font-size: 1.25rem; }
-.large-profile > strong { font-size: 1.125rem; }
-.large-profile > span:not(.profile-icon) { font-size: 0.9375rem; }
-.large-profile .profile-preview { display: grid; gap: 3px; width: 100%; margin-top: 17px; padding: 9px; border-radius: 8px; background: #faf9fc; }
-.profile-preview span { color: #aaa7b4; font-size: 1.125rem; }
-.profile-preview strong { font-size: 1.1875rem; }
-.large-profile > i { top: auto; right: 14px; bottom: 13px; font-size: 1.125rem; }
+.large-profile { min-height: auto !important; height: 100%; padding: 20px 18px !important; display: flex !important; flex-direction: column !important; align-items: stretch !important; box-sizing: border-box; }
+.large-profile .profile-icon { width: 44px; height: 44px; font-size: 1.25rem; flex-shrink: 0; }
+.large-profile > strong, .profile-card-title { font-family: var(--font-display); font-weight: 700; font-size: 1.125rem; color: var(--ink, #1e293b); margin-bottom: 4px; line-height: 1.35; }
+.large-profile > span:not(.profile-icon), .profile-card-subtitle { font-size: 0.875rem; color: var(--muted, #64748b); line-height: 1.45; margin-bottom: 12px; }
+.large-profile .profile-preview { display: flex !important; flex-direction: column !important; gap: 4px; width: 100%; margin-top: auto !important; margin-bottom: 14px !important; padding: 11px 14px !important; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0; box-sizing: border-box; }
+.profile-preview span, .preview-label { color: #64748b !important; font-size: 0.75rem !important; font-weight: 700 !important; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 !important; }
+.profile-preview strong, .preview-scene { color: var(--ink, #1e293b) !important; font-size: 0.9375rem !important; font-weight: 700 !important; line-height: 1.4; margin: 0 !important; }
+.large-profile > i, .profile-select-pill { position: static !important; display: inline-flex !important; align-items: center; justify-content: center; padding: 7px 16px; border-radius: 999px; font-size: 0.8125rem !important; font-style: normal; font-weight: 700; letter-spacing: 0.5px; background: rgba(25, 131, 95, 0.08); border: 1.5px solid rgba(25, 131, 95, 0.25); color: var(--theme-primary, #19835f) !important; transition: all 0.2s ease; box-sizing: border-box; }
+.large-profile.active-profile > i, .profile-select-pill.active { background: var(--theme-primary, #19835f) !important; border-color: var(--theme-primary, #19835f) !important; color: #ffffff !important; }
+.profile-header-row { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 10px; }
+.profile-badge-chip { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.02em; background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+.profile-badge-chip.active { background: var(--theme-primary, #19835f); color: #ffffff; border-color: var(--theme-primary, #19835f); }
+.profile-badge-chip.grammar { background: #eef2ff; color: #4f46e5; border-color: #c7d2fe; }
+.profile-card-footer { display: flex !important; align-items: center; justify-content: flex-end; width: 100%; margin-top: auto; padding-top: 4px; box-sizing: border-box; }
+.profile-select-pill-mini { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; background: rgba(25, 131, 95, 0.08); color: var(--theme-primary, #19835f); border: 1px solid rgba(25, 131, 95, 0.2); }
+.profile-select-pill-mini.active { background: var(--theme-primary, #19835f); color: #ffffff; border-color: var(--theme-primary, #19835f); }
 .progress-overview { display: grid; grid-template-columns: 1.5fr 1fr; gap: 14px; }
 .progress-overview .progress-panel { padding: 20px; }
 .progress-overview .stats-grid { margin: 22px 0 5px; }
