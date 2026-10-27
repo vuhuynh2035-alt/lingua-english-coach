@@ -1207,20 +1207,106 @@ html[data-theme] .mobile-nav-item.selected small { color: var(--theme-primary); 
   background: var(--theme-soft, #edf8f2) !important;
   font-weight: bold;
 }
+/* Message Bubble Actions & Formatting */
+.message-actions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(2, 132, 199, 0.18);
+}
+.message-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
 .practice-phrase-btn {
-  margin-top: 6px;
-  margin-left: 8px;
-  padding: 2px 8px;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  background: #fafafa;
-  color: #4a5568;
-  font-size: 1.125rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1.5px solid #a7f3d0;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #065f46;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(16, 185, 129, 0.1);
 }
 .practice-phrase-btn:hover {
-  background: #edf2f7;
-  color: #2b6cb0;
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  color: #047857;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(16, 185, 129, 0.15);
+}
+.phrase-sub-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: rgba(241, 245, 249, 0.85);
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+.phrase-sub-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 2px;
+}
+.phrase-sub-chip {
+  padding: 4px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.phrase-sub-chip:hover {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+  color: #0369a1;
+  transform: translateY(-1px);
+}
+.phrase-sub-chip.active {
+  background: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+  font-weight: 600;
+}
+.message-highlight-phrase {
+  display: inline;
+  font-weight: 700;
+  color: #0284c7;
+  background: rgba(2, 132, 199, 0.09);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border-bottom: 2px solid rgba(2, 132, 199, 0.35);
+}
+.message-code {
+  font-family: monospace;
+  font-size: 0.875em;
+  background: rgba(100, 116, 139, 0.1);
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+.formatted-message p {
+  margin: 0 0 6px 0;
+  line-height: 1.55;
+}
+.formatted-message p:last-child {
+  margin-bottom: 0;
 }
 
 /* Teacher Mascot Avatar & Animations */

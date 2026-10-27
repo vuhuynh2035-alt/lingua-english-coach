@@ -3,7 +3,19 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import packageJson from "../../package.json";
 import { getAudioData } from "@/lib/gemini";
-import { splitBilingualText } from "@/lib/speech";
+import {
+  GoogleSpeechVoice,
+  SPEECH_DELIVERY_STYLES,
+  SpeechDeliveryStyle,
+  SpeechVoiceId,
+  clearSpeechCache,
+  cleanSpeechText,
+  extractEnglishPracticePhrases,
+  getCachedSpeech,
+  isSpeechVoiceId,
+  saveCachedSpeech,
+  splitBilingualText,
+} from "@/lib/speech";
 import {
   AiModel,
   AiProvider,
@@ -18,16 +30,7 @@ import {
   transcribeWithOpenAi,
 } from "@/lib/ai-providers";
 import { GrammarQuestion, GrammarTopic, grammarTopics } from "@/lib/grammar";
-import {
-  GoogleSpeechVoice,
-  SPEECH_DELIVERY_STYLES,
-  SpeechDeliveryStyle,
-  SpeechVoiceId,
-  clearSpeechCache,
-  getCachedSpeech,
-  isSpeechVoiceId,
-  saveCachedSpeech,
-} from "@/lib/speech";
+
 import { IllustrationIcon, IllustrationName } from "@/components/illustration-icon";
 import {
   CourseLesson,
@@ -615,6 +618,43 @@ const PROFILE_SUGGESTIONS: Record<string, string[]> = {
   ],
 };
 
+function renderFormattedMessage(content: string) {
+  const lines = content.split("\n");
+  return (
+    <div className="formatted-message">
+      {lines.map((line, lIdx) => {
+        if (!line.trim()) {
+          return <div key={lIdx} className="message-empty-line" style={{ height: "6px" }} />;
+        }
+        const parts = line.split(/(\*\*[^*]+\*\*|`[^`]+`)/);
+        return (
+          <p key={lIdx} className="message-paragraph">
+            {parts.map((part, pIdx) => {
+              if (part.startsWith("**") && part.endsWith("**")) {
+                const text = part.slice(2, -2);
+                return (
+                  <strong key={pIdx} className="message-highlight-phrase">
+                    {text}
+                  </strong>
+                );
+              }
+              if (part.startsWith("`") && part.endsWith("`")) {
+                const code = part.slice(1, -1);
+                return (
+                  <code key={pIdx} className="message-code">
+                    {code}
+                  </code>
+                );
+              }
+              return <span key={pIdx}>{part}</span>;
+            })}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Home() {
   const [section, setSection] = useState<Section>("home");
   const [fontScale, setFontScale] = useState(125);
@@ -664,6 +704,7 @@ export default function Home() {
   const [recording, setRecording] = useState(false);
   const [pronunciationBusy, setPronunciationBusy] = useState(false);
   const [pronunciation, setPronunciation] = useState<PronunciationResult | null>(null);
+  const [customMeanings, setCustomMeanings] = useState<Record<string, string>>({});
   const [targetPronunciationPhrase, setTargetPronunciationPhrase] = useState<string>("");
   const [customPhraseInput, setCustomPhraseInput] = useState<string>("");
   const [voiceError, setVoiceError] = useState("");
@@ -1524,6 +1565,112 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     });
   }
 
+  async function playPracticePhrase(text: string) {
+    const phrase = cleanSpeechText(text);
+    if (!phrase || speechBusy) return;
+
+    speechAudioRef.current?.pause();
+    speechAudioRef.current = null;
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+    if (speechObjectUrlRef.current) {
+      URL.revokeObjectURL(speechObjectUrlRef.current);
+      speechObjectUrlRef.current = null;
+    }
+    setSpeechBusy(true);
+    setSpeechError("");
+    setSpeechNotice("Đang phát mẫu câu tiếng Anh chuẩn...");
+
+    try {
+      if (apiKey) {
+        let blob: Blob | null = null;
+        const speechCacheKey = `${aiProvider}:${activeModel}:${activeSpeechVoice}:${activeSpeechAccent}:${speechDeliveryStyle}`;
+        try {
+          blob = await getCachedSpeech(speechCacheKey, phrase);
+        } catch {}
+        if (!blob) {
+          try {
+            blob = await withAvailableApiKey((key) =>
+              generateProviderSpeech(aiProvider, key, activeModel, activeSpeechVoice, phrase, activeSpeechAccent, speechDeliveryStyle));
+            try {
+              await saveCachedSpeech(speechCacheKey, phrase, blob);
+            } catch {}
+          } catch {
+            await playNativeUtterance(phrase, "en");
+            setSpeechNotice("Đang phát bằng giọng Tiếng Anh chuẩn trên thiết bị.");
+            return;
+          }
+        }
+        if (blob) {
+          const objectUrl = URL.createObjectURL(blob);
+          const audio = new Audio(objectUrl);
+          speechAudioRef.current = audio;
+          speechObjectUrlRef.current = objectUrl;
+          await new Promise<void>((resolve) => {
+            audio.onended = () => {
+              if (speechAudioRef.current === audio) {
+                speechAudioRef.current = null;
+                speechObjectUrlRef.current = null;
+                URL.revokeObjectURL(objectUrl);
+              }
+              resolve();
+            };
+            audio.onerror = async () => {
+              await playNativeUtterance(phrase, "en");
+              resolve();
+            };
+            audio.play().catch(async () => {
+              await playNativeUtterance(phrase, "en");
+              resolve();
+            });
+          });
+          setSpeechNotice("Đã hoàn tất phát mẫu câu tiếng Anh.");
+          return;
+        }
+      }
+
+      await playNativeUtterance(phrase, "en");
+      setSpeechNotice("Đang phát bằng giọng Tiếng Anh chuẩn trên thiết bị.");
+    } catch (error) {
+      setSpeechError(error instanceof Error ? error.message : "Không thể phát giọng đọc mẫu.");
+    } finally {
+      setSpeechBusy(false);
+    }
+  }
+
+  function handlePracticePhraseFromMessage(content: string, specificPhrase?: string) {
+    const phrases = extractEnglishPracticePhrases(content);
+    let target = (specificPhrase?.trim() || (phrases.length > 0 ? phrases[0] : "")).trim();
+    target = cleanSpeechText(target).replace(/^[\"“'\`](.*)[\"”'\`]$/, "$1").trim();
+
+    if (!target) {
+      setSpeechNotice("Tin nhắn này không có câu mẫu tiếng Anh để luyện phát âm.");
+      return;
+    }
+
+    try {
+      const escaped = target.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const regexAfter = new RegExp(`(?:\\*\\*|[\"“'])${escaped}(?:\\*\\*|[\"”'])\\s*\\(([^)]+)\\)`, "i");
+      const meaningMatch = content.match(regexAfter);
+      if (meaningMatch && meaningMatch[1]?.trim()) {
+        const extractedMeaning = meaningMatch[1].trim();
+        setCustomMeanings((prev) => ({ ...prev, [target]: extractedMeaning }));
+      }
+    } catch {}
+
+    setTargetPronunciationPhrase(target);
+    void playPracticePhrase(target);
+    setSpeechNotice(`🎯 Đã chọn câu mẫu: “${target}”. Hãy lắng nghe phát âm và bấm 'Luyện phát âm' bên trái để ghi âm nói nhé!`);
+
+    if (typeof document !== "undefined") {
+      const el = document.getElementById("pronunciation-section");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+    }
+  }
+
   async function playSpeech(text: string) {
     const phrase = text.trim();
     if (!phrase || speechBusy) return;
@@ -2242,11 +2389,11 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <div className={`scene-art ${profile.color}`}><IllustrationIcon name={profile.icon} /><i>✦</i></div>
           <h2>{profile.scene}</h2>
           <p>Luyện giao tiếp với Maya qua những tình huống thực tế. Cứ mạnh dạn thử, mắc lỗi cũng không sao — mình sẽ cùng bạn tiến bộ.</p>
-          <div className="phrase-box">
+          <div className="phrase-box" id="pronunciation-section">
             <span className="eyebrow">CÂU ĐANG LUYỆN NÓI</span>
             <strong>“{targetPronunciationPhrase || profile.words[0]}”</strong>
-            <span className="phrase-translation">{phraseMeanings[targetPronunciationPhrase || profile.words[0]] || "Tự do luyện phát âm cùng AI"}</span>
-            <button className="speak-button" onClick={() => void playSpeech(targetPronunciationPhrase || profile.words[0])} disabled={speechBusy}>
+            <span className="phrase-translation">{customMeanings[targetPronunciationPhrase || profile.words[0]] || phraseMeanings[targetPronunciationPhrase || profile.words[0]] || "Tự do luyện phát âm cùng AI"}</span>
+            <button className="speak-button" onClick={() => void playPracticePhrase(targetPronunciationPhrase || profile.words[0])} disabled={speechBusy}>
               <IllustrationIcon name="speaker" /> Nghe mẫu phát âm
             </button>
             <div className="pronunciation-custom-input">
@@ -2327,33 +2474,61 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             ))}
           </div>
           <div className="message-list">
-            {messages.map((message, index) => (
-              <div className={`message-row ${message.role}`} key={`${index}-${message.role}`}>
-                {message.role === "assistant" && <div className="mini-avatar">M</div>}
-                <div className="message-bubble">
-                  <span className="speaker-label">{message.role === "assistant" ? "MAYA · GIA SƯ" : "BẠN"}</span>
-                  <p>{message.content}</p>
-                  {message.role === "assistant" && (
-                    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", marginTop: "4px" }}>
-                      <button aria-label="Nghe câu trả lời" className="speak-button" onClick={() => void playSpeech(message.content)} disabled={speechBusy}>
-                        <IllustrationIcon name="speaker" /> Nghe câu trả lời
-                      </button>
-                      <button
-                        type="button"
-                        className="practice-phrase-btn"
-                        title="Đặt câu này làm mẫu luyện phát âm"
-                        onClick={() => {
-                          setTargetPronunciationPhrase(message.content);
-                          void playSpeech(message.content);
-                        }}
-                      >
-                        🎙️ Luyện phát âm câu này
-                      </button>
+            {messages.map((message, index) => {
+              const extractedPhrases = message.role === "assistant" ? extractEnglishPracticePhrases(message.content) : [];
+              return (
+                <div className={`message-row ${message.role}`} key={`${index}-${message.role}`}>
+                  {message.role === "assistant" && <div className="mini-avatar">M</div>}
+                  <div className="message-bubble">
+                    <span className="speaker-label">{message.role === "assistant" ? "MAYA · GIA SƯ" : "BẠN"}</span>
+                    <div className="message-text">
+                      {renderFormattedMessage(message.content)}
                     </div>
-                  )}
+                    {message.role === "assistant" && (
+                      <div className="message-actions-container">
+                        <div className="message-action-bar">
+                          <button
+                            type="button"
+                            aria-label="Nghe toàn bộ câu trả lời"
+                            className="speak-button"
+                            onClick={() => void playSpeech(message.content)}
+                            disabled={speechBusy}
+                            title="Nghe toàn bộ: Lời giải thích tiếng Việt bằng giọng Việt, mẫu câu tiếng Anh bằng giọng bản xứ"
+                          >
+                            <IllustrationIcon name="speaker" /> Nghe toàn bộ câu trả lời
+                          </button>
+                          <button
+                            type="button"
+                            className="practice-phrase-btn"
+                            title="Chỉ đọc câu mẫu tiếng Anh và đặt làm mục tiêu luyện nói để AI chấm điểm"
+                            onClick={() => handlePracticePhraseFromMessage(message.content)}
+                            disabled={speechBusy}
+                          >
+                            🎙️ Luyện phát âm câu mẫu {extractedPhrases.length > 1 ? `(${extractedPhrases.length} câu)` : ""}
+                          </button>
+                        </div>
+                        {extractedPhrases.length > 1 && (
+                          <div className="phrase-sub-chips">
+                            <span className="phrase-sub-label">Chọn câu mẫu muốn luyện:</span>
+                            {extractedPhrases.map((phrase, pIdx) => (
+                              <button
+                                key={pIdx}
+                                type="button"
+                                className={`phrase-sub-chip ${targetPronunciationPhrase === phrase ? "active" : ""}`}
+                                onClick={() => handlePracticePhraseFromMessage(message.content, phrase)}
+                                title={`Luyện phát âm câu: ${phrase}`}
+                              >
+                                🗣️ “{phrase.length > 32 ? phrase.slice(0, 30) + "…" : phrase}”
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             {chatBusy && <div className="typing-indicator"><span /> <span /> <span /> Maya đang suy nghĩ…</div>}
           </div>
           {chatError && <p className="error-message chat-error">{chatError}</p>}

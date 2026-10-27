@@ -189,50 +189,152 @@ export type SpeechSegment = {
   lang: "vi" | "en";
 };
 
+const VIETNAMESE_DIACRITICS_REGEX = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
+
+/**
+ * Remove markdown symbols (*, **, #, backticks, bullet dashes) and normalize whitespace
+ * so text-to-speech doesn't stutter, mispronounce symbols, or read out asterisks.
+ */
+export function cleanSpeechText(text: string): string {
+  return text
+    .replace(/\*\*+/g, "") // remove bold **
+    .replace(/__+/g, "")   // remove bold __
+    .replace(/^#+\s+/gm, "") // remove markdown headers #, ##
+    .replace(/^[\s-*•·]+\s*/gm, "") // remove list bullets at line start
+    .replace(/[`_~]/g, "") // remove backticks, italics, strikethrough
+    .replace(/[-–—]\s*$/g, "") // remove trailing dashes
+    .replace(/^\s*[-–—]/g, "") // remove leading dashes
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Extract targeted English practice phrases/sentences from assistant responses.
+ * Detects bold phrases (**...**), quoted sentences ("..."), or standalone English sentences,
+ * filtering out Vietnamese explanations and stripping markdown asterisks.
+ */
+export function extractEnglishPracticePhrases(text: string): string[] {
+  const phrases: string[] = [];
+  const trimmed = text.trim();
+  if (!trimmed) return phrases;
+
+  // 1. Check for bold markers **...** containing English
+  const boldMatches = trimmed.matchAll(/\*\*([^*]+)\*\*/g);
+  for (const match of boldMatches) {
+    let candidate = match[1].trim();
+    candidate = candidate.replace(/^["“'`](.*)["”'`]$/, "$1").trim();
+    candidate = cleanSpeechText(candidate);
+    candidate = candidate.replace(/[:;–-]+$/, "").trim();
+
+    if (candidate.length >= 3 && /[a-zA-Z]{2,}/.test(candidate) && !VIETNAMESE_DIACRITICS_REGEX.test(candidate)) {
+      if (!phrases.includes(candidate)) {
+        phrases.push(candidate);
+      }
+    }
+  }
+
+  // 2. Check for quotes "..." or “...” containing English
+  const quoteMatches = trimmed.matchAll(/["“]([^"”\n]+)["”]/g);
+  for (const match of quoteMatches) {
+    let candidate = match[1].trim();
+    candidate = cleanSpeechText(candidate);
+    candidate = candidate.replace(/[:;–-]+$/, "").trim();
+    if (candidate.length >= 3 && /[a-zA-Z]{2,}/.test(candidate) && !VIETNAMESE_DIACRITICS_REGEX.test(candidate)) {
+      if (!phrases.includes(candidate)) {
+        phrases.push(candidate);
+      }
+    }
+  }
+
+  // 3. Fallback: inspect sentence clauses
+  if (phrases.length === 0) {
+    if (!VIETNAMESE_DIACRITICS_REGEX.test(trimmed)) {
+      const sentences = trimmed.split(/(?<=[.!?])\s+/);
+      for (const s of sentences) {
+        const cleaned = cleanSpeechText(s);
+        if (cleaned.length >= 5 && /[a-zA-Z]{2,}/.test(cleaned)) {
+          phrases.push(cleaned);
+        }
+      }
+    } else {
+      const sentences = trimmed.split(/([.!?\n]+)/);
+      for (const s of sentences) {
+        const cleaned = cleanSpeechText(s);
+        if (cleaned.length >= 8 && /[a-zA-Z]{2,}/.test(cleaned) && !VIETNAMESE_DIACRITICS_REGEX.test(cleaned)) {
+          if (!phrases.includes(cleaned)) {
+            phrases.push(cleaned);
+          }
+        }
+      }
+    }
+  }
+
+  return phrases;
+}
+
+/**
+ * Split text into bilingual segments (Vietnamese explanations vs English sample sentences).
+ * Cleans all markdown formatting and asterisks (**) so TTS can play each segment cleanly
+ * with the appropriate native voice.
+ */
 export function splitBilingualText(text: string): SpeechSegment[] {
   const trimmed = text.trim();
   if (!trimmed) return [];
 
-  const viRegex = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
-  const hasVietnamese = viRegex.test(trimmed);
+  const hasVietnamese = VIETNAMESE_DIACRITICS_REGEX.test(trimmed);
   if (!hasVietnamese) {
-    return [{ text: trimmed, lang: "en" }];
+    const cleaned = cleanSpeechText(trimmed);
+    return cleaned ? [{ text: cleaned, lang: "en" }] : [];
   }
 
   const hasEnglish = /[a-zA-Z]{2,}/.test(trimmed);
   if (!hasEnglish) {
-    return [{ text: trimmed, lang: "vi" }];
+    const cleaned = cleanSpeechText(trimmed);
+    return cleaned ? [{ text: cleaned, lang: "vi" }] : [];
   }
 
-  // Split quotes: "...", “...”, '...', `...`
-  const tokens = trimmed.split(/(["“`'][^"”`']+["”`'])/);
+  // Split tokens by **bold** or "quotes"
+  const tokens = trimmed.split(/(\*\*[^*]+\*\*|["“`'][^"”`']+["”`'])/);
   const rawSegments: SpeechSegment[] = [];
 
   for (const token of tokens) {
     const s = token.trim();
     if (!s) continue;
 
-    // Quoted text
-    if (/^["“`'].*["”`']$/.test(s)) {
-      const inner = s.slice(1, -1).trim();
-      if (!inner) continue;
-      const innerHasVi = viRegex.test(inner);
-      rawSegments.push({ text: inner, lang: innerHasVi ? "vi" : "en" });
+    // Bold section **...**
+    if (/^\*\*.*\*\*$/.test(s)) {
+      const inner = s.slice(2, -2).trim();
+      const cleaned = cleanSpeechText(inner).replace(/^["“'`](.*)["”'`]$/, "$1").trim();
+      if (!cleaned) continue;
+      const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
+      const hasEn = /[a-zA-Z]{2,}/.test(cleaned);
+      rawSegments.push({ text: cleaned, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
       continue;
     }
 
-    // Split unquoted text into clauses
+    // Quoted section
+    if (/^["“`'].*["”`']$/.test(s)) {
+      const inner = s.slice(1, -1).trim();
+      const cleaned = cleanSpeechText(inner);
+      if (!cleaned) continue;
+      const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
+      const hasEn = /[a-zA-Z]{2,}/.test(cleaned);
+      rawSegments.push({ text: cleaned, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
+      continue;
+    }
+
+    // Unquoted text: split into sentences or clauses
     const subClauses = s.split(/([.!?\n]+)/);
     let currentClause = "";
     for (const sub of subClauses) {
       if (!sub) continue;
       if (/^[.!?\n]+$/.test(sub)) {
         currentClause += sub;
-        const clauseTrimmed = currentClause.trim();
-        if (clauseTrimmed) {
-          const isVi = viRegex.test(clauseTrimmed);
-          const hasEn = /[a-zA-Z]{2,}/.test(clauseTrimmed);
-          rawSegments.push({ text: clauseTrimmed, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
+        const cleaned = cleanSpeechText(currentClause);
+        if (cleaned) {
+          const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
+          const hasEn = /[a-zA-Z]{2,}/.test(cleaned);
+          rawSegments.push({ text: cleaned, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
         }
         currentClause = "";
       } else {
@@ -240,23 +342,27 @@ export function splitBilingualText(text: string): SpeechSegment[] {
       }
     }
     if (currentClause.trim()) {
-      const clauseTrimmed = currentClause.trim();
-      const isVi = viRegex.test(clauseTrimmed);
-      const hasEn = /[a-zA-Z]{2,}/.test(clauseTrimmed);
-      rawSegments.push({ text: clauseTrimmed, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
+      const cleaned = cleanSpeechText(currentClause);
+      if (cleaned) {
+        const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
+        const hasEn = /[a-zA-Z]{2,}/.test(cleaned);
+        rawSegments.push({ text: cleaned, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
+      }
     }
   }
 
   // Merge consecutive segments of the same language
   const merged: SpeechSegment[] = [];
   for (const seg of rawSegments) {
-    if (!seg.text.trim()) continue;
+    const cleaned = cleanSpeechText(seg.text);
+    if (!cleaned) continue;
     if (merged.length > 0 && merged[merged.length - 1].lang === seg.lang) {
-      merged[merged.length - 1].text += " " + seg.text;
+      merged[merged.length - 1].text = cleanSpeechText(merged[merged.length - 1].text + " " + cleaned);
     } else {
-      merged.push({ text: seg.text, lang: seg.lang });
+      merged.push({ text: cleaned, lang: seg.lang });
     }
   }
 
-  return merged.length > 0 ? merged : [{ text: trimmed, lang: hasVietnamese ? "vi" : "en" }];
+  const finalCleaned = cleanSpeechText(trimmed);
+  return merged.length > 0 ? merged : (finalCleaned ? [{ text: finalCleaned, lang: hasVietnamese ? "vi" : "en" }] : []);
 }
