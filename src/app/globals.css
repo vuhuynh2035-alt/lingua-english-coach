@@ -1486,3 +1486,315 @@ html[data-theme] .mobile-nav-item.selected small { color: var(--theme-primary); 
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+/* ==========================================================================
+   Tutor Stage Banner (Interactive AI Coach Stage)
+   ========================================================================== */
+.tutor-stage-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 12px 0 16px;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 50%, #f7fee7 100%);
+  border: 1.5px solid #a7f3d0;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.08);
+  transition: all 0.2s ease;
+}
+.tutor-stage-avatar-container {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tutor-stage-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.tutor-stage-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tutor-stage-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tutor-stage-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #064e3b;
+  letter-spacing: -0.2px;
+}
+.tutor-stage-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 12px;
+  background: #dcfce7;
+  color: #047857;
+  border: 1px solid #bbf7d0;
+}
+.tutor-stage-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #059669;
+}
+.online-indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 2px #d1fae5;
+  animation: mascot-thinking-pulse 1.5s infinite alternate;
+}
+.tutor-stage-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #047857;
+  background: #ffffff;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.tutor-stage-switch-btn:hover {
+  background: #dcfce7;
+  color: #064e3b;
+  border-color: #34d399;
+}
+.tutor-stage-speech-bubble {
+  padding: 8px 12px;
+  background: #ffffff;
+  border: 1px solid #d1fae5;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: #134e4a;
+}
+.bubble-speaking {
+  color: #1d4ed8;
+  font-weight: 600;
+}
+.bubble-thinking {
+  color: #b45309;
+  font-weight: 500;
+}
+.bubble-listening {
+  color: #b91c1c;
+  font-weight: 600;
+}
+.bubble-idle {
+  color: #134e4a;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   English Practice Dialogue Cards (Inside Chat Messages)
+   ========================================================================== */
+.message-english-dialogue-card {
+  margin: 10px 0;
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-left: 5px solid #10b981;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08);
+}
+.dialogue-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.dialogue-card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #047857;
+  background: #dcfce7;
+  padding: 2px 9px;
+  border-radius: 12px;
+  border: 1px solid #bbf7d0;
+}
+.dialogue-card-play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #065f46;
+  background: #ffffff;
+  border: 1px solid #86efac;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.dialogue-card-play-btn:hover {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #34d399;
+}
+.dialogue-card-quote {
+  margin: 0;
+  padding: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.55;
+  color: #064e3b;
+  font-family: inherit;
+  quotes: none;
+}
+
+/* Structural labels vs normal bold */
+.message-section-label {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--theme-heading, #134e4a);
+  margin-right: 4px;
+}
+.message-bold-text {
+  font-weight: 700;
+  color: inherit;
+}
+.message-english-highlight {
+  background: #dcfce7;
+  color: #065f46;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border-bottom: 2px solid #34d399;
+}
+.message-hint-text {
+  font-size: 0.9em;
+  color: #64748b;
+  font-style: italic;
+}
+
+/* ==========================================================================
+   Tutor Persona Selection Cards (In Settings)
+   ========================================================================== */
+.tutor-persona-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+.tutor-persona-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.tutor-persona-card:hover {
+  border-color: #34d399;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.12);
+}
+.tutor-persona-card.selected {
+  border-color: #10b981;
+  background: #f0fdf4;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+.persona-card-avatar {
+  margin-bottom: 10px;
+}
+.persona-card-details {
+  flex: 1;
+  width: 100%;
+  margin-bottom: 12px;
+}
+.persona-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.persona-card-top strong {
+  font-size: 1.05rem;
+  color: #0f172a;
+}
+.persona-card-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+.persona-card-tagline {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #047857;
+}
+.persona-card-desc {
+  display: block;
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+.persona-card-select-indicator {
+  display: inline-block;
+  padding: 5px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 20px;
+  background: #f1f5f9;
+  color: #475569;
+  transition: all 0.15s ease;
+}
+.tutor-persona-card.selected .persona-card-select-indicator {
+  background: #10b981;
+  color: #ffffff;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  .tutor-stage-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .tutor-stage-top-row {
+    justify-content: center;
+  }
+  .tutor-stage-title-wrap {
+    justify-content: center;
+  }
+  .tutor-persona-grid {
+    grid-template-columns: 1fr;
+  }
+}

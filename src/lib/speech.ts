@@ -192,16 +192,16 @@ export type SpeechSegment = {
 const VIETNAMESE_DIACRITICS_REGEX = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
 
 /**
- * Remove markdown symbols (*, **, #, backticks, bullet dashes) and normalize whitespace
- * so text-to-speech doesn't stutter, mispronounce symbols, or read out asterisks.
+ * Remove ALL markdown symbols (*, **, ***, _, backticks, bullet dashes, decorative emojis)
+ * and normalize whitespace so text-to-speech NEVER reads out asterisks or stutters.
  */
 export function cleanSpeechText(text: string): string {
   return text
-    .replace(/\*\*+/g, "") // remove bold **
-    .replace(/__+/g, "")   // remove bold __
+    .replace(/\*+/g, "") // remove ALL asterisks (*, **, ***) everywhere!
+    .replace(/_+/g, "")  // remove all underscores
     .replace(/^#+\s+/gm, "") // remove markdown headers #, ##
-    .replace(/^[\s-*•·]+\s*/gm, "") // remove list bullets at line start
-    .replace(/[`_~]/g, "") // remove backticks, italics, strikethrough
+    .replace(/^[\s-*•·✦💡🎯🎙️🔊✨]+\s*/gm, "") // remove bullets and decorative icons
+    .replace(/[\`~]/g, "") // remove backticks and strikethrough
     .replace(/[-–—]\s*$/g, "") // remove trailing dashes
     .replace(/^\s*[-–—]/g, "") // remove leading dashes
     .replace(/\s+/g, " ")
@@ -210,43 +210,52 @@ export function cleanSpeechText(text: string): string {
 
 /**
  * Extract targeted English practice phrases/sentences from assistant responses.
- * Detects bold phrases (**...**), quoted sentences ("..."), or standalone English sentences,
- * filtering out Vietnamese explanations and stripping markdown asterisks.
+ * Detects quoted dialogue/examples ("...", “...”, *"..."*) and bold English sentences,
+ * filtering out Vietnamese explanations, structural labels (Tình huống:, Senior Manager),
+ * and stripping all markdown asterisks.
  */
 export function extractEnglishPracticePhrases(text: string): string[] {
   const phrases: string[] = [];
   const trimmed = text.trim();
   if (!trimmed) return phrases;
 
-  // 1. Check for bold markers **...** containing English
-  const boldMatches = trimmed.matchAll(/\*\*([^*]+)\*\*/g);
-  for (const match of boldMatches) {
-    let candidate = match[1].trim();
-    candidate = candidate.replace(/^["“'`](.*)["”'`]$/, "$1").trim();
-    candidate = cleanSpeechText(candidate);
-    candidate = candidate.replace(/[:;–-]+$/, "").trim();
-
-    if (candidate.length >= 3 && /[a-zA-Z]{2,}/.test(candidate) && !VIETNAMESE_DIACRITICS_REGEX.test(candidate)) {
-      if (!phrases.includes(candidate)) {
-        phrases.push(candidate);
-      }
-    }
-  }
-
-  // 2. Check for quotes "..." or “...” containing English
-  const quoteMatches = trimmed.matchAll(/["“]([^"”\n]+)["”]/g);
+  // 1. Quoted English sentences: "...", “...”, *"...", `...`
+  const quoteMatches = trimmed.matchAll(/(?:\*?["“\`'])([^"”\`'\n]+)(?:["”\`']\*?)/g);
   for (const match of quoteMatches) {
     let candidate = match[1].trim();
     candidate = cleanSpeechText(candidate);
+    candidate = candidate.replace(/^["“'\`](.*)["”'\`]$/, "$1").trim();
     candidate = candidate.replace(/[:;–-]+$/, "").trim();
-    if (candidate.length >= 3 && /[a-zA-Z]{2,}/.test(candidate) && !VIETNAMESE_DIACRITICS_REGEX.test(candidate)) {
+
+    if (candidate.length >= 8 && /[a-zA-Z]{2,}/.test(candidate) && !VIETNAMESE_DIACRITICS_REGEX.test(candidate)) {
       if (!phrases.includes(candidate)) {
         phrases.push(candidate);
       }
     }
   }
 
-  // 3. Fallback: inspect sentence clauses
+  // 2. Bold sections **...** that are ACTUAL sentences (not structural labels)
+  const boldMatches = trimmed.matchAll(/\*\*([^*]+)\*\*/g);
+  for (const match of boldMatches) {
+    const raw = match[1].trim();
+    // Exclude if it ends with colon (it is a section label like "Tình huống:" or "Maya (Manager):")
+    if (/[:：]$/.test(raw)) continue;
+    // Exclude meta role labels or directives like "Your turn!", "Step 1", "Senior Manager"
+    if (/^(your turn|step \d+|note|tip|warning|gợi ý|tình huống|senior manager|junior developer)/i.test(raw)) continue;
+
+    let candidate = cleanSpeechText(raw);
+    candidate = candidate.replace(/^["“'\`](.*)["”'\`]$/, "$1").trim();
+    candidate = candidate.replace(/[:;–-]+$/, "").trim();
+
+    const words = candidate.split(/\s+/).filter(Boolean);
+    if (words.length >= 3 && candidate.length >= 10 && /[a-zA-Z]{2,}/.test(candidate) && !VIETNAMESE_DIACRITICS_REGEX.test(candidate)) {
+      if (!phrases.includes(candidate)) {
+        phrases.push(candidate);
+      }
+    }
+  }
+
+  // 3. Fallback: inspect full standalone English sentences
   if (phrases.length === 0) {
     if (!VIETNAMESE_DIACRITICS_REGEX.test(trimmed)) {
       const sentences = trimmed.split(/(?<=[.!?])\s+/);
@@ -260,8 +269,9 @@ export function extractEnglishPracticePhrases(text: string): string[] {
       const sentences = trimmed.split(/([.!?\n]+)/);
       for (const s of sentences) {
         const cleaned = cleanSpeechText(s);
-        if (cleaned.length >= 8 && /[a-zA-Z]{2,}/.test(cleaned) && !VIETNAMESE_DIACRITICS_REGEX.test(cleaned)) {
-          if (!phrases.includes(cleaned)) {
+        if (cleaned.length >= 10 && /[a-zA-Z]{2,}/.test(cleaned) && !VIETNAMESE_DIACRITICS_REGEX.test(cleaned)) {
+          const words = cleaned.split(/\s+/).filter(Boolean);
+          if (words.length >= 3 && !phrases.includes(cleaned)) {
             phrases.push(cleaned);
           }
         }
@@ -274,7 +284,7 @@ export function extractEnglishPracticePhrases(text: string): string[] {
 
 /**
  * Split text into bilingual segments (Vietnamese explanations vs English sample sentences).
- * Cleans all markdown formatting and asterisks (**) so TTS can play each segment cleanly
+ * Cleans all markdown formatting and asterisks (*) so TTS plays each segment cleanly
  * with the appropriate native voice.
  */
 export function splitBilingualText(text: string): SpeechSegment[] {
@@ -293,60 +303,43 @@ export function splitBilingualText(text: string): SpeechSegment[] {
     return cleaned ? [{ text: cleaned, lang: "vi" }] : [];
   }
 
-  // Split tokens by **bold** or "quotes"
-  const tokens = trimmed.split(/(\*\*[^*]+\*\*|["“`'][^"”`']+["”`'])/);
+  // Split tokens by quoted sections (which are typically dialogue/examples)
+  const tokens = trimmed.split(/(\*?["“\`'][^"”\`']+["”\`']\*?)/);
   const rawSegments: SpeechSegment[] = [];
 
   for (const token of tokens) {
     const s = token.trim();
     if (!s) continue;
 
-    // Bold section **...**
-    if (/^\*\*.*\*\*$/.test(s)) {
-      const inner = s.slice(2, -2).trim();
-      const cleaned = cleanSpeechText(inner).replace(/^["“'`](.*)["”'`]$/, "$1").trim();
-      if (!cleaned) continue;
-      const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
-      const hasEn = /[a-zA-Z]{2,}/.test(cleaned);
-      rawSegments.push({ text: cleaned, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
-      continue;
-    }
-
     // Quoted section
-    if (/^["“`'].*["”`']$/.test(s)) {
-      const inner = s.slice(1, -1).trim();
-      const cleaned = cleanSpeechText(inner);
-      if (!cleaned) continue;
-      const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
-      const hasEn = /[a-zA-Z]{2,}/.test(cleaned);
-      rawSegments.push({ text: cleaned, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
+    if (/^(\*?["“\`'].*["”\`']\*?)$/.test(s)) {
+      const inner = cleanSpeechText(s).replace(/^["“'\`](.*)["”'\`]$/, "$1").trim();
+      if (!inner) continue;
+      const isVi = VIETNAMESE_DIACRITICS_REGEX.test(inner);
+      const isEnSample = !isVi && /[a-zA-Z]{2,}/.test(inner) && (inner.split(/\s+/).length >= 2 || inner.length > 8);
+      rawSegments.push({ text: inner, lang: isEnSample ? "en" : "vi" });
       continue;
     }
 
-    // Unquoted text: split into sentences or clauses
-    const subClauses = s.split(/([.!?\n]+)/);
-    let currentClause = "";
-    for (const sub of subClauses) {
-      if (!sub) continue;
-      if (/^[.!?\n]+$/.test(sub)) {
-        currentClause += sub;
-        const cleaned = cleanSpeechText(currentClause);
-        if (cleaned) {
-          const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
-          const hasEn = /[a-zA-Z]{2,}/.test(cleaned);
-          rawSegments.push({ text: cleaned, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
-        }
-        currentClause = "";
+    // Unquoted text: split by lines/clauses
+    const lines = s.split(/(\n+)/);
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      const cleaned = cleanSpeechText(line);
+      if (!cleaned) continue;
+
+      const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
+      if (isVi) {
+        rawSegments.push({ text: cleaned, lang: "vi" });
       } else {
-        currentClause += sub;
-      }
-    }
-    if (currentClause.trim()) {
-      const cleaned = cleanSpeechText(currentClause);
-      if (cleaned) {
-        const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
-        const hasEn = /[a-zA-Z]{2,}/.test(cleaned);
-        rawSegments.push({ text: cleaned, lang: isVi ? "vi" : (hasEn ? "en" : "vi") });
+        const words = cleaned.split(/\s+/).filter(Boolean);
+        if (words.length >= 4 || /[.?!]$/.test(cleaned)) {
+          rawSegments.push({ text: cleaned, lang: "en" });
+        } else {
+          // Short label or role term inside Vietnamese context (e.g. Senior Manager, Maya (Manager):)
+          // read as Vietnamese to maintain smooth flow
+          rawSegments.push({ text: cleaned, lang: "vi" });
+        }
       }
     }
   }
@@ -355,7 +348,7 @@ export function splitBilingualText(text: string): SpeechSegment[] {
   const merged: SpeechSegment[] = [];
   for (const seg of rawSegments) {
     const cleaned = cleanSpeechText(seg.text);
-    if (!cleaned) continue;
+    if (!cleaned || /^[^\w\s]*$/.test(cleaned)) continue; // ignore pure punctuation
     if (merged.length > 0 && merged[merged.length - 1].lang === seg.lang) {
       merged[merged.length - 1].text = cleanSpeechText(merged[merged.length - 1].text + " " + cleaned);
     } else {

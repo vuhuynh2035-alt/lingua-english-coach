@@ -465,29 +465,80 @@ function recordPractice(current: LearningProgress, minutes: number, newSession: 
   };
 }
 
+type TutorPersona = "maya" | "david" | "alex";
+
+const TUTOR_PERSONAS: Record<TutorPersona, {
+  id: TutorPersona;
+  name: string;
+  title: string;
+  gender: "female" | "male" | "mascot";
+  tagline: string;
+  description: string;
+  greeting: string;
+  badge: string;
+}> = {
+  maya: {
+    id: "maya",
+    name: "Cô Maya",
+    title: "Gia sư Nữ Tận Tâm",
+    gender: "female",
+    tagline: "Dịu dàng, phát âm chuẩn, kiên nhẫn hướng dẫn",
+    description: "Cô giáo nhiệt tình, hướng dẫn tỉ mỉ từng phát âm và ngữ pháp theo trình độ học viên.",
+    greeting: "Chào em! Hôm nay cô sẽ đồng hành cùng em luyện nói tiếng Anh thật tự tin nhé.",
+    badge: "👩‍🏫 Nữ gia sư",
+  },
+  david: {
+    id: "david",
+    name: "Thầy David",
+    title: "Gia sư Nam Bản Xứ",
+    gender: "male",
+    tagline: "Phong thái đĩnh đạc, ngữ điệu Anh-Mỹ tự nhiên",
+    description: "Thầy giáo phong cách phương Tây, phản xạ nhanh và chuyên sâu giao tiếp công việc.",
+    greeting: "Hello there! I'm David, your coach. Ready to practice speaking naturally today?",
+    badge: "👨‍🏫 Nam gia sư",
+  },
+  alex: {
+    id: "alex",
+    name: "Cú Alex",
+    title: "Linh Vật Thông Thái",
+    gender: "mascot",
+    tagline: "Đáng yêu, hoạt bát, học tập không áp lực",
+    description: "Chú cú mèo thông minh, vui tính, giúp việc học nhẹ nhàng như một trò chơi thú vị.",
+    greeting: "Hú hú! Cú Alex đã sẵn sàng! Cùng nhau chinh phục bài học tiếng Anh nào!",
+    badge: "🦉 Linh vật",
+  },
+};
+
 function TeacherMascot({
+  persona = "maya",
   status = "idle",
   size = 52,
   className = "",
 }: {
+  persona?: TutorPersona;
   status?: "idle" | "thinking" | "speaking" | "listening";
   size?: number;
   className?: string;
 }) {
+  const current = TUTOR_PERSONAS[persona] || TUTOR_PERSONAS.maya;
+  const isSpeaking = status === "speaking";
+  const isThinking = status === "thinking";
+  const isListening = status === "listening";
+
   return (
     <div
-      className={`teacher-mascot-wrap status-${status} ${className}`.trim()}
+      className={`teacher-mascot-wrap status-${status} persona-${persona} ${className}`.trim()}
       style={{ width: size, height: size }}
       title={
-        status === "speaking"
-          ? "Cô Maya đang nói..."
-          : status === "thinking"
-          ? "Cô Maya đang suy nghĩ..."
-          : status === "listening"
-          ? "Cô Maya đang lắng nghe bạn..."
-          : "Cô Maya - Gia sư AI đã kết nối thành công"
+        isSpeaking
+          ? `${current.name} đang nói...`
+          : isThinking
+          ? `${current.name} đang suy nghĩ câu trả lời...`
+          : isListening
+          ? `${current.name} đang lắng nghe bạn nói...`
+          : `${current.name} - ${current.title}`
       }
-      aria-label="Hình đại diện gia sư Maya"
+      aria-label={`Hình đại diện ${current.name}`}
     >
       <svg
         viewBox="0 0 100 100"
@@ -496,77 +547,144 @@ function TeacherMascot({
         className="teacher-mascot-svg"
       >
         <defs>
-          <linearGradient id="mascotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id={`mayaGrad-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#4fd1a5" />
             <stop offset="50%" stopColor="#20b2aa" />
             <stop offset="100%" stopColor="#0d7377" />
           </linearGradient>
-          <linearGradient id="faceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#f0fdf4" />
+          <linearGradient id={`davidGrad-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#60a5fa" />
+            <stop offset="50%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#1d4ed8" />
           </linearGradient>
-          <filter id="mascotGlow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+          <linearGradient id={`alexGrad-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#fcd34d" />
+            <stop offset="50%" stopColor="#f59e0b" />
+            <stop offset="100%" stopColor="#d97706" />
+          </linearGradient>
+          <linearGradient id={`faceGrad-${size}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="100%" stopColor="#fef3c7" />
+          </linearGradient>
+          <filter id={`mascotGlow-${size}`} x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
 
         {/* Listening wave ripples */}
-        {status === "listening" && (
+        {isListening && (
           <>
             <circle cx="50" cy="50" r="46" className="mascot-ripple ripple-1" />
             <circle cx="50" cy="50" r="48" className="mascot-ripple ripple-2" />
           </>
         )}
 
-        {/* Head / Body */}
-        <circle cx="50" cy="50" r="42" fill="url(#mascotGrad)" filter="url(#mascotGlow)" />
-        <circle cx="50" cy="52" r="35" fill="url(#faceGrad)" />
-
-        {/* Cute Ears / Tufts */}
-        <path d="M 22 26 Q 16 12 30 18 Z" fill="#20b2aa" />
-        <path d="M 78 26 Q 84 12 70 18 Z" fill="#20b2aa" />
-
-        {/* Glasses bridge */}
-        <path d="M 44 48 Q 50 46 56 48" stroke="#134e4a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-
-        {/* Glasses frame left */}
-        <rect x="25" y="38" width="20" height="18" rx="6" fill="#ecfdf5" stroke="#134e4a" strokeWidth="2.5" />
-        {/* Glasses frame right */}
-        <rect x="55" y="38" width="20" height="18" rx="6" fill="#ecfdf5" stroke="#134e4a" strokeWidth="2.5" />
-
-        {/* Eyes */}
-        {status === "thinking" ? (
-          <>
-            <circle cx="37" cy="44" r="4.5" fill="#134e4a" />
-            <circle cx="67" cy="44" r="4.5" fill="#134e4a" />
-            <circle cx="38.5" cy="42.5" r="1.5" fill="#ffffff" />
-            <circle cx="68.5" cy="42.5" r="1.5" fill="#ffffff" />
-          </>
-        ) : (
-          <g className="mascot-eyes">
-            <circle cx="35" cy="47" r="4.5" fill="#134e4a" />
-            <circle cx="65" cy="47" r="4.5" fill="#134e4a" />
-            <circle cx="33.5" cy="45.5" r="1.5" fill="#ffffff" />
-            <circle cx="63.5" cy="45.5" r="1.5" fill="#ffffff" />
+        {/* ================= PERSONA: MAYA ================= */}
+        {persona === "maya" && (
+          <g className="persona-maya-group">
+            <circle cx="50" cy="50" r="42" fill={`url(#mayaGrad-${size})`} filter={`url(#mascotGlow-${size})`} />
+            <circle cx="50" cy="24" r="14" fill="#134e4a" />
+            <circle cx="50" cy="52" r="35" fill="#fffdfa" />
+            <path d="M 20 40 Q 32 20 50 30 Q 68 20 80 40 Q 64 24 50 34 Q 36 24 20 40 Z" fill="#134e4a" />
+            <path d="M 44 48 Q 50 46 56 48" stroke="#134e4a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+            <rect x="25" y="38" width="20" height="18" rx="6" fill="#ecfdf5" stroke="#134e4a" strokeWidth="2.5" />
+            <rect x="55" y="38" width="20" height="18" rx="6" fill="#ecfdf5" stroke="#134e4a" strokeWidth="2.5" />
+            {isThinking ? (
+              <>
+                <circle cx="37" cy="44" r="4" fill="#134e4a" />
+                <circle cx="67" cy="44" r="4" fill="#134e4a" />
+                <circle cx="38.5" cy="42.5" r="1.5" fill="#ffffff" />
+                <circle cx="68.5" cy="42.5" r="1.5" fill="#ffffff" />
+              </>
+            ) : (
+              <g className="mascot-eyes">
+                <circle cx="35" cy="47" r="4" fill="#134e4a" />
+                <circle cx="65" cy="47" r="4" fill="#134e4a" />
+                <circle cx="33.5" cy="45.5" r="1.5" fill="#ffffff" />
+                <circle cx="63.5" cy="45.5" r="1.5" fill="#ffffff" />
+              </g>
+            )}
+            <ellipse cx="28" cy="59" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.8" />
+            <ellipse cx="72" cy="59" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.8" />
+            {isSpeaking ? (
+              <ellipse cx="50" cy="62" rx="4.5" ry="5.5" fill="#e11d48" className="mascot-mouth-speaking" />
+            ) : (
+              <path d="M 45 61 Q 50 66 55 61" stroke="#134e4a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+            )}
+            <polygon points="50,11 68,18 50,25 32,18" fill="#0f766e" />
+            <circle cx="50" cy="18" r="2" fill="#fbbf24" />
           </g>
         )}
 
-        {/* Cute blush cheeks */}
-        <ellipse cx="28" cy="59" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.75" />
-        <ellipse cx="72" cy="59" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.75" />
-
-        {/* Mouth */}
-        {status === "speaking" ? (
-          <ellipse cx="50" cy="62" rx="4.5" ry="5.5" fill="#e11d48" className="mascot-mouth-speaking" />
-        ) : (
-          <path d="M 45 61 Q 50 66 55 61" stroke="#134e4a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+        {/* ================= PERSONA: DAVID ================= */}
+        {persona === "david" && (
+          <g className="persona-david-group">
+            <circle cx="50" cy="50" r="42" fill={`url(#davidGrad-${size})`} filter={`url(#mascotGlow-${size})`} />
+            <circle cx="50" cy="52" r="35" fill="#fffbf5" />
+            <path d="M 22 42 Q 22 18 50 18 Q 78 18 78 42 Q 74 26 50 24 Q 26 26 22 42 Z" fill="#1e293b" />
+            <path d="M 28 26 Q 36 14 56 16 Q 72 18 68 28 Z" fill="#334155" />
+            <path d="M 30 38 Q 38 34 44 38" stroke="#1e293b" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+            <path d="M 56 38 Q 62 34 70 38" stroke="#1e293b" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+            {isThinking ? (
+              <>
+                <circle cx="37" cy="44" r="4" fill="#0f172a" />
+                <circle cx="63" cy="44" r="4" fill="#0f172a" />
+                <circle cx="38.5" cy="42.5" r="1.5" fill="#ffffff" />
+                <circle cx="64.5" cy="42.5" r="1.5" fill="#ffffff" />
+              </>
+            ) : (
+              <g className="mascot-eyes">
+                <circle cx="37" cy="46" r="4.2" fill="#0f172a" />
+                <circle cx="63" cy="46" r="4.2" fill="#0f172a" />
+                <circle cx="35.5" cy="44.5" r="1.5" fill="#ffffff" />
+                <circle cx="61.5" cy="44.5" r="1.5" fill="#ffffff" />
+              </g>
+            )}
+            <path d="M 38 78 L 50 86 L 62 78 Z" fill="#ffffff" stroke="#cbd5e1" strokeWidth="1" />
+            <path d="M 48 84 L 52 84 L 53 96 L 47 96 Z" fill="#ef4444" />
+            {isSpeaking ? (
+              <ellipse cx="50" cy="62" rx="4.5" ry="5.5" fill="#b91c1c" className="mascot-mouth-speaking" />
+            ) : (
+              <path d="M 44 61 Q 50 67 56 61" stroke="#0f172a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+            )}
+          </g>
         )}
 
-        {/* Graduation cap */}
-        <polygon points="50,12 72,20 50,28 28,20" fill="#1e293b" />
-        <path d="M 72 20 L 75 32" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" />
-        <circle cx="75" cy="33" r="2" fill="#f59e0b" />
+        {/* ================= PERSONA: ALEX ================= */}
+        {persona === "alex" && (
+          <g className="persona-alex-group">
+            <circle cx="50" cy="50" r="42" fill={`url(#alexGrad-${size})`} filter={`url(#mascotGlow-${size})`} />
+            <circle cx="50" cy="53" r="34" fill="#fffbeb" />
+            <polygon points="20,26 28,12 36,24" fill="#d97706" />
+            <polygon points="80,26 72,12 64,24" fill="#d97706" />
+            <circle cx="36" cy="46" r="14" fill="#fef3c7" stroke="#b45309" strokeWidth="2" />
+            <circle cx="64" cy="46" r="14" fill="#fef3c7" stroke="#b45309" strokeWidth="2" />
+            {isThinking ? (
+              <>
+                <circle cx="38" cy="43" r="7" fill="#78350f" />
+                <circle cx="66" cy="43" r="7" fill="#78350f" />
+                <circle cx="40" cy="41" r="2.5" fill="#ffffff" />
+                <circle cx="68" cy="41" r="2.5" fill="#ffffff" />
+              </>
+            ) : (
+              <g className="mascot-eyes">
+                <circle cx="36" cy="46" r="7" fill="#78350f" />
+                <circle cx="64" cy="46" r="7" fill="#78350f" />
+                <circle cx="34" cy="44" r="2.5" fill="#ffffff" />
+                <circle cx="62" cy="44" r="2.5" fill="#ffffff" />
+              </g>
+            )}
+            {isSpeaking ? (
+              <polygon points="45,56 55,56 50,68" fill="#ea580c" className="mascot-mouth-speaking" />
+            ) : (
+              <polygon points="46,55 54,55 50,62" fill="#ea580c" />
+            )}
+            <polygon points="50,14 74,21 50,28 26,21" fill="#1e293b" />
+            <path d="M 74 21 L 76 34" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx="76" cy="35" r="2.5" fill="#f59e0b" />
+          </g>
+        )}
       </svg>
       <span className={`mascot-status-dot status-${status}`} />
     </div>
@@ -618,26 +736,86 @@ const PROFILE_SUGGESTIONS: Record<string, string[]> = {
   ],
 };
 
-function renderFormattedMessage(content: string) {
+function renderFormattedMessage(
+  content: string,
+  onPlaySentence?: (sentence: string) => void
+) {
   const lines = content.split("\n");
+  const isVietnamese = (s: string) => /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i.test(s);
+
   return (
     <div className="formatted-message">
       {lines.map((line, lIdx) => {
-        if (!line.trim()) {
+        const trimmed = line.trim();
+        if (!trimmed) {
           return <div key={lIdx} className="message-empty-line" style={{ height: "6px" }} />;
         }
-        const parts = line.split(/(\*\*[^*]+\*\*|`[^`]+`)/);
+
+        // 1. Quoted English dialogue / sample sentences:
+        // Examples: *"Hi! Regarding the new marketing campaign..."* or "Could we consider a short extension?"
+        const dialogueMatch = trimmed.match(/^[*_]*["“`']([^"”`']+)["”`'][*_]*$/);
+        if (dialogueMatch) {
+          const dialogueRaw = dialogueMatch[1].replace(/\*+/g, "").trim();
+          if (!isVietnamese(dialogueRaw) && /[a-zA-Z]{2,}/.test(dialogueRaw) && dialogueRaw.length >= 6) {
+            return (
+              <div key={lIdx} className="message-english-dialogue-card">
+                <div className="dialogue-card-header">
+                  <span className="dialogue-card-badge">💬 Câu mẫu tiếng Anh để luyện</span>
+                  {onPlaySentence && (
+                    <button
+                      type="button"
+                      className="dialogue-card-play-btn"
+                      onClick={() => onPlaySentence(dialogueRaw)}
+                      title="Nghe câu mẫu này bằng giọng bản xứ"
+                    >
+                      🔊 Nghe câu này
+                    </button>
+                  )}
+                </div>
+                <blockquote className="dialogue-card-quote">
+                  “{dialogueRaw}”
+                </blockquote>
+              </div>
+            );
+          }
+        }
+
+        // 2. Inline markdown parsing: bold (**...**), italics (*...*), code (`...`)
+        const parts = trimmed.split(/(\?\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/);
+
         return (
           <p key={lIdx} className="message-paragraph">
             {parts.map((part, pIdx) => {
               if (part.startsWith("**") && part.endsWith("**")) {
-                const text = part.slice(2, -2);
+                const inner = part.slice(2, -2).trim();
+                const isColonLabel = /[:：]$/.test(inner);
+                const isMetaLabel = /^(your turn|step \d+|note|tip|warning|gợi ý|tình huống|senior manager|junior developer|manager|doctor|nurse|engineer)/i.test(inner);
+                const isEnglishSentence = !isVietnamese(inner) && /[a-zA-Z]{2,}/.test(inner) && inner.split(/\s+/).length >= 3 && !isColonLabel && !isMetaLabel;
+
+                if (isEnglishSentence) {
+                  return (
+                    <mark key={pIdx} className="message-english-highlight">
+                      {inner.replace(/\*+/g, "")}
+                    </mark>
+                  );
+                }
+
                 return (
-                  <strong key={pIdx} className="message-highlight-phrase">
-                    {text}
+                  <strong key={pIdx} className={isColonLabel || isMetaLabel ? "message-section-label" : "message-bold-text"}>
+                    {inner.replace(/\*+/g, "")}
                   </strong>
                 );
               }
+
+              if (part.startsWith("*") && part.endsWith("*") && !part.startsWith("**")) {
+                const inner = part.slice(1, -1).trim();
+                return (
+                  <span key={pIdx} className="message-hint-text">
+                    {inner.replace(/\*+/g, "")}
+                  </span>
+                );
+              }
+
               if (part.startsWith("`") && part.endsWith("`")) {
                 const code = part.slice(1, -1);
                 return (
@@ -646,7 +824,9 @@ function renderFormattedMessage(content: string) {
                   </code>
                 );
               }
-              return <span key={pIdx}>{part}</span>;
+
+              const cleanPart = part.replace(/\*+/g, "");
+              return <span key={pIdx}>{cleanPart}</span>;
             })}
           </p>
         );
@@ -657,6 +837,19 @@ function renderFormattedMessage(content: string) {
 
 export default function Home() {
   const [section, setSection] = useState<Section>("home");
+  // Tutor Persona
+  const [tutorPersona, setTutorPersona] = useState<TutorPersona>("maya");
+
+  // System Voices & Offline Speech Tuning
+  const [systemVoices, setSystemVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [selectedViVoiceId, setSelectedViVoiceId] = useState<string>("");
+  const [selectedEnVoiceId, setSelectedEnVoiceId] = useState<string>("");
+  const [viSpeechRate, setViSpeechRate] = useState<number>(0.95);
+  const [viSpeechPitch, setViSpeechPitch] = useState<number>(1.0);
+  const [enSpeechRate, setEnSpeechRate] = useState<number>(0.92);
+  const [enSpeechPitch, setEnSpeechPitch] = useState<number>(1.0);
+  const [voiceTestNotice, setVoiceTestNotice] = useState<string>("");
+
   const [fontScale, setFontScale] = useState(125);
   const [fontScaleLoaded, setFontScaleLoaded] = useState(false);
   const [fontScaleError, setFontScaleError] = useState("");
@@ -1039,6 +1232,66 @@ export default function Home() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [showHelp]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const savedPersona = localStorage.getItem("lingua-tutor-persona");
+      if (savedPersona === "maya" || savedPersona === "david" || savedPersona === "alex") {
+        setTutorPersona(savedPersona);
+      }
+      const savedViVoice = localStorage.getItem("lingua-vi-voice-id");
+      if (savedViVoice) setSelectedViVoiceId(savedViVoice);
+      const savedEnVoice = localStorage.getItem("lingua-en-voice-id");
+      if (savedEnVoice) setSelectedEnVoiceId(savedEnVoice);
+
+      const savedViRate = Number(localStorage.getItem("lingua-vi-rate"));
+      if (savedViRate >= 0.6 && savedViRate <= 1.5) setViSpeechRate(savedViRate);
+      const savedViPitch = Number(localStorage.getItem("lingua-vi-pitch"));
+      if (savedViPitch >= 0.7 && savedViPitch <= 1.3) setViSpeechPitch(savedViPitch);
+
+      const savedEnRate = Number(localStorage.getItem("lingua-en-rate"));
+      if (savedEnRate >= 0.6 && savedEnRate <= 1.5) setEnSpeechRate(savedEnRate);
+      const savedEnPitch = Number(localStorage.getItem("lingua-en-pitch"));
+      if (savedEnPitch >= 0.7 && savedEnPitch <= 1.3) setEnSpeechPitch(savedEnPitch);
+    } catch {}
+
+    if ("speechSynthesis" in window) {
+      const loadVoices = () => {
+        const v = window.speechSynthesis.getVoices();
+        if (v && v.length > 0) {
+          setSystemVoices(v);
+        }
+      };
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+  }, []);
+
+  function updateViVoice(voiceId: string) {
+    setSelectedViVoiceId(voiceId);
+    try { localStorage.setItem("lingua-vi-voice-id", voiceId); } catch {}
+  }
+  function updateEnVoice(voiceId: string) {
+    setSelectedEnVoiceId(voiceId);
+    try { localStorage.setItem("lingua-en-voice-id", voiceId); } catch {}
+  }
+  function updateViRate(rate: number) {
+    setViSpeechRate(rate);
+    try { localStorage.setItem("lingua-vi-rate", String(rate)); } catch {}
+  }
+  function updateViPitch(pitch: number) {
+    setViSpeechPitch(pitch);
+    try { localStorage.setItem("lingua-vi-pitch", String(pitch)); } catch {}
+  }
+  function updateEnRate(rate: number) {
+    setEnSpeechRate(rate);
+    try { localStorage.setItem("lingua-en-rate", String(rate)); } catch {}
+  }
+  function updateEnPitch(pitch: number) {
+    setEnSpeechPitch(pitch);
+    try { localStorage.setItem("lingua-en-pitch", String(pitch)); } catch {}
+  }
 
   useEffect(() => {
     try {
@@ -1545,20 +1798,42 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         resolve();
         return;
       }
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = lang === "en" ? 0.92 : 1.0;
-      const voices = window.speechSynthesis.getVoices();
+      const clean = cleanSpeechText(text);
+      if (!clean) {
+        resolve();
+        return;
+      }
+      const utterance = new SpeechSynthesisUtterance(clean);
+      const voices = systemVoices.length > 0 ? systemVoices : window.speechSynthesis.getVoices();
+
       if (lang === "vi") {
         utterance.lang = "vi-VN";
-        const viVoice = voices.find((v) => v.lang.startsWith("vi") || v.lang.includes("VN"));
-        if (viVoice) utterance.voice = viVoice;
+        utterance.rate = viSpeechRate;
+        utterance.pitch = viSpeechPitch;
+        const userVoice = voices.find((v) => v.voiceURI === selectedViVoiceId || v.name === selectedViVoiceId);
+        if (userVoice) {
+          utterance.voice = userVoice;
+        } else {
+          const viVoice =
+            voices.find((v) => (v.lang.startsWith("vi") || v.lang.includes("VN")) && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("HoaiMy") || v.name.includes("NamMinh"))) ||
+            voices.find((v) => v.lang.startsWith("vi") || v.lang.includes("VN"));
+          if (viVoice) utterance.voice = viVoice;
+        }
       } else {
         utterance.lang = "en-US";
-        const enVoice =
-          voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Samantha") || v.name.includes("Daniel") || v.name.includes("US") || v.name.includes("UK"))) ||
-          voices.find((v) => v.lang.startsWith("en"));
-        if (enVoice) utterance.voice = enVoice;
+        utterance.rate = enSpeechRate;
+        utterance.pitch = enSpeechPitch;
+        const userVoice = voices.find((v) => v.voiceURI === selectedEnVoiceId || v.name === selectedEnVoiceId);
+        if (userVoice) {
+          utterance.voice = userVoice;
+        } else {
+          const enVoice =
+            voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Samantha") || v.name.includes("Daniel") || v.name.includes("US") || v.name.includes("UK"))) ||
+            voices.find((v) => v.lang.startsWith("en"));
+          if (enVoice) utterance.voice = enVoice;
+        }
       }
+
       utterance.onend = () => resolve();
       utterance.onerror = () => resolve();
       window.speechSynthesis.speak(utterance);
@@ -2171,6 +2446,60 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         </details>
         <details name="settings-groups" className="settings-group">
           <summary className="settings-group-summary">
+            <span className="settings-icon">🎓</span>
+            <span><strong>Gia sư AI đồng hành</strong><small>{TUTOR_PERSONAS[tutorPersona]?.name} · {TUTOR_PERSONAS[tutorPersona]?.title}</small></span>
+            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div className="settings-group-content">
+            <section className="panel settings-panel tutor-persona-settings">
+              <div className="settings-section-heading">
+                <span className="settings-icon" aria-hidden="true">🎓</span>
+                <div>
+                  <h3>Chọn Gia sư AI đồng hành</h3>
+                  <p>Lựa chọn hình tượng gia sư phù hợp với sở thích và phong cách học tập của bạn.</p>
+                </div>
+              </div>
+              <div className="tutor-persona-grid">
+                {(Object.keys(TUTOR_PERSONAS) as TutorPersona[]).map((pKey) => {
+                  const persona = TUTOR_PERSONAS[pKey];
+                  const isSelected = tutorPersona === pKey;
+                  return (
+                    <div
+                      key={pKey}
+                      className={`tutor-persona-card ${isSelected ? "selected" : ""}`}
+                      onClick={() => {
+                        setTutorPersona(pKey);
+                        try {
+                          localStorage.setItem("lingua-tutor-persona", pKey);
+                        } catch {}
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      aria-pressed={isSelected}
+                    >
+                      <div className="persona-card-avatar">
+                        <TeacherMascot persona={pKey} status="idle" size={68} />
+                      </div>
+                      <div className="persona-card-details">
+                        <div className="persona-card-top">
+                          <strong>{persona.name}</strong>
+                          <span className="persona-card-badge">{persona.badge}</span>
+                        </div>
+                        <p className="persona-card-tagline">{persona.tagline}</p>
+                        <small className="persona-card-desc">{persona.description}</small>
+                      </div>
+                      <div className="persona-card-select-indicator">
+                        {isSelected ? "✓ Đang chọn" : "Chọn gia sư này"}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+        </details>
+        <details name="settings-groups" className="settings-group">
+          <summary className="settings-group-summary">
             <span className="settings-icon"><IllustrationIcon name="key" /></span>
             <span><strong>Nhà cung cấp & mô hình AI</strong><small>{aiProvider === "google" ? "Google Gemini" : "OpenAI"} · {activeModel}</small></span>
             <span className="settings-group-chevron" aria-hidden="true">⌄</span>
@@ -2249,65 +2578,247 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <details name="settings-groups" className="settings-group">
           <summary className="settings-group-summary">
             <span className="settings-icon"><IllustrationIcon name="speaker" /></span>
-            <span><strong>Giọng đọc & phát âm</strong><small>Voice, accent và sắc thái đọc</small></span>
+            <span><strong>Giọng đọc & phát âm</strong><small>Giọng tiếng Việt, tiếng Anh và tốc độ đọc</small></span>
             <span className="settings-group-chevron" aria-hidden="true">⌄</span>
           </summary>
           <div className="settings-group-content">
-        <section className="panel settings-panel">
-          <div className="settings-section-heading">
-            <span className="settings-icon"><IllustrationIcon name="speaker" /></span>
-            <div><h3>Giọng đọc và phát âm</h3><p>Chọn giọng rõ ràng để luyện nghe các kiểu phát âm tiếng Anh theo vùng.</p></div>
-          </div>
-          {aiProvider === "google" && (
-            <button type="button" className="button button-outline" onClick={() => { void loadSpeechVoices(); }} disabled={speechVoicesBusy || !apiKey}>
-              {speechVoicesBusy ? "Đang tải giọng theo từng vùng…" : "↻ Tải 1 giọng nam + 1 giọng nữ cho mỗi vùng"}
-            </button>
-          )}
-          {speechVoicesError && <p className="error-message" role="alert">{speechVoicesError}</p>}
-          <label className="settings-label" htmlFor="speech-voice">Giọng đọc {aiProvider === "google" ? "Google" : "OpenAI"}</label>
-          <div className="settings-voice-row">
-            <select id="speech-voice" className="settings-select" value={activeSpeechVoice} onChange={(event) => selectSpeechVoice(event.target.value)}>
-              {aiProvider === "google" ? (
-                <>
-                  {googleSpeechVoices.length === 0 && <option value={speechVoice}>{speechVoice} · tải danh sách giọng để chọn theo vùng</option>}
-                  <optgroup label={`Nam · ${maleVoices.length}/6 vùng`}>
-                    {maleVoices.map((voice) => <option key={voice.id} value={voice.id}>{getGoogleAccentLabel(voice.accent)} · {voice.label}</option>)}
-                  </optgroup>
-                  <optgroup label={`Nữ · ${femaleVoices.length}/6 vùng`}>
-                    {femaleVoices.map((voice) => <option key={voice.id} value={voice.id}>{getGoogleAccentLabel(voice.accent)} · {voice.label}</option>)}
-                  </optgroup>
-                </>
-              ) : OPENAI_SPEECH_VOICES.map((voice) => <option key={voice.id} value={voice.id}>{voice.label}</option>)}
-            </select>
-            <button className="button button-outline" onClick={() => void playSpeech(SPEECH_SAMPLE)} disabled={speechBusy || !apiKey}>
-              {speechBusy ? "Đang tạo…" : "▶ Nghe thử"}
-            </button>
-          </div>
-          <label className="settings-label" htmlFor="speech-delivery-style">Sắc thái giọng tiếng Anh chuẩn</label>
-          <select id="speech-delivery-style" className="settings-select" value={speechDeliveryStyle} onChange={(event) => selectSpeechDeliveryStyle(event.target.value)}>
-            {SPEECH_DELIVERY_STYLES.map((style) => <option key={style.id} value={style.id}>{style.label}</option>)}
-          </select>
-          <p className="settings-hint">Chọn cách đọc rõ, tự nhiên hoặc êm nhẹ. Đây là hướng dẫn cho AI tạo giọng, không phải bản ghi âm giọng riêng; chất giọng thực tế còn tùy voice và nhà cung cấp.</p>
-          {aiProvider === "openai" && (
-            <>
-              <label className="settings-label" htmlFor="speech-accent">Kiểu phát âm vùng (hướng dẫn cho AI)</label>
-              <select id="speech-accent" className="settings-select" value={openAiSpeechAccent} onChange={(event) => selectOpenAiSpeechAccent(event.target.value)}>
-                {OPENAI_ACCENTS.map((accent) => <option key={accent} value={accent}>{accent} English</option>)}
+            {/* 1. VIETNAMESE VOICE SETTINGS */}
+            <section className="panel settings-panel">
+              <div className="settings-section-heading">
+                <span className="settings-icon" aria-hidden="true">🇻🇳</span>
+                <div>
+                  <h3>Giọng đọc Tiếng Việt (Giải thích bài học & chỉ dẫn)</h3>
+                  <p>Chọn giọng đọc trên thiết bị và điều chỉnh tốc độ, cao độ để giọng nghe ấm áp, tự nhiên nhất.</p>
+                </div>
+              </div>
+
+              {/* Voice select */}
+              <label className="settings-label" htmlFor="vi-device-voice">Giọng tiếng Việt trên thiết bị</label>
+              {(() => {
+                const viVoices = systemVoices.filter((v) => v.lang.toLowerCase().startsWith("vi") || v.lang.toLowerCase().includes("vn"));
+                return (
+                  <select
+                    id="vi-device-voice"
+                    className="settings-select"
+                    value={selectedViVoiceId}
+                    onChange={(e) => updateViVoice(e.target.value)}
+                  >
+                    <option value="">Giọng Tiếng Việt mặc định hệ thống</option>
+                    {viVoices.map((v) => (
+                      <option key={v.voiceURI || v.name} value={v.voiceURI || v.name}>
+                        {v.name} ({v.lang})
+                      </option>
+                    ))}
+                  </select>
+                );
+              })()}
+
+              {/* Speed rate */}
+              <div className="font-scale-control" style={{ marginTop: "12px" }}>
+                <label className="settings-label" htmlFor="vi-speech-rate">Tốc độ đọc tiếng Việt</label>
+                <output className="font-scale-value" htmlFor="vi-speech-rate">{viSpeechRate.toFixed(2)}x</output>
+                <input
+                  id="vi-speech-rate"
+                  className="font-scale-slider"
+                  type="range"
+                  min="0.7"
+                  max="1.3"
+                  step="0.05"
+                  value={viSpeechRate}
+                  onChange={(e) => updateViRate(Number(e.target.value))}
+                />
+                <div className="font-scale-endpoints">
+                  <span>0.7x · Chậm rãi</span>
+                  <span>0.95x · Khuyên dùng</span>
+                  <span>1.3x · Nhanh</span>
+                </div>
+              </div>
+
+              {/* Pitch */}
+              <div className="font-scale-control" style={{ marginTop: "12px" }}>
+                <label className="settings-label" htmlFor="vi-speech-pitch">Cao độ giọng (Trầm / Bổng)</label>
+                <output className="font-scale-value" htmlFor="vi-speech-pitch">{viSpeechPitch.toFixed(2)}x</output>
+                <input
+                  id="vi-speech-pitch"
+                  className="font-scale-slider"
+                  type="range"
+                  min="0.8"
+                  max="1.2"
+                  step="0.05"
+                  value={viSpeechPitch}
+                  onChange={(e) => updateViPitch(Number(e.target.value))}
+                />
+                <div className="font-scale-endpoints">
+                  <span>0.8x · Trầm ấm</span>
+                  <span>1.0x · Tiêu chuẩn</span>
+                  <span>1.2x · Trong trẻo</span>
+                </div>
+              </div>
+
+              {/* Test button */}
+              <div style={{ marginTop: "14px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="button button-outline"
+                  onClick={async () => {
+                    setVoiceTestNotice("Đang phát thử giọng tiếng Việt...");
+                    await playNativeUtterance("Xin chào bạn! Tôi là gia sư tiếng Anh của bạn, chúc bạn học tập thật vui và tiến bộ mỗi ngày.", "vi");
+                    setVoiceTestNotice("Đã hoàn tất phát thử giọng tiếng Việt.");
+                  }}
+                >
+                  ▶ Nghe thử giọng tiếng Việt
+                </button>
+                {voiceTestNotice && <span style={{ fontSize: "0.85rem", color: "var(--theme-text, #134e4a)" }}>{voiceTestNotice}</span>}
+              </div>
+
+              <div className="speech-device-tip-box" style={{ marginTop: "14px", padding: "10px 14px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "0.84rem", color: "#475569", lineHeight: "1.5" }}>
+                <strong>💡 Mẹo để có giọng đọc tiếng Việt hay nhất:</strong>
+                <ul style={{ margin: "6px 0 0", paddingLeft: "18px" }}>
+                  <li><strong>Trên điện thoại Android:</strong> Vào Cài đặt máy ➔ Trợ năng ➔ Đầu ra chuyển văn bản thành giọng nói (Text-to-speech) ➔ Chọn <em>Speech Services by Google</em> ➔ Bấm biểu tượng Cài đặt ➔ Tải gói dữ liệu tiếng Việt chất lượng cao. Giọng đọc sẽ trở nên rất truyền cảm và tự nhiên.</li>
+                  <li><strong>Trên máy tính:</strong> Trình duyệt Microsoft Edge hỗ trợ sẵn các giọng <em>Microsoft HoaiMy Online (Natural)</em> và <em>Microsoft NamMinh Online (Natural)</em> chất lượng tuyệt hảo.</li>
+                </ul>
+              </div>
+            </section>
+
+            {/* 2. ENGLISH VOICE SETTINGS */}
+            <section className="panel settings-panel" style={{ marginTop: "16px" }}>
+              <div className="settings-section-heading">
+                <span className="settings-icon" aria-hidden="true">🇺🇸</span>
+                <div>
+                  <h3>Giọng đọc Tiếng Anh (Câu mẫu & Luyện phát âm)</h3>
+                  <p>Chọn giọng tiếng Anh bản xứ trên thiết bị hoặc sử dụng giọng AI đám mây.</p>
+                </div>
+              </div>
+
+              <label className="settings-label" htmlFor="en-device-voice">Giọng tiếng Anh trên thiết bị (Offline & Tức thì)</label>
+              {(() => {
+                const enVoices = systemVoices.filter((v) => v.lang.toLowerCase().startsWith("en"));
+                return (
+                  <select
+                    id="en-device-voice"
+                    className="settings-select"
+                    value={selectedEnVoiceId}
+                    onChange={(e) => updateEnVoice(e.target.value)}
+                  >
+                    <option value="">Giọng Tiếng Anh mặc định chuẩn</option>
+                    {enVoices.map((v) => (
+                      <option key={v.voiceURI || v.name} value={v.voiceURI || v.name}>
+                        {v.name} ({v.lang})
+                      </option>
+                    ))}
+                  </select>
+                );
+              })()}
+
+              <div className="font-scale-control" style={{ marginTop: "12px" }}>
+                <label className="settings-label" htmlFor="en-speech-rate">Tốc độ phát âm câu mẫu</label>
+                <output className="font-scale-value" htmlFor="en-speech-rate">{enSpeechRate.toFixed(2)}x</output>
+                <input
+                  id="en-speech-rate"
+                  className="font-scale-slider"
+                  type="range"
+                  min="0.7"
+                  max="1.2"
+                  step="0.05"
+                  value={enSpeechRate}
+                  onChange={(e) => updateEnRate(Number(e.target.value))}
+                />
+                <div className="font-scale-endpoints">
+                  <span>0.7x · Chậm dễ nghe</span>
+                  <span>0.92x · Tốc độ chuẩn</span>
+                  <span>1.2x · Nhanh</span>
+                </div>
+              </div>
+
+              <div className="font-scale-control" style={{ marginTop: "12px" }}>
+                <label className="settings-label" htmlFor="en-speech-pitch">Cao độ giọng tiếng Anh (Trầm / Bổng)</label>
+                <output className="font-scale-value" htmlFor="en-speech-pitch">{enSpeechPitch.toFixed(2)}x</output>
+                <input
+                  id="en-speech-pitch"
+                  className="font-scale-slider"
+                  type="range"
+                  min="0.8"
+                  max="1.2"
+                  step="0.05"
+                  value={enSpeechPitch}
+                  onChange={(e) => updateEnPitch(Number(e.target.value))}
+                />
+                <div className="font-scale-endpoints">
+                  <span>0.8x · Trầm ấm</span>
+                  <span>1.0x · Tiêu chuẩn</span>
+                  <span>1.2x · Trong trẻo</span>
+                </div>
+              </div>
+
+              <div style={{ marginTop: "14px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="button button-outline"
+                  onClick={async () => {
+                    setVoiceTestNotice("Đang phát thử câu mẫu tiếng Anh...");
+                    await playNativeUtterance("Hello! Welcome to your English lesson. Let's practice speaking with confidence today.", "en");
+                    setVoiceTestNotice("Đã hoàn tất phát thử tiếng Anh.");
+                  }}
+                >
+                  ▶ Nghe thử giọng tiếng Anh
+                </button>
+              </div>
+            </section>
+
+            {/* 3. CLOUD AI SPEECH (Optional when API key exists) */}
+            <section className="panel settings-panel" style={{ marginTop: "16px" }}>
+              <div className="settings-section-heading">
+                <span className="settings-icon"><IllustrationIcon name="sparkles" /></span>
+                <div>
+                  <h3>Giọng đọc Cloud AI nâng cao ({aiProvider === "google" ? "Google AI" : "OpenAI"})</h3>
+                  <p>Tạo audio trực tiếp từ AI đám mây khi có kết nối Internet và API key.</p>
+                </div>
+              </div>
+
+              {aiProvider === "google" && (
+                <button type="button" className="button button-outline" onClick={() => { void loadSpeechVoices(); }} disabled={speechVoicesBusy || !apiKey}>
+                  {speechVoicesBusy ? "Đang tải giọng AI…" : "↻ Tải danh sách giọng AI theo vùng"}
+                </button>
+              )}
+              {speechVoicesError && <p className="error-message" role="alert">{speechVoicesError}</p>}
+
+              <label className="settings-label" htmlFor="speech-voice">Chọn giọng AI {aiProvider === "google" ? "Google" : "OpenAI"}</label>
+              <div className="settings-voice-row">
+                <select id="speech-voice" className="settings-select" value={activeSpeechVoice} onChange={(event) => selectSpeechVoice(event.target.value)}>
+                  {aiProvider === "google" ? (
+                    <>
+                      {googleSpeechVoices.length === 0 && <option value={speechVoice}>{speechVoice} · mặc định</option>}
+                      <optgroup label={`Nam · ${maleVoices.length}/6 vùng`}>
+                        {maleVoices.map((voice) => <option key={voice.id} value={voice.id}>{getGoogleAccentLabel(voice.accent)} · {voice.label}</option>)}
+                      </optgroup>
+                      <optgroup label={`Nữ · ${femaleVoices.length}/6 vùng`}>
+                        {femaleVoices.map((voice) => <option key={voice.id} value={voice.id}>{getGoogleAccentLabel(voice.accent)} · {voice.label}</option>)}
+                      </optgroup>
+                    </>
+                  ) : OPENAI_SPEECH_VOICES.map((voice) => <option key={voice.id} value={voice.id}>{voice.label}</option>)}
+                </select>
+                <button className="button button-outline" onClick={() => void playSpeech(SPEECH_SAMPLE)} disabled={speechBusy || !apiKey}>
+                  {speechBusy ? "Đang tạo…" : "▶ Nghe thử giọng AI"}
+                </button>
+              </div>
+
+              <label className="settings-label" htmlFor="speech-delivery-style">Sắc thái giọng đọc</label>
+              <select id="speech-delivery-style" className="settings-select" value={speechDeliveryStyle} onChange={(event) => selectSpeechDeliveryStyle(event.target.value)}>
+                {SPEECH_DELIVERY_STYLES.map((style) => <option key={style.id} value={style.id}>{style.label}</option>)}
               </select>
-              <p className="settings-hint">Danh sách OpenAI không công bố giới tính hay vùng gốc cho từng voice; vùng phát âm ở đây được gửi như hướng dẫn tạo giọng, không phải bảo đảm tuyệt đối.</p>
-            </>
-          )}
-          {aiProvider === "google" && googleSpeechVoices.length > 0 && (
-            <p className="settings-hint">
-              Đã tải {maleVoices.length} giọng nam và {femaleVoices.length} giọng nữ, tối đa một giọng mỗi vùng để tránh danh sách bị tập trung vào một nước.
-              {maleVoices.length < 6 || femaleVoices.length < 6 ? " Một số vùng chưa có giọng phù hợp trong danh mục API key này." : ""}
-              Danh sách chỉ gồm thông tin giọng nhẹ; audio chỉ tạo và lưu khi bạn nhấn nghe.
-            </p>
-          )}
-          {!apiKey && <p className="settings-hint">Thêm API key để tạo audio. Các câu đã nghe được lưu trên thiết bị để phát lại offline (tối đa 100 đoạn).</p>}
-          {aiProvider === "openai" && <p className="settings-hint">Chấm phát âm trực tiếp hiện dùng Google Gemini; OpenAI hỗ trợ hội thoại, nhận dạng giọng nói và đọc văn bản.</p>}
-          <button className="remove-key-button settings-cache-clear" onClick={() => { void removeSavedSpeech(); }}>Xóa audio đã lưu trên thiết bị</button>
-        </section>
+
+              {aiProvider === "openai" && (
+                <>
+                  <label className="settings-label" htmlFor="speech-accent">Kiểu phát âm vùng (hướng dẫn cho OpenAI)</label>
+                  <select id="speech-accent" className="settings-select" value={openAiSpeechAccent} onChange={(event) => selectOpenAiSpeechAccent(event.target.value)}>
+                    {OPENAI_ACCENTS.map((accent) => <option key={accent} value={accent}>{accent} English</option>)}
+                  </select>
+                </>
+              )}
+
+              {!apiKey && <p className="settings-hint">Chưa có API key: Ứng dụng tự động phát bằng giọng chuẩn trên thiết bị hoàn toàn miễn phí và không cần mạng.</p>}
+              <button className="remove-key-button settings-cache-clear" onClick={() => { void removeSavedSpeech(); }}>Xóa audio đã lưu trên thiết bị</button>
+            </section>
           </div>
         </details>
         <details name="settings-groups" className="settings-group">
@@ -2447,6 +2958,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <header className="chat-header">
             <div className="coach-avatar">
               <TeacherMascot
+                persona={tutorPersona}
                 status={
                   speechBusy
                     ? "speaking"
@@ -2460,11 +2972,60 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               />
             </div>
             <div>
-              <strong>Cô Maya {speechBusy && <span className="mascot-speaking-badge">🔊 Đang nói…</span>}</strong>
-              <p>Gia sư AI · {aiProvider === "google" ? "Google AI (Phản hồi tức thì)" : "OpenAI"} <span className="online-dot" /> Đã kết nối</p>
+              <strong>{TUTOR_PERSONAS[tutorPersona]?.name ?? "Cô Maya"} {speechBusy && <span className="mascot-speaking-badge">🔊 Đang nói…</span>}</strong>
+              <p>{TUTOR_PERSONAS[tutorPersona]?.title ?? "Gia sư AI"} · {aiProvider === "google" ? "Google AI (Phản hồi tức thì)" : "OpenAI"} <span className="online-dot" /> Đã kết nối</p>
             </div>
             <span className="level-chip">{progress.level}</span>
           </header>
+
+          {/* Prominent Interactive Tutor Stage */}
+          <div className="tutor-stage-banner">
+            <div className="tutor-stage-avatar-container">
+              <TeacherMascot
+                persona={tutorPersona}
+                status={
+                  speechBusy
+                    ? "speaking"
+                    : chatBusy
+                    ? "thinking"
+                    : voiceChatRecording
+                    ? "listening"
+                    : "idle"
+                }
+                size={76}
+              />
+            </div>
+            <div className="tutor-stage-info">
+              <div className="tutor-stage-top-row">
+                <div className="tutor-stage-title-wrap">
+                  <span className="tutor-stage-name">{TUTOR_PERSONAS[tutorPersona]?.name ?? "Cô Maya"}</span>
+                  <span className="tutor-stage-badge">{TUTOR_PERSONAS[tutorPersona]?.badge ?? "👩‍🏫 Nữ gia sư"}</span>
+                  <span className="tutor-stage-online">
+                    <span className="online-indicator-dot" /> Đã kết nối trực tiếp
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  className="tutor-stage-switch-btn"
+                  onClick={() => navigateToSection("settings")}
+                  title="Đổi hình tượng gia sư hoặc chỉnh giọng đọc"
+                >
+                  ⚙️ Đổi gia sư / Giọng đọc
+                </button>
+              </div>
+              <div className="tutor-stage-speech-bubble">
+                {speechBusy ? (
+                  <span className="bubble-speaking">🔊 Đang phát âm câu mẫu tiếng Anh chuẩn...</span>
+                ) : chatBusy ? (
+                  <span className="bubble-thinking">💭 Đang chuẩn bị câu hỏi và hướng dẫn cho bạn...</span>
+                ) : voiceChatRecording ? (
+                  <span className="bubble-listening">🎙️ Đang lắng nghe bạn nói, hãy tự tin phát âm nhé!</span>
+                ) : (
+                  <span className="bubble-idle">“{TUTOR_PERSONAS[tutorPersona]?.greeting ?? "Chào em! Hôm nay cô sẽ đồng hành cùng em luyện nói tiếng Anh nhé."}”</span>
+                )}
+              </div>
+            </div>
+          </div>
           <div className="chat-context"><span>💬</span> {profile.title} <span>·</span> {profile.scene}</div>
           <div className="teacher-quick-actions" aria-label="Yêu cầu nhanh với gia sư">
             {QUICK_TEACHER_REQUESTS.map((request) => (
@@ -2478,11 +3039,15 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               const extractedPhrases = message.role === "assistant" ? extractEnglishPracticePhrases(message.content) : [];
               return (
                 <div className={`message-row ${message.role}`} key={`${index}-${message.role}`}>
-                  {message.role === "assistant" && <div className="mini-avatar">M</div>}
+                  {message.role === "assistant" && (
+                    <div className="mini-avatar">
+                      <TeacherMascot persona={tutorPersona} status="idle" size={32} />
+                    </div>
+                  )}
                   <div className="message-bubble">
-                    <span className="speaker-label">{message.role === "assistant" ? "MAYA · GIA SƯ" : "BẠN"}</span>
+                    <span className="speaker-label">{message.role === "assistant" ? `${(TUTOR_PERSONAS[tutorPersona]?.name ?? "MAYA").toUpperCase()} · GIA SƯ` : "BẠN"}</span>
                     <div className="message-text">
-                      {renderFormattedMessage(message.content)}
+                      {renderFormattedMessage(message.content, (phrase) => void playPracticePhrase(phrase))}
                     </div>
                     {message.role === "assistant" && (
                       <div className="message-actions-container">
