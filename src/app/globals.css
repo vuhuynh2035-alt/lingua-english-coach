@@ -2214,15 +2214,13 @@ html[data-theme="blue"] .wz-crumb { opacity: .92; }
 .floating-back-button span { font-size: .75rem; }
 .floating-back-button:hover:not(:disabled) { width: 36px; }
 
-/* ===== Robot: blink squashes the LED eyes; the equaliser follows the voice ===== */
-.av-robot-eye { transform-box: fill-box; transform-origin: center;
-  transform: translate(calc(var(--look-x, 0) * 1.6px), calc(var(--look-y, 0) * 1.2px)) scaleY(calc(1 - var(--lid, 0) * 0.9)); }
-.av-eq { transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(calc(0.22 + var(--mouth, 0) * var(--eq-k, 1))); opacity: calc(0.35 + var(--mouth, 0) * 0.65); }
-.av-eq-0, .av-eq-4 { --eq-k: .45; }
-.av-eq-1, .av-eq-3 { --eq-k: .8; }
-.av-eq-2 { --eq-k: 1.05; }
-.av-mascot .av-glow { background: radial-gradient(circle, #9be9ff66 0%, #ffffff00 70%); }
-.av-mascot.av-status-speaking .av-robot-eye { filter: brightness(calc(1 + var(--mouth, 0) * .5)); }
+/* ===== Nova: sprout sways, body bounces with the voice ===== */
+.av-sprout { transform-box: fill-box; transform-origin: 30% 100%; animation: av-sprout 3.2s ease-in-out infinite; }
+@keyframes av-sprout { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(6deg); } }
+.av-emo-cheer .av-sprout, .av-status-speaking .av-sprout { animation-duration: 1.2s; }
+.av-mascot .av-body { transform: scaleY(calc(1 + var(--mouth, 0) * 0.035)) scaleX(calc(1 - var(--mouth, 0) * 0.015)); }
+.av-mascot .av-glow { background: radial-gradient(circle, #fff3c466 0%, #ffffff00 70%); }
+@media (prefers-reduced-motion: reduce) { .av-sprout { animation: none; } }
 
 /* Back tab: thin and see-through so it never hides lesson content. */
 .floating-back-button { width: 14px; height: 84px; border: 0; border-radius: 0 10px 10px 0; color: #ffffff; background: #0f172a2e; box-shadow: none; opacity: .7; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
@@ -2240,8 +2238,6 @@ html[data-theme] .floating-back-button { color: #fff; background: #0f172a2e; bor
 .wait-dots i:nth-child(3) { animation-delay: .36s; }
 @media (prefers-reduced-motion: reduce) { .wait-dots i { animation: none; } }
 .net-chip { white-space: nowrap; }
-.tutor-name-row { display: flex; gap: 8px; align-items: center; }
-.tutor-name-row .settings-input { flex: 1; min-width: 0; }
 
 /* Blocking wait: a transparent layer swallows taps; only "Hủy" stays usable. */
 .wait-scrim { position: fixed; inset: 0; z-index: 70; background: #0f172a0d; cursor: progress; }

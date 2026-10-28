@@ -103,7 +103,7 @@ export type VoiceProfile = {
   style: VoiceStyle;
   /** 0.7 – 1.2 */
   speed: number;
-  /** A young child's voice, used for the robot mascot. */
+  /** A young child's voice, used for the mascot. */
   childlike: boolean;
 };
 
@@ -146,7 +146,7 @@ export function voiceForGender(list: NamedVoice[], current: string, gender: Voic
   return chosen?.gender === gender ? current : list.find((v) => v.gender === gender)?.id ?? list[0].id;
 }
 
-/** Voice settings that match the tutor character: man → male, woman → female, robot → child. */
+/** Voice settings that match the tutor character: man → male, woman → female, mascot → child. */
 export function voiceForTutor(kind: "man" | "woman" | "mascot"): Partial<VoiceProfile> {
   if (kind === "man") return { gender: "male", childlike: false };
   if (kind === "woman") return { gender: "female", childlike: false };

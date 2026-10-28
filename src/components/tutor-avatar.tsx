@@ -51,24 +51,19 @@ function Defs({ id }: { id: string }) {
         <stop offset="0" stopColor="#4f7bd6" />
         <stop offset="1" stopColor="#18327a" />
       </linearGradient>
-      <radialGradient id={`${id}-shell`} cx="38%" cy="28%" r="80%">
-        <stop offset="0" stopColor="#ffffff" />
-        <stop offset="0.6" stopColor="#eef2f6" />
-        <stop offset="1" stopColor="#b8c3ce" />
+      <radialGradient id={`${id}-nova`} cx="38%" cy="30%" r="78%">
+        <stop offset="0" stopColor="#fff4c7" />
+        <stop offset="0.55" stopColor="#ffd98a" />
+        <stop offset="1" stopColor="#f4ad52" />
       </radialGradient>
-      <radialGradient id={`${id}-visor`} cx="45%" cy="35%" r="75%">
-        <stop offset="0" stopColor="#25303f" />
-        <stop offset="1" stopColor="#04060a" />
+      <radialGradient id={`${id}-pupil`} cx="45%" cy="35%" r="75%">
+        <stop offset="0" stopColor="#4a2e1f" />
+        <stop offset="1" stopColor="#140a05" />
       </radialGradient>
-      <radialGradient id={`${id}-led`} cx="50%" cy="45%" r="60%">
-        <stop offset="0" stopColor="#e8fdff" />
-        <stop offset="0.45" stopColor="#7cf2ff" />
-        <stop offset="1" stopColor="#13b5f0" />
-      </radialGradient>
-      <filter id={`${id}-glow`} x="-60%" y="-60%" width="220%" height="220%">
-        <feGaussianBlur stdDeviation="2.4" result="blur" />
-        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-      </filter>
+      <linearGradient id={`${id}-leaf`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stopColor="#9be8a8" />
+        <stop offset="1" stopColor="#36a86a" />
+      </linearGradient>
     </defs>
   );
 }
@@ -189,65 +184,92 @@ function Human({ id, kind, emotion, talking }: { id: string; kind: "woman" | "ma
   );
 }
 
-function RobotEye({ id, cx, emotion, side }: { id: string; cx: number; emotion: AvatarEmotion; side: "l" | "r" }) {
-  const cy = 58;
-  const tilt = side === "l" ? -14 : 14;
-  if (emotion === "happy" || emotion === "cheer") {
-    // Smiling eyes: glowing upside-down arcs.
-    return (
-      <g className="av-iris av-robot-eye" filter={`url(#${id}-glow)`}>
-        <path d={`M${cx - 11} ${cy + 4} Q${cx} ${cy - 10} ${cx + 11} ${cy + 4}`} fill="none" stroke="#7cf2ff" strokeWidth="6" strokeLinecap="round" />
-      </g>
-    );
-  }
-  const ry = emotion === "surprised" ? 10 : emotion === "thinking" && side === "r" ? 4 : 7.5;
-  const rx = emotion === "surprised" ? 10 : 12;
+/** Big glossy chibi eye; the lid (body colour) closes from the top for blinks. */
+function NovaEye({ id, name, cx, rest }: { id: string; name: string; cx: number; rest: number }) {
+  const cy = 120;
+  const clip = `${id}-${name}`;
   return (
-    <g className="av-iris av-robot-eye" filter={`url(#${id}-glow)`}>
-      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={`url(#${id}-led)`} transform={`rotate(${emotion === "surprised" ? 0 : tilt} ${cx} ${cy})`} />
+    <g>
+      <clipPath id={clip}><ellipse cx={cx} cy={cy} rx="12.5" ry="15.5" /></clipPath>
+      <g clipPath={`url(#${clip})`}>
+        <ellipse cx={cx} cy={cy} rx="12.5" ry="15.5" fill={`url(#${id}-pupil)`} />
+        <g className="av-iris">
+          <ellipse cx={cx} cy={cy + 7} rx="8" ry="5" fill="#7b5cff" opacity=".35" />
+          <circle cx={cx - 4} cy={cy - 6} r="4.6" fill="#fff" />
+          <circle cx={cx + 4.5} cy={cy + 4} r="2.1" fill="#fff" opacity=".9" />
+        </g>
+        <rect className="av-lid" x={cx - 14} y={cy - 17} width="28" height="34" fill="#ffd98a"
+          style={{ "--lid-rest": rest } as React.CSSProperties} />
+      </g>
     </g>
   );
 }
 
+function novaMouth(emotion: AvatarEmotion) {
+  switch (emotion) {
+    case "cheer": return <path d="M89 140 Q100 158 111 140 Q100 144 89 140Z" fill="#7a2a2a" stroke="#7a2a2a" strokeWidth="2" strokeLinejoin="round" />;
+    case "surprised": return <ellipse cx="100" cy="145" rx="4.5" ry="5.5" fill="#7a2a2a" />;
+    case "thinking": return <path d="M94 145 Q100 142 106 146" fill="none" stroke="#7a2a2a" strokeWidth="2.6" strokeLinecap="round" />;
+    default: return <path d="M92 141 Q96 147 100 142 Q104 147 108 141" fill="none" stroke="#7a2a2a" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />;
+  }
+}
+
 /**
- * Robo: a floating white robot — a wide oval head that is almost all dark glass visor,
- * above a long egg-shaped body that tapers to a point, with slim arms hanging at its sides.
- * It has no mouth; while it talks, an LED equaliser under the eyes follows the voice.
+ * Nova: an original mascot — a round, sunny little bean with big shiny eyes, rosy cheeks
+ * and a leaf sprout on top (it grows a little with every lesson). Its mouth follows the
+ * voice while it talks.
  */
-function Robot({ id, emotion }: { id: string; emotion: AvatarEmotion }) {
-  const shellStroke = "#c3ced9";
+function Nova({ id, emotion, talking }: { id: string; emotion: AvatarEmotion; talking: boolean }) {
+  const brows = browParams(emotion);
+  const rest = emotion === "thinking" ? 0.25 : 0;
+  const happyEyes = emotion === "cheer";
   return (
     <g>
-      {/* slim arms hang close to the body */}
-      <path d="M50 104 C38 112 33 150 36 188 C37 200 47 203 51 193 C56 166 59 132 60 113 C60 104 55 100 50 104Z"
-        fill={`url(#${id}-shell)`} stroke={shellStroke} strokeWidth="1" className="av-wing av-wing-l" />
-      <path d="M150 104 C162 112 167 150 164 188 C163 200 153 203 149 193 C144 166 141 132 140 113 C140 104 145 100 150 104Z"
-        fill={`url(#${id}-shell)`} stroke={shellStroke} strokeWidth="1" className="av-wing av-wing-r" />
-      {/* long egg body: broad shoulders, tapering to a rounded point */}
+      {/* feet */}
+      <ellipse cx="78" cy="230" rx="17" ry="9" fill="#f2a446" />
+      <ellipse cx="122" cy="230" rx="17" ry="9" fill="#f2a446" />
+      {/* arms */}
+      <path d="M40 146 C24 150 20 174 30 184 C38 190 48 180 50 168Z" fill={`url(#${id}-nova)`} className="av-wing av-wing-l" />
+      <path d="M160 146 C176 150 180 174 170 184 C162 190 152 180 150 168Z" fill={`url(#${id}-nova)`} className="av-wing av-wing-r" />
       <g className="av-body">
-        <path d="M100 99 C133 99 144 116 142 146 C139 188 118 234 100 244 C82 234 61 188 58 146 C56 116 67 99 100 99Z"
-          fill={`url(#${id}-shell)`} stroke={shellStroke} strokeWidth="1" />
-        <path d="M72 116 C80 106 90 103 100 103" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity=".95" />
-        <path d="M120 112 C130 132 132 160 126 190" fill="none" stroke="#a9b6c3" strokeWidth="3" strokeLinecap="round" opacity=".35" />
+        {/* round bean body */}
+        <path d="M100 50 C150 50 172 94 172 144 C172 198 140 228 100 228 C60 228 28 198 28 144 C28 94 50 50 100 50Z" fill={`url(#${id}-nova)`} />
+        <ellipse cx="100" cy="186" rx="44" ry="32" fill="#fff6dd" opacity=".85" />
+        <path d="M58 84 C68 66 86 58 104 58" fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" opacity=".7" />
+      </g>
+      {/* leaf sprout */}
+      <g className="av-sprout">
+        <path d="M100 54 C100 44 101 36 103 28" fill="none" stroke="#3fae6e" strokeWidth="4" strokeLinecap="round" />
+        <path d="M102 34 C90 18 72 20 68 32 C80 40 94 40 102 34Z" fill={`url(#${id}-leaf)`} />
+        <path d="M103 30 C114 12 136 12 140 26 C128 36 112 36 103 30Z" fill={`url(#${id}-leaf)`} />
+        <path d="M74 31 Q88 30 100 34 M134 24 Q118 28 105 30" fill="none" stroke="#ffffff" strokeWidth="1.6" strokeLinecap="round" opacity=".55" />
       </g>
       <g className="av-head">
-        {/* head shell: wide oval */}
-        <ellipse cx="100" cy="52" rx="52" ry="42" fill={`url(#${id}-shell)`} stroke={shellStroke} strokeWidth="1" />
-        <path d="M64 26 C78 14 102 11 122 18" fill="none" stroke="#ffffff" strokeWidth="6" strokeLinecap="round" opacity=".95" />
-        {/* dark glass visor covers most of the face */}
-        <ellipse cx="100" cy="58" rx="42" ry="28" fill={`url(#${id}-visor)`} />
-        <path d="M68 50 C76 38 96 34 114 37" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" opacity=".2" />
-        <RobotEye id={id} cx={81} emotion={emotion} side="l" />
-        <RobotEye id={id} cx={119} emotion={emotion} side="r" />
-        {/* LED equaliser: its bars follow the voice */}
-        <g fill="#5fe6ff" filter={`url(#${id}-glow)`}>
-          {[-14, -7, 0, 7, 14].map((dx, index) => (
-            <rect key={dx} className={`av-eq av-eq-${index}`} x={100 + dx - 2.2} y={70} width="4.4" height="11" rx="2.2" />
-          ))}
-        </g>
-        {(emotion === "happy" || emotion === "cheer") && (
-          <><ellipse cx="62" cy="72" rx="6" ry="3.5" fill="#ff8aa0" opacity=".3" /><ellipse cx="138" cy="72" rx="6" ry="3.5" fill="#ff8aa0" opacity=".3" /></>
+        {/* brows */}
+        <path d="M70 100 Q78 96 86 100" fill="none" stroke="#a8692a" strokeWidth="2.6" strokeLinecap="round"
+          style={{ transform: `translateY(${brows.ly}px) rotate(${brows.lr}deg)`, transformOrigin: "78px 100px" }} className="av-brow" />
+        <path d="M114 100 Q122 96 130 100" fill="none" stroke="#a8692a" strokeWidth="2.6" strokeLinecap="round"
+          style={{ transform: `translateY(${brows.ry}px) rotate(${brows.rr}deg)`, transformOrigin: "122px 100px" }} className="av-brow" />
+        {happyEyes ? (
+          <g fill="none" stroke="#3b2414" strokeWidth="4" strokeLinecap="round">
+            <path d="M67 124 Q78 110 89 124" />
+            <path d="M111 124 Q122 110 133 124" />
+          </g>
+        ) : (
+          <>
+            <NovaEye id={id} name="l" cx={78} rest={rest} />
+            <NovaEye id={id} name="r" cx={122} rest={rest} />
+          </>
         )}
+        {/* rosy cheeks */}
+        <ellipse cx="60" cy="140" rx="11" ry="7" fill="#ff9eb5" opacity=".6" />
+        <ellipse cx="140" cy="140" rx="11" ry="7" fill="#ff9eb5" opacity=".6" />
+        {talking ? (
+          <g className="av-mouth-live">
+            <ellipse cx="100" cy="146" rx="8.5" ry="7.5" fill="#7a2a2a" />
+            <ellipse cx="100" cy="150" rx="5" ry="3" fill="#ff8a9a" />
+          </g>
+        ) : novaMouth(emotion)}
       </g>
     </g>
   );
@@ -344,7 +366,7 @@ export function TutorAvatar({ kind, status = "idle", emotion, size = 120, intera
     };
   }, [interactive]);
 
-  const label = kind === "woman" ? "Cô giáo AI" : kind === "man" ? "Thầy giáo AI" : "Robot Robo";
+  const label = kind === "woman" ? "Cô giáo AI" : kind === "man" ? "Thầy giáo AI" : "Linh vật Nova";
   return (
     <div
       ref={stageRef}
@@ -359,7 +381,7 @@ export function TutorAvatar({ kind, status = "idle", emotion, size = 120, intera
         <svg viewBox="0 0 200 250" width={size} height={size * 1.2} className="av-svg">
           <Defs id={id} />
           {kind === "mascot"
-            ? <Robot id={id} emotion={resolved} />
+            ? <Nova id={id} emotion={resolved} talking={talking} />
             : <Human id={id} kind={kind} emotion={resolved} talking={talking} />}
         </svg>
       </div>

@@ -24,6 +24,8 @@ export async function generateWithGemini(
       temperature: 0.7,
       // Thinking tokens share this budget; too little and the JSON is cut short.
       maxOutputTokens: geminiOutputBudget(model, 1500),
+      // Every caller asks for JSON; JSON mode makes the model escape line breaks properly.
+      responseMimeType: "application/json",
       ...(withThinking && thinkingConfig ? { thinkingConfig } : {}),
     },
   });
@@ -46,6 +48,7 @@ async function requestGemini(
       temperature: number;
       maxOutputTokens: number;
       thinkingConfig?: Record<string, unknown>;
+      responseMimeType?: string;
     };
   },
 ): Promise<string> {

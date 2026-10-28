@@ -51,6 +51,7 @@ import {
   ConnectionReport,
   checkConnection,
   isChatModel,
+  parseAiJson,
   modelCandidates,
   rankGoogleModels,
   runWithFailover,
@@ -179,7 +180,6 @@ const AI_SETTINGS_STORAGE = "lingua-ai-settings";
 const FONT_SCALE_STORAGE = "lingua-font-scale";
 const APP_THEME_STORAGE = "lingua-app-theme";
 const VOICE_PROFILE_STORAGE = "lingua-voice-profile-v1";
-const TUTOR_NAMES_STORAGE = "lingua-tutor-names";
 const GOOGLE_MODELS_STORAGE = "lingua-google-models";
 /** 0.05 s of silence, played inside a tap so phones allow later AI audio. */
 const SILENT_WAV = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAACAgICA";
@@ -492,14 +492,14 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
   alex: {
     id: "alex",
     // The id stays "alex" so a saved choice keeps working.
-    name: "Robo",
-    title: "Robot Trợ Giảng",
+    name: "Nova",
+    title: "Linh Vật Học Tập",
     gender: "mascot",
     kind: "mascot",
     tagline: "Đáng yêu, hoạt bát, học tập không áp lực",
-    description: "Chú robot nhỏ thông minh, vui tính, giúp việc học nhẹ nhàng như một trò chơi thú vị.",
-    greeting: "Beep boop! Cùng nhau chinh phục bài học tiếng Anh nào!",
-    badge: "🤖 Robot",
+    description: "Bạn nhỏ tròn xinh, hồn nhiên và vui tính, mầm lá trên đầu lớn lên cùng mỗi bài học của bạn.",
+    greeting: "Hi hi! Cùng nhau học tiếng Anh thật vui nào!",
+    badge: "🌱 Linh vật",
   },
 };
 
@@ -677,6 +677,20 @@ const LEVEL_PEDAGOGY: Record<CourseLevel, string> = {
 - Correct accuracy and naturalness, including better word choices and more sophisticated phrasing.`,
 };
 
+/**
+ * An error message a learner can understand. App errors are already in Vietnamese; raw
+ * browser/parser errors (in English) get a plain explanation, with the original kept short.
+ */
+function friendlyError(error: unknown, fallback: string): string {
+  if (error instanceof AiError) return error.message;
+  if (!(error instanceof Error)) return fallback;
+  if (/[àáảãạăâđèéêìíòóôơùúưỳý]/i.test(error.message)) return error.message;
+  if (error instanceof SyntaxError) return `Câu trả lời của AI bị lỗi định dạng. Bạn vui lòng thử lại nhé. (${error.message.slice(0, 80)})`;
+  if (error instanceof TypeError) return "Không kết nối được tới máy chủ AI. Hãy kiểm tra Internet hoặc tắt VPN rồi thử lại.";
+  if (error.name === "AbortError" || error.name === "TimeoutError") return "AI phản hồi quá lâu nên đã dừng. Bạn vui lòng thử lại nhé.";
+  return `${fallback} (${error.message.slice(0, 80)})`;
+}
+
 /** "Key 1", "Key 2"… — the first number not used yet, so labels stay unique after deletions. */
 function nextKeyLabel(entries: ApiKeyEntry[]): string {
   let n = 1;
@@ -706,8 +720,6 @@ export default function Home() {
   const [section, setSection] = useState<Section>("home");
   // Tutor Persona
   const [tutorPersona, setTutorPersona] = useState<TutorPersona>("maya");
-  /** Names the learner gave each tutor; empty means the default name. */
-  const [tutorNames, setTutorNames] = useState<Partial<Record<TutorPersona, string>>>({});
 
   // System Voices & Offline Speech Tuning
   const [systemVoices, setSystemVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -1092,13 +1104,6 @@ export default function Home() {
     if (typeof window === "undefined") return;
     try {
       const savedPersona = localStorage.getItem("lingua-tutor-persona");
-      try {
-        const savedNames: unknown = JSON.parse(localStorage.getItem(TUTOR_NAMES_STORAGE) ?? "{}");
-        if (typeof savedNames === "object" && savedNames !== null) {
-          setTutorNames(Object.fromEntries(Object.entries(savedNames).filter(([key, value]) =>
-            key in TUTOR_PERSONAS && typeof value === "string" && value.trim())) as Partial<Record<TutorPersona, string>>);
-        }
-      } catch {}
       if (savedPersona === "maya" || savedPersona === "david" || savedPersona === "alex") {
         setTutorPersona(savedPersona);
         // Never tuned the voice yourself: it follows the tutor character.
@@ -1242,19 +1247,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [section, coursePacks, progress.profile]);
 
-  function personaName(key: TutorPersona): string {
-    return tutorNames[key]?.trim() || TUTOR_PERSONAS[key].name;
-  }
-
-  function updateTutorName(key: TutorPersona, value: string) {
-    setTutorNames((current) => {
-      const next = { ...current, [key]: value.slice(0, 24) };
-      if (!value.trim()) delete next[key];
-      try { localStorage.setItem(TUTOR_NAMES_STORAGE, JSON.stringify(next)); } catch {}
-      return next;
-    });
-  }
-
   function selectProfile(id: string) {
     const nextProfile = profiles.find((item) => item.id === id);
     if (!nextProfile) return;
@@ -1363,7 +1355,7 @@ export default function Home() {
 
   function buildTutorSystemPrompt(): string {
     const persona = TUTOR_PERSONAS[tutorPersona];
-    const name = personaName(tutorPersona);
+    const name = TUTOR_PERSONAS[tutorPersona].name;
     const self = persona.kind === "man" ? "thầy" : persona.kind === "woman" ? "cô" : name;
     const level = COURSE_LEVELS.includes(progress.level as CourseLevel) ? progress.level as CourseLevel : "A2";
     const lesson = tutorLesson();
@@ -1376,7 +1368,7 @@ ${lesson.pronunciation ? `Pronunciation focus: ${lesson.pronunciation.focus} —
 ${lesson.speakingTasks?.length ? `Speaking tasks: ${lesson.speakingTasks.join(" | ")}` : ""}
 Teach THIS lesson. Use its vocabulary and grammar in every situation you create.`
       : `TOPIC: "${profile.title}", scenario: "${profile.scene}".`;
-    return `Your name is "${name}" — always use exactly this name when you introduce yourself. You are an expert, PROACTIVE English teacher (${persona.kind === "mascot" ? "a cheerful little robot" : persona.kind === "man" ? "male" : "female"}) for a Vietnamese learner. In Vietnamese you call yourself "${self}" and the learner "em" (mascot: "mình" and "bạn").
+    return `Your name is "${name}" — always use exactly this name when you introduce yourself. You are an expert, PROACTIVE English teacher (${persona.kind === "mascot" ? "a cute, cheerful little mascot" : persona.kind === "man" ? "male" : "female"}) for a Vietnamese learner. In Vietnamese you call yourself "${self}" and the learner "em" (mascot: "mình" and "bạn").
 Learner: CEFR ${level}, field "${profile.title}".
 ${lessonBlock}
 
@@ -1490,7 +1482,7 @@ RULES:
       if (!current()) return false;
       stopSpeech();
       setMessages(base);
-      setChatError(error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
+      setChatError(friendlyError(error, "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé."));
       lastAiErrorRef.current = error instanceof AiError ? error : null;
       retryTurnRef.current = () => { void tutorTurn(base, apiHistory); };
       return false;
@@ -1662,11 +1654,11 @@ Return ONLY valid JSON: {"transcript":"...","reply":"..."}`,
             },
             { inlineData: audio },
           ], model));
-          const data: unknown = JSON.parse(response.replace(/^```(?:json)?\s*|\s*```$/g, ""));
+          const data = parseAiJson(response, "Gia sư AI trả lời sai định dạng. Bạn vui lòng nói lại câu vừa rồi nhé.");
           if (typeof data !== "object" || data === null || !("transcript" in data) ||
               typeof data.transcript !== "string" || !("reply" in data) ||
               typeof data.reply !== "string" || !data.transcript.trim() || !data.reply.trim()) {
-            throw new Error("Gia sư AI trả lời không đúng định dạng. Vui lòng thử lại.");
+            throw new Error("Gia sư AI trả lời sai định dạng. Bạn vui lòng nói lại câu vừa rồi nhé.");
           }
           if (tutorTurnRef.current !== turn) return;
           const parsed = parseMood(data.reply);
@@ -1684,7 +1676,7 @@ Return ONLY valid JSON: {"transcript":"...","reply":"..."}`,
           void playSpeech(coachMessage);
         } catch (error) {
           if (tutorTurnRef.current !== turn) return;
-          setChatError(error instanceof Error ? error.message : "Gia sư chưa thể xử lý bản ghi. Bạn vui lòng thử lại nhé.");
+          setChatError(friendlyError(error, "Gia sư chưa thể xử lý bản ghi. Bạn vui lòng thử lại nhé."));
         } finally {
           if (tutorTurnRef.current === turn) {
             setChatBusy(false);
@@ -1756,7 +1748,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             },
             { inlineData: audio },
           ], model));
-          const data: unknown = JSON.parse(response.replace(/^```(?:json)?\s*|\s*```$/g, ""));
+          const data = parseAiJson(response, "Chưa đọc được kết quả chấm phát âm. Bạn vui lòng ghi âm lại nhé.");
           if (typeof data !== "object" || data === null || !("score" in data) ||
               typeof data.score !== "number" || !("heard" in data) || typeof data.heard !== "string" ||
               !("feedback" in data) || typeof data.feedback !== "string" ||
@@ -1773,7 +1765,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           setProgress((current) => recordPractice(current, 1, !practiceSessionCounted.current));
           practiceSessionCounted.current = true;
         } catch (error) {
-          setVoiceError(error instanceof Error ? error.message : "Chưa thể đánh giá bản ghi. Bạn vui lòng thử lại nhé.");
+          setVoiceError(friendlyError(error, "Chưa thể đánh giá bản ghi. Bạn vui lòng thử lại nhé."));
         } finally {
           setPronunciationBusy(false);
         }
@@ -2220,7 +2212,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           ))}
           <button type="button" className={voiceProfile.childlike ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile(voiceForTutor("mascot"))}>🧒 Trẻ em</button>
         </div>
-        <small className="settings-hint">Tự đổi theo nhân vật gia sư: Mr. David → nam, Ms. Maya → nữ, Robo → trẻ em. Bạn vẫn có thể chọn lại ở đây.</small>
+        <small className="settings-hint">Tự đổi theo nhân vật gia sư: Mr. David → nam, Ms. Maya → nữ, Nova → trẻ em. Bạn vẫn có thể chọn lại ở đây.</small>
 
         <span className="settings-label">4 · Chọn giọng</span>
         {voiceProfile.engine === "device" ? (
@@ -2683,7 +2675,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <details name="settings-groups" className="settings-group">
           <summary className="settings-group-summary">
             <span className="settings-icon">🎓</span>
-            <span><strong>Gia sư AI đồng hành</strong><small>{personaName(tutorPersona)} · {TUTOR_PERSONAS[tutorPersona]?.title}</small></span>
+            <span><strong>Gia sư AI đồng hành</strong><small>{TUTOR_PERSONAS[tutorPersona].name} · {TUTOR_PERSONAS[tutorPersona]?.title}</small></span>
             <span className="settings-group-chevron" aria-hidden="true">⌄</span>
           </summary>
           <div className="settings-group-content">
@@ -2692,7 +2684,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <span className="settings-icon" aria-hidden="true">🎓</span>
                 <div>
                   <h3>Chọn nhân vật gia sư 3D</h3>
-                  <p>Lựa chọn hình tượng gia sư phù hợp với sở thích của bạn. Giọng đọc tự đổi theo nhân vật: thầy → giọng nam, cô → giọng nữ, Robo → giọng trẻ em.</p>
+                  <p>Lựa chọn hình tượng gia sư phù hợp với sở thích của bạn. Giọng đọc tự đổi theo nhân vật: thầy → giọng nam, cô → giọng nữ, Nova → giọng trẻ em.</p>
                 </div>
               </div>
               <div className="tutor-persona-grid">
@@ -2719,7 +2711,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                       </div>
                       <div className="persona-card-details">
                         <div className="persona-card-top">
-                          <strong>{personaName(pKey)}</strong>
+                          <strong>{TUTOR_PERSONAS[pKey].name}</strong>
                           <span className="persona-card-badge">{persona.badge}</span>
                         </div>
                         <p className="persona-card-tagline">{persona.tagline}</p>
@@ -2732,19 +2724,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   );
                 })}
               </div>
-              <label className="settings-label" htmlFor="tutor-name">Đặt tên cho gia sư đang chọn</label>
-              <div className="tutor-name-row">
-                <input
-                  id="tutor-name"
-                  className="settings-input"
-                  maxLength={24}
-                  value={tutorNames[tutorPersona] ?? ""}
-                  placeholder={TUTOR_PERSONAS[tutorPersona].name}
-                  onChange={(event) => updateTutorName(tutorPersona, event.target.value)}
-                />
-                {tutorNames[tutorPersona] && <button type="button" className="button button-outline" onClick={() => updateTutorName(tutorPersona, "")}>Tên mặc định</button>}
-              </div>
-              <small className="settings-hint">Gia sư sẽ tự giới thiệu và được gọi bằng tên này. Để trống để dùng tên mặc định “{TUTOR_PERSONAS[tutorPersona].name}”. Mỗi nhân vật nhớ tên riêng.</small>
             </section>
           </div>
         </details>
@@ -3025,10 +3004,10 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     const lastTeacherMessage = [...messages].reverse().find((m) => m.role === "assistant" && m.content.trim());
     const waitingForWords = chatBusy && !messages[messages.length - 1]?.content.trim();
     const caption = waitingForWords
-      ? tutorSubtitle || `${personaName(tutorPersona)} đang suy nghĩ…`
+      ? tutorSubtitle || `${TUTOR_PERSONAS[tutorPersona].name} đang suy nghĩ…`
       : voiceChatRecording
       ? "Đang lắng nghe bạn… nói xong thì nhấn nút dừng nhé."
-      : cleanSpeechText(lastTeacherMessage?.content ?? `Hi! I'm ${personaName(tutorPersona)}. ${persona.greeting}`);
+      : cleanSpeechText(lastTeacherMessage?.content ?? `Hi! I'm ${TUTOR_PERSONAS[tutorPersona].name}. ${persona.greeting}`);
     const waitNote = waitingForWords
       ? <span className="cr-wait">💭 Đang chờ AI trả lời <WaitDots /></span>
       : null;
@@ -3041,7 +3020,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <div className={`cr-connect-avatar${checking ? " waiting" : ""}`}>
             <TutorAvatar kind={persona.kind} status={checking ? "thinking" : "idle"} emotion={checking ? undefined : "neutral"} size={150} />
           </div>
-          <h2>{checking ? `Đang gọi ${personaName(tutorPersona)} vào lớp…` : "Chưa kết nối được với gia sư AI"}</h2>
+          <h2>{checking ? `Đang gọi ${TUTOR_PERSONAS[tutorPersona].name} vào lớp…` : "Chưa kết nối được với gia sư AI"}</h2>
           <p className={checking ? "cr-connect-note" : "error-message"} role={checking ? "status" : "alert"}>
             {connection.message || "Đang kiểm tra API key và mô hình…"}
           </p>
@@ -3067,7 +3046,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       <div className="cr">
         <section className="cr-stage" aria-label="Lớp học với gia sư AI">
           <div className="cr-stage-top">
-            <span className="cr-chip cr-chip-live"><i /> {personaName(tutorPersona)}</span>
+            <span className="cr-chip cr-chip-live"><i /> {TUTOR_PERSONAS[tutorPersona].name}</span>
             <span className="cr-chip cr-chip-level" title="Trình độ đang học">{progress.level}</span>
             {aiLevelEstimate && <span className="cr-chip" title="Trình độ AI ước lượng qua cuộc hội thoại">AI đánh giá: {aiLevelEstimate}</span>}
           </div>
@@ -3380,7 +3359,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         <span className="eyebrow">TEACHER AI · GIA SƯ TIẾNG ANH CỦA BẠN</span>
         <h1>Xin chào! Cùng nói tiếng Anh tự tin hơn nhé.</h1>
         <p className="wz-lead">
-          Mỗi ngày một chút. Học bài bản theo giáo trình, hoặc trò chuyện với {personaName(tutorPersona)} — người sẽ chủ động dẫn dắt bạn qua từng tình huống phù hợp với trình độ của bạn.
+          Mỗi ngày một chút. Học bài bản theo giáo trình, hoặc trò chuyện với {TUTOR_PERSONAS[tutorPersona].name} — người sẽ chủ động dẫn dắt bạn qua từng tình huống phù hợp với trình độ của bạn.
         </p>
         <ol className="wz-steps" aria-label="3 bước học">
           <li><b>1</b> Chọn bài học</li>

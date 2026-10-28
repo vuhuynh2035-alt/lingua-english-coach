@@ -394,3 +394,47 @@ export async function checkConnection(options: FailoverOptions): Promise<Connect
     return { ok: false, error: classifyError(error) };
   }
 }
+
+/** Raw line breaks and other control characters inside JSON strings, escaped. */
+function escapeControlCharsInStrings(json: string): string {
+  let out = "";
+  let inString = false;
+  let escaped = false;
+  for (const char of json) {
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (char === "\\") {
+        escaped = true;
+      } else if (char === '"') {
+        inString = false;
+      } else if (char < " ") {
+        out += char === "\n" ? "\\n" : char === "\r" ? "\\r" : char === "\t" ? "\\t" : "";
+        continue;
+      }
+    } else if (char === '"') {
+      inString = true;
+    }
+    out += char;
+  }
+  return out;
+}
+
+/**
+ * Reads the JSON object an AI was asked to return. Models sometimes wrap it in ``` fences,
+ * add text around it, or put raw line breaks inside strings; all of that is tolerated.
+ * Throws a learner-friendly error when nothing usable is there.
+ */
+export function parseAiJson(text: string, friendlyError: string): unknown {
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start >= 0 && end > start) {
+    const body = text.slice(start, end + 1);
+    for (const candidate of [body, escapeControlCharsInStrings(body)]) {
+      try {
+        return JSON.parse(candidate);
+      } catch {}
+    }
+  }
+  throw new AiError("other", friendlyError);
+}
