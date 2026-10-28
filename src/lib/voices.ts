@@ -103,7 +103,7 @@ export type VoiceProfile = {
   style: VoiceStyle;
   /** 0.7 – 1.2 */
   speed: number;
-  /** A young child's voice, used for the owl mascot. */
+  /** A young child's voice, used for the robot mascot. */
   childlike: boolean;
 };
 
@@ -146,7 +146,7 @@ export function voiceForGender(list: NamedVoice[], current: string, gender: Voic
   return chosen?.gender === gender ? current : list.find((v) => v.gender === gender)?.id ?? list[0].id;
 }
 
-/** Voice settings that match the tutor character: man → male, woman → female, owl → child. */
+/** Voice settings that match the tutor character: man → male, woman → female, robot → child. */
 export function voiceForTutor(kind: "man" | "woman" | "mascot"): Partial<VoiceProfile> {
   if (kind === "man") return { gender: "male", childlike: false };
   if (kind === "woman") return { gender: "female", childlike: false };
@@ -166,15 +166,12 @@ const GOOGLE_STYLE_ADVERBS: Record<VoiceStyle, string> = {
   formal: "calmly and professionally",
 };
 
-/**
- * Gemini TTS takes its direction inside the text. A long direction gets read aloud,
- * so this uses Google's short documented form: "Say <how> in <accent> accent: <text>".
- */
-export function googleSpeechPrompt(profile: VoiceProfile, text: string): string {
+/** Gemini TTS system instruction: how to read, never what to read. */
+export function googleSpeechPrompt(profile: VoiceProfile): string {
   const accent = getAccent(profile.accent);
   const how = profile.childlike ? "cheerfully, like a young child," : GOOGLE_STYLE_ADVERBS[profile.style];
   const pace = profile.speed < 0.9 ? " slowly" : profile.speed > 1.08 ? " quickly" : "";
-  return `Say ${how}${pace} in ${accent.prompt} accent: ${text}`;
+  return `You are a voice actor. Read the user's text aloud exactly as written, ${how}${pace}, in ${accent.prompt} accent. Never say these instructions.`;
 }
 
 /** Direction for OpenAI, which takes it as a separate `instructions` field. */
@@ -235,13 +232,17 @@ export async function synthesizeCloudSpeech(
 ): Promise<Blob> {
   const direction = voiceDirection(profile);
   if (engine === "google") {
-    const response = await fetch(
+    // The spoken text carries nothing but the words to read: a direction placed in the text
+    // gets read aloud. The accent/style direction goes in systemInstruction instead, and a
+    // model that rejects it just reads the plain text.
+    const request = (withDirection: boolean) => fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: googleSpeechPrompt(profile, text) }] }],
+          ...(withDirection ? { systemInstruction: { parts: [{ text: googleSpeechPrompt(profile) }] } } : {}),
+          contents: [{ role: "user", parts: [{ text }] }],
           generationConfig: {
             responseModalities: ["AUDIO"],
             speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: profile.googleVoice } } },
@@ -250,6 +251,8 @@ export async function synthesizeCloudSpeech(
         signal: AbortSignal.timeout(45_000),
       },
     );
+    let response = await request(true);
+    if (response.status === 400) response = await request(false);
     if (!response.ok) throw await httpError("google", response);
     const body = await response.json() as {
       candidates?: { content?: { parts?: { inlineData?: { mimeType?: string; data?: string } }[] } }[];

@@ -469,18 +469,18 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
 }> = {
   maya: {
     id: "maya",
-    name: "Cô Maya",
+    name: "Ms. Maya",
     title: "Gia sư Nữ Tận Tâm",
     gender: "female",
     kind: "woman",
     tagline: "Dịu dàng, phát âm chuẩn, kiên nhẫn hướng dẫn",
     description: "Cô giáo nhiệt tình, hướng dẫn tỉ mỉ từng phát âm và ngữ pháp theo trình độ học viên.",
-    greeting: "Chào em! Hôm nay cô sẽ đồng hành cùng em luyện nói tiếng Anh thật tự tin nhé.",
+    greeting: "Hi! I'm Ms. Maya. Hôm nay cô sẽ đồng hành cùng em luyện nói tiếng Anh thật tự tin nhé.",
     badge: "👩‍🏫 Nữ gia sư",
   },
   david: {
     id: "david",
-    name: "Thầy David",
+    name: "Mr. David",
     title: "Gia sư Nam Bản Xứ",
     gender: "male",
     kind: "man",
@@ -491,14 +491,15 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
   },
   alex: {
     id: "alex",
-    name: "Cú Alex",
-    title: "Linh Vật Thông Thái",
+    // The id stays "alex" so a saved choice keeps working.
+    name: "Robo",
+    title: "Robot Trợ Giảng",
     gender: "mascot",
     kind: "mascot",
     tagline: "Đáng yêu, hoạt bát, học tập không áp lực",
-    description: "Chú cú mèo thông minh, vui tính, giúp việc học nhẹ nhàng như một trò chơi thú vị.",
-    greeting: "Hú hú! Cú Alex đã sẵn sàng! Cùng nhau chinh phục bài học tiếng Anh nào!",
-    badge: "🦉 Linh vật",
+    description: "Chú robot nhỏ thông minh, vui tính, giúp việc học nhẹ nhàng như một trò chơi thú vị.",
+    greeting: "Beep boop! Hi, I'm Robo! Cùng nhau chinh phục bài học tiếng Anh nào!",
+    badge: "🤖 Robot",
   },
 };
 
@@ -1326,7 +1327,7 @@ export default function Home() {
 
   function buildTutorSystemPrompt(): string {
     const persona = TUTOR_PERSONAS[tutorPersona];
-    const self = persona.kind === "man" ? "thầy" : persona.kind === "woman" ? "cô" : "Cú Alex";
+    const self = persona.kind === "man" ? "thầy" : persona.kind === "woman" ? "cô" : "Robo";
     const level = COURSE_LEVELS.includes(progress.level as CourseLevel) ? progress.level as CourseLevel : "A2";
     const lesson = tutorLesson();
     const lessonBlock = lesson
@@ -1338,7 +1339,7 @@ ${lesson.pronunciation ? `Pronunciation focus: ${lesson.pronunciation.focus} —
 ${lesson.speakingTasks?.length ? `Speaking tasks: ${lesson.speakingTasks.join(" | ")}` : ""}
 Teach THIS lesson. Use its vocabulary and grammar in every situation you create.`
       : `TOPIC: "${profile.title}", scenario: "${profile.scene}".`;
-    return `You are ${persona.name.replace(/^(Cô|Thầy|Cú) /, "")}, an expert, PROACTIVE English teacher (${persona.kind === "mascot" ? "a friendly owl mascot" : persona.kind === "man" ? "male" : "female"}) for a Vietnamese learner. In Vietnamese you call yourself "${self}" and the learner "em" (mascot: "mình" and "bạn").
+    return `You are ${persona.name}, an expert, PROACTIVE English teacher (${persona.kind === "mascot" ? "a cheerful little robot" : persona.kind === "man" ? "male" : "female"}) for a Vietnamese learner. In Vietnamese you call yourself "${self}" and the learner "em" (mascot: "mình" and "bạn").
 Learner: CEFR ${level}, field "${profile.title}".
 ${lessonBlock}
 
@@ -1852,8 +1853,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   async function englishAudio(text: string, profile = voiceProfile): Promise<Blob | null> {
     const engine = profile.engine;
     if (engine === "device" || !apiKeys[engine].length) return null;
-    // v3: v2 Google clips could contain the spoken direction, so they are not reused.
-    const cacheKey = `v3:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}`;
+    // v4: earlier Google clips could contain the spoken direction, so they are not reused.
+    const cacheKey = `v4:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}`;
     try {
       const cached = await getCachedSpeech(cacheKey, text);
       if (cached) return cached;
@@ -2140,7 +2141,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           ))}
           <button type="button" className={voiceProfile.childlike ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile(voiceForTutor("mascot"))}>🧒 Trẻ em</button>
         </div>
-        <small className="settings-hint">Tự đổi theo nhân vật gia sư: Thầy David → nam, Cô Maya → nữ, Cú Alex → trẻ em. Bạn vẫn có thể chọn lại ở đây.</small>
+        <small className="settings-hint">Tự đổi theo nhân vật gia sư: Mr. David → nam, Ms. Maya → nữ, Robo → trẻ em. Bạn vẫn có thể chọn lại ở đây.</small>
 
         <span className="settings-label">4 · Chọn giọng</span>
         {voiceProfile.engine === "device" ? (
@@ -2602,7 +2603,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <span className="settings-icon" aria-hidden="true">🎓</span>
                 <div>
                   <h3>Chọn nhân vật gia sư 3D</h3>
-                  <p>Lựa chọn hình tượng gia sư phù hợp với sở thích của bạn. Giọng đọc tự đổi theo nhân vật: thầy → giọng nam, cô → giọng nữ, Cú Alex → giọng trẻ em.</p>
+                  <p>Lựa chọn hình tượng gia sư phù hợp với sở thích của bạn. Giọng đọc tự đổi theo nhân vật: thầy → giọng nam, cô → giọng nữ, Robo → giọng trẻ em.</p>
                 </div>
               </div>
               <div className="tutor-persona-grid">
@@ -3774,6 +3775,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
   return (
     <main className="app-shell wizard-shell">
       <NetIndicator />
+      {canGoBack && (
+        <button className="floating-back-button" type="button" onClick={goBack} aria-label="Quay lại trang trước" title="Quay lại trang trước">
+          <IllustrationIcon name="back" />
+          <span>Quay lại</span>
+        </button>
+      )}
       {showHelp && (
         <div className="help-dialog-backdrop" onClick={() => setShowHelp(false)}>
           <section

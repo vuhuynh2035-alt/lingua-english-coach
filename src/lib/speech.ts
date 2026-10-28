@@ -259,6 +259,21 @@ export function extractEnglishPracticePhrases(text: string): string[] {
  * Cleans all markdown formatting and asterisks (*) so TTS plays each segment cleanly
  * with the appropriate native voice.
  */
+/**
+ * Vietnamese when at least 30% of the words carry Vietnamese diacritics. A short phrase
+ * without them (a label like "Senior Manager") stays Vietnamese outside quotes, to keep the
+ * Vietnamese flow; inside quotes it is an English sample.
+ */
+function sentenceLanguage(sentence: string, quoted: boolean): "vi" | "en" {
+  const words = sentence.split(/\s+/).filter((word) => /\p{L}/u.test(word));
+  if (!words.length) return "vi";
+  const vietnamese = words.filter((word) => VIETNAMESE_DIACRITICS_REGEX.test(word)).length;
+  if (vietnamese === 0) {
+    return quoted || words.length >= 3 || /[.?!]$/.test(sentence) ? "en" : "vi";
+  }
+  return vietnamese / words.length >= 0.3 ? "vi" : "en";
+}
+
 export function splitBilingualText(text: string): SpeechSegment[] {
   const trimmed = text.trim();
   if (!trimmed) return [];
@@ -275,8 +290,9 @@ export function splitBilingualText(text: string): SpeechSegment[] {
     return cleaned ? [{ text: cleaned, lang: "vi" }] : [];
   }
 
-  // Split tokens by quoted sections (which are typically dialogue/examples)
-  const tokens = trimmed.split(/(\*?["“\`'][^"”\`']+["”\`']\*?)/);
+  // Split tokens by quoted sections (dialogue/examples). Only double quotes and backticks:
+  // a single quote is usually an apostrophe ("Today's") and would break the split.
+  const tokens = trimmed.split(/(\*?["“`][^"”`]+["”`]\*?)/);
   const rawSegments: SpeechSegment[] = [];
 
   for (const token of tokens) {
@@ -284,35 +300,19 @@ export function splitBilingualText(text: string): SpeechSegment[] {
     if (!s) continue;
 
     // Quoted section
-    if (/^(\*?["“\`'].*["”\`']\*?)$/.test(s)) {
-      const inner = cleanSpeechText(s).replace(/^["“'\`](.*)["”'\`]$/, "$1").trim();
+    if (/^(\*?["“`].*["”`]\*?)$/.test(s)) {
+      const inner = cleanSpeechText(s).replace(/^["“`](.*)["”`]$/, "$1").trim();
       if (!inner) continue;
-      const isVi = VIETNAMESE_DIACRITICS_REGEX.test(inner);
-      const isEnSample = !isVi && /[a-zA-Z]{2,}/.test(inner) && (inner.split(/\s+/).length >= 2 || inner.length > 8);
-      rawSegments.push({ text: inner, lang: isEnSample ? "en" : "vi" });
+      rawSegments.push({ text: inner, lang: sentenceLanguage(inner, true) });
       continue;
     }
 
-    // Unquoted text: split by lines/clauses
-    const lines = s.split(/(\n+)/);
-    for (const line of lines) {
-      if (!line.trim()) continue;
-      const cleaned = cleanSpeechText(line);
+    // Unquoted text: judge each sentence on its own, so an English sentence that mentions a
+    // Vietnamese name ("I am Cô Maya") is still read by the English voice.
+    for (const sentence of s.split(/\n+|(?<=[.!?…])\s+/)) {
+      const cleaned = cleanSpeechText(sentence);
       if (!cleaned) continue;
-
-      const isVi = VIETNAMESE_DIACRITICS_REGEX.test(cleaned);
-      if (isVi) {
-        rawSegments.push({ text: cleaned, lang: "vi" });
-      } else {
-        const words = cleaned.split(/\s+/).filter(Boolean);
-        if (words.length >= 4 || /[.?!]$/.test(cleaned)) {
-          rawSegments.push({ text: cleaned, lang: "en" });
-        } else {
-          // Short label or role term inside Vietnamese context (e.g. Senior Manager, Maya (Manager):)
-          // read as Vietnamese to maintain smooth flow
-          rawSegments.push({ text: cleaned, lang: "vi" });
-        }
-      }
+      rawSegments.push({ text: cleaned, lang: sentenceLanguage(cleaned, false) });
     }
   }
 

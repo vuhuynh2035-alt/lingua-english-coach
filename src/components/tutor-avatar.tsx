@@ -35,11 +35,6 @@ function Defs({ id }: { id: string }) {
         <stop offset="0" stopColor="#8a5a34" />
         <stop offset="1" stopColor="#2e1a0d" />
       </radialGradient>
-      <radialGradient id={`${id}-owliris`} cx="45%" cy="40%" r="65%">
-        <stop offset="0" stopColor="#ffd25a" />
-        <stop offset="0.7" stopColor="#f59e0b" />
-        <stop offset="1" stopColor="#a8560f" />
-      </radialGradient>
       <linearGradient id={`${id}-hairW`} x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stopColor="#6b4129" />
         <stop offset="1" stopColor="#2a160b" />
@@ -56,23 +51,24 @@ function Defs({ id }: { id: string }) {
         <stop offset="0" stopColor="#4f7bd6" />
         <stop offset="1" stopColor="#18327a" />
       </linearGradient>
-      <radialGradient id={`${id}-owl`} cx="40%" cy="28%" r="85%">
-        <stop offset="0" stopColor="#ffcf7a" />
-        <stop offset="0.55" stopColor="#ea9530" />
-        <stop offset="1" stopColor="#a8561a" />
+      <radialGradient id={`${id}-shell`} cx="38%" cy="28%" r="80%">
+        <stop offset="0" stopColor="#ffffff" />
+        <stop offset="0.6" stopColor="#eef2f6" />
+        <stop offset="1" stopColor="#b8c3ce" />
       </radialGradient>
-      <radialGradient id={`${id}-disc`} cx="50%" cy="40%" r="70%">
-        <stop offset="0" stopColor="#fff6e2" />
-        <stop offset="1" stopColor="#f6d9a4" />
+      <radialGradient id={`${id}-visor`} cx="45%" cy="35%" r="75%">
+        <stop offset="0" stopColor="#25303f" />
+        <stop offset="1" stopColor="#04060a" />
       </radialGradient>
-      <radialGradient id={`${id}-belly`} cx="50%" cy="35%" r="70%">
-        <stop offset="0" stopColor="#fffdf3" />
-        <stop offset="1" stopColor="#f7e2b0" />
+      <radialGradient id={`${id}-led`} cx="50%" cy="45%" r="60%">
+        <stop offset="0" stopColor="#e8fdff" />
+        <stop offset="0.45" stopColor="#7cf2ff" />
+        <stop offset="1" stopColor="#13b5f0" />
       </radialGradient>
-      <linearGradient id={`${id}-beak`} x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stopColor="#ffb547" />
-        <stop offset="1" stopColor="#e2741a" />
-      </linearGradient>
+      <filter id={`${id}-glow`} x="-60%" y="-60%" width="220%" height="220%">
+        <feGaussianBlur stdDeviation="2.4" result="blur" />
+        <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+      </filter>
     </defs>
   );
 }
@@ -193,61 +189,60 @@ function Human({ id, kind, emotion, talking }: { id: string; kind: "woman" | "ma
   );
 }
 
-function Owl({ id, emotion }: { id: string; emotion: AvatarEmotion }) {
-  const brows = browParams(emotion);
-  // Only a thinking owl narrows its eyes; happy owls keep them wide open.
-  const rest = emotion === "thinking" ? 0.3 : 0;
-  const feather = "#e08a2c";
+/**
+ * Robo: a floating white robot with a dark glass visor and glowing LED eyes. It has no
+ * mouth; while it talks, an LED equaliser under the eyes follows the voice (--mouth).
+ */
+function RobotEye({ id, cx, emotion, side }: { id: string; cx: number; emotion: AvatarEmotion; side: "l" | "r" }) {
+  const tilt = side === "l" ? -12 : 12;
+  if (emotion === "happy" || emotion === "cheer") {
+    // Smiling eyes: glowing upside-down arcs.
+    return (
+      <g className="av-iris av-robot-eye" filter={`url(#${id}-glow)`}>
+        <path d={`M${cx - 12} 88 Q${cx} 72 ${cx + 12} 88`} fill="none" stroke="#7cf2ff" strokeWidth="6.5" strokeLinecap="round" />
+      </g>
+    );
+  }
+  const ry = emotion === "surprised" ? 12 : emotion === "thinking" && side === "r" ? 5 : 9;
+  const rx = emotion === "surprised" ? 12 : 13;
+  return (
+    <g className="av-iris av-robot-eye" filter={`url(#${id}-glow)`}>
+      <ellipse cx={cx} cy={84} rx={rx} ry={ry} fill={`url(#${id}-led)`} transform={`rotate(${emotion === "surprised" ? 0 : tilt} ${cx} 84)`} />
+    </g>
+  );
+}
+
+function Robot({ id, emotion }: { id: string; emotion: AvatarEmotion }) {
   return (
     <g>
-      {/* wings */}
-      <path d="M30 148 C6 172 12 218 48 230 C58 202 54 170 42 146Z" fill={`url(#${id}-owl)`} className="av-wing av-wing-l" />
-      <path d="M170 148 C194 172 188 218 152 230 C142 202 146 170 158 146Z" fill={`url(#${id}-owl)`} className="av-wing av-wing-r" />
-      {/* body */}
+      {/* arms float beside the body */}
+      <path d="M44 150 C30 160 28 196 40 214 C48 220 56 214 56 204 L58 158 C57 148 50 146 44 150Z" fill={`url(#${id}-shell)`} stroke="#c9d3dd" strokeWidth="1" className="av-wing av-wing-l" />
+      <path d="M156 150 C170 160 172 196 160 214 C152 220 144 214 144 204 L142 158 C143 148 150 146 156 150Z" fill={`url(#${id}-shell)`} stroke="#c9d3dd" strokeWidth="1" className="av-wing av-wing-r" />
+      {/* body: an egg that tapers to a point, hovering */}
       <g className="av-body">
-        <ellipse cx="100" cy="176" rx="60" ry="62" fill={`url(#${id}-owl)`} />
-        <ellipse cx="100" cy="188" rx="40" ry="46" fill={`url(#${id}-belly)`} />
-        {[0, 1, 2].map((row) => [0, 1, 2].map((col) => (
-          <path key={`${row}${col}`} d={`M${80 + col * 20 - (row % 2) * 10} ${168 + row * 16} q6 8 12 0`} fill="none" stroke="#e4b97a" strokeWidth="2.2" strokeLinecap="round" />
-        )))}
+        <path d="M100 142 C138 142 150 172 142 204 C134 232 114 246 100 248 C86 246 66 232 58 204 C50 172 62 142 100 142Z" fill={`url(#${id}-shell)`} stroke="#c9d3dd" strokeWidth="1" />
+        <path d="M70 158 C80 150 92 148 100 148" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity=".9" />
+        <path d="M64 176 Q100 186 136 176" fill="none" stroke="#d3dce5" strokeWidth="1.5" />
       </g>
       <g className="av-head">
-        {/* ear tufts */}
-        <path d="M46 66 L30 18 L78 46Z" fill={`url(#${id}-owl)`} className="av-tuft av-tuft-l" />
-        <path d="M154 66 L170 18 L122 46Z" fill={`url(#${id}-owl)`} className="av-tuft av-tuft-r" />
-        {/* head */}
-        <ellipse cx="100" cy="96" rx="66" ry="60" fill={`url(#${id}-owl)`} />
-        <path d="M70 40 C88 30 112 30 130 42" fill="none" stroke="#ffffff55" strokeWidth="4" strokeLinecap="round" />
-        {/* facial disc: the heart-shaped face of an owl */}
-        <path d="M100 66 C86 46 42 48 40 92 C38 128 76 140 100 128 C124 140 162 128 160 92 C158 48 114 46 100 66Z" fill={`url(#${id}-disc)`} />
-        <path d="M100 66 L100 104" stroke="#e9c48a" strokeWidth="2" />
-        {/* brows (feather ridges) */}
-        <path d="M46 72 Q68 58 94 72" fill="none" stroke="#9a4f16" strokeWidth="5" strokeLinecap="round"
-          style={{ transform: `translateY(${brows.ly}px) rotate(${brows.lr}deg)`, transformOrigin: "70px 68px" }} className="av-brow" />
-        <path d="M106 72 Q132 58 154 72" fill="none" stroke="#9a4f16" strokeWidth="5" strokeLinecap="round"
-          style={{ transform: `translateY(${brows.ry}px) rotate(${brows.rr}deg)`, transformOrigin: "130px 68px" }} className="av-brow" />
-        <Eye id={id} name="l" cx={71} cy={94} rx={21} ry={21} iris={13} irisFill={`url(#${id}-owliris)`} lid={feather} rest={rest} />
-        <Eye id={id} name="r" cx={129} cy={94} rx={21} ry={21} iris={13} irisFill={`url(#${id}-owliris)`} lid={feather} rest={rest} />
-        {/* beak: the lower half drops with the voice, showing a dark mouth between the halves */}
-        <ellipse className="av-mouth-cavity" cx="100" cy="125" rx="10.5" ry="9" fill="#4a1508" />
-        <ellipse className="av-mouth-cavity" cx="100" cy="131" rx="6" ry="3" fill="#e0707f" />
-        <path className="av-beak-low" d="M90 121 Q100 118 110 121 Q107 131 100 134 Q93 131 90 121Z" fill="#d9661a" stroke="#a9480c" strokeWidth="1.2" strokeLinejoin="round" />
-        <path d="M85 106 Q100 97 115 106 Q114 118 100 127 Q86 118 85 106Z" fill={`url(#${id}-beak)`} stroke="#a9480c" strokeWidth="1.4" strokeLinejoin="round" />
-        <path d="M91 107 Q100 102 109 107" fill="none" stroke="#fff" strokeOpacity=".65" strokeWidth="2.4" strokeLinecap="round" />
-        <circle cx="95" cy="106" r="1.3" fill="#7a3409" /><circle cx="105" cy="106" r="1.3" fill="#7a3409" />
-        {(emotion === "happy" || emotion === "cheer") && (
-          <><ellipse cx="50" cy="118" rx="9" ry="5.5" fill="#ff7a8a" opacity=".45" /><ellipse cx="150" cy="118" rx="9" ry="5.5" fill="#ff7a8a" opacity=".45" /></>
-        )}
-        {/* cap */}
-        <g className="av-cap">
-          <path d="M46 46 L100 22 L154 46 L100 70Z" fill="#26324a" />
-          <path d="M72 56 V72 Q100 86 128 72 V56 L100 70Z" fill="#1a2336" />
-          <path d="M154 46 V74" stroke="#f6c23e" strokeWidth="3" strokeLinecap="round" />
-          <circle cx="154" cy="78" r="5" fill="#f6c23e" className="av-tassel" />
-          <circle cx="100" cy="45" r="4" fill="#f6c23e" />
+        {/* head shell */}
+        <ellipse cx="100" cy="80" rx="64" ry="56" fill={`url(#${id}-shell)`} stroke="#c9d3dd" strokeWidth="1" />
+        <path d="M58 46 C74 30 104 26 128 36" fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" opacity=".95" />
+        {/* dark glass visor */}
+        <ellipse cx="100" cy="88" rx="50" ry="34" fill={`url(#${id}-visor)`} />
+        <path d="M62 78 C72 62 98 58 118 62" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" opacity=".18" />
+        <RobotEye id={id} cx={78} emotion={emotion} side="l" />
+        <RobotEye id={id} cx={122} emotion={emotion} side="r" />
+        {/* LED equaliser: its bars follow the voice */}
+        <g fill="#5fe6ff" filter={`url(#${id}-glow)`}>
+          {[-16, -8, 0, 8, 16].map((dx, index) => (
+            <rect key={dx} className={`av-eq av-eq-${index}`} x={100 + dx - 2.5} y={100} width="5" height="14" rx="2.5" />
+          ))}
         </g>
+        {(emotion === "happy" || emotion === "cheer") && (
+          <><ellipse cx="54" cy="104" rx="8" ry="4.5" fill="#ff8aa0" opacity=".35" /><ellipse cx="146" cy="104" rx="8" ry="4.5" fill="#ff8aa0" opacity=".35" /></>
+        )}
       </g>
-      <path d="M80 236 l-6 9 M90 238 l-3 9 M110 238 l3 9 M120 236 l6 9" stroke="#e08a1a" strokeWidth="5" strokeLinecap="round" />
     </g>
   );
 }
@@ -343,7 +338,7 @@ export function TutorAvatar({ kind, status = "idle", emotion, size = 120, intera
     };
   }, [interactive]);
 
-  const label = kind === "woman" ? "Cô giáo AI" : kind === "man" ? "Thầy giáo AI" : "Cú Alex";
+  const label = kind === "woman" ? "Cô giáo AI" : kind === "man" ? "Thầy giáo AI" : "Robot Robo";
   return (
     <div
       ref={stageRef}
@@ -358,7 +353,7 @@ export function TutorAvatar({ kind, status = "idle", emotion, size = 120, intera
         <svg viewBox="0 0 200 250" width={size} height={size * 1.2} className="av-svg">
           <Defs id={id} />
           {kind === "mascot"
-            ? <Owl id={id} emotion={resolved} />
+            ? <Robot id={id} emotion={resolved} />
             : <Human id={id} kind={kind} emotion={resolved} talking={talking} />}
         </svg>
       </div>

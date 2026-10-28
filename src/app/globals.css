@@ -367,7 +367,6 @@ button:focus-visible, input:focus-visible { outline: 3px solid #afa2fa; outline-
   }
   .art-card { display: none; }
   .site-footer { display: none; }
-  .floating-back-button { display: none !important; }
   .mobile-nav {
     position: fixed;
     z-index: 25;
@@ -1965,7 +1964,7 @@ html[data-theme] .mobile-nav-item.selected small { color: var(--theme-primary); 
 }
 
 /* ===== Wizard shell: one page per step, no sidebar ===== */
-.sidebar, .mobile-nav, .floating-back-button { display: none !important; }
+.sidebar, .mobile-nav { display: none !important; }
 .main-content { margin-left: 0; width: 100%; max-width: 100%; }
 .wz-topbar { height: 60px; padding: 0 clamp(12px, 3vw, 32px); gap: 10px; position: sticky; top: 0; z-index: 20; }
 .wz-topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
@@ -2209,3 +2208,25 @@ html[data-theme="blue"] .wz-crumb { opacity: .92; }
 .cr-wait { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; color: var(--muted); font-size: .875rem; font-weight: 700; }
 .net-elapsed { padding: 1px 6px; border-radius: 999px; background: var(--paper); font-variant-numeric: tabular-nums; }
 @media (prefers-reduced-motion: reduce) { .net-bar::before, .net-dot { animation: none; } }
+
+/* Edge "back" tab: always within thumb reach, so going back never needs scrolling up. */
+.floating-back-button { width: 30px; height: 110px; z-index: 40; opacity: .85; }
+.floating-back-button span { font-size: .75rem; }
+.floating-back-button:hover:not(:disabled) { width: 36px; }
+
+/* ===== Robot: blink squashes the LED eyes; the equaliser follows the voice ===== */
+.av-robot-eye { transform-box: fill-box; transform-origin: center;
+  transform: translate(calc(var(--look-x, 0) * 1.6px), calc(var(--look-y, 0) * 1.2px)) scaleY(calc(1 - var(--lid, 0) * 0.9)); }
+.av-eq { transform-box: fill-box; transform-origin: 50% 50%; transform: scaleY(calc(0.22 + var(--mouth, 0) * var(--eq-k, 1))); opacity: calc(0.35 + var(--mouth, 0) * 0.65); }
+.av-eq-0, .av-eq-4 { --eq-k: .45; }
+.av-eq-1, .av-eq-3 { --eq-k: .8; }
+.av-eq-2 { --eq-k: 1.05; }
+.av-mascot .av-glow { background: radial-gradient(circle, #9be9ff66 0%, #ffffff00 70%); }
+.av-mascot.av-status-speaking .av-robot-eye { filter: brightness(calc(1 + var(--mouth, 0) * .5)); }
+
+/* Back tab: thin and see-through so it never hides lesson content. */
+.floating-back-button { width: 14px; height: 84px; border: 0; border-radius: 0 10px 10px 0; color: #ffffff; background: #0f172a2e; box-shadow: none; opacity: .7; -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.floating-back-button span { display: none; }
+.floating-back-button::before { content: "‹"; font-size: 1.25rem; font-weight: 800; line-height: 1; color: #fff; text-shadow: 0 1px 3px #0006; }
+.floating-back-button:hover:not(:disabled), .floating-back-button:focus-visible { width: 22px; opacity: .95; background: #0f172a55; transform: translateY(-50%); }
+html[data-theme] .floating-back-button { color: #fff; background: #0f172a2e; border: 0; }
