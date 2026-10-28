@@ -48,6 +48,7 @@ import {
 } from "@/lib/voices";
 import {
   AiError,
+  ChatMessage,
   ConnectionReport,
   checkConnection,
   isChatModel,
@@ -180,6 +181,9 @@ const AI_SETTINGS_STORAGE = "lingua-ai-settings";
 const FONT_SCALE_STORAGE = "lingua-font-scale";
 const APP_THEME_STORAGE = "lingua-app-theme";
 const VOICE_PROFILE_STORAGE = "lingua-voice-profile-v1";
+const RECORDING_PREFS_STORAGE = "lingua-recording-prefs";
+type RecordingPrefs = { highQuality: boolean; noiseSuppression: boolean };
+const DEFAULT_RECORDING_PREFS: RecordingPrefs = { highQuality: true, noiseSuppression: true };
 const GOOGLE_MODELS_STORAGE = "lingua-google-models";
 /** 0.05 s of silence, played inside a tap so phones allow later AI audio. */
 const SILENT_WAV = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAACAgICA";
@@ -677,6 +681,13 @@ const LEVEL_PEDAGOGY: Record<CourseLevel, string> = {
 - Correct accuracy and naturalness, including better word choices and more sophisticated phrasing.`,
 };
 
+/** Voice replies start with "HEARD: <what the learner said>" on its own line. */
+function splitHeard(text: string): { heard: string; reply: string } | null {
+  const match = /^\s*\[?HEARD\]?\s*:?\s*([^\n]*?)\s*\n/i.exec(text);
+  if (!match) return null;
+  return { heard: match[1].replace(/^["“]|["”]$/g, "").trim() || "🎤 (không nghe rõ)", reply: text.slice(match[0].length) };
+}
+
 /**
  * An error message a learner can understand. App errors are already in Vietnamese; raw
  * browser/parser errors (in English) get a plain explanation, with the original kept short.
@@ -764,6 +775,7 @@ export default function Home() {
   const [speechError, setSpeechError] = useState("");
   const [speechNotice, setSpeechNotice] = useState("");
   const [voiceProfile, setVoiceProfile] = useState<VoiceProfile>(DEFAULT_VOICE_PROFILE);
+  const [recordingPrefs, setRecordingPrefs] = useState<RecordingPrefs>(DEFAULT_RECORDING_PREFS);
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [draft, setDraft] = useState("");
   const [connection, setConnection] = useState<{ status: "idle" | "checking" | "ok" | "error"; message: string; ms?: number; details?: string[] }>({ status: "idle", message: "" });
@@ -773,6 +785,8 @@ export default function Home() {
   const [tutorLessonId, setTutorLessonId] = useState("");
   const [aiLevelEstimate, setAiLevelEstimate] = useState<CourseLevel | null>(null);
   const [chatBusy, setChatBusy] = useState(false);
+  /** What the current wait is for, so its notice says the truth (sending a recording is not downloading). */
+  const [waitKind, setWaitKind] = useState<"text" | "voice">("text");
   const [chatError, setChatError] = useState("");
   const [voiceChatRecording, setVoiceChatRecording] = useState(false);
   const [recording, setRecording] = useState(false);
@@ -885,6 +899,16 @@ export default function Home() {
     try {
       const savedVoiceProfile = localStorage.getItem(VOICE_PROFILE_STORAGE);
       if (savedVoiceProfile) setVoiceProfile(parseVoiceProfile(JSON.parse(savedVoiceProfile)));
+    } catch {}
+    try {
+      const saved: unknown = JSON.parse(localStorage.getItem(RECORDING_PREFS_STORAGE) ?? "null");
+      if (typeof saved === "object" && saved !== null) {
+        const value = saved as Partial<RecordingPrefs>;
+        setRecordingPrefs({
+          highQuality: typeof value.highQuality === "boolean" ? value.highQuality : DEFAULT_RECORDING_PREFS.highQuality,
+          noiseSuppression: typeof value.noiseSuppression === "boolean" ? value.noiseSuppression : DEFAULT_RECORDING_PREFS.noiseSuppression,
+        });
+      }
     } catch {}
     const savedProgress = loadProgress();
     setProgress(savedProgress);
@@ -1417,26 +1441,34 @@ RULES:
     return { text: rest, mood, level };
   }
 
-  function normalizeForApi(history: Message[]): Message[] {
-    const merged: Message[] = [];
+  function normalizeForApi(history: ChatMessage[]): ChatMessage[] {
+    const merged: ChatMessage[] = [];
     for (const message of history) {
       if (!message.content.trim()) continue;
       const last = merged[merged.length - 1];
-      if (last && last.role === message.role) last.content += `\n${message.content}`;
-      else merged.push({ ...message });
+      if (last && last.role === message.role) {
+        last.content += `\n${message.content}`;
+        if (message.audio) last.audio = message.audio;
+      } else {
+        merged.push({ ...message });
+      }
     }
     if (merged[0]?.role === "assistant") merged.unshift({ role: "user", content: "(Em đã vào lớp học.)" });
     return merged;
   }
 
   /** One streamed teacher turn. `base` is what the learner sees; `apiHistory` is what the model receives. */
-  async function tutorTurn(base: Message[], apiHistory: Message[]): Promise<boolean> {
+  async function tutorTurn(base: Message[], apiHistory: ChatMessage[], voice = false): Promise<boolean> {
     // A cancelled turn keeps running on the network but its answer is ignored.
     const turn = ++tutorTurnRef.current;
     const current = () => tutorTurnRef.current === turn;
     tutorTurnBaseRef.current = base;
+    // In a voice turn the model first reports what it heard ("HEARD: ..."); that line becomes
+    // the learner's message, and everything after it is the teacher's streamed reply.
+    let shownBase = base;
     setMessages([...base, { role: "assistant", content: "" }]);
     setChatBusy(true);
+    setWaitKind(voice ? "voice" : "text");
     setChatError("");
     setTutorSubtitle("");
     stopSpeech();
@@ -1460,20 +1492,32 @@ RULES:
       const raw = await withAvailableApiKey(
         (key, model) => streamChat(aiProvider, key, model, buildTutorSystemPrompt(), normalizeForApi(apiHistory), (full) => {
           if (!current()) return;
-          const parsed = parseMood(full);
+          let reply = full;
+          if (voice) {
+            const heard = splitHeard(full);
+            if (!heard) return; // the first line (what the learner said) is not complete yet
+            reply = heard.reply;
+            if (shownBase === base) shownBase = [...base, { role: "user", content: heard.heard }];
+          }
+          const parsed = parseMood(reply);
           shown = parsed.text;
           if (parsed.mood) setTutorEmotion(parsed.mood);
           if (parsed.level) setAiLevelEstimate(parsed.level);
-          setMessages([...base, { role: "assistant", content: parsed.text }]);
+          setMessages([...shownBase, { role: "assistant", content: parsed.text }]);
           speakFinished(parsed.text, false);
         }),
         (status) => setTutorSubtitle(status),
       );
       if (!current()) return false;
-      const parsed = parseMood(raw);
+      if (voice && shownBase === base) {
+        // The model skipped the HEARD line: show its whole answer, keep a placeholder for the learner.
+        shownBase = [...base, { role: "user", content: "🎤 (câu trả lời bằng giọng nói)" }];
+      }
+      const heard = voice ? splitHeard(raw + "\n") : null;
+      const parsed = parseMood(heard ? heard.reply : raw);
       speakFinished(parsed.text || shown, true);
       const finalReply = (parsed.text || shown).trim();
-      setMessages([...base, { role: "assistant", content: finalReply }]);
+      setMessages([...shownBase, { role: "assistant", content: finalReply }]);
       setProgress((current) => recordPractice(current, 2, !practiceSessionCounted.current));
       practiceSessionCounted.current = true;
       setConnection((current) => current.status === "ok" ? current : { status: "ok", message: "Đã kết nối" });
@@ -1482,9 +1526,11 @@ RULES:
       if (!current()) return false;
       stopSpeech();
       setMessages(base);
-      setChatError(friendlyError(error, "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé."));
+      setChatError(friendlyError(error, voice
+        ? "Gia sư chưa xử lý được bản ghi. Bạn vui lòng thử lại nhé."
+        : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé."));
       lastAiErrorRef.current = error instanceof AiError ? error : null;
-      retryTurnRef.current = () => { void tutorTurn(base, apiHistory); };
+      retryTurnRef.current = () => { void tutorTurn(base, apiHistory, voice); };
       return false;
     } finally {
       if (current()) {
@@ -1558,6 +1604,34 @@ RULES:
     setConnection({ status: "error", message: error?.message ?? "Chưa kết nối được với gia sư AI.", details: error?.details });
   }
 
+  function updateRecordingPrefs(patch: Partial<RecordingPrefs>) {
+    setRecordingPrefs((current) => {
+      const next = { ...current, ...patch };
+      try { localStorage.setItem(RECORDING_PREFS_STORAGE, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
+
+  /** Microphone settings from the learner's choices. Echo cancelling stays on so the tutor's voice is not recorded. */
+  function microphoneConstraints(): MediaStreamConstraints {
+    return {
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: recordingPrefs.noiseSuppression,
+        channelCount: 1,
+        ...(recordingPrefs.highQuality ? { sampleRate: 48_000 } : {}),
+      },
+    };
+  }
+
+  /** High quality records at 128 kbps; otherwise the browser's own default is used. */
+  function recorderOptions(mimeType?: string): MediaRecorderOptions {
+    return {
+      ...(mimeType ? { mimeType } : {}),
+      ...(recordingPrefs.highQuality ? { audioBitsPerSecond: 128_000 } : {}),
+    };
+  }
+
   function startVoiceInput() {
     const speechWindow = window as Window & {
       SpeechRecognition?: SpeechRecognitionConstructor;
@@ -1593,11 +1667,11 @@ RULES:
       return;
     }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia(microphoneConstraints());
       voiceChatStreamRef.current = stream;
       const supportedTypes = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
       const mimeType = supportedTypes.find((type) => MediaRecorder.isTypeSupported(type));
-      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+      const recorder = new MediaRecorder(stream, recorderOptions(mimeType));
       voiceChatRecorderRef.current = recorder;
       voiceChatChunksRef.current = [];
       recorder.ondataavailable = (event) => {
@@ -1628,60 +1702,19 @@ RULES:
           await tutorTurn(conversation, conversation.slice(-12));
           return;
         }
-        // Gemini hears the audio itself, so it can also judge pronunciation.
-        // Same cancel rules as a typed turn: a cancelled answer is ignored.
-        const turn = ++tutorTurnRef.current;
-        tutorTurnBaseRef.current = messages;
-        setChatBusy(true);
-        setChatError("");
-        setTutorSubtitle("Đang nghe và chấm phát âm…");
+        // Gemini hears the audio itself (so it can judge pronunciation) and answers as a
+        // stream, exactly like a typed message: words appear and are read aloud as they arrive.
         try {
-          const history = normalizeForApi(messages.slice(-10)).map((message) =>
-            `${message.role === "user" ? "LEARNER" : "TEACHER"}: ${message.content}`).join("\n");
           const audio = await getAudioData(blob);
-          const response = await withAvailableApiKey((key, model) => generateGeminiMultimodalResponse(key, [
-            {
-              text: `${buildTutorSystemPrompt()}
-
-CONVERSATION SO FAR:
-${history}
-
-The learner has just answered by VOICE (audio attached).
-1. Transcribe exactly what they said, keeping their mistakes (do not correct the transcript).
-2. Listen carefully to their pronunciation: ending sounds, word stress, /θ/ /ð/ /ʃ/ /z/ and vowel length are common problems for Vietnamese speakers. Add 🔈 lines for the words that were unclear or wrong.
-3. Reply as the teacher following every rule above, including the tags and ✏️ corrections.
-Return ONLY valid JSON: {"transcript":"...","reply":"..."}`,
-            },
-            { inlineData: audio },
-          ], model));
-          const data = parseAiJson(response, "Gia sư AI trả lời sai định dạng. Bạn vui lòng nói lại câu vừa rồi nhé.");
-          if (typeof data !== "object" || data === null || !("transcript" in data) ||
-              typeof data.transcript !== "string" || !("reply" in data) ||
-              typeof data.reply !== "string" || !data.transcript.trim() || !data.reply.trim()) {
-            throw new Error("Gia sư AI trả lời sai định dạng. Bạn vui lòng nói lại câu vừa rồi nhé.");
-          }
-          if (tutorTurnRef.current !== turn) return;
-          const parsed = parseMood(data.reply);
-          if (parsed.mood) setTutorEmotion(parsed.mood);
-          if (parsed.level) setAiLevelEstimate(parsed.level);
-          const coachMessage = parsed.text.trim();
-          const learnerMessage = data.transcript.trim();
-          setMessages((current) => [
-            ...current,
-            { role: "user", content: learnerMessage },
-            { role: "assistant", content: coachMessage },
-          ]);
-          setProgress((current) => recordPractice(current, 2, !practiceSessionCounted.current));
-          practiceSessionCounted.current = true;
-          void playSpeech(coachMessage);
+          const instruction = `The learner has just answered by VOICE (audio attached).
+Reply in exactly this layout:
+Line 1: HEARD: <exactly what they said, keeping their mistakes; do not correct this line>
+Then your teacher reply, following every rule above (mood tag first, corrections with the pencil marker).
+Listen to their pronunciation (ending sounds, word stress, th sounds, z/sh sounds, vowel length) and add a speaker-marker line for each word that was unclear or wrong.`;
+          const history = messages.slice(-8);
+          await tutorTurn(history, [...history, { role: "user", content: instruction, audio }], true);
         } catch (error) {
-          if (tutorTurnRef.current !== turn) return;
-          setChatError(friendlyError(error, "Gia sư chưa thể xử lý bản ghi. Bạn vui lòng thử lại nhé."));
-        } finally {
-          if (tutorTurnRef.current === turn) {
-            setChatBusy(false);
-            setTutorSubtitle("");
-          }
+          setChatError(friendlyError(error, "Gia sư chưa xử lý được bản ghi. Bạn vui lòng thử lại nhé."));
         }
       };
       recorder.start();
@@ -1716,12 +1749,11 @@ Return ONLY valid JSON: {"transcript":"...","reply":"..."}`,
       return;
     }
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia(microphoneConstraints());
       streamRef.current = stream;
       const supportedTypes = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/ogg;codecs=opus"];
       const mimeType = supportedTypes.find((type) => MediaRecorder.isTypeSupported(type));
-      const options = mimeType ? { mimeType } : undefined;
-      const recorder = new MediaRecorder(stream, options);
+      const recorder = new MediaRecorder(stream, recorderOptions(mimeType));
       recorderRef.current = recorder;
       chunksRef.current = [];
       recorder.ondataavailable = (event) => {
@@ -2150,6 +2182,47 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
     }
+  }
+
+  function renderRecordingSettings() {
+    const switches: { key: keyof RecordingPrefs; title: string; on: string; off: string }[] = [
+      {
+        key: "highQuality",
+        title: "Ghi âm chất lượng cao",
+        on: "Đang bật: ghi ở 128 kbps, 48 kHz — AI nghe rõ các âm nhẹ nên nhận xét phát âm chính xác hơn. Bản ghi hơi nặng hơn một chút.",
+        off: "Đang tắt: dùng chất lượng mặc định của trình duyệt (gửi nhẹ hơn, phù hợp khi mạng yếu).",
+      },
+      {
+        key: "noiseSuppression",
+        title: "Khử tiếng ồn",
+        on: "Đang bật: bớt tiếng ồn xung quanh, hợp khi ở nơi ồn. Đôi khi làm mờ các âm nhẹ như /s/, /θ/.",
+        off: "Đang tắt: giữ nguyên mọi âm, tốt nhất để chấm phát âm khi bạn ở nơi yên tĩnh.",
+      },
+    ];
+    return (
+      <section className="panel settings-panel recording-settings">
+        <div className="settings-section-heading">
+          <span className="settings-icon" aria-hidden="true">🎙️</span>
+          <div><h3>Ghi âm giọng của bạn</h3><p>Chất lượng bản ghi ảnh hưởng trực tiếp đến nhận xét phát âm của AI.</p></div>
+        </div>
+        {switches.map((item) => (
+          <label className="switch-row" key={item.key}>
+            <span className="switch-copy">
+              <strong>{item.title}</strong>
+              <small>{recordingPrefs[item.key] ? item.on : item.off}</small>
+            </span>
+            <input
+              type="checkbox"
+              role="switch"
+              className="switch-input"
+              checked={recordingPrefs[item.key]}
+              onChange={(event) => updateRecordingPrefs({ [item.key]: event.target.checked })}
+            />
+          </label>
+        ))}
+        <small className="settings-hint">Gợi ý: ở nơi yên tĩnh hãy bật “chất lượng cao” và tắt “khử tiếng ồn”. Ở nơi ồn, bật cả hai. Thay đổi áp dụng từ lần ghi âm kế tiếp.</small>
+      </section>
+    );
   }
 
   function renderVoiceStudio() {
@@ -2924,6 +2997,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             </section>
 
             {renderVoiceStudio()}
+            {renderRecordingSettings()}
           </div>
         </details>
         <details name="settings-groups" className="settings-group">
@@ -3851,11 +3925,22 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       : PAGE_HELP[section];
   const canGoBack = section !== "home";
   // Only what the learner is actually waiting for; background prefetching shows nothing.
-  const learnerIsWaiting = chatBusy || courseSyncing || apiKeyBusy || modelsBusy || connection.status === "checking";
+  // Locked only until the first words arrive; after that the reply streams in and can be read.
+  const waitingForFirstWords = chatBusy && !messages[messages.length - 1]?.content.trim();
+  const learnerIsWaiting = waitingForFirstWords || courseSyncing || apiKeyBusy || modelsBusy ||
+    pronunciationBusy || connection.status === "checking";
+  // The notice says what is really happening: sending a recording is an upload, not a download.
+  const waitLabel = waitingForFirstWords
+    ? (waitKind === "voice" ? "Đang gửi giọng nói tới AI, xin hãy đợi" : "Đang chờ AI trả lời, xin hãy đợi")
+    : pronunciationBusy ? "Đang gửi bản ghi tới AI để chấm điểm, xin hãy đợi"
+    : courseSyncing ? "Đang tải bài học về máy, xin hãy đợi"
+    : apiKeyBusy ? "Đang kiểm tra API key, xin hãy đợi"
+    : modelsBusy ? "Đang lấy danh sách mô hình AI, xin hãy đợi"
+    : "Đang kết nối với AI, xin hãy đợi";
 
   return (
     <main className="app-shell wizard-shell">
-      <WaitIndicator active={learnerIsWaiting} onCancel={chatBusy ? cancelTutorTurn : undefined} />
+      <WaitIndicator active={learnerIsWaiting} label={waitLabel} onCancel={waitingForFirstWords ? cancelTutorTurn : undefined} />
       {canGoBack && (
         <button className="floating-back-button" type="button" onClick={goBack} aria-label="Quay lại trang trước" title="Quay lại trang trước">
           <IllustrationIcon name="back" />

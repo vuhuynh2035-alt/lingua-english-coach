@@ -1,6 +1,7 @@
 import type { AiProvider } from "@/lib/ai-providers";
 
-export type ChatMessage = { role: "user" | "assistant"; content: string };
+/** `audio` (Gemini only) is a voice recording sent together with the text of that message. */
+export type ChatMessage = { role: "user" | "assistant"; content: string; audio?: { mimeType: string; data: string } };
 export type AiErrorKind = "auth" | "quota" | "model" | "busy" | "network" | "timeout" | "other";
 
 export class AiError extends Error {
@@ -202,7 +203,7 @@ async function streamGemini(
       systemInstruction: { parts: [{ text: system }] },
       contents: messages.map((m) => ({
         role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: m.content }],
+        parts: m.audio ? [{ text: m.content }, { inlineData: m.audio }] : [{ text: m.content }],
       })),
       generationConfig,
     };
