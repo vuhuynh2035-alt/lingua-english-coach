@@ -16,6 +16,7 @@ import {
   AiProvider,
   DEFAULT_MODELS,
   fetchAiModels,
+  fetchGoogleModelIds,
   generateGeminiMultimodalResponse,
   isAiProvider,
   transcribeWithOpenAi,
@@ -44,10 +45,12 @@ import {
   voiceForTutor,
 } from "@/lib/voices";
 import {
+  AiError,
   ConnectionReport,
   checkConnection,
   isChatModel,
   modelCandidates,
+  rankGoogleModels,
   runWithFailover,
   streamChat,
 } from "@/lib/ai-client";
@@ -174,6 +177,9 @@ const AI_SETTINGS_STORAGE = "lingua-ai-settings";
 const FONT_SCALE_STORAGE = "lingua-font-scale";
 const APP_THEME_STORAGE = "lingua-app-theme";
 const VOICE_PROFILE_STORAGE = "lingua-voice-profile-v1";
+const GOOGLE_MODELS_STORAGE = "lingua-google-models";
+/** 0.05 s of silence, played inside a tap so phones allow later AI audio. */
+const SILENT_WAV = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAACAgICA";
 
 type Profile = {
   id: string;
@@ -667,6 +673,13 @@ const LEVEL_PEDAGOGY: Record<CourseLevel, string> = {
 - Correct accuracy and naturalness, including better word choices and more sophisticated phrasing.`,
 };
 
+/** "Key 1", "Key 2"… — the first number not used yet, so labels stay unique after deletions. */
+function nextKeyLabel(entries: ApiKeyEntry[]): string {
+  let n = 1;
+  while (entries.some((entry) => entry.label === `Key ${n}`)) n += 1;
+  return `Key ${n}`;
+}
+
 /** Lessons the learner may open: in order inside a level; a level opens once the one before is done or the learner already placed at it. */
 function unlockedLessonIds(course: CoursePackage, completed: string[], learnerLevel: string): Set<string> {
   const open = new Set<string>();
@@ -720,7 +733,6 @@ export default function Home() {
   const [selectedModels, setSelectedModels] = useState<ProviderRecord<string>>({ ...DEFAULT_MODELS });
   const [modelCatalog, setModelCatalog] = useState<ProviderRecord<AiModel[]>>({ google: [], openai: [] });
   const [apiKeyDraft, setApiKeyDraft] = useState("");
-  const [apiKeyLabelDraft, setApiKeyLabelDraft] = useState("");
   const [apiKeyBusy, setApiKeyBusy] = useState(false);
   const [apiKeyError, setApiKeyError] = useState("");
   const [apiKeySaved, setApiKeySaved] = useState(false);
@@ -787,9 +799,13 @@ export default function Home() {
   const materialInputRef = useRef<HTMLInputElement | null>(null);
   const sectionHistoryRef = useRef<Section[]>([]);
   const chatListRef = useRef<HTMLDivElement | null>(null);
+  const lastAiErrorRef = useRef<AiError | null>(null);
+  const googleModelsRef = useRef<string[] | null>(null);
   const retryTurnRef = useRef<(() => void) | null>(null);
   const classroomBootRef = useRef(false);
   const speechRunRef = useRef(0);
+  const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const speechPlayerUnlockedRef = useRef(false);
   const pendingLessonStartRef = useRef(false);
 
   const apiKey = apiKeys[aiProvider].find((entry) => entry.id === activeKeyIds[aiProvider])?.value ?? "";
@@ -1213,6 +1229,37 @@ export default function Home() {
     navigateToSection("mode");
   }
 
+  /**
+   * The Google models this key can use right now (cached for 12 h). Google retires model
+   * ids regularly, so fallbacks come from this list instead of a fixed one.
+   */
+  async function googleModelIds(): Promise<string[]> {
+    if (googleModelsRef.current) return googleModelsRef.current;
+    try {
+      const cached = JSON.parse(localStorage.getItem(GOOGLE_MODELS_STORAGE) ?? "null") as { at?: number; ids?: unknown } | null;
+      if (cached && typeof cached.at === "number" && Date.now() - cached.at < 12 * 3600_000 &&
+          Array.isArray(cached.ids) && cached.ids.every((id) => typeof id === "string")) {
+        googleModelsRef.current = cached.ids as string[];
+        return googleModelsRef.current;
+      }
+    } catch {}
+    for (const entry of apiKeys.google) {
+      try {
+        const ids = await fetchGoogleModelIds(entry.value);
+        if (!ids.length) continue;
+        googleModelsRef.current = ids;
+        try { localStorage.setItem(GOOGLE_MODELS_STORAGE, JSON.stringify({ at: Date.now(), ids })); } catch {}
+        return ids;
+      } catch {}
+    }
+    return [];
+  }
+
+  async function chatModelCandidates(fastFirst = false): Promise<string[]> {
+    const available = aiProvider === "google" ? await googleModelIds() : [];
+    return modelCandidates(aiProvider, activeModel, fastFirst, available);
+  }
+
   async function withAvailableApiKey<T>(
     operation: (key: string, model: string) => Promise<T>,
     onStatus?: (message: string) => void,
@@ -1222,7 +1269,7 @@ export default function Home() {
         provider: aiProvider,
         keys: apiKeys[aiProvider],
         preferredKeyId: activeKeyIds[aiProvider],
-        models: modelCandidates(aiProvider, activeModel),
+        models: await chatModelCandidates(),
         onStatus,
       },
       operation,
@@ -1246,7 +1293,7 @@ export default function Home() {
       provider: aiProvider,
       keys: apiKeys[aiProvider],
       preferredKeyId: activeKeyIds[aiProvider],
-      models: modelCandidates(aiProvider, activeModel, true),
+      models: await chatModelCandidates(true),
       onStatus: (message) => setConnection({ status: "checking", message }),
     });
     if (report.ok) {
@@ -1369,6 +1416,7 @@ RULES:
     } catch (error) {
       setMessages(base);
       setChatError(error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
+      lastAiErrorRef.current = error instanceof AiError ? error : null;
       retryTurnRef.current = () => { void tutorTurn(base, apiHistory); };
       return false;
     } finally {
@@ -1391,7 +1439,7 @@ RULES:
   }
 
   /** The teacher opens the class: greets, states the goal and sets the first situation. */
-  async function startLesson() {
+  async function startLesson(): Promise<boolean> {
     // The built-in scripted greetings are replaced by the teacher's own opening.
     const scripted = new Set([initialMessage.content, ...profiles.map((item) => item.prompt)]);
     const history = messages
@@ -1401,13 +1449,24 @@ RULES:
     const opening = `[CLASS START] The learner has just entered the classroom. ${returning
       ? "Welcome them back warmly, recap in one line what you practised last time, then continue with a NEW situation."
       : "Greet them warmly and introduce yourself in one line."} State today's lesson and its goal in one sentence, then begin stage 1 (warm-up) and give the first task. Start speaking now.`;
-    await tutorTurn(history, [...history, { role: "user", content: opening }]);
+    return tutorTurn(history, [...history, { role: "user", content: opening }]);
   }
 
+  /** The teacher's opening turn doubles as the connection check, saving one request of quota. */
   async function connectClassroom() {
     if (chatBusy) return;
-    const ok = await testAiConnection();
-    if (ok) await startLesson();
+    if (!apiKeys[aiProvider].length) {
+      setConnection({ status: "error", message: `Chưa có API key ${aiProvider === "google" ? "Google AI" : "OpenAI"}. Hãy thêm key trong Cài đặt.` });
+      return;
+    }
+    setConnection({ status: "checking", message: "Đang gọi thầy/cô vào lớp…" });
+    lastAiErrorRef.current = null;
+    if (await startLesson()) {
+      setConnection({ status: "ok", message: "Đã kết nối" });
+      return;
+    }
+    const error = lastAiErrorRef.current as AiError | null;
+    setConnection({ status: "error", message: error?.message ?? "Chưa kết nối được với gia sư AI.", details: error?.details });
   }
 
   function startVoiceInput() {
@@ -1629,11 +1688,23 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     }
   }
 
+  /** A key was added or removed: the cached Google model list may no longer match. */
+  function forgetGoogleModels() {
+    googleModelsRef.current = null;
+    try { localStorage.removeItem(GOOGLE_MODELS_STORAGE); } catch {}
+  }
+
   async function saveApiKey(event: FormEvent) {
+    forgetGoogleModels();
     event.preventDefault();
     const candidate = apiKeyDraft.trim();
     if (!candidate) {
       setApiKeyError(`Vui lòng nhập API key ${aiProvider === "google" ? "Google AI" : "OpenAI"}.`);
+      return;
+    }
+    const duplicate = apiKeys[aiProvider].find((entry) => entry.value === candidate);
+    if (duplicate) {
+      setApiKeyError(`Key này đã được lưu với tên “${duplicate.label}”. Hãy dán một key khác.`);
       return;
     }
     setApiKeyBusy(true);
@@ -1642,8 +1713,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     try {
       const models = await fetchAiModels(aiProvider, candidate);
       const entry = {
-        id: crypto.randomUUID(),
-        label: apiKeyLabelDraft.trim() || `${aiProvider === "google" ? "Google" : "OpenAI"} key ${apiKeys[aiProvider].length + 1}`,
+        id: typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `key-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        label: nextKeyLabel(apiKeys[aiProvider]),
         value: candidate,
       };
       setApiKeys((current) => ({ ...current, [aiProvider]: [...current[aiProvider], entry] }));
@@ -1653,7 +1724,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         setSelectedModels((current) => ({ ...current, [aiProvider]: models.find((model) => model.id === DEFAULT_MODELS[aiProvider])?.id ?? models[0]?.id ?? DEFAULT_MODELS[aiProvider] }));
       }
       setApiKeyDraft("");
-      setApiKeyLabelDraft("");
       setApiKeySaved(true);
     } catch (error) {
       setApiKeyError(error instanceof Error ? error.message : "Không thể xác thực API key. Vui lòng thử lại.");
@@ -1748,7 +1818,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         provider: engine,
         keys: apiKeys[engine],
         preferredKeyId: activeKeyIds[engine],
-        models: engine === "google" ? GOOGLE_TTS_MODELS : OPENAI_TTS_MODELS,
+        models: engine === "google"
+          ? [...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])].slice(0, 4)
+          : OPENAI_TTS_MODELS,
         deadlineMs: 40_000,
       },
       (key, model) => synthesizeCloudSpeech(engine, key, model, profile, text),
@@ -1757,24 +1829,47 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     return value;
   }
 
+  /**
+   * One audio element for all AI speech. It is started (silently) inside the tap that asks
+   * for speech, because phones refuse to play audio that starts after a network wait.
+   */
+  function speechPlayer(): HTMLAudioElement {
+    if (!speechPlayerRef.current) speechPlayerRef.current = new Audio();
+    return speechPlayerRef.current;
+  }
+
+  function unlockSpeechPlayer() {
+    if (speechPlayerUnlockedRef.current) return;
+    const player = speechPlayer();
+    player.src = SILENT_WAV;
+    player.play().then(() => { speechPlayerUnlockedRef.current = true; }).catch(() => {});
+  }
+
   function playBlob(blob: Blob): Promise<void> {
     return new Promise((resolve, reject) => {
       const objectUrl = URL.createObjectURL(blob);
-      const audio = new Audio(objectUrl);
-      speechAudioRef.current = audio;
+      const player = speechPlayer();
+      speechAudioRef.current = player;
       speechObjectUrlRef.current = objectUrl;
       const done = () => {
-        if (speechAudioRef.current === audio) {
-          speechAudioRef.current = null;
-          speechObjectUrlRef.current = null;
-        }
+        player.onended = null;
+        player.onpause = null;
+        player.onerror = null;
+        if (speechObjectUrlRef.current === objectUrl) speechObjectUrlRef.current = null;
         URL.revokeObjectURL(objectUrl);
         resolve();
       };
-      audio.onended = done;
-      audio.onpause = done;
-      audio.onerror = () => reject(new Error("Không phát được âm thanh."));
-      audio.play().catch(reject);
+      player.onended = done;
+      player.onpause = done;
+      player.onerror = () => { done(); reject(new Error("trình duyệt không phát được tệp âm thanh")); };
+      player.src = objectUrl;
+      player.play().catch((error: unknown) => {
+        player.onpause = null;
+        done();
+        reject(new Error(error instanceof DOMException && error.name === "NotAllowedError"
+          ? "trình duyệt chặn tự phát âm thanh"
+          : "trình duyệt không phát được âm thanh"));
+      });
     });
   }
 
@@ -1785,22 +1880,34 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
   }
 
+  function engineLabel(profile: VoiceProfile): string {
+    return profile.engine === "google" ? `Giọng AI Google · ${profile.googleVoice}` : `Giọng AI OpenAI · ${profile.openaiVoice}`;
+  }
+
   /** Plays text: Vietnamese parts with the device voice, English parts with the chosen practice voice. */
   async function speak(text: string, englishOnly = false) {
     const clean = text.trim();
     if (!clean) return;
     stopSpeech();
+    // Must happen inside the tap, before any await.
+    unlockSpeechPlayer();
     const run = speechRunRef.current;
+    const profile = voiceProfile;
     const segments = englishOnly ? [{ text: cleanSpeechText(clean), lang: "en" as const }] : splitBilingualText(clean);
+    let fallbackReason = profile.engine !== "device" && !apiKeys[profile.engine].length
+      ? `chưa có API key ${profile.engine === "google" ? "Google" : "OpenAI"}`
+      : "";
+    let usedCloud = false;
     // Fetch every English clip up front so the reply plays without gaps.
     const clips = segments.map((segment) => segment.lang === "en"
-      ? englishAudio(segment.text).catch((error: unknown) => {
-        setSpeechNotice(`Giọng AI chưa dùng được (${error instanceof Error ? error.message : "lỗi"}) — đang dùng giọng trên máy.`);
+      ? englishAudio(segment.text, profile).catch((error: unknown) => {
+        fallbackReason = error instanceof Error ? error.message : "lỗi không xác định";
         return null;
       })
       : Promise.resolve(null));
     setSpeechBusy(true);
     setSpeechError("");
+    setSpeechNotice(profile.engine === "device" ? "" : `Đang tạo ${engineLabel(profile)}…`);
     try {
       for (const [index, segment] of segments.entries()) {
         if (speechRunRef.current !== run) return;
@@ -1809,11 +1916,21 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         if (clip) {
           try {
             await playBlob(clip);
+            usedCloud = true;
             continue;
-          } catch {}
+          } catch (error) {
+            fallbackReason = error instanceof Error ? error.message : "không phát được";
+          }
         }
         await playNativeUtterance(segment.text, segment.lang);
       }
+      if (speechRunRef.current !== run || !segments.some((segment) => segment.lang === "en")) return;
+      const deviceName = pickDeviceVoice(systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [], profile).voice?.name;
+      setSpeechNotice(usedCloud && !fallbackReason
+        ? `🔊 Vừa phát bằng ${engineLabel(profile)}.`
+        : profile.engine === "device"
+        ? `🔊 Vừa phát bằng giọng trên máy${deviceName ? `: ${deviceName}` : ""}.`
+        : `⚠️ ${engineLabel(profile)} chưa dùng được (${fallbackReason || "không rõ lý do"}), nên vừa phát bằng giọng trên máy${deviceName ? ` (${deviceName})` : ""}.`);
     } finally {
       if (speechRunRef.current === run) setSpeechBusy(false);
     }
@@ -1879,9 +1996,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <span className="settings-label">1 · Nguồn giọng</span>
         <div className="voice-engines" role="radiogroup" aria-label="Nguồn giọng">
           {([
-            ["google", "Giọng AI Google", "22 giọng, đọc được mọi vùng miền"],
-            ["openai", "Giọng AI OpenAI", "11 giọng, đọc được mọi vùng miền"],
-            ["device", "Giọng trên máy", "Miễn phí, chạy offline; vùng miền tùy thiết bị"],
+            ["google", "Giọng AI Google", "Tự nhiên nhất · 22 giọng · đọc đúng mọi vùng miền · cần mạng + key Google"],
+            ["openai", "Giọng AI OpenAI", "Tự nhiên · 11 giọng · mọi vùng miền · cần mạng + key OpenAI (tính phí)"],
+            ["device", "Giọng trên máy", "Miễn phí, chạy offline · nghe máy móc hơn · vùng miền, nam/nữ tùy máy"],
           ] as const).map(([id, label, hint]) => (
             <button key={id} type="button" role="radio" aria-checked={voiceProfile.engine === id}
               className={voiceProfile.engine === id ? "voice-engine active" : "voice-engine"}
@@ -1891,6 +2008,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             </button>
           ))}
         </div>
+        <p className="settings-hint">Giọng AI dùng cho <strong>mọi</strong> phần có đọc tiếng Anh (bài học offline, câu mẫu, lời thầy/cô) khi có mạng. Mỗi câu chỉ tạo một lần rồi lưu trên máy, nên lần sau nghe lại được cả khi offline. Câu mới mà không có mạng sẽ tự đọc bằng giọng trên máy.</p>
         {!engineReady && <p className="error-message">Chưa có API key cho nguồn này — app sẽ dùng giọng trên máy cho tới khi bạn thêm key ở mục Nhà cung cấp AI.</p>}
 
         <span className="settings-label">2 · Vùng miền</span>
@@ -1997,6 +2115,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   function removeApiKey(id: string) {
+    forgetGoogleModels();
     try {
       const remaining = apiKeys[aiProvider].filter((entry) => entry.id !== id);
       setApiKeys((current) => ({ ...current, [aiProvider]: remaining }));
@@ -2439,7 +2558,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             if (isAiProvider(event.target.value)) {
               setAiProvider(event.target.value);
               setApiKeyDraft("");
-              setApiKeyLabelDraft("");
               setApiKeyError("");
               setApiKeySaved(false);
               setModelsError("");
@@ -2449,21 +2567,23 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             <option value="openai">OpenAI / ChatGPT</option>
           </select>
           <div className="settings-key-list">
-            <label className="settings-label" htmlFor="active-ai-key">API key đang dùng</label>
-            <div className="settings-key-select-row">
-              <select id="active-ai-key" className="settings-select" value={activeKeyIds[aiProvider]} onChange={(event) =>
-                setActiveKeyIds((current) => ({ ...current, [aiProvider]: event.target.value }))}>
-                <option value="">Chưa có key</option>
-                {keyEntries.map((entry) => <option key={entry.id} value={entry.id}>{entry.label} · ••••{entry.value.slice(-4)}</option>)}
-              </select>
-              {activeKeyIds[aiProvider] && <button type="button" className="remove-key-button" onClick={() => removeApiKey(activeKeyIds[aiProvider])}>Xóa key đang chọn</button>}
-            </div>
-            {keyEntries.length > 1 && <small className="settings-hint">Khi API trả lỗi xác thực hoặc hết hạn mức, app sẽ tự thử các key còn lại đã lưu.</small>}
+            <span className="settings-label">Các API key đã lưu ({keyEntries.length})</span>
+            {keyEntries.length === 0 && <p className="settings-hint">Chưa có key nào.</p>}
+            <ul className="key-list">
+              {keyEntries.map((entry) => (
+                <li key={entry.id} className={entry.id === activeKeyIds[aiProvider] ? "active" : ""}>
+                  <button type="button" className="key-pick" onClick={() => setActiveKeyIds((current) => ({ ...current, [aiProvider]: entry.id }))}>
+                    <strong>{entry.label}</strong>
+                    <small>••••{entry.value.slice(-4)}{entry.id === activeKeyIds[aiProvider] ? " · đang dùng trước" : ""}</small>
+                  </button>
+                  <button type="button" className="remove-key-button" onClick={() => removeApiKey(entry.id)}>Xóa</button>
+                </li>
+              ))}
+            </ul>
+            {keyEntries.length > 1 && <small className="settings-hint">Khi một key bị từ chối hoặc hết hạn mức, app tự chuyển sang key khác. Lưu ý: các key cùng một dự án Google dùng chung hạn mức — hãy tạo mỗi key ở một dự án riêng.</small>}
           </div>
           <form className="settings-key-form" onSubmit={(event) => { void saveApiKey(event); }}>
-            <label className="settings-label" htmlFor="api-key-label">Thêm API key mới</label>
-            <input id="api-key-label" className="settings-input" value={apiKeyLabelDraft} onChange={(event) => setApiKeyLabelDraft(event.target.value)} placeholder="Tên gợi nhớ, ví dụ: Key cá nhân" />
-            <label className="settings-label" htmlFor="ai-api-key">API key (được che khi nhập)</label>
+            <label className="settings-label" htmlFor="ai-api-key">Thêm API key {keyEntries.length ? "dự phòng" : ""}</label>
             <input id="ai-api-key" className="settings-input" type="password" autoComplete="off" value={apiKeyDraft} onChange={(event) => {
               setApiKeyDraft(event.target.value);
               setApiKeyError("");
@@ -2474,7 +2594,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             </a>
             <small className="settings-hint">Key chỉ lưu trên thiết bị này, không đặt trong mã nguồn. Không dùng trên thiết bị công cộng; nhà cung cấp có thể tính phí theo tài khoản của bạn.</small>
             {apiKeyError && <p className="error-message" role="alert">{apiKeyError}</p>}
-            {apiKeySaved && <p className="api-key-success" role="status">Đã xác thực và lưu API key; danh sách mô hình đã được tải.</p>}
+            {apiKeySaved && <p className="api-key-success" role="status">Đã thêm key. Hiện có {keyEntries.length} key — khi một key lỗi hoặc hết hạn mức, app tự chuyển sang key tiếp theo.</p>}
             <button className="button button-primary" type="submit" disabled={apiKeyBusy || !apiKeyDraft.trim()}>
               {apiKeyBusy ? "Đang xác thực key…" : "＋ Kiểm tra và lưu key"}
             </button>

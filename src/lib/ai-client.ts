@@ -8,6 +8,8 @@ export class AiError extends Error {
   status?: number;
   /** One line per failed attempt ("model · key: reason"), shown to help diagnose. */
   details: string[] = [];
+  /** The provider's own error text, if any. */
+  detail = "";
   constructor(kind: AiErrorKind, message: string, status?: number) {
     super(message);
     this.name = "AiError";
@@ -28,9 +30,12 @@ export type FailoverOptions = {
   onStatus?: (message: string) => void;
 };
 
-/** Newest first. Older ids are kept only as a last resort. */
+/**
+ * Used when the key's model list is unknown. The "-latest" aliases follow Google's current
+ * Flash models; fixed ids are kept only as a last resort because Google retires them.
+ */
 export const FALLBACK_MODELS: Record<AiProvider, string[]> = {
-  google: ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-flash-latest"],
+  google: ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite"],
   openai: ["gpt-4o-mini", "gpt-4.1-mini"],
 };
 
@@ -42,14 +47,40 @@ export function isChatModel(model: string): boolean {
   return !/(tts|image|embed|aqa|live|audio|veo|imagen|robotics|computer-use|learnlm|gemma)/i.test(model);
 }
 
+function modelVersion(id: string): number {
+  return Number(/gemini-(\d+(?:\.\d+)?)/.exec(id)?.[1] ?? 0);
+}
+
+/**
+ * Fast models from the key's real model list, newest first: stable before preview,
+ * Flash before Flash-Lite (Lite has its own quota, so it is a good second choice).
+ */
+export function rankGoogleModels(available: string[], kind: "chat" | "tts"): string[] {
+  const wanted = available.filter((id) => kind === "tts"
+    ? /tts/i.test(id)
+    : isChatModel(id) && /flash/i.test(id) && !/thinking|exp/i.test(id));
+  return wanted
+    // Previews have small quotas, so stable models come first whatever their version.
+    .sort((a, b) => Number(/preview/i.test(a)) - Number(/preview/i.test(b))
+      || modelVersion(b) - modelVersion(a)
+      || Number(/lite/i.test(a)) - Number(/lite/i.test(b))
+      || a.localeCompare(b))
+    .slice(0, 4);
+}
+
 /**
  * Order to try models in. Chat keeps the learner's choice first; a connection check
- * tries the fast fallbacks first, so one slow "thinking" model cannot block it.
+ * tries the fast models first, so one slow "thinking" model cannot block it.
+ * `available` is the key's model list when known, so retired ids are never tried.
  */
-export function modelCandidates(provider: AiProvider, preferred: string, fastFirst = false): string[] {
-  const chosen = preferred && isChatModel(preferred) ? [preferred] : [];
-  const list = fastFirst ? [...FALLBACK_MODELS[provider], ...chosen] : [...chosen, ...FALLBACK_MODELS[provider]];
-  return [...new Set(list)];
+export function modelCandidates(provider: AiProvider, preferred: string, fastFirst = false, available: string[] = []): string[] {
+  const known = (id: string) => !available.length || available.includes(id) || id.endsWith("-latest");
+  const chosen = preferred && isChatModel(preferred) && known(preferred) ? [preferred] : [];
+  const fast = provider === "google" && available.length
+    ? [...rankGoogleModels(available, "chat"), ...FALLBACK_MODELS.google.filter((id) => id.endsWith("-latest"))]
+    : FALLBACK_MODELS[provider];
+  const list = fastFirst ? [...fast, ...chosen] : [...chosen, ...fast];
+  return [...new Set(list)].slice(0, 6);
 }
 
 export function classifyError(error: unknown, provider: AiProvider = "google"): AiError {
@@ -70,6 +101,12 @@ export function classifyError(error: unknown, provider: AiProvider = "google"): 
 }
 
 function classifyHttp(provider: AiProvider, status: number, detail: string): AiError {
+  const error = classifyStatus(provider, status, detail);
+  error.detail = detail;
+  return error;
+}
+
+function classifyStatus(provider: AiProvider, status: number, detail: string): AiError {
   const name = provider === "google" ? "Google Gemini" : "OpenAI";
   if (status === 401 || status === 403 || (status === 400 && /api[\s_-]?key|API_KEY_INVALID/i.test(detail))) {
     return new AiError("auth", `${name} từ chối API key (HTTP ${status}).`, status);
@@ -268,7 +305,7 @@ export async function runWithFailover<T>(
         } catch (raw) {
           const error = classifyError(raw, provider);
           problems.push(error);
-          attempts.push(`${model} · ${key.label || `key ${index + 1}`}: ${error.message}`);
+          attempts.push(`${model} · ${key.label || `key ${index + 1}`}: ${error.message}${error.detail ? ` — ${error.detail.slice(0, 260)}` : ""}`);
           // Quota is per model on Gemini, so a 429 only skips this key for this model.
           if (error.kind === "auth") { deadKeys.add(key.id); break; }
           if (error.kind === "quota") break;
@@ -288,6 +325,18 @@ function summarize(problems: AiError[], attempts: string[], providerName: string
   return error;
 }
 
+/** Turns Google's 429 text (limit, per-day/per-minute, retry delay) into advice. */
+function quotaAdvice(quota: AiError[], providerName: string): string {
+  const text = quota.map((p) => p.detail).join(" ");
+  if (/limit:\s*0(?!\d)/i.test(text)) {
+    return `Key ${providerName} không có hạn mức miễn phí cho các mô hình này (limit: 0). Hãy tạo key mới trong Google AI Studio, hoặc bật thanh toán cho dự án Google Cloud của key.`;
+  }
+  const perDay = /per ?day|PerDay|RPD/i.test(text);
+  const retry = /retry in ([\d.]+)s/i.exec(text);
+  const wait = retry ? ` Thử lại sau khoảng ${Math.ceil(Number(retry[1]))} giây.` : perDay ? " Hạn mức theo ngày sẽ đặt lại vào khoảng 14–15 giờ (giờ Việt Nam)." : " Chờ khoảng 1 phút rồi thử lại.";
+  return `Tất cả API key ${providerName} đã hết hạn mức ${perDay ? "trong ngày" : "tạm thời (theo phút)"}.${wait} Lưu ý: các key tạo trong cùng một dự án Google dùng chung hạn mức — muốn có thêm hạn mức, hãy tạo key ở dự án khác.`;
+}
+
 function summaryError(problems: AiError[], providerName: string): AiError {
   if (!problems.length) return new AiError("other", "Không thể kết nối AI.");
   const kinds = new Set(problems.map((p) => p.kind));
@@ -295,7 +344,7 @@ function summaryError(problems: AiError[], providerName: string): AiError {
     return new AiError("auth", `${providerName} từ chối tất cả API key đã lưu. Hãy kiểm tra hoặc tạo key mới trong Cài đặt.`);
   }
   if (kinds.has("quota") && !kinds.has("network") && !kinds.has("timeout")) {
-    return new AiError("quota", `Tất cả API key ${providerName} đều đã hết hạn mức tạm thời. Chờ ít phút hoặc thêm key khác.`);
+    return new AiError("quota", quotaAdvice(problems.filter((p) => p.kind === "quota"), providerName));
   }
   if (kinds.has("network")) {
     return new AiError("network", "Không kết nối được tới máy chủ AI. Hãy kiểm tra Internet, tắt VPN/chặn quảng cáo rồi thử lại.");

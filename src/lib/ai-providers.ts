@@ -5,7 +5,8 @@ export type AiProvider = "google" | "openai";
 export type AiModel = { id: string; label: string };
 
 export const DEFAULT_MODELS: Record<AiProvider, string> = {
-  google: "gemini-2.5-flash",
+  // An alias Google keeps pointing at its current Flash model, so it never retires.
+  google: "gemini-flash-latest",
   openai: "gpt-4o-mini",
 };
 
@@ -15,7 +16,7 @@ export function isAiProvider(value: string): value is AiProvider {
 
 export async function fetchAiModels(provider: AiProvider, apiKey: string): Promise<AiModel[]> {
   const endpoint = provider === "google"
-    ? "https://generativelanguage.googleapis.com/v1beta/models"
+    ? "https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000"
     : "https://api.openai.com/v1/models";
   const response = await fetch(endpoint, {
     headers: provider === "google"
@@ -53,6 +54,22 @@ export async function fetchAiModels(provider: AiProvider, apiKey: string): Promi
   });
   if (!models.length) throw new Error("Không tìm thấy mô hình chat OpenAI tương thích trong tài khoản này.");
   return models.sort((first, second) => second.id.localeCompare(first.id));
+}
+
+/** Every Google model this key may call with generateContent, including speech models. */
+export async function fetchGoogleModelIds(apiKey: string): Promise<string[]> {
+  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000", {
+    headers: { "x-goog-api-key": apiKey },
+    signal: AbortSignal.timeout(20_000),
+  });
+  const result: unknown = await response.json().catch(() => null);
+  if (!response.ok) throw new Error(getProviderError("google", response.status, result));
+  if (!isRecord(result) || !Array.isArray(result.models)) return [];
+  return result.models.flatMap((item): string[] =>
+    isRecord(item) && typeof item.name === "string" && Array.isArray(item.supportedGenerationMethods) &&
+      item.supportedGenerationMethods.includes("generateContent")
+      ? [item.name.replace(/^models\//, "")]
+      : []);
 }
 
 export async function transcribeWithOpenAi(apiKey: string, audio: Blob): Promise<string> {
@@ -93,7 +110,7 @@ export function getProviderError(provider: AiProvider, status: number, result: u
     ? result.error.message
     : "";
   if (status === 401 || status === 403) {
-    return `${provider === "google" ? "Google Gemini" : "OpenAI"} từ chối API key (HTTP ${status}). Kiểm tra key hoặc chọn key khác trong Cài đặt.`;
+    return `${provider === "google" ? "Google Gemini" : "OpenAI"} từ chối API key (HTTP ${status})${message ? `: ${message}` : ". Kiểm tra key hoặc chọn key khác trong Cài đặt."}`;
   }
   if (status === 429) {
     return `API key ${provider === "google" ? "Google Gemini" : "OpenAI"} đã hết hạn mức hoặc bị giới hạn. Hãy chọn key khác trong Cài đặt.`;

@@ -1977,7 +1977,8 @@ html[data-theme] .mobile-nav-item.selected small { color: var(--theme-primary); 
 .wz-page { max-width: 1100px; margin: 0 auto; }
 .wz-page-practice { max-width: 1180px; }
 @media (max-width: 720px) {
-  .wz-brand strong, .wz-back span, .wz-settings-label, .topbar-version { display: none; }
+  .wz-brand strong, .wz-back span, .wz-settings-label { display: none; }
+  .topbar-version { padding: 2px 6px; font-size: .75rem; }
   .wz-crumb { text-align: left; }
   .content-wrap.wz-page { padding: 16px 14px 28px; }
 }
@@ -2172,3 +2173,13 @@ html[data-theme] .mobile-nav-item.selected small { color: var(--theme-primary); 
 .cr-connect-details summary { cursor: pointer; font-weight: 700; }
 .cr-connect-details ul { margin: 6px 0 0; padding-left: 18px; word-break: break-word; }
 .voice-warning { margin: 0; padding: 10px 12px; border-radius: 10px; background: #fff6dc; color: #5c4300; font-size: .875rem; }
+
+/* Coloured top bar (blue theme): page title and brand must stay readable. */
+html[data-theme="blue"] .wz-crumb,
+html[data-theme="blue"] .wz-brand { color: #fff; }
+html[data-theme="blue"] .wz-crumb { opacity: .92; }
+.key-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.key-list li { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.key-list li.active { border-color: var(--purple); background: var(--paper); }
+.key-pick { display: grid; flex: 1; gap: 1px; min-width: 0; padding: 2px; border: 0; background: transparent; text-align: left; }
+.key-pick small { color: var(--muted); }
