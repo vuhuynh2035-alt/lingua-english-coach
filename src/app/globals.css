@@ -2167,3 +2167,8 @@ html[data-theme] .mobile-nav-item.selected small { color: var(--theme-primary); 
 .course-lesson-list .course-lesson { font-size: .9375rem; line-height: 1.35; }
 .course-lesson-list .course-progress-note { font-size: .875rem; line-height: 1.45; }
 .voice-preview .settings-hint, .voice-studio .settings-hint { font-size: .8125rem; }
+.wz-logo { display: block; width: 34px; height: 34px; border-radius: 10px; object-fit: cover; box-shadow: 0 3px 10px #0a4d4a33; }
+.cr-connect-details { width: 100%; text-align: left; font-size: .8125rem; color: var(--muted); }
+.cr-connect-details summary { cursor: pointer; font-weight: 700; }
+.cr-connect-details ul { margin: 6px 0 0; padding-left: 18px; word-break: break-word; }
+.voice-warning { margin: 0; padding: 10px 12px; border-radius: 10px; background: #fff6dc; color: #5c4300; font-size: .875rem; }

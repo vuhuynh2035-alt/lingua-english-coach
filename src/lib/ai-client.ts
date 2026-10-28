@@ -6,6 +6,8 @@ export type AiErrorKind = "auth" | "quota" | "model" | "busy" | "network" | "tim
 export class AiError extends Error {
   kind: AiErrorKind;
   status?: number;
+  /** One line per failed attempt ("model · key: reason"), shown to help diagnose. */
+  details: string[] = [];
   constructor(kind: AiErrorKind, message: string, status?: number) {
     super(message);
     this.name = "AiError";
@@ -32,11 +34,21 @@ export const FALLBACK_MODELS: Record<AiProvider, string[]> = {
   openai: ["gpt-4o-mini", "gpt-4.1-mini"],
 };
 
-const FIRST_BYTE_TIMEOUT_MS = 15_000;
-const TOTAL_STREAM_TIMEOUT_MS = 40_000;
+const FIRST_BYTE_TIMEOUT_MS = 20_000;
+const TOTAL_STREAM_TIMEOUT_MS = 45_000;
 
-export function modelCandidates(provider: AiProvider, preferred: string): string[] {
-  const list = [preferred, ...FALLBACK_MODELS[provider]].filter(Boolean);
+/** Speech, image, embedding and similar models also answer generateContent but cannot chat. */
+export function isChatModel(model: string): boolean {
+  return !/(tts|image|embed|aqa|live|audio|veo|imagen|robotics|computer-use|learnlm|gemma)/i.test(model);
+}
+
+/**
+ * Order to try models in. Chat keeps the learner's choice first; a connection check
+ * tries the fast fallbacks first, so one slow "thinking" model cannot block it.
+ */
+export function modelCandidates(provider: AiProvider, preferred: string, fastFirst = false): string[] {
+  const chosen = preferred && isChatModel(preferred) ? [preferred] : [];
+  const list = fastFirst ? [...FALLBACK_MODELS[provider], ...chosen] : [...chosen, ...FALLBACK_MODELS[provider]];
   return [...new Set(list)];
 }
 
@@ -222,13 +234,14 @@ async function streamOpenAi(
  * Runs `operation` over (model × key) pairs until one succeeds.
  * - auth: the key is skipped for the rest of the run. quota: next key, same model.
  * - model: the model is dropped for every key.
- * - busy / timeout / network: one quick retry on the same pair, then move on.
+ * - timeout: the model is too slow right now, so it is dropped (no retry).
+ * - busy / network: one quick retry on the same pair, then move on.
  */
 export async function runWithFailover<T>(
   options: FailoverOptions,
   operation: (key: string, model: string) => Promise<T>,
 ): Promise<FailoverResult<T>> {
-  const { provider, keys, preferredKeyId, models, deadlineMs = 50_000, onStatus } = options;
+  const { provider, keys, preferredKeyId, models, deadlineMs = 60_000, onStatus } = options;
   const providerName = provider === "google" ? "Google AI" : "OpenAI";
   if (!keys.length) throw new AiError("auth", `Chưa có API key ${providerName}. Hãy thêm key trong Cài đặt.`);
 
@@ -238,12 +251,13 @@ export async function runWithFailover<T>(
   const deadKeys = new Set<string>();
   const deadModels = new Set<string>();
   const problems: AiError[] = [];
+  const attempts: string[] = [];
 
   for (const model of models) {
     if (deadModels.has(model)) continue;
     for (const [index, key] of orderedKeys.entries()) {
       if (deadKeys.has(key.id) || deadModels.has(model)) continue;
-      if (Date.now() - start > deadlineMs) throw summarize(problems, providerName);
+      if (Date.now() - start > deadlineMs) throw summarize(problems, attempts, providerName);
       for (let tries = 0; tries < 2; tries++) {
         try {
           if (index > 0 || tries > 0 || model !== models[0]) {
@@ -254,20 +268,27 @@ export async function runWithFailover<T>(
         } catch (raw) {
           const error = classifyError(raw, provider);
           problems.push(error);
+          attempts.push(`${model} · ${key.label || `key ${index + 1}`}: ${error.message}`);
           // Quota is per model on Gemini, so a 429 only skips this key for this model.
           if (error.kind === "auth") { deadKeys.add(key.id); break; }
           if (error.kind === "quota") break;
-          if (error.kind === "model") { deadModels.add(model); break; }
+          if (error.kind === "model" || error.kind === "timeout") { deadModels.add(model); break; }
           if (error.kind === "other") throw error;
           if (tries === 0) await new Promise((r) => setTimeout(r, 600));
         }
       }
     }
   }
-  throw summarize(problems, providerName);
+  throw summarize(problems, attempts, providerName);
 }
 
-function summarize(problems: AiError[], providerName: string): AiError {
+function summarize(problems: AiError[], attempts: string[], providerName: string): AiError {
+  const error = summaryError(problems, providerName);
+  error.details = attempts;
+  return error;
+}
+
+function summaryError(problems: AiError[], providerName: string): AiError {
   if (!problems.length) return new AiError("other", "Không thể kết nối AI.");
   const kinds = new Set(problems.map((p) => p.kind));
   if (kinds.size === 1 && kinds.has("auth")) {
@@ -276,11 +297,14 @@ function summarize(problems: AiError[], providerName: string): AiError {
   if (kinds.has("quota") && !kinds.has("network") && !kinds.has("timeout")) {
     return new AiError("quota", `Tất cả API key ${providerName} đều đã hết hạn mức tạm thời. Chờ ít phút hoặc thêm key khác.`);
   }
-  if (kinds.has("network")) return problems.find((p) => p.kind === "network")!;
-  if (kinds.has("timeout")) {
-    return new AiError("timeout", "AI không phản hồi kịp. Mạng có thể đang chậm hoặc dịch vụ quá tải — hãy thử lại.");
+  if (kinds.has("network")) {
+    return new AiError("network", "Không kết nối được tới máy chủ AI. Hãy kiểm tra Internet, tắt VPN/chặn quảng cáo rồi thử lại.");
   }
-  return problems[problems.length - 1];
+  if (kinds.has("timeout")) {
+    return new AiError("timeout", "AI không phản hồi kịp với mọi mô hình đã thử. Mạng có thể đang chậm, VPN đang chặn, hoặc dịch vụ quá tải — hãy thử lại.");
+  }
+  const last = problems[problems.length - 1];
+  return new AiError(last.kind, last.message, last.status);
 }
 
 export function streamChat(
@@ -303,7 +327,7 @@ export type ConnectionReport = { ok: true; keyId: string; model: string; ms: num
 export async function checkConnection(options: FailoverOptions): Promise<ConnectionReport> {
   const t0 = Date.now();
   try {
-    const { keyId, model } = await runWithFailover({ ...options, deadlineMs: 25_000 }, (key, model) =>
+    const { keyId, model } = await runWithFailover({ ...options, deadlineMs: 45_000 }, (key, model) =>
       streamChat(options.provider, key, model, "Reply with the single word: OK", [{ role: "user", content: "ping" }], () => {}, 64));
     return { ok: true, keyId, model, ms: Date.now() - t0 };
   } catch (error) {

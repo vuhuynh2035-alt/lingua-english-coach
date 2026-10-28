@@ -8,7 +8,6 @@ import {
   cleanSpeechText,
   extractEnglishPracticePhrases,
   getCachedSpeech,
-  parseVoiceInfo,
   saveCachedSpeech,
   splitBilingualText,
 } from "@/lib/speech";
@@ -33,19 +32,21 @@ import {
   OPENAI_TTS_MODELS,
   OPENAI_VOICES,
   VOICE_STYLES,
-  VoiceGender,
   VoiceProfile,
   cloudVoiceId,
   deviceVoicesForAccent,
   getAccent,
+  guessDeviceVoiceGender,
   parseVoiceProfile,
   pickDeviceVoice,
   synthesizeCloudSpeech,
   voiceForGender,
+  voiceForTutor,
 } from "@/lib/voices";
 import {
   ConnectionReport,
   checkConnection,
+  isChatModel,
   modelCandidates,
   runWithFailover,
   streamChat,
@@ -731,7 +732,7 @@ export default function Home() {
   const [voiceProfile, setVoiceProfile] = useState<VoiceProfile>(DEFAULT_VOICE_PROFILE);
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [draft, setDraft] = useState("");
-  const [connection, setConnection] = useState<{ status: "idle" | "checking" | "ok" | "error"; message: string; ms?: number }>({ status: "idle", message: "" });
+  const [connection, setConnection] = useState<{ status: "idle" | "checking" | "ok" | "error"; message: string; ms?: number; details?: string[] }>({ status: "idle", message: "" });
   const [tutorEmotion, setTutorEmotion] = useState<AvatarEmotion | undefined>(undefined);
   const [tutorSubtitle, setTutorSubtitle] = useState("");
   const [chooseId, setChooseId] = useState("");
@@ -881,7 +882,7 @@ export default function Home() {
         if (typeof stored.selectedModels === "object" && stored.selectedModels !== null) {
           const models = stored.selectedModels as Record<string, unknown>;
           setSelectedModels({
-            google: typeof models.google === "string" && !/^gemini-(1\.|2\.0)/.test(models.google)
+            google: typeof models.google === "string" && !/^gemini-(1\.|2\.0)/.test(models.google) && isChatModel(models.google)
               ? models.google : DEFAULT_MODELS.google,
             openai: typeof models.openai === "string" ? models.openai : DEFAULT_MODELS.openai,
           });
@@ -1059,6 +1060,10 @@ export default function Home() {
       const savedPersona = localStorage.getItem("lingua-tutor-persona");
       if (savedPersona === "maya" || savedPersona === "david" || savedPersona === "alex") {
         setTutorPersona(savedPersona);
+        // Never tuned the voice yourself: it follows the tutor character.
+        if (!localStorage.getItem(VOICE_PROFILE_STORAGE)) {
+          setVoiceProfile((current) => ({ ...current, ...voiceForTutor(TUTOR_PERSONAS[savedPersona].kind) }));
+        }
       }
       const savedViVoice = localStorage.getItem("lingua-vi-voice-id");
       if (savedViVoice) setSelectedViVoiceId(savedViVoice);
@@ -1241,7 +1246,7 @@ export default function Home() {
       provider: aiProvider,
       keys: apiKeys[aiProvider],
       preferredKeyId: activeKeyIds[aiProvider],
-      models: modelCandidates(aiProvider, activeModel),
+      models: modelCandidates(aiProvider, activeModel, true),
       onStatus: (message) => setConnection({ status: "checking", message }),
     });
     if (report.ok) {
@@ -1249,7 +1254,7 @@ export default function Home() {
       setConnection({ status: "ok", message: `Đã kết nối · ${report.model} · ${(report.ms / 1000).toFixed(1)}s`, ms: report.ms });
       return true;
     }
-    setConnection({ status: "error", message: report.error.message });
+    setConnection({ status: "error", message: report.error.message, details: report.error.details });
     return false;
   }
 
@@ -1645,7 +1650,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       setActiveKeyIds((current) => ({ ...current, [aiProvider]: entry.id }));
       setModelCatalog((current) => ({ ...current, [aiProvider]: models }));
       if (!models.some((model) => model.id === selectedModels[aiProvider])) {
-        setSelectedModels((current) => ({ ...current, [aiProvider]: models[0]?.id ?? DEFAULT_MODELS[aiProvider] }));
+        setSelectedModels((current) => ({ ...current, [aiProvider]: models.find((model) => model.id === DEFAULT_MODELS[aiProvider])?.id ?? models[0]?.id ?? DEFAULT_MODELS[aiProvider] }));
       }
       setApiKeyDraft("");
       setApiKeyLabelDraft("");
@@ -1668,7 +1673,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       const models = await withAvailableApiKey((key) => fetchAiModels(aiProvider, key));
       setModelCatalog((current) => ({ ...current, [aiProvider]: models }));
       if (!models.some((model) => model.id === selectedModels[aiProvider])) {
-        setSelectedModels((current) => ({ ...current, [aiProvider]: models[0]?.id ?? DEFAULT_MODELS[aiProvider] }));
+        setSelectedModels((current) => ({ ...current, [aiProvider]: models.find((model) => model.id === DEFAULT_MODELS[aiProvider])?.id ?? models[0]?.id ?? DEFAULT_MODELS[aiProvider] }));
       }
     } catch (error) {
       setModelsError(error instanceof Error ? error.message : "Không thể tải danh sách mô hình.");
@@ -1701,8 +1706,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           voices.find((v) => v.lang.startsWith("vi") || v.lang.includes("VN"));
         if (viVoice) utterance.voice = viVoice;
       } else {
-        const voice = pickDeviceVoice(voices, voiceProfile, guessVoiceGender);
-        utterance.rate = voiceProfile.speed;
+        const { voice, pitch } = pickDeviceVoice(voices, voiceProfile);
+        utterance.rate = voiceProfile.childlike ? Math.min(voiceProfile.speed * 1.08, 1.3) : voiceProfile.speed;
+        // No real voice of that gender on this device (or a child's voice): imitate it with pitch.
+        utterance.pitch = pitch;
         if (voice) utterance.voice = voice;
         utterance.lang = voice?.lang ?? getAccent(voiceProfile.accent).locales[0];
       }
@@ -1711,10 +1718,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       utterance.onerror = () => resolve();
       window.speechSynthesis.speak(utterance);
     });
-  }
-
-  function guessVoiceGender(voice: SpeechSynthesisVoice): VoiceGender {
-    return parseVoiceInfo(voice.name, voice.lang).gender;
   }
 
   function updateVoiceProfile(patch: Partial<VoiceProfile>) {
@@ -1735,7 +1738,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   async function englishAudio(text: string, profile = voiceProfile): Promise<Blob | null> {
     const engine = profile.engine;
     if (engine === "device" || !apiKeys[engine].length) return null;
-    const cacheKey = `v2:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}`;
+    const cacheKey = `v2:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}`;
     try {
       const cached = await getCachedSpeech(cacheKey, text);
       if (cached) return cached;
@@ -1864,6 +1867,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     const groups = [...new Set(ACCENTS.map((item) => item.group))];
     const cloudList = voiceProfile.engine === "openai" ? OPENAI_VOICES : GOOGLE_VOICES;
     const deviceList = deviceVoicesForAccent(systemVoices, voiceProfile.accent);
+    const devicePick = pickDeviceVoice(systemVoices, voiceProfile);
     const engineReady = voiceProfile.engine === "device" || apiKeys[voiceProfile.engine].length > 0;
     return (
       <section className="panel settings-panel voice-studio">
@@ -1910,12 +1914,14 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           </div>
         ))}
 
-        <span className="settings-label">3 · Giới tính</span>
+        <span className="settings-label">3 · Giọng nữ / nam / trẻ em</span>
         <div className="voice-chips">
           {([["female", "👩 Nữ"], ["male", "👨 Nam"]] as const).map(([id, label]) => (
-            <button key={id} type="button" className={voiceProfile.gender === id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ gender: id })}>{label}</button>
+            <button key={id} type="button" className={!voiceProfile.childlike && voiceProfile.gender === id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ gender: id, childlike: false })}>{label}</button>
           ))}
+          <button type="button" className={voiceProfile.childlike ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile(voiceForTutor("mascot"))}>🧒 Trẻ em</button>
         </div>
+        <small className="settings-hint">Tự đổi theo nhân vật gia sư: Thầy David → nam, Cô Maya → nữ, Cú Alex → trẻ em. Bạn vẫn có thể chọn lại ở đây.</small>
 
         <span className="settings-label">4 · Chọn giọng</span>
         {voiceProfile.engine === "device" ? (
@@ -1923,7 +1929,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             <select className="settings-select" value={voiceProfile.deviceVoice} onChange={(event) => updateVoiceProfile({ deviceVoice: event.target.value })}>
               <option value="">Tự chọn giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} phù hợp nhất</option>
               {deviceList.map((voice) => (
-                <option key={voice.voiceURI} value={voice.voiceURI}>{voice.name} ({voice.lang}) · {guessVoiceGender(voice) === "female" ? "nữ" : "nam"}</option>
+                <option key={voice.voiceURI} value={voice.voiceURI}>{voice.name} ({voice.lang}){{ female: " · nữ", male: " · nam", unknown: "" }[guessDeviceVoiceGender(voice)]}</option>
               ))}
             </select>
           ) : (
@@ -1941,6 +1947,15 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               );
             })}
           </div>
+        )}
+
+        {voiceProfile.engine === "device" && deviceList.length > 0 && !devicePick.genderMatches && (
+          <p className="voice-warning">
+            {devicePick.pitch === 1
+              ? <>Máy này không cho biết giọng nào là nam hay nữ, nên đang dùng giọng mặc định của máy.</>
+              : <>Máy này không có giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} thật cho vùng {accent.name}, nên app đang <strong>mô phỏng</strong> bằng cách {voiceProfile.gender === "male" ? "hạ" : "nâng"} cao độ.</>}
+            {" "}Để có giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} thật, hãy chọn <button type="button" className="text-button" onClick={() => updateVoiceProfile({ engine: "google" })}>Giọng AI Google</button> hoặc cài thêm giọng tiếng Anh trong cài đặt máy.
+          </p>
         )}
 
         <span className="settings-label">5 · Phong cách và tốc độ</span>
@@ -2364,7 +2379,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <span className="settings-icon" aria-hidden="true">🎓</span>
                 <div>
                   <h3>Chọn nhân vật gia sư 3D</h3>
-                  <p>Lựa chọn hình tượng gia sư phù hợp với sở thích và phong cách học tập của bạn.</p>
+                  <p>Lựa chọn hình tượng gia sư phù hợp với sở thích của bạn. Giọng đọc tự đổi theo nhân vật: thầy → giọng nam, cô → giọng nữ, Cú Alex → giọng trẻ em.</p>
                 </div>
               </div>
               <div className="tutor-persona-grid">
@@ -2377,6 +2392,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                       className={`tutor-persona-card ${isSelected ? "selected" : ""}`}
                       onClick={() => {
                         setTutorPersona(pKey);
+                        updateVoiceProfile(voiceForTutor(TUTOR_PERSONAS[pKey].kind));
                         try {
                           localStorage.setItem("lingua-tutor-persona", pKey);
                         } catch {}
@@ -2468,6 +2484,12 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               {connection.status === "checking" ? "Đang kiểm tra…" : "⚡ Kiểm tra kết nối AI"}
             </button>
             {connection.message && <p className={connection.status === "error" ? "error-message" : "api-key-success"} role="status">{connection.message}</p>}
+            {connection.status === "error" && connection.details && connection.details.length > 0 && (
+              <details className="cr-connect-details">
+                <summary>Chi tiết từng lần thử ({connection.details.length})</summary>
+                <ul>{connection.details.map((line, index) => <li key={index}>{line}</li>)}</ul>
+              </details>
+            )}
             <small className="settings-hint">App tự thử lần lượt các key và mô hình dự phòng, rồi ghi nhớ cấu hình chạy được.</small>
           </div>
         </section>
@@ -2691,6 +2713,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <p className={checking ? "cr-connect-note" : "error-message"} role={checking ? "status" : "alert"}>
             {connection.message || "Đang kiểm tra API key và mô hình…"}
           </p>
+          {!checking && connection.details && connection.details.length > 0 && (
+            <details className="cr-connect-details">
+              <summary>Chi tiết từng lần thử ({connection.details.length})</summary>
+              <ul>{connection.details.map((line, index) => <li key={index}>{line}</li>)}</ul>
+            </details>
+          )}
           {!checking && (
             <div className="cr-connect-actions">
               <button type="button" className="button button-primary" onClick={() => { void connectClassroom(); }}>↻ Thử lại</button>
@@ -3539,7 +3567,9 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               </button>
             )}
             <a className="wz-brand" href="#" onClick={(event) => { event.preventDefault(); navigateToSection("home"); }}>
-              <span className="brand-mark">T<span>✦</span></span>
+              {/* Plain img: with a static export and basePath, next/image would not add the prefix. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="wz-logo" src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/icon.svg`} alt="" width={34} height={34} />
               <strong>Teacher AI</strong>
             </a>
           </div>

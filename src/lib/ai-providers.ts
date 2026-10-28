@@ -1,3 +1,4 @@
+import { isChatModel } from "@/lib/ai-client";
 import { GeminiPart, generateWithGemini } from "@/lib/gemini";
 
 export type AiProvider = "google" | "openai";
@@ -33,6 +34,7 @@ export async function fetchAiModels(provider: AiProvider, apiKey: string): Promi
           !Array.isArray(item.supportedGenerationMethods) ||
           !item.supportedGenerationMethods.includes("generateContent")) return [];
       const id = item.name.replace(/^models\//, "");
+      if (!isChatModel(id)) return [];
       return [{ id, label: typeof item.displayName === "string" ? item.displayName : id }];
     });
     if (!models.length) throw new Error("API key Google không có mô hình hỗ trợ tạo nội dung.");

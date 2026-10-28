@@ -103,6 +103,8 @@ export type VoiceProfile = {
   style: VoiceStyle;
   /** 0.7 – 1.2 */
   speed: number;
+  /** A young child's voice, used for the owl mascot. */
+  childlike: boolean;
 };
 
 export const DEFAULT_VOICE_PROFILE: VoiceProfile = {
@@ -114,6 +116,7 @@ export const DEFAULT_VOICE_PROFILE: VoiceProfile = {
   deviceVoice: "",
   style: "teacher",
   speed: 0.95,
+  childlike: false,
 };
 
 export function getAccent(id: string): Accent {
@@ -133,6 +136,7 @@ export function parseVoiceProfile(raw: unknown): VoiceProfile {
     deviceVoice: typeof value.deviceVoice === "string" ? value.deviceVoice : "",
     style: pick(value.style, VOICE_STYLES.map((s) => s.id), DEFAULT_VOICE_PROFILE.style),
     speed: typeof value.speed === "number" && value.speed >= 0.7 && value.speed <= 1.2 ? value.speed : DEFAULT_VOICE_PROFILE.speed,
+    childlike: value.childlike === true,
   };
 }
 
@@ -140,6 +144,14 @@ export function parseVoiceProfile(raw: unknown): VoiceProfile {
 export function voiceForGender(list: NamedVoice[], current: string, gender: VoiceGender): string {
   const chosen = list.find((v) => v.id === current);
   return chosen?.gender === gender ? current : list.find((v) => v.gender === gender)?.id ?? list[0].id;
+}
+
+/** Voice settings that match the tutor character: man → male, woman → female, owl → child. */
+export function voiceForTutor(kind: "man" | "woman" | "mascot"): Partial<VoiceProfile> {
+  if (kind === "man") return { gender: "male", childlike: false };
+  if (kind === "woman") return { gender: "female", childlike: false };
+  // Leda and nova are the youngest-sounding voices; the direction makes them sound like a child.
+  return { gender: "female", childlike: true, googleVoice: "Leda", openaiVoice: "nova" };
 }
 
 export function cloudVoiceId(profile: VoiceProfile): string {
@@ -151,6 +163,9 @@ export function voiceDirection(profile: VoiceProfile): string {
   const accent = getAccent(profile.accent);
   const style = VOICE_STYLES.find((s) => s.id === profile.style) ?? VOICE_STYLES[0];
   const pace = profile.speed < 0.85 ? "slowly" : profile.speed < 0.98 ? "at a slightly slow pace" : profile.speed > 1.08 ? "at a brisk pace" : "at a normal pace";
+  if (profile.childlike) {
+    return `Speak like a cheerful, playful young child about eight years old, with a high, bright, bouncy voice and ${accent.prompt} accent, ${pace}`;
+  }
   return `Speak with ${accent.prompt} accent, ${style.prompt}, ${pace}`;
 }
 
@@ -246,14 +261,37 @@ export async function synthesizeCloudSpeech(
   return response.blob();
 }
 
-/** Best device voice for the profile: the chosen one, else same accent + gender, else same accent, else any English. */
-export function pickDeviceVoice(voices: SpeechSynthesisVoice[], profile: VoiceProfile, guessGender: (v: SpeechSynthesisVoice) => VoiceGender): SpeechSynthesisVoice | undefined {
+// Names device voices use on Windows/Edge, macOS/iOS, Chrome and Android (Google "x-" voice codes).
+const FEMALE_HINTS = /\b(female|woman|zira|susan|hazel|heera|catherine|linda|jenny|aria|ana|michelle|emma|ava|sonia|libby|maisie|natasha|clara|emily|molly|neerja|ashley|cora|elizabeth|amber|jane|nancy|sara|samantha|karen|moira|fiona|tessa|veena|victoria|allison|serena|kate|stephanie|nicky|zoe|isha|salli|joanna|kendra|kimberly|ivy|olivia|ruth|amy|nicole|aditi|raveena|google us english|wavenet [acef]|standard [acef]|neural2 [acef]|iob|iog|sfg|tpc|tpf|gba|gbc|gbg|aua|auc|ahp|cxx|ene)\b/i;
+const MALE_HINTS = /\b(male|man|david|mark|george|guy|ryan|eric|roger|christopher|brian|andrew|steffan|thomas|william|liam|ravi|prabhat|connor|mitchell|james|daniel|alex|fred|oliver|aaron|arthur|gordon|lee|rishi|matthew|joey|justin|kevin|russell|wavenet [bdj]|standard [bdj]|neural2 [bdj]|iol|iom|tpd|gbb|gbd|rjs|aub|aud|end)\b/i;
+
+/** Best guess of a device voice's gender from its name; many phones expose no hint at all. */
+export function guessDeviceVoiceGender(voice: SpeechSynthesisVoice): VoiceGender | "unknown" {
+  const name = `${voice.name} ${voice.voiceURI}`.replace(/[-_]/g, " ").replace(/\b(en|us|gb|au|in)\s+x\s+/gi, "");
+  if (FEMALE_HINTS.test(name)) return "female";
+  if (MALE_HINTS.test(name)) return "male";
+  return "unknown";
+}
+
+/**
+ * Device voice for the profile, whether its gender really matches, and the pitch to use.
+ * When the device has no voice of the wanted gender, the gender is imitated with pitch.
+ */
+export function pickDeviceVoice(voices: SpeechSynthesisVoice[], profile: VoiceProfile): { voice?: SpeechSynthesisVoice; genderMatches: boolean; pitch: number } {
   const chosen = voices.find((v) => v.voiceURI === profile.deviceVoice);
-  if (chosen) return chosen;
   const accentVoices = deviceVoicesForAccent(voices, profile.accent);
-  return accentVoices.find((v) => guessGender(v) === profile.gender)
+  const voice = chosen
+    ?? accentVoices.find((v) => guessDeviceVoiceGender(v) === profile.gender)
+    ?? accentVoices.find((v) => guessDeviceVoiceGender(v) === "unknown")
     ?? accentVoices[0]
     ?? voices.find((v) => v.lang.toLowerCase().startsWith("en"));
+  const actual = voice ? guessDeviceVoiceGender(voice) : "unknown";
+  // A child: a high voice on top of whatever the device has.
+  if (profile.childlike) return { voice, genderMatches: true, pitch: actual === "male" ? 1.9 : 1.6 };
+  if (actual === profile.gender) return { voice, genderMatches: true, pitch: 1 };
+  // Unnamed phone voices are usually the default female voice, so only "male" needs a shift.
+  const pitch = profile.gender === "male" ? 0.72 : actual === "male" ? 1.25 : 1;
+  return { voice, genderMatches: false, pitch };
 }
 
 export function deviceVoicesForAccent(voices: SpeechSynthesisVoice[], accentId: string): SpeechSynthesisVoice[] {
