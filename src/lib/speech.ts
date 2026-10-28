@@ -172,7 +172,7 @@ export function cleanSpeechText(text: string): string {
     .replace(/\*+/g, "") // remove ALL asterisks (*, **, ***) everywhere!
     .replace(/_+/g, "")  // remove all underscores
     .replace(/^#+\s+/gm, "") // remove markdown headers #, ##
-    .replace(/^[\s-*•·✦💡🎯🎙️🔊✨]+\s*/gm, "") // remove bullets and decorative icons
+    .replace(/^[\s\-*•·✦💡🎯🎙️🔊✨]+\s*/gmu, "") // remove bullets and decorative icons (u: emoji are surrogate pairs)
     .replace(/[\`~]/g, "") // remove backticks and strikethrough
     .replace(/[-–—]\s*$/g, "") // remove trailing dashes
     .replace(/^\s*[-–—]/g, "") // remove leading dashes

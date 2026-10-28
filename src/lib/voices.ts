@@ -158,7 +158,26 @@ export function cloudVoiceId(profile: VoiceProfile): string {
   return profile.engine === "openai" ? profile.openaiVoice : profile.googleVoice;
 }
 
-/** Spoken direction shared by both cloud engines. */
+const GOOGLE_STYLE_ADVERBS: Record<VoiceStyle, string> = {
+  teacher: "clearly",
+  natural: "naturally",
+  warm: "warmly",
+  energetic: "cheerfully",
+  formal: "calmly and professionally",
+};
+
+/**
+ * Gemini TTS takes its direction inside the text. A long direction gets read aloud,
+ * so this uses Google's short documented form: "Say <how> in <accent> accent: <text>".
+ */
+export function googleSpeechPrompt(profile: VoiceProfile, text: string): string {
+  const accent = getAccent(profile.accent);
+  const how = profile.childlike ? "cheerfully, like a young child," : GOOGLE_STYLE_ADVERBS[profile.style];
+  const pace = profile.speed < 0.9 ? " slowly" : profile.speed > 1.08 ? " quickly" : "";
+  return `Say ${how}${pace} in ${accent.prompt} accent: ${text}`;
+}
+
+/** Direction for OpenAI, which takes it as a separate `instructions` field. */
 export function voiceDirection(profile: VoiceProfile): string {
   const accent = getAccent(profile.accent);
   const style = VOICE_STYLES.find((s) => s.id === profile.style) ?? VOICE_STYLES[0];
@@ -222,7 +241,7 @@ export async function synthesizeCloudSpeech(
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: `${direction}. Say only the following text: ${text}` }] }],
+          contents: [{ role: "user", parts: [{ text: googleSpeechPrompt(profile, text) }] }],
           generationConfig: {
             responseModalities: ["AUDIO"],
             speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: profile.googleVoice } } },

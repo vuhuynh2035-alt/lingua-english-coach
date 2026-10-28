@@ -1,3 +1,5 @@
+import { geminiOutputBudget, geminiThinkingConfig } from "@/lib/ai-client";
+
 const MODEL = "gemini-2.5-flash";
 
 export type GeminiPart = { text: string } | { inlineData: { mimeType: string; data: string } };
@@ -15,15 +17,23 @@ export async function generateWithGemini(
   parts: GeminiPart[],
   model = MODEL,
 ): Promise<string> {
-  return requestGemini(apiKey, model, {
+  const thinkingConfig = geminiThinkingConfig(model);
+  const request = (withThinking: boolean) => requestGemini(apiKey, model, {
     contents: [{ role: "user", parts }],
     generationConfig: {
       temperature: 0.7,
-      maxOutputTokens: 1500,
-      // Thinking would eat the output budget and cut the JSON short.
-      ...(/gemini-2\.5-flash/i.test(model) ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
+      // Thinking tokens share this budget; too little and the JSON is cut short.
+      maxOutputTokens: geminiOutputBudget(model, 1500),
+      ...(withThinking && thinkingConfig ? { thinkingConfig } : {}),
     },
   });
+  try {
+    return await request(true);
+  } catch (error) {
+    // Some models reject the thinking setting; ask again without it.
+    if (thinkingConfig && error instanceof Error && /thinking/i.test(error.message)) return request(false);
+    throw error;
+  }
 }
 
 async function requestGemini(
@@ -35,7 +45,7 @@ async function requestGemini(
     generationConfig: {
       temperature: number;
       maxOutputTokens: number;
-      thinkingConfig?: { thinkingBudget: number };
+      thinkingConfig?: Record<string, unknown>;
     };
   },
 ): Promise<string> {

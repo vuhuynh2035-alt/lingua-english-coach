@@ -170,9 +170,20 @@ async function readSse(
   return full.trim();
 }
 
-function geminiThinkingConfig(model: string) {
-  // Only 2.5 flash / flash-lite accept a zero thinking budget; others reject or ignore it.
-  return /gemini-2\.5-flash/i.test(model) ? { thinkingBudget: 0 } : undefined;
+/**
+ * Keep "thinking" short: 2.5 Flash can turn it off; Gemini 3+ (and the -latest aliases,
+ * which point at it) take a level instead. A model that rejects the setting is retried
+ * without it.
+ */
+export function geminiThinkingConfig(model: string): Record<string, unknown> | undefined {
+  if (/gemini-2\.5-flash/i.test(model)) return { thinkingBudget: 0 };
+  if (/gemini-([3-9]|\d\d)|-latest$/i.test(model)) return { thinkingLevel: "low" };
+  return undefined;
+}
+
+/** Thinking tokens count against maxOutputTokens, so leave room for them or the answer is cut. */
+export function geminiOutputBudget(model: string, answerTokens: number): number {
+  return /gemini-2\.5-flash/i.test(model) ? answerTokens : answerTokens + 2048;
 }
 
 async function streamGemini(
@@ -184,7 +195,7 @@ async function streamGemini(
   maxTokens: number,
 ): Promise<string> {
   const build = (withThinking: boolean) => {
-    const generationConfig: Record<string, unknown> = { temperature: 0.8, maxOutputTokens: maxTokens };
+    const generationConfig: Record<string, unknown> = { temperature: 0.8, maxOutputTokens: geminiOutputBudget(model, maxTokens) };
     const thinking = withThinking ? geminiThinkingConfig(model) : undefined;
     if (thinking) generationConfig.thinkingConfig = thinking;
     return {

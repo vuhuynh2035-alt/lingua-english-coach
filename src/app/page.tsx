@@ -25,6 +25,9 @@ import { GrammarQuestion, GrammarTopic, grammarTopics } from "@/lib/grammar";
 
 import { IllustrationIcon, IllustrationName } from "@/components/illustration-icon";
 import { AvatarEmotion, AvatarKind, TutorAvatar } from "@/components/tutor-avatar";
+import { attachLipSync, pulseMouth, resumeLipSync } from "@/lib/lipsync";
+import { Elapsed, NetIndicator } from "@/components/net-indicator";
+import { installNetActivityTracker } from "@/lib/net-activity";
 import {
   ACCENTS,
   DEFAULT_VOICE_PROFILE,
@@ -739,6 +742,11 @@ export default function Home() {
   const [modelsBusy, setModelsBusy] = useState(false);
   const [modelsError, setModelsError] = useState("");
   const [speechBusy, setSpeechBusy] = useState(false);
+  /** Waiting for AI audio to download. */
+  const [speechLoading, setSpeechLoading] = useState(false);
+  /** Sound is actually coming out (drives the avatar's mouth). */
+  const [speechPlaying, setSpeechPlaying] = useState(false);
+  const [turnStartedAt, setTurnStartedAt] = useState(0);
   const [speechError, setSpeechError] = useState("");
   const [speechNotice, setSpeechNotice] = useState("");
   const [voiceProfile, setVoiceProfile] = useState<VoiceProfile>(DEFAULT_VOICE_PROFILE);
@@ -804,6 +812,9 @@ export default function Home() {
   const retryTurnRef = useRef<(() => void) | null>(null);
   const classroomBootRef = useRef(false);
   const speechRunRef = useRef(0);
+  const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null }[]>([]);
+  const speechQueueRunningRef = useRef(false);
+  const speechFallbackRef = useRef("");
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
   const speechPlayerUnlockedRef = useRef(false);
   const pendingLessonStartRef = useRef(false);
@@ -843,6 +854,7 @@ export default function Home() {
   }
 
   useEffect(() => {
+    installNetActivityTracker();
     try {
       const savedScale = Number(localStorage.getItem(FONT_SCALE_STORAGE));
       if (Number.isFinite(savedScale) && savedScale >= 100 && savedScale <= 200) {
@@ -1393,6 +1405,23 @@ RULES:
     setChatBusy(true);
     setChatError("");
     setTutorSubtitle("");
+    setTurnStartedAt(Date.now());
+    stopSpeech();
+    speechFallbackRef.current = "";
+    // Read each finished sentence aloud while the rest of the answer is still arriving.
+    let spoken = "";
+    const speakFinished = (text: string, final: boolean) => {
+      if (!text.startsWith(spoken)) {
+        // A retry on another model restarted the answer.
+        stopSpeech();
+        spoken = "";
+      }
+      const end = final ? text.length : speakableEnd(text, spoken.length);
+      if (end > spoken.length) {
+        enqueueSpeech(text.slice(spoken.length, end));
+        spoken = text.slice(0, end);
+      }
+    };
     try {
       let shown = "";
       const raw = await withAvailableApiKey(
@@ -1402,18 +1431,20 @@ RULES:
           if (parsed.mood) setTutorEmotion(parsed.mood);
           if (parsed.level) setAiLevelEstimate(parsed.level);
           setMessages([...base, { role: "assistant", content: parsed.text }]);
+          speakFinished(parsed.text, false);
         }),
         (status) => setTutorSubtitle(status),
       );
       const parsed = parseMood(raw);
+      speakFinished(parsed.text || shown, true);
       const finalReply = (parsed.text || shown).trim();
       setMessages([...base, { role: "assistant", content: finalReply }]);
       setProgress((current) => recordPractice(current, 2, !practiceSessionCounted.current));
       practiceSessionCounted.current = true;
       setConnection((current) => current.status === "ok" ? current : { status: "ok", message: "Đã kết nối" });
-      void playSpeech(finalReply);
       return true;
     } catch (error) {
+      stopSpeech();
       setMessages(base);
       setChatError(error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
       lastAiErrorRef.current = error instanceof AiError ? error : null;
@@ -1429,6 +1460,8 @@ RULES:
     event?.preventDefault();
     const content = (requestedPrompt ?? draft).trim();
     if (!content || chatBusy) return;
+    // Inside the tap: lets the answer's audio play on phones later.
+    unlockSpeechPlayer();
     if (!apiKey) {
       setChatError(`Hãy thêm API key ${aiProvider === "google" ? "Google AI" : "OpenAI"} trong mục Cài đặt để bắt đầu trò chuyện.`);
       return;
@@ -1439,17 +1472,26 @@ RULES:
   }
 
   /** The teacher opens the class: greets, states the goal and sets the first situation. */
+  /**
+   * Starts a fresh class: earlier chat is cleared (progress lives in the course, not in the
+   * chat), then the teacher opens the lesson by itself.
+   */
   async function startLesson(): Promise<boolean> {
-    // The built-in scripted greetings are replaced by the teacher's own opening.
-    const scripted = new Set([initialMessage.content, ...profiles.map((item) => item.prompt)]);
-    const history = messages
-      .filter((message) => message.content.trim() && !(message.role === "assistant" && scripted.has(message.content)))
-      .slice(-10);
-    const returning = history.length > 1;
-    const opening = `[CLASS START] The learner has just entered the classroom. ${returning
-      ? "Welcome them back warmly, recap in one line what you practised last time, then continue with a NEW situation."
-      : "Greet them warmly and introduce yourself in one line."} State today's lesson and its goal in one sentence, then begin stage 1 (warm-up) and give the first task. Start speaking now.`;
-    return tutorTurn(history, [...history, { role: "user", content: opening }]);
+    stopSpeech();
+    setChatError("");
+    retryTurnRef.current = null;
+    setAiLevelEstimate(null);
+    const lesson = tutorLesson();
+    const opening = `[CLASS START] The learner has just entered the classroom. Greet them warmly and introduce yourself in one line. Then say the full title of today's lesson${lesson ? ` ("${lesson.title}")` : ""} and its goal in one sentence, begin stage 1 (warm-up) and give the first task. Start speaking now.`;
+    return tutorTurn([], [{ role: "user", content: opening }]);
+  }
+
+  /** Opens the classroom on one question (from a lesson or quiz), without old chat. */
+  function startClassWith(question: string) {
+    stopSpeech();
+    setChatError("");
+    const conversation: Message[] = [{ role: "user", content: question }];
+    void tutorTurn(conversation, conversation);
   }
 
   /** The teacher's opening turn doubles as the connection check, saving one request of quota. */
@@ -1784,6 +1826,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         utterance.lang = voice?.lang ?? getAccent(voiceProfile.accent).locales[0];
       }
 
+      // Each spoken word moves the avatar's mouth.
+      utterance.onboundary = (event) => { if (event.name === "word") pulseMouth(); };
       utterance.onend = () => resolve();
       utterance.onerror = () => resolve();
       window.speechSynthesis.speak(utterance);
@@ -1808,7 +1852,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   async function englishAudio(text: string, profile = voiceProfile): Promise<Blob | null> {
     const engine = profile.engine;
     if (engine === "device" || !apiKeys[engine].length) return null;
-    const cacheKey = `v2:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}`;
+    // v3: v2 Google clips could contain the spoken direction, so they are not reused.
+    const cacheKey = `v3:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}`;
     try {
       const cached = await getCachedSpeech(cacheKey, text);
       if (cached) return cached;
@@ -1839,6 +1884,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   function unlockSpeechPlayer() {
+    // Also inside the tap: lip sync measures the AI voice through Web Audio.
+    attachLipSync(speechPlayer());
     if (speechPlayerUnlockedRef.current) return;
     const player = speechPlayer();
     player.src = SILENT_WAV;
@@ -1863,6 +1910,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       player.onpause = done;
       player.onerror = () => { done(); reject(new Error("trình duyệt không phát được tệp âm thanh")); };
       player.src = objectUrl;
+      resumeLipSync();
       player.play().catch((error: unknown) => {
         player.onpause = null;
         done();
@@ -1875,65 +1923,118 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
   function stopSpeech() {
     speechRunRef.current += 1;
+    speechQueueRef.current = [];
     speechAudioRef.current?.pause();
     speechAudioRef.current = null;
     if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+    setSpeechLoading(false);
+    setSpeechPlaying(false);
   }
 
   function engineLabel(profile: VoiceProfile): string {
     return profile.engine === "google" ? `Giọng AI Google · ${profile.googleVoice}` : `Giọng AI OpenAI · ${profile.openaiVoice}`;
   }
 
-  /** Plays text: Vietnamese parts with the device voice, English parts with the chosen practice voice. */
+  /**
+   * Adds text to the speech queue. Vietnamese parts use the device voice, English parts the
+   * chosen practice voice; AI audio for every queued sentence is requested immediately, so
+   * the next clip is usually ready when the current one ends.
+   */
+  function enqueueSpeech(text: string, englishOnly = false) {
+    const profile = voiceProfile;
+    const segments = englishOnly ? [{ text: cleanSpeechText(text), lang: "en" as const }] : splitBilingualText(text);
+    for (const segment of segments) {
+      if (!segment.text.trim()) continue;
+      speechQueueRef.current.push({
+        ...segment,
+        clip: segment.lang === "en"
+          ? englishAudio(segment.text, profile).catch((error: unknown) => {
+            speechFallbackRef.current = error instanceof Error ? error.message : "lỗi không xác định";
+            return null;
+          })
+          : null,
+      });
+    }
+    if (!speechQueueRunningRef.current) void runSpeechQueue();
+  }
+
+  async function runSpeechQueue() {
+    speechQueueRunningRef.current = true;
+    const run = speechRunRef.current;
+    const profile = voiceProfile;
+    let usedCloud = false;
+    let spokeEnglish = false;
+    setSpeechBusy(true);
+    setSpeechError("");
+    try {
+      while (speechQueueRef.current.length && speechRunRef.current === run) {
+        const item = speechQueueRef.current.shift()!;
+        if (item.lang === "en") spokeEnglish = true;
+        if (item.clip) {
+          setSpeechLoading(true);
+          const clip = await item.clip;
+          setSpeechLoading(false);
+          if (speechRunRef.current !== run) break;
+          if (clip) {
+            try {
+              setSpeechPlaying(true);
+              await playBlob(clip);
+              usedCloud = true;
+              continue;
+            } catch (error) {
+              speechFallbackRef.current = error instanceof Error ? error.message : "không phát được";
+            } finally {
+              setSpeechPlaying(false);
+            }
+          }
+        }
+        setSpeechPlaying(true);
+        await playNativeUtterance(item.text, item.lang);
+        setSpeechPlaying(false);
+      }
+    } finally {
+      speechQueueRunningRef.current = false;
+      setSpeechLoading(false);
+      setSpeechPlaying(false);
+      if (speechRunRef.current === run) {
+        setSpeechBusy(false);
+        if (spokeEnglish) {
+          const reason = speechFallbackRef.current;
+          const deviceName = pickDeviceVoice(systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [], profile).voice?.name;
+          setSpeechNotice(usedCloud && !reason
+            ? `🔊 Vừa phát bằng ${engineLabel(profile)}.`
+            : profile.engine === "device"
+            ? `🔊 Vừa phát bằng giọng trên máy${deviceName ? `: ${deviceName}` : ""}.`
+            : `⚠️ ${engineLabel(profile)} chưa dùng được (${reason || "không rõ lý do"}), nên vừa phát bằng giọng trên máy${deviceName ? ` (${deviceName})` : ""}.`);
+        }
+      } else if (speechQueueRef.current.length) {
+        // A new run queued text while this one was stopping.
+        void runSpeechQueue();
+      }
+    }
+  }
+
+  /** Replaces whatever is playing with `text`. */
   async function speak(text: string, englishOnly = false) {
     const clean = text.trim();
     if (!clean) return;
     stopSpeech();
     // Must happen inside the tap, before any await.
     unlockSpeechPlayer();
-    const run = speechRunRef.current;
-    const profile = voiceProfile;
-    const segments = englishOnly ? [{ text: cleanSpeechText(clean), lang: "en" as const }] : splitBilingualText(clean);
-    let fallbackReason = profile.engine !== "device" && !apiKeys[profile.engine].length
-      ? `chưa có API key ${profile.engine === "google" ? "Google" : "OpenAI"}`
+    speechFallbackRef.current = voiceProfile.engine !== "device" && !apiKeys[voiceProfile.engine].length
+      ? `chưa có API key ${voiceProfile.engine === "google" ? "Google" : "OpenAI"}`
       : "";
-    let usedCloud = false;
-    // Fetch every English clip up front so the reply plays without gaps.
-    const clips = segments.map((segment) => segment.lang === "en"
-      ? englishAudio(segment.text, profile).catch((error: unknown) => {
-        fallbackReason = error instanceof Error ? error.message : "lỗi không xác định";
-        return null;
-      })
-      : Promise.resolve(null));
-    setSpeechBusy(true);
-    setSpeechError("");
-    setSpeechNotice(profile.engine === "device" ? "" : `Đang tạo ${engineLabel(profile)}…`);
-    try {
-      for (const [index, segment] of segments.entries()) {
-        if (speechRunRef.current !== run) return;
-        const clip = await clips[index];
-        if (speechRunRef.current !== run) return;
-        if (clip) {
-          try {
-            await playBlob(clip);
-            usedCloud = true;
-            continue;
-          } catch (error) {
-            fallbackReason = error instanceof Error ? error.message : "không phát được";
-          }
-        }
-        await playNativeUtterance(segment.text, segment.lang);
-      }
-      if (speechRunRef.current !== run || !segments.some((segment) => segment.lang === "en")) return;
-      const deviceName = pickDeviceVoice(systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [], profile).voice?.name;
-      setSpeechNotice(usedCloud && !fallbackReason
-        ? `🔊 Vừa phát bằng ${engineLabel(profile)}.`
-        : profile.engine === "device"
-        ? `🔊 Vừa phát bằng giọng trên máy${deviceName ? `: ${deviceName}` : ""}.`
-        : `⚠️ ${engineLabel(profile)} chưa dùng được (${fallbackReason || "không rõ lý do"}), nên vừa phát bằng giọng trên máy${deviceName ? ` (${deviceName})` : ""}.`);
-    } finally {
-      if (speechRunRef.current === run) setSpeechBusy(false);
+    setSpeechNotice(voiceProfile.engine === "device" ? "" : `Đang tạo ${engineLabel(voiceProfile)}…`);
+    enqueueSpeech(clean, englishOnly);
+  }
+
+  /** End of the last complete sentence after `from`, or `from` when none is long enough yet. */
+  function speakableEnd(text: string, from: number): number {
+    let end = from;
+    for (const match of text.slice(from).matchAll(/[.!?…:](?:["”'’)\]]*)\s+|\n+/g)) {
+      end = from + (match.index ?? 0) + match[0].length;
     }
+    return end - from >= 24 ? end : from;
   }
 
   function playPracticePhrase(text: string) {
@@ -2270,7 +2371,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   function nextLessonFor(course: CoursePackage): CourseLesson | undefined {
     const completed = courseProgress[course.id] ?? [];
     const open = unlockedLessonIds(course, completed, progress.level);
-    return course.lessons.find((item) => open.has(item.id) && !completed.includes(item.id));
+    const pending = course.lessons.filter((item) => open.has(item.id) && !completed.includes(item.id));
+    // Start at the learner's own level; easier lessons stay open but are not pushed on them.
+    const learnerIndex = Math.max(0, COURSE_LEVELS.findIndex((level) => level === progress.level));
+    return pending.find((item) => COURSE_LEVELS.indexOf(item.level) >= learnerIndex) ?? pending[0];
   }
 
   /** Quietly stores the bundled pack for a profile (or refreshes an older version). */
@@ -2776,7 +2880,7 @@ Thầy/cô giải thích thêm giúp em tại sao lại chọn "${correctChoice}
 
     classroomBootRef.current = true;
     navigateToSection("practice");
-    void sendMessage(undefined, questionText);
+    startClassWith(questionText);
   }
 
   function askTutorAboutLesson(lesson: CourseLesson) {
@@ -2805,21 +2909,28 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
 
     classroomBootRef.current = true;
     navigateToSection("practice");
-    void sendMessage(undefined, questionText);
+    startClassWith(questionText);
   }
 
   function renderPractice() {
     const persona = TUTOR_PERSONAS[tutorPersona];
     const course = coursePacks.find((item) => item.id === progress.profile);
     const currentLesson = tutorLesson();
+    // The mouth moves only while sound really plays; waiting for the network shows as thinking.
     const avatarStatus: "idle" | "thinking" | "speaking" | "listening" =
-      voiceChatRecording ? "listening" : chatBusy ? "thinking" : speechBusy ? "speaking" : "idle";
+      voiceChatRecording ? "listening" : speechPlaying ? "speaking" : chatBusy || speechLoading ? "thinking" : "idle";
     const lastTeacherMessage = [...messages].reverse().find((m) => m.role === "assistant" && m.content.trim());
-    const caption = chatBusy
-      ? tutorSubtitle || `${persona.name} đang chuẩn bị tình huống cho bạn…`
+    const waitingForWords = chatBusy && !messages[messages.length - 1]?.content.trim();
+    const caption = waitingForWords
+      ? tutorSubtitle || `${persona.name} đang suy nghĩ…`
       : voiceChatRecording
       ? "Đang lắng nghe bạn… nói xong thì nhấn nút dừng nhé."
-      : cleanSpeechText(lastTeacherMessage?.content ?? persona.greeting).slice(0, 260);
+      : cleanSpeechText(lastTeacherMessage?.content ?? persona.greeting);
+    const waitNote = waitingForWords
+      ? <span className="cr-wait">💭 Đang chờ AI trả lời <Elapsed since={turnStartedAt} /></span>
+      : speechLoading && !speechPlaying
+      ? <span className="cr-wait">🔊 Đang tạo giọng đọc…</span>
+      : null;
     const connected = connection.status === "ok" || (connection.status === "idle" && messages.some((m) => m.role === "user"));
 
     if (!connected) {
@@ -2876,15 +2987,17 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             </label>
           )}
           <div className="cr-avatar">
-            <TutorAvatar kind={persona.kind} status={avatarStatus} emotion={avatarStatus === "thinking" || avatarStatus === "listening" ? undefined : tutorEmotion} size={210} />
+            <TutorAvatar kind={persona.kind} status={avatarStatus} emotion={avatarStatus === "thinking" || avatarStatus === "listening" ? undefined : tutorEmotion} size={240} />
           </div>
           <div className={`cr-bubble cr-bubble-${avatarStatus}`}>
             <p>{caption || "…"}</p>
+            {waitNote}
             {avatarStatus === "speaking" && <span className="cr-wave" aria-hidden="true"><i /><i /><i /><i /></span>}
           </div>
           <div className="cr-stage-actions">
             <button type="button" className="cr-round" disabled={speechBusy || !lastTeacherMessage} onClick={() => lastTeacherMessage && void playSpeech(lastTeacherMessage.content)} title="Nghe lại">🔊 Nghe lại</button>
             <button type="button" className="cr-round" disabled={chatBusy} onClick={() => { void sendMessage(undefined, "Thầy/cô ra tình huống mới cho em luyện nhé."); }} title="Tình huống mới">🎬 Tình huống mới</button>
+            <button type="button" className="cr-round" disabled={chatBusy} onClick={() => { void startLesson(); }} title="Xóa hội thoại và học lại bài từ đầu">🗑 Xóa & học lại</button>
           </div>
         </section>
 
@@ -3660,6 +3773,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
 
   return (
     <main className="app-shell wizard-shell">
+      <NetIndicator />
       {showHelp && (
         <div className="help-dialog-backdrop" onClick={() => setShowHelp(false)}>
           <section
