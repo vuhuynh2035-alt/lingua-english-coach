@@ -1,47 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { NetState, subscribeNetActivity } from "@/lib/net-activity";
 
-/** Seconds since `since`, updating every half second. */
-export function Elapsed({ since }: { since: number }) {
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => {
-    const timer = setInterval(() => setNow(Date.now()), 500);
-    return () => clearInterval(timer);
-  }, []);
-  const seconds = Math.max(0, Math.floor((now - since) / 1000));
-  return seconds >= 1 ? <span className="net-elapsed">{seconds}s</span> : null;
+/** Three bouncing dots: "something is happening". */
+export function WaitDots() {
+  return <span className="wait-dots" aria-hidden="true"><i /><i /><i /></span>;
 }
 
 /**
- * A bar across the top and a small notice while the app waits for the network, so a slow
- * connection never looks like a frozen app (and nobody taps again "to make it work").
+ * Shown only while the learner must wait for something they asked for (an AI answer, a
+ * lesson pack, a key check) — background work never shows it. Taps are blocked meanwhile,
+ * so an impatient second tap cannot start more downloads; `onCancel` offers a way out.
  */
-export function NetIndicator() {
-  const [state, setState] = useState<NetState>({ active: 0, since: null });
-  const [now, setNow] = useState(() => Date.now());
-  useEffect(() => subscribeNetActivity(setState), []);
+export function WaitIndicator({ active, label = "Đang tải về, xin hãy đợi", onCancel }: {
+  active: boolean;
+  label?: string;
+  onCancel?: () => void;
+}) {
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
-    if (!state.active) return;
-    const timer = setInterval(() => setNow(Date.now()), 500);
-    return () => clearInterval(timer);
-  }, [state.active]);
-
-  // Quick requests do not flash anything.
-  const waited = state.since ? now - state.since : 0;
-  if (!state.active || waited < 500) return null;
-  const seconds = Math.floor(waited / 1000);
-  const slow = seconds >= 8;
+    if (!active) {
+      setVisible(false);
+      return;
+    }
+    // Quick loads do not flash anything (taps are still blocked from the start).
+    const timer = setTimeout(() => setVisible(true), 400);
+    return () => clearTimeout(timer);
+  }, [active]);
+  if (!active) return null;
   return (
-    <>
-      <div className="net-bar" role="progressbar" aria-label="Đang tải dữ liệu" />
-      <div className={`net-chip${slow ? " slow" : ""}`} role="status" aria-live="polite">
-        <span className="net-dot" aria-hidden="true" />
-        {slow
-          ? <>Mạng chậm — đang chờ phản hồi ({seconds}s). Vui lòng đợi, không cần bấm lại.</>
-          : <>Đang tải{seconds ? ` · ${seconds}s` : "…"}</>}
-      </div>
-    </>
+    <div className="wait-scrim" aria-busy="true">
+      {visible && (
+        <>
+          <div className="net-bar" aria-hidden="true" />
+          <div className="net-chip" role="status" aria-live="polite">
+            <WaitDots /> {label}
+            {onCancel && <button type="button" className="wait-cancel" onClick={onCancel}>Hủy</button>}
+          </div>
+        </>
+      )}
+    </div>
   );
 }

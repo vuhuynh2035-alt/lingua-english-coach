@@ -189,58 +189,64 @@ function Human({ id, kind, emotion, talking }: { id: string; kind: "woman" | "ma
   );
 }
 
-/**
- * Robo: a floating white robot with a dark glass visor and glowing LED eyes. It has no
- * mouth; while it talks, an LED equaliser under the eyes follows the voice (--mouth).
- */
 function RobotEye({ id, cx, emotion, side }: { id: string; cx: number; emotion: AvatarEmotion; side: "l" | "r" }) {
-  const tilt = side === "l" ? -12 : 12;
+  const cy = 58;
+  const tilt = side === "l" ? -14 : 14;
   if (emotion === "happy" || emotion === "cheer") {
     // Smiling eyes: glowing upside-down arcs.
     return (
       <g className="av-iris av-robot-eye" filter={`url(#${id}-glow)`}>
-        <path d={`M${cx - 12} 88 Q${cx} 72 ${cx + 12} 88`} fill="none" stroke="#7cf2ff" strokeWidth="6.5" strokeLinecap="round" />
+        <path d={`M${cx - 11} ${cy + 4} Q${cx} ${cy - 10} ${cx + 11} ${cy + 4}`} fill="none" stroke="#7cf2ff" strokeWidth="6" strokeLinecap="round" />
       </g>
     );
   }
-  const ry = emotion === "surprised" ? 12 : emotion === "thinking" && side === "r" ? 5 : 9;
-  const rx = emotion === "surprised" ? 12 : 13;
+  const ry = emotion === "surprised" ? 10 : emotion === "thinking" && side === "r" ? 4 : 7.5;
+  const rx = emotion === "surprised" ? 10 : 12;
   return (
     <g className="av-iris av-robot-eye" filter={`url(#${id}-glow)`}>
-      <ellipse cx={cx} cy={84} rx={rx} ry={ry} fill={`url(#${id}-led)`} transform={`rotate(${emotion === "surprised" ? 0 : tilt} ${cx} 84)`} />
+      <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={`url(#${id}-led)`} transform={`rotate(${emotion === "surprised" ? 0 : tilt} ${cx} ${cy})`} />
     </g>
   );
 }
 
+/**
+ * Robo: a floating white robot — a wide oval head that is almost all dark glass visor,
+ * above a long egg-shaped body that tapers to a point, with slim arms hanging at its sides.
+ * It has no mouth; while it talks, an LED equaliser under the eyes follows the voice.
+ */
 function Robot({ id, emotion }: { id: string; emotion: AvatarEmotion }) {
+  const shellStroke = "#c3ced9";
   return (
     <g>
-      {/* arms float beside the body */}
-      <path d="M44 150 C30 160 28 196 40 214 C48 220 56 214 56 204 L58 158 C57 148 50 146 44 150Z" fill={`url(#${id}-shell)`} stroke="#c9d3dd" strokeWidth="1" className="av-wing av-wing-l" />
-      <path d="M156 150 C170 160 172 196 160 214 C152 220 144 214 144 204 L142 158 C143 148 150 146 156 150Z" fill={`url(#${id}-shell)`} stroke="#c9d3dd" strokeWidth="1" className="av-wing av-wing-r" />
-      {/* body: an egg that tapers to a point, hovering */}
+      {/* slim arms hang close to the body */}
+      <path d="M50 104 C38 112 33 150 36 188 C37 200 47 203 51 193 C56 166 59 132 60 113 C60 104 55 100 50 104Z"
+        fill={`url(#${id}-shell)`} stroke={shellStroke} strokeWidth="1" className="av-wing av-wing-l" />
+      <path d="M150 104 C162 112 167 150 164 188 C163 200 153 203 149 193 C144 166 141 132 140 113 C140 104 145 100 150 104Z"
+        fill={`url(#${id}-shell)`} stroke={shellStroke} strokeWidth="1" className="av-wing av-wing-r" />
+      {/* long egg body: broad shoulders, tapering to a rounded point */}
       <g className="av-body">
-        <path d="M100 142 C138 142 150 172 142 204 C134 232 114 246 100 248 C86 246 66 232 58 204 C50 172 62 142 100 142Z" fill={`url(#${id}-shell)`} stroke="#c9d3dd" strokeWidth="1" />
-        <path d="M70 158 C80 150 92 148 100 148" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity=".9" />
-        <path d="M64 176 Q100 186 136 176" fill="none" stroke="#d3dce5" strokeWidth="1.5" />
+        <path d="M100 99 C133 99 144 116 142 146 C139 188 118 234 100 244 C82 234 61 188 58 146 C56 116 67 99 100 99Z"
+          fill={`url(#${id}-shell)`} stroke={shellStroke} strokeWidth="1" />
+        <path d="M72 116 C80 106 90 103 100 103" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity=".95" />
+        <path d="M120 112 C130 132 132 160 126 190" fill="none" stroke="#a9b6c3" strokeWidth="3" strokeLinecap="round" opacity=".35" />
       </g>
       <g className="av-head">
-        {/* head shell */}
-        <ellipse cx="100" cy="80" rx="64" ry="56" fill={`url(#${id}-shell)`} stroke="#c9d3dd" strokeWidth="1" />
-        <path d="M58 46 C74 30 104 26 128 36" fill="none" stroke="#ffffff" strokeWidth="7" strokeLinecap="round" opacity=".95" />
-        {/* dark glass visor */}
-        <ellipse cx="100" cy="88" rx="50" ry="34" fill={`url(#${id}-visor)`} />
-        <path d="M62 78 C72 62 98 58 118 62" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" opacity=".18" />
-        <RobotEye id={id} cx={78} emotion={emotion} side="l" />
-        <RobotEye id={id} cx={122} emotion={emotion} side="r" />
+        {/* head shell: wide oval */}
+        <ellipse cx="100" cy="52" rx="52" ry="42" fill={`url(#${id}-shell)`} stroke={shellStroke} strokeWidth="1" />
+        <path d="M64 26 C78 14 102 11 122 18" fill="none" stroke="#ffffff" strokeWidth="6" strokeLinecap="round" opacity=".95" />
+        {/* dark glass visor covers most of the face */}
+        <ellipse cx="100" cy="58" rx="42" ry="28" fill={`url(#${id}-visor)`} />
+        <path d="M68 50 C76 38 96 34 114 37" fill="none" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" opacity=".2" />
+        <RobotEye id={id} cx={81} emotion={emotion} side="l" />
+        <RobotEye id={id} cx={119} emotion={emotion} side="r" />
         {/* LED equaliser: its bars follow the voice */}
         <g fill="#5fe6ff" filter={`url(#${id}-glow)`}>
-          {[-16, -8, 0, 8, 16].map((dx, index) => (
-            <rect key={dx} className={`av-eq av-eq-${index}`} x={100 + dx - 2.5} y={100} width="5" height="14" rx="2.5" />
+          {[-14, -7, 0, 7, 14].map((dx, index) => (
+            <rect key={dx} className={`av-eq av-eq-${index}`} x={100 + dx - 2.2} y={70} width="4.4" height="11" rx="2.2" />
           ))}
         </g>
         {(emotion === "happy" || emotion === "cheer") && (
-          <><ellipse cx="54" cy="104" rx="8" ry="4.5" fill="#ff8aa0" opacity=".35" /><ellipse cx="146" cy="104" rx="8" ry="4.5" fill="#ff8aa0" opacity=".35" /></>
+          <><ellipse cx="62" cy="72" rx="6" ry="3.5" fill="#ff8aa0" opacity=".3" /><ellipse cx="138" cy="72" rx="6" ry="3.5" fill="#ff8aa0" opacity=".3" /></>
         )}
       </g>
     </g>

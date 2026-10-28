@@ -26,8 +26,7 @@ import { GrammarQuestion, GrammarTopic, grammarTopics } from "@/lib/grammar";
 import { IllustrationIcon, IllustrationName } from "@/components/illustration-icon";
 import { AvatarEmotion, AvatarKind, TutorAvatar } from "@/components/tutor-avatar";
 import { attachLipSync, pulseMouth, resumeLipSync } from "@/lib/lipsync";
-import { Elapsed, NetIndicator } from "@/components/net-indicator";
-import { installNetActivityTracker } from "@/lib/net-activity";
+import { WaitDots, WaitIndicator } from "@/components/net-indicator";
 import {
   ACCENTS,
   DEFAULT_VOICE_PROFILE,
@@ -180,6 +179,7 @@ const AI_SETTINGS_STORAGE = "lingua-ai-settings";
 const FONT_SCALE_STORAGE = "lingua-font-scale";
 const APP_THEME_STORAGE = "lingua-app-theme";
 const VOICE_PROFILE_STORAGE = "lingua-voice-profile-v1";
+const TUTOR_NAMES_STORAGE = "lingua-tutor-names";
 const GOOGLE_MODELS_STORAGE = "lingua-google-models";
 /** 0.05 s of silence, played inside a tap so phones allow later AI audio. */
 const SILENT_WAV = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQQAAACAgICA";
@@ -475,7 +475,7 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
     kind: "woman",
     tagline: "Dịu dàng, phát âm chuẩn, kiên nhẫn hướng dẫn",
     description: "Cô giáo nhiệt tình, hướng dẫn tỉ mỉ từng phát âm và ngữ pháp theo trình độ học viên.",
-    greeting: "Hi! I'm Ms. Maya. Hôm nay cô sẽ đồng hành cùng em luyện nói tiếng Anh thật tự tin nhé.",
+    greeting: "Hôm nay cô sẽ đồng hành cùng em luyện nói tiếng Anh thật tự tin nhé.",
     badge: "👩‍🏫 Nữ gia sư",
   },
   david: {
@@ -486,7 +486,7 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
     kind: "man",
     tagline: "Phong thái đĩnh đạc, ngữ điệu Anh-Mỹ tự nhiên",
     description: "Thầy giáo phong cách phương Tây, phản xạ nhanh và chuyên sâu giao tiếp công việc.",
-    greeting: "Hello there! I'm David, your coach. Ready to practice speaking naturally today?",
+    greeting: "Ready to practice speaking naturally today?",
     badge: "👨‍🏫 Nam gia sư",
   },
   alex: {
@@ -498,7 +498,7 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
     kind: "mascot",
     tagline: "Đáng yêu, hoạt bát, học tập không áp lực",
     description: "Chú robot nhỏ thông minh, vui tính, giúp việc học nhẹ nhàng như một trò chơi thú vị.",
-    greeting: "Beep boop! Hi, I'm Robo! Cùng nhau chinh phục bài học tiếng Anh nào!",
+    greeting: "Beep boop! Cùng nhau chinh phục bài học tiếng Anh nào!",
     badge: "🤖 Robot",
   },
 };
@@ -706,6 +706,8 @@ export default function Home() {
   const [section, setSection] = useState<Section>("home");
   // Tutor Persona
   const [tutorPersona, setTutorPersona] = useState<TutorPersona>("maya");
+  /** Names the learner gave each tutor; empty means the default name. */
+  const [tutorNames, setTutorNames] = useState<Partial<Record<TutorPersona, string>>>({});
 
   // System Voices & Offline Speech Tuning
   const [systemVoices, setSystemVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -747,7 +749,6 @@ export default function Home() {
   const [speechLoading, setSpeechLoading] = useState(false);
   /** Sound is actually coming out (drives the avatar's mouth). */
   const [speechPlaying, setSpeechPlaying] = useState(false);
-  const [turnStartedAt, setTurnStartedAt] = useState(0);
   const [speechError, setSpeechError] = useState("");
   const [speechNotice, setSpeechNotice] = useState("");
   const [voiceProfile, setVoiceProfile] = useState<VoiceProfile>(DEFAULT_VOICE_PROFILE);
@@ -809,6 +810,8 @@ export default function Home() {
   const sectionHistoryRef = useRef<Section[]>([]);
   const chatListRef = useRef<HTMLDivElement | null>(null);
   const lastAiErrorRef = useRef<AiError | null>(null);
+  const tutorTurnRef = useRef(0);
+  const tutorTurnBaseRef = useRef<Message[]>([]);
   const googleModelsRef = useRef<string[] | null>(null);
   const retryTurnRef = useRef<(() => void) | null>(null);
   const classroomBootRef = useRef(false);
@@ -816,6 +819,9 @@ export default function Home() {
   const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null }[]>([]);
   const speechQueueRunningRef = useRef(false);
   const speechFallbackRef = useRef("");
+  const cloudSpeechPausedUntilRef = useRef(0);
+  const cloudSpeechPauseReasonRef = useRef("");
+  const courseSyncRef = useRef<string | null>(null);
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
   const speechPlayerUnlockedRef = useRef(false);
   const pendingLessonStartRef = useRef(false);
@@ -855,7 +861,6 @@ export default function Home() {
   }
 
   useEffect(() => {
-    installNetActivityTracker();
     try {
       const savedScale = Number(localStorage.getItem(FONT_SCALE_STORAGE));
       if (Number.isFinite(savedScale) && savedScale >= 100 && savedScale <= 200) {
@@ -1087,6 +1092,13 @@ export default function Home() {
     if (typeof window === "undefined") return;
     try {
       const savedPersona = localStorage.getItem("lingua-tutor-persona");
+      try {
+        const savedNames: unknown = JSON.parse(localStorage.getItem(TUTOR_NAMES_STORAGE) ?? "{}");
+        if (typeof savedNames === "object" && savedNames !== null) {
+          setTutorNames(Object.fromEntries(Object.entries(savedNames).filter(([key, value]) =>
+            key in TUTOR_PERSONAS && typeof value === "string" && value.trim())) as Partial<Record<TutorPersona, string>>);
+        }
+      } catch {}
       if (savedPersona === "maya" || savedPersona === "david" || savedPersona === "alex") {
         setTutorPersona(savedPersona);
         // Never tuned the voice yourself: it follows the tutor character.
@@ -1230,9 +1242,24 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [section, coursePacks, progress.profile]);
 
+  function personaName(key: TutorPersona): string {
+    return tutorNames[key]?.trim() || TUTOR_PERSONAS[key].name;
+  }
+
+  function updateTutorName(key: TutorPersona, value: string) {
+    setTutorNames((current) => {
+      const next = { ...current, [key]: value.slice(0, 24) };
+      if (!value.trim()) delete next[key];
+      try { localStorage.setItem(TUTOR_NAMES_STORAGE, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
+
   function selectProfile(id: string) {
     const nextProfile = profiles.find((item) => item.id === id);
     if (!nextProfile) return;
+    // Only the chosen course is downloaded, in the background while the learner picks a mode.
+    void syncCourse(id, true);
     setProgress((current) => ({ ...current, profile: id }));
     setMessages(loadMessages(id) ?? [{ role: "assistant", content: nextProfile.prompt }]);
     setPronunciation(null);
@@ -1243,15 +1270,14 @@ export default function Home() {
   }
 
   /**
-   * The Google models this key can use right now (cached for 12 h). Google retires model
-   * ids regularly, so fallbacks come from this list instead of a fixed one.
+   * The Google models the saved keys can use. Fetched once (when a key is added, or on first
+   * use) and kept; it is refreshed in the background only when Google has retired a model.
    */
   async function googleModelIds(): Promise<string[]> {
     if (googleModelsRef.current) return googleModelsRef.current;
     try {
-      const cached = JSON.parse(localStorage.getItem(GOOGLE_MODELS_STORAGE) ?? "null") as { at?: number; ids?: unknown } | null;
-      if (cached && typeof cached.at === "number" && Date.now() - cached.at < 12 * 3600_000 &&
-          Array.isArray(cached.ids) && cached.ids.every((id) => typeof id === "string")) {
+      const cached = JSON.parse(localStorage.getItem(GOOGLE_MODELS_STORAGE) ?? "null") as { ids?: unknown } | null;
+      if (cached && Array.isArray(cached.ids) && cached.ids.length && cached.ids.every((id) => typeof id === "string")) {
         googleModelsRef.current = cached.ids as string[];
         return googleModelsRef.current;
       }
@@ -1260,12 +1286,16 @@ export default function Home() {
       try {
         const ids = await fetchGoogleModelIds(entry.value);
         if (!ids.length) continue;
-        googleModelsRef.current = ids;
-        try { localStorage.setItem(GOOGLE_MODELS_STORAGE, JSON.stringify({ at: Date.now(), ids })); } catch {}
+        rememberGoogleModels(ids);
         return ids;
       } catch {}
     }
     return [];
+  }
+
+  function rememberGoogleModels(ids: string[]) {
+    googleModelsRef.current = ids;
+    try { localStorage.setItem(GOOGLE_MODELS_STORAGE, JSON.stringify({ at: Date.now(), ids })); } catch {}
   }
 
   async function chatModelCandidates(fastFirst = false): Promise<string[]> {
@@ -1277,17 +1307,23 @@ export default function Home() {
     operation: (key: string, model: string) => Promise<T>,
     onStatus?: (message: string) => void,
   ): Promise<T> {
+    const models = await chatModelCandidates();
     const result = await runWithFailover(
       {
         provider: aiProvider,
         keys: apiKeys[aiProvider],
         preferredKeyId: activeKeyIds[aiProvider],
-        models: await chatModelCandidates(),
+        models,
         onStatus,
       },
       operation,
     );
     rememberWorkingConnection(result.keyId, result.model);
+    // The first choice failed: Google may have retired it, so refresh the list quietly.
+    if (aiProvider === "google" && result.model !== models[0]) {
+      forgetGoogleModels();
+      void googleModelIds();
+    }
     return result.value;
   }
 
@@ -1327,7 +1363,8 @@ export default function Home() {
 
   function buildTutorSystemPrompt(): string {
     const persona = TUTOR_PERSONAS[tutorPersona];
-    const self = persona.kind === "man" ? "thầy" : persona.kind === "woman" ? "cô" : "Robo";
+    const name = personaName(tutorPersona);
+    const self = persona.kind === "man" ? "thầy" : persona.kind === "woman" ? "cô" : name;
     const level = COURSE_LEVELS.includes(progress.level as CourseLevel) ? progress.level as CourseLevel : "A2";
     const lesson = tutorLesson();
     const lessonBlock = lesson
@@ -1339,7 +1376,7 @@ ${lesson.pronunciation ? `Pronunciation focus: ${lesson.pronunciation.focus} —
 ${lesson.speakingTasks?.length ? `Speaking tasks: ${lesson.speakingTasks.join(" | ")}` : ""}
 Teach THIS lesson. Use its vocabulary and grammar in every situation you create.`
       : `TOPIC: "${profile.title}", scenario: "${profile.scene}".`;
-    return `You are ${persona.name}, an expert, PROACTIVE English teacher (${persona.kind === "mascot" ? "a cheerful little robot" : persona.kind === "man" ? "male" : "female"}) for a Vietnamese learner. In Vietnamese you call yourself "${self}" and the learner "em" (mascot: "mình" and "bạn").
+    return `Your name is "${name}" — always use exactly this name when you introduce yourself. You are an expert, PROACTIVE English teacher (${persona.kind === "mascot" ? "a cheerful little robot" : persona.kind === "man" ? "male" : "female"}) for a Vietnamese learner. In Vietnamese you call yourself "${self}" and the learner "em" (mascot: "mình" and "bạn").
 Learner: CEFR ${level}, field "${profile.title}".
 ${lessonBlock}
 
@@ -1402,11 +1439,14 @@ RULES:
 
   /** One streamed teacher turn. `base` is what the learner sees; `apiHistory` is what the model receives. */
   async function tutorTurn(base: Message[], apiHistory: Message[]): Promise<boolean> {
+    // A cancelled turn keeps running on the network but its answer is ignored.
+    const turn = ++tutorTurnRef.current;
+    const current = () => tutorTurnRef.current === turn;
+    tutorTurnBaseRef.current = base;
     setMessages([...base, { role: "assistant", content: "" }]);
     setChatBusy(true);
     setChatError("");
     setTutorSubtitle("");
-    setTurnStartedAt(Date.now());
     stopSpeech();
     speechFallbackRef.current = "";
     // Read each finished sentence aloud while the rest of the answer is still arriving.
@@ -1427,6 +1467,7 @@ RULES:
       let shown = "";
       const raw = await withAvailableApiKey(
         (key, model) => streamChat(aiProvider, key, model, buildTutorSystemPrompt(), normalizeForApi(apiHistory), (full) => {
+          if (!current()) return;
           const parsed = parseMood(full);
           shown = parsed.text;
           if (parsed.mood) setTutorEmotion(parsed.mood);
@@ -1436,6 +1477,7 @@ RULES:
         }),
         (status) => setTutorSubtitle(status),
       );
+      if (!current()) return false;
       const parsed = parseMood(raw);
       speakFinished(parsed.text || shown, true);
       const finalReply = (parsed.text || shown).trim();
@@ -1445,6 +1487,7 @@ RULES:
       setConnection((current) => current.status === "ok" ? current : { status: "ok", message: "Đã kết nối" });
       return true;
     } catch (error) {
+      if (!current()) return false;
       stopSpeech();
       setMessages(base);
       setChatError(error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
@@ -1452,9 +1495,21 @@ RULES:
       retryTurnRef.current = () => { void tutorTurn(base, apiHistory); };
       return false;
     } finally {
-      setChatBusy(false);
-      setTutorSubtitle("");
+      if (current()) {
+        setChatBusy(false);
+        setTutorSubtitle("");
+      }
     }
+  }
+
+  /** "Cancel" while waiting: drop the pending answer and give the screen back at once. */
+  function cancelTutorTurn() {
+    tutorTurnRef.current += 1;
+    stopSpeech();
+    setChatBusy(false);
+    setTutorSubtitle("");
+    setMessages(tutorTurnBaseRef.current);
+    lastAiErrorRef.current = new AiError("other", "Đã hủy. Bấm “Thử lại” khi bạn sẵn sàng.");
   }
 
   async function sendMessage(event?: FormEvent, requestedPrompt?: string) {
@@ -1472,7 +1527,6 @@ RULES:
     await tutorTurn(conversation, conversation.slice(-12));
   }
 
-  /** The teacher opens the class: greets, states the goal and sets the first situation. */
   /**
    * Starts a fresh class: earlier chat is cleared (progress lives in the course, not in the
    * chat), then the teacher opens the lesson by itself.
@@ -1583,6 +1637,9 @@ RULES:
           return;
         }
         // Gemini hears the audio itself, so it can also judge pronunciation.
+        // Same cancel rules as a typed turn: a cancelled answer is ignored.
+        const turn = ++tutorTurnRef.current;
+        tutorTurnBaseRef.current = messages;
         setChatBusy(true);
         setChatError("");
         setTutorSubtitle("Đang nghe và chấm phát âm…");
@@ -1611,6 +1668,7 @@ Return ONLY valid JSON: {"transcript":"...","reply":"..."}`,
               typeof data.reply !== "string" || !data.transcript.trim() || !data.reply.trim()) {
             throw new Error("Gia sư AI trả lời không đúng định dạng. Vui lòng thử lại.");
           }
+          if (tutorTurnRef.current !== turn) return;
           const parsed = parseMood(data.reply);
           if (parsed.mood) setTutorEmotion(parsed.mood);
           if (parsed.level) setAiLevelEstimate(parsed.level);
@@ -1625,10 +1683,13 @@ Return ONLY valid JSON: {"transcript":"...","reply":"..."}`,
           practiceSessionCounted.current = true;
           void playSpeech(coachMessage);
         } catch (error) {
+          if (tutorTurnRef.current !== turn) return;
           setChatError(error instanceof Error ? error.message : "Gia sư chưa thể xử lý bản ghi. Bạn vui lòng thử lại nhé.");
         } finally {
-          setChatBusy(false);
-          setTutorSubtitle("");
+          if (tutorTurnRef.current === turn) {
+            setChatBusy(false);
+            setTutorSubtitle("");
+          }
         }
       };
       recorder.start();
@@ -1754,7 +1815,16 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     setApiKeyError("");
     setApiKeySaved(false);
     try {
-      const models = await fetchAiModels(aiProvider, candidate);
+      let models: AiModel[];
+      if (aiProvider === "google") {
+        // One request both checks the key and fetches the model list kept for later.
+        const ids = await fetchGoogleModelIds(candidate);
+        models = ids.filter(isChatModel).sort().map((id) => ({ id, label: id }));
+        if (!models.length) throw new Error("API key Google không có mô hình hỗ trợ trò chuyện.");
+        rememberGoogleModels(ids);
+      } else {
+        models = await fetchAiModels(aiProvider, candidate);
+      }
       const entry = {
         id: typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `key-${Date.now()}-${Math.random().toString(36).slice(2)}`,
         label: nextKeyLabel(apiKeys[aiProvider]),
@@ -1853,24 +1923,33 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   async function englishAudio(text: string, profile = voiceProfile): Promise<Blob | null> {
     const engine = profile.engine;
     if (engine === "device" || !apiKeys[engine].length) return null;
+    // After a failure the device voice is used for a while, instead of waiting on every sentence.
+    if (Date.now() < cloudSpeechPausedUntilRef.current) throw new Error(cloudSpeechPauseReasonRef.current || "giọng AI tạm nghỉ");
     // v4: earlier Google clips could contain the spoken direction, so they are not reused.
     const cacheKey = `v4:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}`;
     try {
       const cached = await getCachedSpeech(cacheKey, text);
       if (cached) return cached;
     } catch {}
-    const { value } = await runWithFailover(
-      {
-        provider: engine,
-        keys: apiKeys[engine],
-        preferredKeyId: activeKeyIds[engine],
-        models: engine === "google"
-          ? [...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])].slice(0, 4)
-          : OPENAI_TTS_MODELS,
-        deadlineMs: 40_000,
-      },
-      (key, model) => synthesizeCloudSpeech(engine, key, model, profile, text),
-    );
+    let value: Blob;
+    try {
+      ({ value } = await runWithFailover(
+        {
+          provider: engine,
+          keys: apiKeys[engine],
+          preferredKeyId: activeKeyIds[engine],
+          models: engine === "google"
+            ? [...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])].slice(0, 3)
+            : OPENAI_TTS_MODELS,
+          deadlineMs: 20_000,
+        },
+        (key, model) => synthesizeCloudSpeech(engine, key, model, profile, text),
+      ));
+    } catch (error) {
+      cloudSpeechPausedUntilRef.current = Date.now() + 3 * 60_000;
+      cloudSpeechPauseReasonRef.current = error instanceof Error ? error.message : "lỗi giọng AI";
+      throw error;
+    }
     try { await saveCachedSpeech(cacheKey, text, value); } catch {}
     return value;
   }
@@ -2379,17 +2458,27 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   /** Quietly stores the bundled pack for a profile (or refreshes an older version). */
-  async function syncCourse(courseId: string) {
+  /** `quiet`: a background prefetch that shows nothing and reports no error. */
+  async function syncCourse(courseId: string, quiet = false) {
     const stored = coursePacks.find((item) => item.id === courseId);
-    if (stored?.version === CURRICULUM_VERSION || courseSyncing) return;
-    setCourseSyncing(true);
-    setCourseError("");
+    if (stored?.version === CURRICULUM_VERSION) return;
+    if (courseSyncRef.current === courseId) {
+      // Already downloading in the background: just show the learner it is on its way.
+      if (!quiet) setCourseSyncing(true);
+      return;
+    }
+    courseSyncRef.current = courseId;
+    if (!quiet) {
+      setCourseSyncing(true);
+      setCourseError("");
+    }
     try {
       await downloadCoursePackage(courseId, process.env.NEXT_PUBLIC_BASE_PATH ?? "", () => {});
       setCoursePacks(await listDownloadedCourses());
     } catch (error) {
-      setCourseError(error instanceof Error ? error.message : "Không thể tải giáo trình. Hãy kiểm tra kết nối mạng.");
+      if (!quiet) setCourseError(error instanceof Error ? error.message : "Không thể tải giáo trình. Hãy kiểm tra kết nối mạng.");
     } finally {
+      courseSyncRef.current = null;
       setCourseSyncing(false);
     }
   }
@@ -2594,7 +2683,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <details name="settings-groups" className="settings-group">
           <summary className="settings-group-summary">
             <span className="settings-icon">🎓</span>
-            <span><strong>Gia sư AI đồng hành</strong><small>{TUTOR_PERSONAS[tutorPersona]?.name} · {TUTOR_PERSONAS[tutorPersona]?.title}</small></span>
+            <span><strong>Gia sư AI đồng hành</strong><small>{personaName(tutorPersona)} · {TUTOR_PERSONAS[tutorPersona]?.title}</small></span>
             <span className="settings-group-chevron" aria-hidden="true">⌄</span>
           </summary>
           <div className="settings-group-content">
@@ -2630,7 +2719,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                       </div>
                       <div className="persona-card-details">
                         <div className="persona-card-top">
-                          <strong>{persona.name}</strong>
+                          <strong>{personaName(pKey)}</strong>
                           <span className="persona-card-badge">{persona.badge}</span>
                         </div>
                         <p className="persona-card-tagline">{persona.tagline}</p>
@@ -2643,6 +2732,19 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   );
                 })}
               </div>
+              <label className="settings-label" htmlFor="tutor-name">Đặt tên cho gia sư đang chọn</label>
+              <div className="tutor-name-row">
+                <input
+                  id="tutor-name"
+                  className="settings-input"
+                  maxLength={24}
+                  value={tutorNames[tutorPersona] ?? ""}
+                  placeholder={TUTOR_PERSONAS[tutorPersona].name}
+                  onChange={(event) => updateTutorName(tutorPersona, event.target.value)}
+                />
+                {tutorNames[tutorPersona] && <button type="button" className="button button-outline" onClick={() => updateTutorName(tutorPersona, "")}>Tên mặc định</button>}
+              </div>
+              <small className="settings-hint">Gia sư sẽ tự giới thiệu và được gọi bằng tên này. Để trống để dùng tên mặc định “{TUTOR_PERSONAS[tutorPersona].name}”. Mỗi nhân vật nhớ tên riêng.</small>
             </section>
           </div>
         </details>
@@ -2923,14 +3025,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     const lastTeacherMessage = [...messages].reverse().find((m) => m.role === "assistant" && m.content.trim());
     const waitingForWords = chatBusy && !messages[messages.length - 1]?.content.trim();
     const caption = waitingForWords
-      ? tutorSubtitle || `${persona.name} đang suy nghĩ…`
+      ? tutorSubtitle || `${personaName(tutorPersona)} đang suy nghĩ…`
       : voiceChatRecording
       ? "Đang lắng nghe bạn… nói xong thì nhấn nút dừng nhé."
-      : cleanSpeechText(lastTeacherMessage?.content ?? persona.greeting);
+      : cleanSpeechText(lastTeacherMessage?.content ?? `Hi! I'm ${personaName(tutorPersona)}. ${persona.greeting}`);
     const waitNote = waitingForWords
-      ? <span className="cr-wait">💭 Đang chờ AI trả lời <Elapsed since={turnStartedAt} /></span>
-      : speechLoading && !speechPlaying
-      ? <span className="cr-wait">🔊 Đang tạo giọng đọc…</span>
+      ? <span className="cr-wait">💭 Đang chờ AI trả lời <WaitDots /></span>
       : null;
     const connected = connection.status === "ok" || (connection.status === "idle" && messages.some((m) => m.role === "user"));
 
@@ -2941,7 +3041,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <div className={`cr-connect-avatar${checking ? " waiting" : ""}`}>
             <TutorAvatar kind={persona.kind} status={checking ? "thinking" : "idle"} emotion={checking ? undefined : "neutral"} size={150} />
           </div>
-          <h2>{checking ? `Đang gọi ${persona.name} vào lớp…` : "Chưa kết nối được với gia sư AI"}</h2>
+          <h2>{checking ? `Đang gọi ${personaName(tutorPersona)} vào lớp…` : "Chưa kết nối được với gia sư AI"}</h2>
           <p className={checking ? "cr-connect-note" : "error-message"} role={checking ? "status" : "alert"}>
             {connection.message || "Đang kiểm tra API key và mô hình…"}
           </p>
@@ -2967,7 +3067,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       <div className="cr">
         <section className="cr-stage" aria-label="Lớp học với gia sư AI">
           <div className="cr-stage-top">
-            <span className="cr-chip cr-chip-live"><i /> {persona.name}</span>
+            <span className="cr-chip cr-chip-live"><i /> {personaName(tutorPersona)}</span>
             <span className="cr-chip cr-chip-level" title="Trình độ đang học">{progress.level}</span>
             {aiLevelEstimate && <span className="cr-chip" title="Trình độ AI ước lượng qua cuộc hội thoại">AI đánh giá: {aiLevelEstimate}</span>}
           </div>
@@ -3280,7 +3380,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         <span className="eyebrow">TEACHER AI · GIA SƯ TIẾNG ANH CỦA BẠN</span>
         <h1>Xin chào! Cùng nói tiếng Anh tự tin hơn nhé.</h1>
         <p className="wz-lead">
-          Mỗi ngày một chút. Học bài bản theo giáo trình, hoặc trò chuyện với {persona.name} — người sẽ chủ động dẫn dắt bạn qua từng tình huống phù hợp với trình độ của bạn.
+          Mỗi ngày một chút. Học bài bản theo giáo trình, hoặc trò chuyện với {personaName(tutorPersona)} — người sẽ chủ động dẫn dắt bạn qua từng tình huống phù hợp với trình độ của bạn.
         </p>
         <ol className="wz-steps" aria-label="3 bước học">
           <li><b>1</b> Chọn bài học</li>
@@ -3771,10 +3871,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     }
       : PAGE_HELP[section];
   const canGoBack = section !== "home";
+  // Only what the learner is actually waiting for; background prefetching shows nothing.
+  const learnerIsWaiting = chatBusy || courseSyncing || apiKeyBusy || modelsBusy || connection.status === "checking";
 
   return (
     <main className="app-shell wizard-shell">
-      <NetIndicator />
+      <WaitIndicator active={learnerIsWaiting} onCancel={chatBusy ? cancelTutorTurn : undefined} />
       {canGoBack && (
         <button className="floating-back-button" type="button" onClick={goBack} aria-label="Quay lại trang trước" title="Quay lại trang trước">
           <IllustrationIcon name="back" />

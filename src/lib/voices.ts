@@ -248,7 +248,7 @@ export async function synthesizeCloudSpeech(
             speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: profile.googleVoice } } },
           },
         }),
-        signal: AbortSignal.timeout(45_000),
+        signal: AbortSignal.timeout(18_000),
       },
     );
     let response = await request(true);
@@ -277,7 +277,7 @@ export async function synthesizeCloudSpeech(
       response_format: "mp3",
       ...(withInstructions ? { instructions: `${direction}.` } : { speed: profile.speed }),
     }),
-    signal: AbortSignal.timeout(45_000),
+    signal: AbortSignal.timeout(18_000),
   });
   if (!response.ok) throw await httpError("openai", response);
   return response.blob();
