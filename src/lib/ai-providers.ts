@@ -2,7 +2,6 @@ import { GeminiPart, generateChatWithGemini, generateWithGemini, streamChatWithG
 import {
   GoogleSpeechVoice,
   SpeechDeliveryStyle,
-  getSpeechDeliveryInstruction,
   isSpeechVoiceId,
 } from "@/lib/speech";
 
@@ -15,19 +14,15 @@ export const DEFAULT_MODELS: Record<AiProvider, string> = {
 };
 
 export const OPENAI_SPEECH_VOICES = [
-  { id: "alloy", label: "Alloy" },
-  { id: "ash", label: "Ash" },
-  { id: "ballad", label: "Ballad" },
-  { id: "coral", label: "Coral" },
-  { id: "echo", label: "Echo" },
-  { id: "fable", label: "Fable" },
-  { id: "onyx", label: "Onyx" },
-  { id: "nova", label: "Nova" },
-  { id: "sage", label: "Sage" },
-  { id: "shimmer", label: "Shimmer" },
-  { id: "verse", label: "Verse" },
-  { id: "marin", label: "Marin" },
-  { id: "cedar", label: "Cedar" },
+  { id: "fable", label: "Fable · 🇬🇧 Giọng Anh (British) · Nam biểu cảm", accent: "British", gender: "male" },
+  { id: "alloy", label: "Alloy · 🇺🇸 Giọng Mỹ (American) · Trung tính rõ ràng", accent: "American", gender: "neutral" },
+  { id: "echo", label: "Echo · 🇺🇸 Giọng Mỹ (American) · Nam trầm ấm", accent: "American", gender: "male" },
+  { id: "onyx", label: "Onyx · 🇺🇸 Giọng Mỹ (American) · Nam đĩnh đạc", accent: "American", gender: "male" },
+  { id: "nova", label: "Nova · 🇺🇸 Giọng Mỹ (American) · Nữ năng động trẻ trung", accent: "American", gender: "female" },
+  { id: "shimmer", label: "Shimmer · 🇺🇸 Giọng Mỹ (American) · Nữ êm dịu trong trẻo", accent: "American", gender: "female" },
+  { id: "coral", label: "Coral · 🇺🇸 Giọng Mỹ (American) · Nữ ấm áp", accent: "American", gender: "female" },
+  { id: "ash", label: "Ash · 🇺🇸 Giọng Mỹ (American) · Nam thoải mái", accent: "American", gender: "male" },
+  { id: "sage", label: "Sage · 🇺🇸 Giọng Mỹ (American) · Nữ nhẹ nhàng", accent: "American", gender: "female" },
 ] as const;
 
 const GOOGLE_ACCENT_FILTERS = ["American", "Australian", "British", "Indian", "Chinese", "German"] as const;
@@ -276,27 +271,26 @@ export async function generateProviderSpeech(
   accent = "",
   deliveryStyle: SpeechDeliveryStyle = "balanced",
 ): Promise<Blob> {
-  if (provider === "google") {
-    const { generateSpeech } = await import("@/lib/speech");
-    if (!isSpeechVoiceId(voice)) throw new Error("Hãy chọn một giọng đọc Google hợp lệ trong Cài đặt.");
-    return generateSpeech(apiKey, text, voice, accent, deliveryStyle);
+  if (provider === "openai") {
+    void accent;
+    void deliveryStyle;
+    const response = await fetch("https://api.openai.com/v1/audio/speech", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+      body: JSON.stringify({
+        model: "tts-1",
+        voice,
+        input: text,
+      }),
+      signal: AbortSignal.timeout(60_000),
+    });
+    if (!response.ok) {
+      const result: unknown = await response.json().catch(() => null);
+      throw new Error(getProviderError(provider, response.status, result));
+    }
+    return response.blob();
   }
-  const response = await fetch("https://api.openai.com/v1/audio/speech", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({
-      model: "gpt-4o-mini-tts",
-      voice,
-      input: text,
-      instructions: `Read in English for a language learner. ${getSpeechDeliveryInstruction(deliveryStyle)}${accent ? ` Preserve a clear ${accent} English accent.` : ""}`,
-    }),
-    signal: AbortSignal.timeout(90_000),
-  });
-  if (!response.ok) {
-    const result: unknown = await response.json().catch(() => null);
-    throw new Error(getProviderError(provider, response.status, result));
-  }
-  return response.blob();
+  throw new Error("Chế độ này sử dụng giọng đọc bản xứ trực tiếp trên thiết bị.");
 }
 
 export function generateGeminiMultimodalResponse(

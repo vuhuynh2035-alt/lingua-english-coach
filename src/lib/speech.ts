@@ -1,4 +1,149 @@
 export type SpeechVoiceId = string;
+
+export type AccentRegion = "all" | "us" | "uk" | "in" | "au" | "ca" | "de";
+
+export type AccentPreset = {
+  id: AccentRegion;
+  code: string;
+  name: string;
+  flag: string;
+  label: string;
+  sampleSentence: string;
+  description: string;
+  tuning: {
+    rateMultiplier: number;
+    pitchMultiplier: number;
+  };
+};
+
+export const ACCENT_PRESETS: AccentPreset[] = [
+  {
+    id: "us",
+    code: "en-US",
+    flag: "🇺🇸",
+    name: "Mỹ (USA)",
+    label: "Tiếng Anh - Mỹ (General American)",
+    sampleSentence: "Hello! Welcome to your English lesson. Great to have you here today.",
+    description: "Âm r rõ ràng, nhấn trọng âm dứt khoát. Giọng phổ biến nhất trong phim ảnh, truyền thông và kinh doanh toàn cầu.",
+    tuning: { rateMultiplier: 1.0, pitchMultiplier: 1.0 },
+  },
+  {
+    id: "uk",
+    code: "en-GB",
+    flag: "🇬🇧",
+    name: "Anh (UK)",
+    label: "Tiếng Anh - Anh (British RP)",
+    sampleSentence: "Good day! It is an absolute pleasure to practice speaking English with you.",
+    description: "Ngữ điệu trang trọng, nguyên âm tròn, âm t rõ nét. Chuẩn kỳ thi học thuật quốc tế IELTS và Cambridge.",
+    tuning: { rateMultiplier: 0.98, pitchMultiplier: 1.03 },
+  },
+  {
+    id: "in",
+    code: "en-IN",
+    flag: "🇮🇳",
+    name: "Ấn Độ (India)",
+    label: "Tiếng Anh - Ấn Độ (Indian English)",
+    sampleSentence: "Hello my friend! Let us practice this important topic together right now.",
+    description: "Nhịp điệu nhanh đặc trưng, uốn lưỡi nhẹ các âm t/d. Rất quan trọng khi làm việc trong ngành CNTT, kỹ thuật và đối tác quốc tế.",
+    tuning: { rateMultiplier: 1.04, pitchMultiplier: 1.05 },
+  },
+  {
+    id: "au",
+    code: "en-AU",
+    flag: "🇦🇺",
+    name: "Úc (Australia)",
+    label: "Tiếng Anh - Úc (Australian English)",
+    sampleSentence: "G'day! How are you going today? Let's have a great practice session together.",
+    description: "Âm a kéo dài, ngữ điệu thân thiện cởi mở. Rất hữu ích cho người có mục tiêu du học hoặc định cư tại Úc & New Zealand.",
+    tuning: { rateMultiplier: 0.97, pitchMultiplier: 0.98 },
+  },
+  {
+    id: "ca",
+    code: "en-CA",
+    flag: "🇨🇦",
+    name: "Canada",
+    label: "Tiếng Anh - Canada (Canadian)",
+    sampleSentence: "Hi there! I am very excited to practice speaking English with you today.",
+    description: "Hài hòa giữa âm điệu Bắc Mỹ và ngữ điệu Anh quốc, nguyên âm nhẹ nhàng, dễ nghe.",
+    tuning: { rateMultiplier: 1.0, pitchMultiplier: 1.0 },
+  },
+  {
+    id: "de",
+    code: "de-DE",
+    flag: "🇩🇪",
+    name: "Đức / Châu Âu (EU)",
+    label: "Tiếng Anh - Châu Âu (Euro Accent)",
+    sampleSentence: "Hello! We should systematically review the key English structures today.",
+    description: "Phát âm phụ âm sắc bén, nhịp điệu logic gãy gọn, thường gặp trong môi trường doanh nghiệp đa quốc gia tại châu Âu.",
+    tuning: { rateMultiplier: 0.95, pitchMultiplier: 0.96 },
+  },
+];
+
+export function getAccentPreset(id: string): AccentPreset {
+  return ACCENT_PRESETS.find((p) => p.id === id) || ACCENT_PRESETS[0];
+}
+
+export type ParsedVoiceInfo = {
+  countryCode: "us" | "uk" | "in" | "au" | "ca" | "de" | "other";
+  countryName: string;
+  flag: string;
+  gender: "female" | "male";
+  isNatural: boolean;
+};
+
+export function parseVoiceInfo(name: string, lang: string): ParsedVoiceInfo {
+  const nameLower = name.toLowerCase();
+  const langLower = lang.toLowerCase();
+
+  let countryCode: "us" | "uk" | "in" | "au" | "ca" | "de" | "other" = "other";
+  let countryName = "Quốc tế";
+  let flag = "🌐";
+
+  if (langLower.startsWith("en-us") || nameLower.includes("united states") || nameLower.includes("us english") || nameLower.includes("(us)")) {
+    countryCode = "us";
+    countryName = "Mỹ (USA)";
+    flag = "🇺🇸";
+  } else if (langLower.startsWith("en-gb") || langLower.startsWith("en-uk") || nameLower.includes("united kingdom") || nameLower.includes("uk english") || nameLower.includes("(uk)")) {
+    countryCode = "uk";
+    countryName = "Anh (UK)";
+    flag = "🇬🇧";
+  } else if (langLower.startsWith("en-in") || nameLower.includes("india") || nameLower.includes("indian")) {
+    countryCode = "in";
+    countryName = "Ấn Độ (India)";
+    flag = "🇮🇳";
+  } else if (langLower.startsWith("en-au") || nameLower.includes("australia") || nameLower.includes("australian")) {
+    countryCode = "au";
+    countryName = "Úc (Australia)";
+    flag = "🇦🇺";
+  } else if (langLower.startsWith("en-ca") || nameLower.includes("canada") || nameLower.includes("canadian")) {
+    countryCode = "ca";
+    countryName = "Canada";
+    flag = "🇨🇦";
+  } else if (langLower.startsWith("de") || nameLower.includes("german") || nameLower.includes("deutsch")) {
+    countryCode = "de";
+    countryName = "Đức (Germany)";
+    flag = "🇩🇪";
+  }
+
+  const femaleKeywords = [
+    "female", "zira", "susan", "heera", "catherine", "linda", "hedda", "jenny", "aria",
+    "samantha", "karen", "moira", "fiona", "tessa", "veena", "priya", "neerja", "sangeeta",
+    "victoria", "hazel", "alice", "helena", "eva", "stefanie", "natural female", "wavenet-a", "wavenet-c", "wavenet-e", "wavenet-f"
+  ];
+  const isFemale = femaleKeywords.some((k) => nameLower.includes(k));
+  const gender: "female" | "male" = isFemale ? "female" : "male";
+
+  const isNatural = nameLower.includes("natural") || nameLower.includes("online") || nameLower.includes("google") || nameLower.includes("neural");
+
+  return {
+    countryCode,
+    countryName,
+    flag,
+    gender,
+    isNatural,
+  };
+}
+
 export const SPEECH_DELIVERY_STYLES = [
   { id: "clear", label: "Rõ, dứt khoát", instruction: "Use crisp consonants, clear enunciation, and a confident, slightly firm delivery." },
   { id: "balanced", label: "Tự nhiên, cân bằng", instruction: "Use a natural conversational rhythm with balanced warmth and clarity." },

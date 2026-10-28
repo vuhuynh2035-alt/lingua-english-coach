@@ -4,6 +4,8 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import packageJson from "../../package.json";
 import { getAudioData } from "@/lib/gemini";
 import {
+  ACCENT_PRESETS,
+  AccentRegion,
   GoogleSpeechVoice,
   SPEECH_DELIVERY_STYLES,
   SpeechDeliveryStyle,
@@ -11,8 +13,10 @@ import {
   clearSpeechCache,
   cleanSpeechText,
   extractEnglishPracticePhrases,
+  getAccentPreset,
   getCachedSpeech,
   isSpeechVoiceId,
+  parseVoiceInfo,
   saveCachedSpeech,
   splitBilingualText,
 } from "@/lib/speech";
@@ -844,6 +848,8 @@ export default function Home() {
   const [systemVoices, setSystemVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedViVoiceId, setSelectedViVoiceId] = useState<string>("");
   const [selectedEnVoiceId, setSelectedEnVoiceId] = useState<string>("");
+  const [selectedAccent, setSelectedAccent] = useState<AccentRegion>("us");
+  const [selectedGender, setSelectedGender] = useState<"all" | "female" | "male">("all");
   const [viSpeechRate, setViSpeechRate] = useState<number>(0.95);
   const [viSpeechPitch, setViSpeechPitch] = useState<number>(1.0);
   const [enSpeechRate, setEnSpeechRate] = useState<number>(0.92);
@@ -1245,6 +1251,15 @@ export default function Home() {
       const savedEnVoice = localStorage.getItem("lingua-en-voice-id");
       if (savedEnVoice) setSelectedEnVoiceId(savedEnVoice);
 
+      const savedAccent = localStorage.getItem("lingua-selected-accent") as AccentRegion | null;
+      if (savedAccent && ["all", "us", "uk", "in", "au", "ca", "de"].includes(savedAccent)) {
+        setSelectedAccent(savedAccent);
+      }
+      const savedGender = localStorage.getItem("lingua-selected-gender") as "all" | "female" | "male" | null;
+      if (savedGender && ["all", "female", "male"].includes(savedGender)) {
+        setSelectedGender(savedGender);
+      }
+
       const savedViRate = Number(localStorage.getItem("lingua-vi-rate"));
       if (savedViRate >= 0.6 && savedViRate <= 1.5) setViSpeechRate(savedViRate);
       const savedViPitch = Number(localStorage.getItem("lingua-vi-pitch"));
@@ -1275,6 +1290,14 @@ export default function Home() {
   function updateEnVoice(voiceId: string) {
     setSelectedEnVoiceId(voiceId);
     try { localStorage.setItem("lingua-en-voice-id", voiceId); } catch {}
+  }
+  function updateAccent(accent: AccentRegion) {
+    setSelectedAccent(accent);
+    try { localStorage.setItem("lingua-selected-accent", accent); } catch {}
+  }
+  function updateGender(gender: "all" | "female" | "male") {
+    setSelectedGender(gender);
+    try { localStorage.setItem("lingua-selected-gender", gender); } catch {}
   }
   function updateViRate(rate: number) {
     setViSpeechRate(rate);
@@ -1820,17 +1843,37 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           if (viVoice) utterance.voice = viVoice;
         }
       } else {
-        utterance.lang = "en-US";
-        utterance.rate = enSpeechRate;
-        utterance.pitch = enSpeechPitch;
-        const userVoice = voices.find((v) => v.voiceURI === selectedEnVoiceId || v.name === selectedEnVoiceId);
-        if (userVoice) {
-          utterance.voice = userVoice;
+        const preset = getAccentPreset(selectedAccent);
+        utterance.rate = enSpeechRate * preset.tuning.rateMultiplier;
+        utterance.pitch = enSpeechPitch * preset.tuning.pitchMultiplier;
+
+        let matchedVoice: SpeechSynthesisVoice | undefined;
+        if (selectedEnVoiceId) {
+          matchedVoice = voices.find((v) => v.voiceURI === selectedEnVoiceId || v.name === selectedEnVoiceId);
+        }
+
+        // If no explicit voice or selected voice doesn't match selected accent (when not "all")
+        if (!matchedVoice && selectedAccent !== "all") {
+          const candidates = voices.filter((v) => {
+            const info = parseVoiceInfo(v.name, v.lang);
+            const matchesAccent = info.countryCode === selectedAccent;
+            const matchesGender = selectedGender === "all" || info.gender === selectedGender;
+            return matchesAccent && matchesGender;
+          });
+          if (candidates.length > 0) {
+            matchedVoice = candidates.find((c) => parseVoiceInfo(c.name, c.lang).isNatural) || candidates[0];
+          }
+        }
+
+        if (matchedVoice) {
+          utterance.voice = matchedVoice;
+          utterance.lang = matchedVoice.lang || preset.code;
         } else {
-          const enVoice =
-            voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Samantha") || v.name.includes("Daniel") || v.name.includes("US") || v.name.includes("UK"))) ||
+          utterance.lang = preset.code;
+          const fallback =
+            voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Jenny") || v.name.includes("George"))) ||
             voices.find((v) => v.lang.startsWith("en"));
-          if (enVoice) utterance.voice = enVoice;
+          if (fallback) utterance.voice = fallback;
         }
       }
 
@@ -2680,37 +2723,139 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               </div>
             </section>
 
-            {/* 2. ENGLISH VOICE SETTINGS */}
+            {/* 2. ENGLISH VOICE & ACCENTS BY COUNTRY */}
             <section className="panel settings-panel" style={{ marginTop: "16px" }}>
               <div className="settings-section-heading">
-                <span className="settings-icon" aria-hidden="true">🇺🇸</span>
+                <span className="settings-icon" aria-hidden="true">🌐</span>
                 <div>
-                  <h3>Giọng đọc Tiếng Anh (Câu mẫu & Luyện phát âm)</h3>
-                  <p>Chọn giọng tiếng Anh bản xứ trên thiết bị hoặc sử dụng giọng AI đám mây.</p>
+                  <h3>Kiểu phát âm Tiếng Anh theo Quốc gia & Giới tính</h3>
+                  <p>Chọn kiểu phát âm theo từng nước (Mỹ, Anh, Ấn Độ, Úc, Canada, Đức...) và giới tính (Nam/Nữ) để rèn luyện phản xạ nghe - nói đa văn hóa tùy mục đích học tập.</p>
                 </div>
               </div>
 
-              <label className="settings-label" htmlFor="en-device-voice">Giọng tiếng Anh trên thiết bị (Offline & Tức thì)</label>
-              {(() => {
-                const enVoices = systemVoices.filter((v) => v.lang.toLowerCase().startsWith("en"));
-                return (
-                  <select
-                    id="en-device-voice"
-                    className="settings-select"
-                    value={selectedEnVoiceId}
-                    onChange={(e) => updateEnVoice(e.target.value)}
-                  >
-                    <option value="">Giọng Tiếng Anh mặc định chuẩn</option>
-                    {enVoices.map((v) => (
-                      <option key={v.voiceURI || v.name} value={v.voiceURI || v.name}>
-                        {v.name} ({v.lang})
-                      </option>
-                    ))}
-                  </select>
-                );
-              })()}
+              {/* Accent presets tabs / grid */}
+              <label className="settings-label">1. Chọn Quốc gia & Kiểu phát âm mục tiêu</label>
+              <div className="accent-presets-grid">
+                {ACCENT_PRESETS.map((preset) => {
+                  const isSelected = selectedAccent === preset.id;
+                  return (
+                    <button
+                      key={preset.id}
+                      type="button"
+                      className={`accent-preset-card ${isSelected ? "selected" : ""}`}
+                      onClick={() => updateAccent(preset.id)}
+                    >
+                      <div className="accent-card-top">
+                        <span className="accent-card-flag">{preset.flag}</span>
+                        <strong>{preset.name}</strong>
+                      </div>
+                      <span className="accent-card-code">{preset.code}</span>
+                      <small className="accent-card-desc">{preset.description}</small>
+                      {isSelected && <span className="accent-card-check">✓ Đang chọn</span>}
+                    </button>
+                  );
+                })}
+                <button
+                  type="button"
+                  className={`accent-preset-card ${selectedAccent === "all" ? "selected" : ""}`}
+                  onClick={() => updateAccent("all")}
+                >
+                  <div className="accent-card-top">
+                    <span className="accent-card-flag">🌐</span>
+                    <strong>Tất cả các nước</strong>
+                  </div>
+                  <span className="accent-card-code">Toàn cầu</span>
+                  <small className="accent-card-desc">Hiển thị mọi giọng đọc tiếng Anh hiện có trên thiết bị của bạn.</small>
+                  {selectedAccent === "all" && <span className="accent-card-check">✓ Đang chọn</span>}
+                </button>
+              </div>
 
-              <div className="font-scale-control" style={{ marginTop: "12px" }}>
+              {/* Gender filter */}
+              <div style={{ marginTop: "14px" }}>
+                <label className="settings-label">2. Lọc theo Giới tính</label>
+                <div className="voice-gender-filter-row">
+                  <button
+                    type="button"
+                    className={`gender-filter-btn ${selectedGender === "all" ? "active" : ""}`}
+                    onClick={() => updateGender("all")}
+                  >
+                    👥 Tất cả
+                  </button>
+                  <button
+                    type="button"
+                    className={`gender-filter-btn ${selectedGender === "female" ? "active" : ""}`}
+                    onClick={() => updateGender("female")}
+                  >
+                    👩 Giọng Nữ (Female)
+                  </button>
+                  <button
+                    type="button"
+                    className={`gender-filter-btn ${selectedGender === "male" ? "active" : ""}`}
+                    onClick={() => updateGender("male")}
+                  >
+                    👨 Giọng Nam (Male)
+                  </button>
+                </div>
+              </div>
+
+              {/* Filtered device voices list */}
+              <div style={{ marginTop: "14px" }}>
+                <label className="settings-label" htmlFor="en-device-voice">
+                  3. Danh sách giọng đọc cụ thể trên thiết bị ({(() => {
+                    const enVoices = systemVoices.filter((v) => {
+                      if (!v.lang.toLowerCase().startsWith("en") && !v.lang.toLowerCase().startsWith("de")) return false;
+                      const info = parseVoiceInfo(v.name, v.lang);
+                      const matchesAccent = selectedAccent === "all" || info.countryCode === selectedAccent;
+                      const matchesGender = selectedGender === "all" || info.gender === selectedGender;
+                      return matchesAccent && matchesGender;
+                    });
+                    return `${enVoices.length} giọng phù hợp`;
+                  })()})
+                </label>
+                {(() => {
+                  const filtered = systemVoices.filter((v) => {
+                    if (!v.lang.toLowerCase().startsWith("en") && !v.lang.toLowerCase().startsWith("de")) return false;
+                    const info = parseVoiceInfo(v.name, v.lang);
+                    const matchesAccent = selectedAccent === "all" || info.countryCode === selectedAccent;
+                    const matchesGender = selectedGender === "all" || info.gender === selectedGender;
+                    return matchesAccent && matchesGender;
+                  });
+
+                  return (
+                    <>
+                      <select
+                        id="en-device-voice"
+                        className="settings-select"
+                        value={selectedEnVoiceId}
+                        onChange={(e) => updateEnVoice(e.target.value)}
+                      >
+                        <option value="">
+                          {selectedAccent === "all"
+                            ? "Giọng Tiếng Anh mặc định chuẩn của hệ thống"
+                            : `Tự động áp dụng ngữ điệu ${getAccentPreset(selectedAccent).name} (${getAccentPreset(selectedAccent).code})`}
+                        </option>
+                        {filtered.map((v) => {
+                          const info = parseVoiceInfo(v.name, v.lang);
+                          return (
+                            <option key={v.voiceURI || v.name} value={v.voiceURI || v.name}>
+                              {info.flag} {v.name} · {info.gender === "female" ? "👩 Nữ" : "👨 Nam"} {info.isNatural ? "🌟 Tự nhiên" : ""} ({v.lang})
+                            </option>
+                          );
+                        })}
+                      </select>
+
+                      {filtered.length === 0 && selectedAccent !== "all" && (
+                        <div className="voice-missing-banner" style={{ marginTop: "8px", padding: "10px 14px", background: "#fef3c7", border: "1px solid #fde68a", borderRadius: "8px", fontSize: "0.85rem", color: "#92400e" }}>
+                          ℹ️ <strong>Chưa có file giọng riêng của {getAccentPreset(selectedAccent).name} trên máy:</strong> Ứng dụng tự động điều chỉnh ngữ điệu qua mã chuẩn <code>{getAccentPreset(selectedAccent).code}</code> và nhịp điệu đặc trưng. Bạn có thể mở mục <em>“Hướng dẫn tải thêm giọng”</em> bên dưới để tải gói giọng {getAccentPreset(selectedAccent).name} miễn phí về máy chỉ trong 1 phút!
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* Speed & Pitch controls */}
+              <div className="font-scale-control" style={{ marginTop: "14px" }}>
                 <label className="settings-label" htmlFor="en-speech-rate">Tốc độ phát âm câu mẫu</label>
                 <output className="font-scale-value" htmlFor="en-speech-rate">{enSpeechRate.toFixed(2)}x</output>
                 <input
@@ -2750,19 +2895,43 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 </div>
               </div>
 
-              <div style={{ marginTop: "14px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+              {/* Test Accent Button */}
+              <div style={{ marginTop: "16px", display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                 <button
                   type="button"
-                  className="button button-outline"
+                  className="button button-primary"
                   onClick={async () => {
-                    setVoiceTestNotice("Đang phát thử câu mẫu tiếng Anh...");
-                    await playNativeUtterance("Hello! Welcome to your English lesson. Let's practice speaking with confidence today.", "en");
-                    setVoiceTestNotice("Đã hoàn tất phát thử tiếng Anh.");
+                    const preset = getAccentPreset(selectedAccent);
+                    setVoiceTestNotice(`Đang phát thử câu chào giọng ${preset.name}...`);
+                    await playNativeUtterance(preset.sampleSentence, "en");
+                    setVoiceTestNotice(`Đã hoàn tất phát thử giọng ${preset.name}.`);
                   }}
                 >
-                  ▶ Nghe thử giọng tiếng Anh
+                  ▶ Nghe thử kiểu phát âm {getAccentPreset(selectedAccent).name}
                 </button>
+                {voiceTestNotice && <span style={{ fontSize: "0.85rem", color: "var(--theme-text, #134e4a)", fontWeight: "600" }}>{voiceTestNotice}</span>}
               </div>
+
+              {/* Instructions to download free country voices */}
+              <details className="settings-download-voice-guide" style={{ marginTop: "16px", padding: "12px 14px", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "10px" }}>
+                <summary style={{ cursor: "pointer", fontWeight: "700", color: "#0f172a", fontSize: "0.9rem" }}>
+                  📥 Hướng dẫn tải thêm giọng các nước (Ấn Độ, Anh, Úc, Mỹ) hoàn toàn miễn phí
+                </summary>
+                <div style={{ marginTop: "10px", fontSize: "0.84rem", color: "#334155", lineHeight: "1.6" }}>
+                  <p style={{ margin: "0 0 8px" }}>Hệ điều hành của bạn hỗ trợ tải thêm rất nhiều giọng đọc chất lượng cao (Natural) của từng quốc gia:</p>
+                  <ul style={{ margin: "0", paddingLeft: "18px" }}>
+                    <li style={{ marginBottom: "6px" }}>
+                      <strong>Trên máy tính Windows / Microsoft Edge:</strong> Vào <em>Cài đặt Windows (Settings)</em> ➔ <em>Time & Language</em> ➔ <em>Speech (Giọng nói)</em> ➔ Bấm <em>Add voices</em> ➔ Tích chọn <strong>English (India)</strong>, <strong>English (United Kingdom)</strong>, <strong>English (Australia)</strong> rồi bấm <em>Add</em>. Trình duyệt Edge sẽ tự kích hoạt các giọng Natural cực kỳ mượt mà.
+                    </li>
+                    <li style={{ marginBottom: "6px" }}>
+                      <strong>Trên điện thoại Android (Google Pixel, Samsung, Xiaomi...):</strong> Vào <em>Cài đặt máy</em> ➔ <em>Trợ năng</em> ➔ <em>Đầu ra văn bản sang giọng nói</em> ➔ Bấm biểu tượng Cài đặt bên cạnh <em>Speech Services by Google</em> ➔ <em>Cài đặt dữ liệu giọng nói</em> ➔ Chọn tải các gói tiếng Anh: Ấn Độ (India), Anh (UK), Úc (Australia).
+                    </li>
+                    <li>
+                      <strong>Trên iPhone / iPad (iOS):</strong> Vào <em>Cài đặt</em> ➔ <em>Trợ năng</em> ➔ <em>Nội dung được đọc</em> ➔ <em>Giọng nói</em> ➔ Chọn <em>Tiếng Anh</em> ➔ Tải thêm giọng Ấn Độ, Vương quốc Anh, Úc theo ý thích.
+                    </li>
+                  </ul>
+                </div>
+              </details>
             </section>
 
             {/* 3. CLOUD AI SPEECH (Optional when API key exists) */}
@@ -3000,8 +3169,11 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                 <div className="tutor-stage-title-wrap">
                   <span className="tutor-stage-name">{TUTOR_PERSONAS[tutorPersona]?.name ?? "Cô Maya"}</span>
                   <span className="tutor-stage-badge">{TUTOR_PERSONAS[tutorPersona]?.badge ?? "👩‍🏫 Nữ gia sư"}</span>
+                  <span className="tutor-stage-accent-chip" title="Kiểu phát âm đang luyện">
+                    {getAccentPreset(selectedAccent).flag} Giọng {getAccentPreset(selectedAccent).name}
+                  </span>
                   <span className="tutor-stage-online">
-                    <span className="online-indicator-dot" /> Đã kết nối trực tiếp
+                    <span className="online-indicator-dot" /> Đã kết nối
                   </span>
                 </div>
                 <button
@@ -3023,6 +3195,22 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                 ) : (
                   <span className="bubble-idle">“{TUTOR_PERSONAS[tutorPersona]?.greeting ?? "Chào em! Hôm nay cô sẽ đồng hành cùng em luyện nói tiếng Anh nhé."}”</span>
                 )}
+              </div>
+
+              {/* Quick Accent Switcher Bar */}
+              <div className="tutor-accent-quick-bar">
+                <span className="accent-quick-label">Kiểu phát âm:</span>
+                {ACCENT_PRESETS.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className={`accent-quick-pill ${selectedAccent === p.id ? "active" : ""}`}
+                    onClick={() => updateAccent(p.id)}
+                    title={`Chuyển sang kiểu phát âm ${p.label}`}
+                  >
+                    {p.flag} {p.name.split(" ")[0]}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
