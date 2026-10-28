@@ -4,18 +4,10 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import packageJson from "../../package.json";
 import { getAudioData } from "@/lib/gemini";
 import {
-  ACCENT_PRESETS,
-  AccentRegion,
-  GoogleSpeechVoice,
-  SPEECH_DELIVERY_STYLES,
-  SpeechDeliveryStyle,
-  SpeechVoiceId,
   clearSpeechCache,
   cleanSpeechText,
   extractEnglishPracticePhrases,
-  getAccentPreset,
   getCachedSpeech,
-  isSpeechVoiceId,
   parseVoiceInfo,
   saveCachedSpeech,
   splitBilingualText,
@@ -24,21 +16,45 @@ import {
   AiModel,
   AiProvider,
   DEFAULT_MODELS,
-  OPENAI_SPEECH_VOICES,
   fetchAiModels,
-  fetchGoogleSpeechVoices,
-  generateAiText,
   generateGeminiMultimodalResponse,
-  generateProviderSpeech,
   isAiProvider,
   transcribeWithOpenAi,
 } from "@/lib/ai-providers";
 import { GrammarQuestion, GrammarTopic, grammarTopics } from "@/lib/grammar";
 
 import { IllustrationIcon, IllustrationName } from "@/components/illustration-icon";
+import { AvatarEmotion, AvatarKind, TutorAvatar } from "@/components/tutor-avatar";
+import {
+  ACCENTS,
+  DEFAULT_VOICE_PROFILE,
+  GOOGLE_TTS_MODELS,
+  GOOGLE_VOICES,
+  OPENAI_TTS_MODELS,
+  OPENAI_VOICES,
+  VOICE_STYLES,
+  VoiceGender,
+  VoiceProfile,
+  cloudVoiceId,
+  deviceVoicesForAccent,
+  getAccent,
+  parseVoiceProfile,
+  pickDeviceVoice,
+  synthesizeCloudSpeech,
+  voiceForGender,
+} from "@/lib/voices";
+import {
+  ConnectionReport,
+  checkConnection,
+  modelCandidates,
+  runWithFailover,
+  streamChat,
+} from "@/lib/ai-client";
 import {
   CourseLesson,
+  CURRICULUM_VERSION,
   CoursePackage,
+  LESSON_PASS_RATIO,
   StoredCourse,
   downloadCoursePackage,
   getDownloadedAudio,
@@ -53,12 +69,9 @@ import {
   removePersonalMaterial,
 } from "@/lib/personal-library";
 
-type Section = "home" | "lessons" | "practice" | "profiles" | "progress" | "placement" | "grammar" | "library" | "settings";
+type Section = "home" | "choose" | "mode" | "lessons" | "practice" | "progress" | "placement" | "grammar" | "library" | "settings";
 type CourseLevel = "A1" | "A2" | "B1" | "B2";
 const COURSE_LEVELS: CourseLevel[] = ["A1", "A2", "B1", "B2"];
-function isCourseLevel(value: string): value is CourseLevel {
-  return COURSE_LEVELS.includes(value as CourseLevel);
-}
 type HelpContent = { title: string; description: string; steps: string[] };
 type ApiKeyEntry = { id: string; label: string; value: string };
 type ProviderRecord<T> = Record<AiProvider, T>;
@@ -70,36 +83,33 @@ type InstallPromptEvent = Event & {
 };
 const PAGE_HELP: Record<Section, HelpContent> = {
   home: {
-    title: "Trang chủ",
-    description: "Bắt đầu học, chọn lĩnh vực và xem nhanh tiến độ của bạn.",
+    title: "Trang chào mừng",
+    description: "Học theo 3 bước đơn giản: chọn bài học, chọn cách học, rồi bắt đầu.",
     steps: [
-      "Nhấn “Bắt đầu luyện nói” để vào cuộc trò chuyện với gia sư AI.",
-      "Chọn lĩnh vực ở các thẻ bên dưới để đổi tình huống và cụm từ luyện tập.",
-      "Dùng “Kiểm tra trình độ” để app gợi ý mức học ban đầu.",
-      "Chọn “Cài Teacher AI lên màn hình chính” để xem cách thêm ứng dụng vào thiết bị.",
+      "Nhấn “Bắt đầu học” để vào bước chọn bài.",
+      "Dùng “Kiểm tra trình độ” nếu muốn app gợi ý mức học ban đầu.",
+      "Vào “Cài đặt” để thêm API key, đổi nhân vật gia sư, giọng đọc và giao diện.",
     ],
   },
   practice: {
-    title: "Gia sư AI online",
-    description: "Đây là khu vực hội thoại thực hành tiếng Anh theo lĩnh vực đang chọn. Gia sư AI sẽ trao đổi theo tình huống và trình độ của bạn.",
+    title: "Học với AI",
+    description: "Thầy/cô AI tự chào, ra tình huống và dẫn dắt bạn nói tiếng Anh theo trình độ.",
     steps: [
-      "Đọc tình huống và câu mẫu ở khung bên trái; bấm “Nghe mẫu phát âm” để nghe.",
-      "Nhập câu trả lời tiếng Anh ở ô trò chuyện hoặc nhấn micro để trả lời bằng giọng nói.",
-      "Dùng các nút yêu cầu nhanh để bắt đầu bài học, hỏi giải thích, xin thêm bài tập hoặc ôn phát âm.",
-      "Nhấn “Luyện phát âm”, đọc câu gợi ý rồi dừng ghi âm để nhận góp ý từ AI. Cần cấp quyền micro và kết nối AI.",
-      "Đổi lĩnh vực từ mục “Lĩnh vực” nếu muốn luyện tình huống khác.",
+      "Đợi nhân vật kết nối; nếu lỗi, nhấn “Thử lại” hoặc kiểm tra API key trong Cài đặt.",
+      "Trả lời bằng cách gõ chữ hoặc nhấn micro. Thầy/cô sẽ sửa lỗi và đưa câu tiếp theo.",
+      "Nhấn “Nghe lại” để nghe lại lời thầy/cô; “Tình huống mới” để đổi chủ đề luyện.",
+      "Mở “Luyện phát âm có chấm điểm” bên dưới để ghi âm và nhận điểm (cần Google AI).",
     ],
   },
-  profiles: {
-    title: "Lĩnh vực muốn học",
-    description: "Chọn lĩnh vực trước, sau đó chọn học theo giáo trình offline hoặc luyện giao tiếp với gia sư AI.",
-    steps: [
-      "Chọn một thẻ lĩnh vực để đặt làm chủ đề học hiện tại.",
-      "Sau khi chọn, vào Bài học để học giáo trình offline hoặc Gia sư AI để luyện hội thoại online.",
-      "Mỗi lĩnh vực có tình huống, câu nói hữu ích và ngữ cảnh riêng cho gia sư AI.",
-      "Chọn thẻ “Tiếng Anh ngữ pháp” để mở bài học cấu trúc và bài tập.",
-      "Mở Cài đặt để tải giáo trình và audio dùng offline.",
-    ],
+  choose: {
+    title: "Chọn bài học",
+    description: "Chọn danh mục muốn học. Mặc định là danh mục bạn đang học dở lần trước.",
+    steps: ["Mở danh sách xổ xuống để đổi danh mục.", "Nhấn “Tiếp tục” để chọn cách học: bài học offline hoặc học với AI."],
+  },
+  mode: {
+    title: "Chọn cách học",
+    description: "Mỗi cách học có một trang riêng, gọn gàng và dễ thao tác.",
+    steps: ["“Bài học offline” học theo giáo trình, không cần mạng.", "“Học với AI online” trò chuyện với thầy/cô AI, cần API key trong Cài đặt."],
   },
   lessons: {
     title: "Bài học theo giáo trình",
@@ -162,42 +172,7 @@ const API_KEY_STORAGE = "lingua-gemini-api-key";
 const AI_SETTINGS_STORAGE = "lingua-ai-settings";
 const FONT_SCALE_STORAGE = "lingua-font-scale";
 const APP_THEME_STORAGE = "lingua-app-theme";
-const SPEECH_VOICE_STORAGE = "lingua-speech-voice";
-const GOOGLE_SPEECH_VOICES_STORAGE = "lingua-google-speech-voices-v2";
-const SPEECH_DELIVERY_STYLE_STORAGE = "lingua-speech-delivery-style";
-const SPEECH_SAMPLE = "The nurse is speaking to a patient. Please check the pressure carefully.";
-const GOOGLE_ACCENT_LABELS: Record<string, string> = {
-  American: "Mỹ",
-  Australian: "Úc",
-  British: "Anh",
-  Indian: "Ấn Độ",
-  Chinese: "Trung Quốc",
-  German: "Đức",
-};
-function getGoogleAccentLabel(accent: string): string {
-  const normalized = accent.toLowerCase();
-  if (normalized.includes("american") || normalized.includes("united states") || normalized.includes("usa")) return "Mỹ";
-  if (normalized.includes("australian") || normalized.includes("australia")) return "Úc";
-  if (normalized.includes("british") || normalized.includes("united kingdom") || normalized.includes("uk")) return "Anh";
-  if (normalized.includes("indian") || normalized.includes("india")) return "Ấn Độ";
-  if (normalized.includes("chinese") || normalized.includes("china")) return "Trung Quốc";
-  if (normalized.includes("german") || normalized.includes("germany")) return "Đức";
-  return GOOGLE_ACCENT_LABELS[accent] ?? accent;
-}
-const OPENAI_ACCENTS = [
-  "American",
-  "Australian",
-  "British",
-  "Indian",
-  "Chinese",
-  "German",
-] as const;
-const QUICK_TEACHER_REQUESTS = [
-  { label: "🎯 Dạy bài học mới", prompt: "Cô Maya ơi, hãy bắt đầu dạy em một bài học mới theo trình độ của em nhé. Giải thích rõ bằng tiếng Việt, cho câu ví dụ tiếng Anh và hướng dẫn em cách trả lời từng bước." },
-  { label: "💡 Giải thích dễ hiểu hơn", prompt: "Cô giải thích lại phần vừa rồi bằng tiếng Việt dễ hiểu hơn giúp em với, và cho em một câu ví dụ tiếng Anh đơn giản nhé." },
-  { label: "📝 Cho em câu hỏi tiếp theo", prompt: "Cô hãy đặt cho em một câu hỏi tình huống tiếng Anh tiếp theo để em tự trả lời và sửa lỗi giúp em nhé." },
-  { label: "🎙️ Luyện phát âm câu này", prompt: "Cô hướng dẫn em cách phát âm chuẩn câu mẫu vừa rồi, chỉ ra các từ cần nhấn trọng âm để em đọc lại nhé." },
-];
+const VOICE_PROFILE_STORAGE = "lingua-voice-profile-v1";
 
 type Profile = {
   id: string;
@@ -476,6 +451,7 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
   name: string;
   title: string;
   gender: "female" | "male" | "mascot";
+  kind: AvatarKind;
   tagline: string;
   description: string;
   greeting: string;
@@ -486,6 +462,7 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
     name: "Cô Maya",
     title: "Gia sư Nữ Tận Tâm",
     gender: "female",
+    kind: "woman",
     tagline: "Dịu dàng, phát âm chuẩn, kiên nhẫn hướng dẫn",
     description: "Cô giáo nhiệt tình, hướng dẫn tỉ mỉ từng phát âm và ngữ pháp theo trình độ học viên.",
     greeting: "Chào em! Hôm nay cô sẽ đồng hành cùng em luyện nói tiếng Anh thật tự tin nhé.",
@@ -496,6 +473,7 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
     name: "Thầy David",
     title: "Gia sư Nam Bản Xứ",
     gender: "male",
+    kind: "man",
     tagline: "Phong thái đĩnh đạc, ngữ điệu Anh-Mỹ tự nhiên",
     description: "Thầy giáo phong cách phương Tây, phản xạ nhanh và chuyên sâu giao tiếp công việc.",
     greeting: "Hello there! I'm David, your coach. Ready to practice speaking naturally today?",
@@ -506,6 +484,7 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
     name: "Cú Alex",
     title: "Linh Vật Thông Thái",
     gender: "mascot",
+    kind: "mascot",
     tagline: "Đáng yêu, hoạt bát, học tập không áp lực",
     description: "Chú cú mèo thông minh, vui tính, giúp việc học nhẹ nhàng như một trò chơi thú vị.",
     greeting: "Hú hú! Cú Alex đã sẵn sàng! Cùng nhau chinh phục bài học tiếng Anh nào!",
@@ -513,187 +492,6 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
   },
 };
 
-function TeacherMascot({
-  persona = "maya",
-  status = "idle",
-  size = 52,
-  className = "",
-}: {
-  persona?: TutorPersona;
-  status?: "idle" | "thinking" | "speaking" | "listening";
-  size?: number;
-  className?: string;
-}) {
-  const current = TUTOR_PERSONAS[persona] || TUTOR_PERSONAS.maya;
-  const isSpeaking = status === "speaking";
-  const isThinking = status === "thinking";
-  const isListening = status === "listening";
-
-  return (
-    <div
-      className={`teacher-mascot-wrap status-${status} persona-${persona} ${className}`.trim()}
-      style={{ width: size, height: size }}
-      title={
-        isSpeaking
-          ? `${current.name} đang nói...`
-          : isThinking
-          ? `${current.name} đang suy nghĩ câu trả lời...`
-          : isListening
-          ? `${current.name} đang lắng nghe bạn nói...`
-          : `${current.name} - ${current.title}`
-      }
-      aria-label={`Hình đại diện ${current.name}`}
-    >
-      <svg
-        viewBox="0 0 100 100"
-        width={size}
-        height={size}
-        className="teacher-mascot-svg"
-      >
-        <defs>
-          <linearGradient id={`mayaGrad-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#4fd1a5" />
-            <stop offset="50%" stopColor="#20b2aa" />
-            <stop offset="100%" stopColor="#0d7377" />
-          </linearGradient>
-          <linearGradient id={`davidGrad-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#60a5fa" />
-            <stop offset="50%" stopColor="#3b82f6" />
-            <stop offset="100%" stopColor="#1d4ed8" />
-          </linearGradient>
-          <linearGradient id={`alexGrad-${size}`} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#fcd34d" />
-            <stop offset="50%" stopColor="#f59e0b" />
-            <stop offset="100%" stopColor="#d97706" />
-          </linearGradient>
-          <linearGradient id={`faceGrad-${size}`} x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="100%" stopColor="#fef3c7" />
-          </linearGradient>
-          <filter id={`mascotGlow-${size}`} x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="2.5" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-
-        {/* Listening wave ripples */}
-        {isListening && (
-          <>
-            <circle cx="50" cy="50" r="46" className="mascot-ripple ripple-1" />
-            <circle cx="50" cy="50" r="48" className="mascot-ripple ripple-2" />
-          </>
-        )}
-
-        {/* ================= PERSONA: MAYA ================= */}
-        {persona === "maya" && (
-          <g className="persona-maya-group">
-            <circle cx="50" cy="50" r="42" fill={`url(#mayaGrad-${size})`} filter={`url(#mascotGlow-${size})`} />
-            <circle cx="50" cy="24" r="14" fill="#134e4a" />
-            <circle cx="50" cy="52" r="35" fill="#fffdfa" />
-            <path d="M 20 40 Q 32 20 50 30 Q 68 20 80 40 Q 64 24 50 34 Q 36 24 20 40 Z" fill="#134e4a" />
-            <path d="M 44 48 Q 50 46 56 48" stroke="#134e4a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-            <rect x="25" y="38" width="20" height="18" rx="6" fill="#ecfdf5" stroke="#134e4a" strokeWidth="2.5" />
-            <rect x="55" y="38" width="20" height="18" rx="6" fill="#ecfdf5" stroke="#134e4a" strokeWidth="2.5" />
-            {isThinking ? (
-              <>
-                <circle cx="37" cy="44" r="4" fill="#134e4a" />
-                <circle cx="67" cy="44" r="4" fill="#134e4a" />
-                <circle cx="38.5" cy="42.5" r="1.5" fill="#ffffff" />
-                <circle cx="68.5" cy="42.5" r="1.5" fill="#ffffff" />
-              </>
-            ) : (
-              <g className="mascot-eyes">
-                <circle cx="35" cy="47" r="4" fill="#134e4a" />
-                <circle cx="65" cy="47" r="4" fill="#134e4a" />
-                <circle cx="33.5" cy="45.5" r="1.5" fill="#ffffff" />
-                <circle cx="63.5" cy="45.5" r="1.5" fill="#ffffff" />
-              </g>
-            )}
-            <ellipse cx="28" cy="59" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.8" />
-            <ellipse cx="72" cy="59" rx="4.5" ry="2.5" fill="#fda4af" opacity="0.8" />
-            {isSpeaking ? (
-              <ellipse cx="50" cy="62" rx="4.5" ry="5.5" fill="#e11d48" className="mascot-mouth-speaking" />
-            ) : (
-              <path d="M 45 61 Q 50 66 55 61" stroke="#134e4a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-            )}
-            <polygon points="50,11 68,18 50,25 32,18" fill="#0f766e" />
-            <circle cx="50" cy="18" r="2" fill="#fbbf24" />
-          </g>
-        )}
-
-        {/* ================= PERSONA: DAVID ================= */}
-        {persona === "david" && (
-          <g className="persona-david-group">
-            <circle cx="50" cy="50" r="42" fill={`url(#davidGrad-${size})`} filter={`url(#mascotGlow-${size})`} />
-            <circle cx="50" cy="52" r="35" fill="#fffbf5" />
-            <path d="M 22 42 Q 22 18 50 18 Q 78 18 78 42 Q 74 26 50 24 Q 26 26 22 42 Z" fill="#1e293b" />
-            <path d="M 28 26 Q 36 14 56 16 Q 72 18 68 28 Z" fill="#334155" />
-            <path d="M 30 38 Q 38 34 44 38" stroke="#1e293b" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-            <path d="M 56 38 Q 62 34 70 38" stroke="#1e293b" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-            {isThinking ? (
-              <>
-                <circle cx="37" cy="44" r="4" fill="#0f172a" />
-                <circle cx="63" cy="44" r="4" fill="#0f172a" />
-                <circle cx="38.5" cy="42.5" r="1.5" fill="#ffffff" />
-                <circle cx="64.5" cy="42.5" r="1.5" fill="#ffffff" />
-              </>
-            ) : (
-              <g className="mascot-eyes">
-                <circle cx="37" cy="46" r="4.2" fill="#0f172a" />
-                <circle cx="63" cy="46" r="4.2" fill="#0f172a" />
-                <circle cx="35.5" cy="44.5" r="1.5" fill="#ffffff" />
-                <circle cx="61.5" cy="44.5" r="1.5" fill="#ffffff" />
-              </g>
-            )}
-            <path d="M 38 78 L 50 86 L 62 78 Z" fill="#ffffff" stroke="#cbd5e1" strokeWidth="1" />
-            <path d="M 48 84 L 52 84 L 53 96 L 47 96 Z" fill="#ef4444" />
-            {isSpeaking ? (
-              <ellipse cx="50" cy="62" rx="4.5" ry="5.5" fill="#b91c1c" className="mascot-mouth-speaking" />
-            ) : (
-              <path d="M 44 61 Q 50 67 56 61" stroke="#0f172a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
-            )}
-          </g>
-        )}
-
-        {/* ================= PERSONA: ALEX ================= */}
-        {persona === "alex" && (
-          <g className="persona-alex-group">
-            <circle cx="50" cy="50" r="42" fill={`url(#alexGrad-${size})`} filter={`url(#mascotGlow-${size})`} />
-            <circle cx="50" cy="53" r="34" fill="#fffbeb" />
-            <polygon points="20,26 28,12 36,24" fill="#d97706" />
-            <polygon points="80,26 72,12 64,24" fill="#d97706" />
-            <circle cx="36" cy="46" r="14" fill="#fef3c7" stroke="#b45309" strokeWidth="2" />
-            <circle cx="64" cy="46" r="14" fill="#fef3c7" stroke="#b45309" strokeWidth="2" />
-            {isThinking ? (
-              <>
-                <circle cx="38" cy="43" r="7" fill="#78350f" />
-                <circle cx="66" cy="43" r="7" fill="#78350f" />
-                <circle cx="40" cy="41" r="2.5" fill="#ffffff" />
-                <circle cx="68" cy="41" r="2.5" fill="#ffffff" />
-              </>
-            ) : (
-              <g className="mascot-eyes">
-                <circle cx="36" cy="46" r="7" fill="#78350f" />
-                <circle cx="64" cy="46" r="7" fill="#78350f" />
-                <circle cx="34" cy="44" r="2.5" fill="#ffffff" />
-                <circle cx="62" cy="44" r="2.5" fill="#ffffff" />
-              </g>
-            )}
-            {isSpeaking ? (
-              <polygon points="45,56 55,56 50,68" fill="#ea580c" className="mascot-mouth-speaking" />
-            ) : (
-              <polygon points="46,55 54,55 50,62" fill="#ea580c" />
-            )}
-            <polygon points="50,14 74,21 50,28 26,21" fill="#1e293b" />
-            <path d="M 74 21 L 76 34" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
-            <circle cx="76" cy="35" r="2.5" fill="#f59e0b" />
-          </g>
-        )}
-      </svg>
-      <span className={`mascot-status-dot status-${status}`} />
-    </div>
-  );
-}
 
 const PROFILE_SUGGESTIONS: Record<string, string[]> = {
   business: [
@@ -753,6 +551,15 @@ function renderFormattedMessage(
         const trimmed = line.trim();
         if (!trimmed) {
           return <div key={lIdx} className="message-empty-line" style={{ height: "6px" }} />;
+        }
+
+        // Teacher corrections: ✏️ wrong → right — reason; 🔈 pronunciation notes.
+        if (/^(✏️|✏|🔈)/u.test(trimmed)) {
+          return (
+            <p key={lIdx} className={trimmed.startsWith("🔈") ? "message-fix message-fix-pron" : "message-fix"}>
+              {trimmed.replace(/\*+/g, "")}
+            </p>
+          );
         }
 
         // 1. Quoted English dialogue / sample sentences:
@@ -839,6 +646,44 @@ function renderFormattedMessage(
   );
 }
 
+/** How the AI teacher adapts language, pace and correction to each CEFR level. */
+const LEVEL_PEDAGOGY: Record<CourseLevel, string> = {
+  A1: `- Explain mostly in Vietnamese (about 70%); English only in short model sentences of 3–7 words.
+- One new item per turn. Always give the Vietnamese meaning next to a new English sentence.
+- Tasks: repeat after me, choose A or B, complete one word. Accept one-word answers, then model the full sentence.
+- Correct only the most important mistake each turn; be very encouraging.`,
+  A2: `- Mix Vietnamese explanations (about 50%) with simple English. Model sentences up to 10 words.
+- Focus on everyday phrases, present/past simple, questions. Give a hint like (Gợi ý: "I usually…") for each task.
+- Tasks: short answers in full sentences, simple role-plays with 2–3 exchanges.
+- Correct up to two mistakes per turn, mainly grammar and word choice.`,
+  B1: `- Teach mostly in English (about 70%), Vietnamese only for tricky grammar or meaning.
+- Role-plays with longer exchanges; ask follow-up "why/how" questions to make the learner explain.
+- Introduce linkers and natural collocations; push for 2–3 sentence answers.
+- Correct all errors that affect meaning, plus Vietlish word order; offer a more natural alternative.`,
+  B2: `- Teach in English; use Vietnamese only if the learner asks.
+- Discussions, negotiations and problem-solving situations; challenge the learner's opinions.
+- Focus on precision, register (formal/informal), idioms and complex structures.
+- Correct accuracy and naturalness, including better word choices and more sophisticated phrasing.`,
+};
+
+/** Lessons the learner may open: in order inside a level; a level opens once the one before is done or the learner already placed at it. */
+function unlockedLessonIds(course: CoursePackage, completed: string[], learnerLevel: string): Set<string> {
+  const open = new Set<string>();
+  const learnerIndex = Math.max(0, COURSE_LEVELS.findIndex((level) => level === learnerLevel));
+  let previousLevelDone = true;
+  COURSE_LEVELS.forEach((level, levelIndex) => {
+    const lessons = course.lessons.filter((item) => item.level === level);
+    if (!lessons.length) return;
+    let previousDone = previousLevelDone || levelIndex <= learnerIndex;
+    for (const lesson of lessons) {
+      if (previousDone || completed.includes(lesson.id)) open.add(lesson.id);
+      previousDone = completed.includes(lesson.id);
+    }
+    previousLevelDone = lessons.every((item) => completed.includes(item.id));
+  });
+  return open;
+}
+
 export default function Home() {
   const [section, setSection] = useState<Section>("home");
   // Tutor Persona
@@ -847,13 +692,8 @@ export default function Home() {
   // System Voices & Offline Speech Tuning
   const [systemVoices, setSystemVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedViVoiceId, setSelectedViVoiceId] = useState<string>("");
-  const [selectedEnVoiceId, setSelectedEnVoiceId] = useState<string>("");
-  const [selectedAccent, setSelectedAccent] = useState<AccentRegion>("us");
-  const [selectedGender, setSelectedGender] = useState<"all" | "female" | "male">("all");
   const [viSpeechRate, setViSpeechRate] = useState<number>(0.95);
   const [viSpeechPitch, setViSpeechPitch] = useState<number>(1.0);
-  const [enSpeechRate, setEnSpeechRate] = useState<number>(0.92);
-  const [enSpeechPitch, setEnSpeechPitch] = useState<number>(1.0);
   const [voiceTestNotice, setVoiceTestNotice] = useState<string>("");
 
   const [fontScale, setFontScale] = useState(125);
@@ -885,18 +725,18 @@ export default function Home() {
   const [apiKeySaved, setApiKeySaved] = useState(false);
   const [modelsBusy, setModelsBusy] = useState(false);
   const [modelsError, setModelsError] = useState("");
-  const [googleSpeechVoices, setGoogleSpeechVoices] = useState<GoogleSpeechVoice[]>([]);
-  const [speechVoicesBusy, setSpeechVoicesBusy] = useState(false);
-  const [speechVoicesError, setSpeechVoicesError] = useState("");
-  const [speechVoice, setSpeechVoice] = useState<SpeechVoiceId>("Kore");
-  const [speechDeliveryStyle, setSpeechDeliveryStyle] = useState<SpeechDeliveryStyle>("balanced");
-  const [openAiSpeechVoice, setOpenAiSpeechVoice] = useState<string>("coral");
-  const [openAiSpeechAccent, setOpenAiSpeechAccent] = useState<string>("American");
   const [speechBusy, setSpeechBusy] = useState(false);
   const [speechError, setSpeechError] = useState("");
   const [speechNotice, setSpeechNotice] = useState("");
+  const [voiceProfile, setVoiceProfile] = useState<VoiceProfile>(DEFAULT_VOICE_PROFILE);
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [draft, setDraft] = useState("");
+  const [connection, setConnection] = useState<{ status: "idle" | "checking" | "ok" | "error"; message: string; ms?: number }>({ status: "idle", message: "" });
+  const [tutorEmotion, setTutorEmotion] = useState<AvatarEmotion | undefined>(undefined);
+  const [tutorSubtitle, setTutorSubtitle] = useState("");
+  const [chooseId, setChooseId] = useState("");
+  const [tutorLessonId, setTutorLessonId] = useState("");
+  const [aiLevelEstimate, setAiLevelEstimate] = useState<CourseLevel | null>(null);
   const [chatBusy, setChatBusy] = useState(false);
   const [chatError, setChatError] = useState("");
   const [voiceChatRecording, setVoiceChatRecording] = useState(false);
@@ -923,13 +763,11 @@ export default function Home() {
   const [selectedCourseId, setSelectedCourseId] = useState("");
   const [selectedLessonId, setSelectedLessonId] = useState("");
   const [courseAnswers, setCourseAnswers] = useState<number[]>([]);
+  const [lessonTab, setLessonTab] = useState<"learn" | "quiz">("learn");
+  const [courseSyncing, setCourseSyncing] = useState(false);
   const [courseQuizSubmitted, setCourseQuizSubmitted] = useState(false);
   const [courseProgress, setCourseProgress] = useState<Record<string, string[]>>({});
   const [courseLessonScores, setCourseLessonScores] = useState<Record<string, Record<string, number>>>({});
-  const [courseLevelResults, setCourseLevelResults] = useState<Record<string, Partial<Record<CourseLevel, number>>>>({});
-  const [courseExamLevel, setCourseExamLevel] = useState<CourseLevel | null>(null);
-  const [courseExamAnswers, setCourseExamAnswers] = useState<number[]>([]);
-  const [courseExamSubmitted, setCourseExamSubmitted] = useState(false);
   const [offlineAudioUrl, setOfflineAudioUrl] = useState("");
   const [personalMaterials, setPersonalMaterials] = useState<PersonalMaterial[]>([]);
   const [selectedMaterial, setSelectedMaterial] = useState<PersonalMaterial | null>(null);
@@ -947,25 +785,15 @@ export default function Home() {
   const speechObjectUrlRef = useRef<string | null>(null);
   const materialInputRef = useRef<HTMLInputElement | null>(null);
   const sectionHistoryRef = useRef<Section[]>([]);
+  const chatListRef = useRef<HTMLDivElement | null>(null);
+  const retryTurnRef = useRef<(() => void) | null>(null);
+  const classroomBootRef = useRef(false);
+  const speechRunRef = useRef(0);
+  const pendingLessonStartRef = useRef(false);
 
   const apiKey = apiKeys[aiProvider].find((entry) => entry.id === activeKeyIds[aiProvider])?.value ?? "";
   const activeModel = selectedModels[aiProvider] || DEFAULT_MODELS[aiProvider];
-  const activeSpeechVoice = aiProvider === "google" ? speechVoice : openAiSpeechVoice;
-  const activeSpeechAccent = aiProvider === "google"
-    ? googleSpeechVoices.find((voice) => voice.id === speechVoice)?.accent ?? ""
-    : openAiSpeechAccent;
   const profile = profiles.find((item) => item.id === progress.profile) ?? profiles[0];
-  const weekDays = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date();
-    date.setDate(date.getDate() - ((date.getDay() + 6) % 7) + index);
-    const key = todayKey(date);
-    return {
-      key,
-      label: date.toLocaleDateString("vi-VN", { weekday: "short" }),
-      minutes: progress.dailyMinutes[key] ?? 0,
-    };
-  });
-  const maxDailyMinutes = Math.max(1, ...weekDays.map((day) => day.minutes));
   const placementComplete =
     placementQuestions.every((_, index) =>
       Number.isInteger(placementAnswers[index]) && placementAnswers[index] >= 0);
@@ -1007,6 +835,10 @@ export default function Home() {
       setFontScaleError("Không thể đọc cỡ chữ đã lưu trên thiết bị này.");
     }
     setFontScaleLoaded(true);
+    try {
+      const savedVoiceProfile = localStorage.getItem(VOICE_PROFILE_STORAGE);
+      if (savedVoiceProfile) setVoiceProfile(parseVoiceProfile(JSON.parse(savedVoiceProfile)));
+    } catch {}
     const savedProgress = loadProgress();
     setProgress(savedProgress);
     const selectedProfile = profiles.find((item) => item.id === savedProgress.profile);
@@ -1049,7 +881,8 @@ export default function Home() {
         if (typeof stored.selectedModels === "object" && stored.selectedModels !== null) {
           const models = stored.selectedModels as Record<string, unknown>;
           setSelectedModels({
-            google: typeof models.google === "string" ? models.google : DEFAULT_MODELS.google,
+            google: typeof models.google === "string" && !/^gemini-(1\.|2\.0)/.test(models.google)
+              ? models.google : DEFAULT_MODELS.google,
             openai: typeof models.openai === "string" ? models.openai : DEFAULT_MODELS.openai,
           });
         }
@@ -1077,7 +910,7 @@ export default function Home() {
       setGrammarError("Không thể đọc kết quả ngữ pháp đã lưu trên thiết bị này.");
     }
     try {
-      const savedCourseProgress: unknown = JSON.parse(localStorage.getItem("lingua-course-progress") ?? "{}");
+      const savedCourseProgress: unknown = JSON.parse(localStorage.getItem("lingua-course-progress-v2") ?? "{}");
       if (typeof savedCourseProgress === "object" && savedCourseProgress !== null && !Array.isArray(savedCourseProgress)) {
         const validProgress = Object.fromEntries(
           Object.entries(savedCourseProgress).filter((entry): entry is [string, string[]] =>
@@ -1089,7 +922,7 @@ export default function Home() {
       setCourseError("Không thể đọc tiến độ giáo trình đã lưu trên thiết bị này.");
     }
     try {
-      const savedLessonScores: unknown = JSON.parse(localStorage.getItem("lingua-course-lesson-scores") ?? "{}");
+      const savedLessonScores: unknown = JSON.parse(localStorage.getItem("lingua-course-lesson-scores-v2") ?? "{}");
       if (typeof savedLessonScores === "object" && savedLessonScores !== null && !Array.isArray(savedLessonScores)) {
         const validScores = Object.fromEntries(
           Object.entries(savedLessonScores).flatMap(([courseId, scores]) => {
@@ -1105,25 +938,6 @@ export default function Home() {
       }
     } catch {
       setCourseError("Không thể đọc điểm bài học đã lưu trên thiết bị này.");
-    }
-    try {
-      const savedLevelResults: unknown = JSON.parse(localStorage.getItem("lingua-course-level-results") ?? "{}");
-      if (typeof savedLevelResults === "object" && savedLevelResults !== null && !Array.isArray(savedLevelResults)) {
-        const validResults = Object.fromEntries(
-          Object.entries(savedLevelResults).flatMap(([courseId, results]) => {
-            if (typeof results !== "object" || results === null || Array.isArray(results)) return [];
-            const validLevels = Object.fromEntries(
-              Object.entries(results).filter(([level, score]) =>
-                isCourseLevel(level) &&
-                typeof score === "number" && Number.isInteger(score) && score >= 0 && score <= 100),
-            ) as Partial<Record<CourseLevel, number>>;
-            return [[courseId, validLevels]];
-          }),
-        );
-        setCourseLevelResults(validResults);
-      }
-    } catch {
-      setCourseError("Không thể đọc kết quả kiểm tra level đã lưu trên thiết bị này.");
     }
     void listDownloadedCourses()
       .then(setCoursePacks)
@@ -1248,27 +1062,12 @@ export default function Home() {
       }
       const savedViVoice = localStorage.getItem("lingua-vi-voice-id");
       if (savedViVoice) setSelectedViVoiceId(savedViVoice);
-      const savedEnVoice = localStorage.getItem("lingua-en-voice-id");
-      if (savedEnVoice) setSelectedEnVoiceId(savedEnVoice);
-
-      const savedAccent = localStorage.getItem("lingua-selected-accent") as AccentRegion | null;
-      if (savedAccent && ["all", "us", "uk", "in", "au", "ca", "de"].includes(savedAccent)) {
-        setSelectedAccent(savedAccent);
-      }
-      const savedGender = localStorage.getItem("lingua-selected-gender") as "all" | "female" | "male" | null;
-      if (savedGender && ["all", "female", "male"].includes(savedGender)) {
-        setSelectedGender(savedGender);
-      }
 
       const savedViRate = Number(localStorage.getItem("lingua-vi-rate"));
       if (savedViRate >= 0.6 && savedViRate <= 1.5) setViSpeechRate(savedViRate);
       const savedViPitch = Number(localStorage.getItem("lingua-vi-pitch"));
       if (savedViPitch >= 0.7 && savedViPitch <= 1.3) setViSpeechPitch(savedViPitch);
 
-      const savedEnRate = Number(localStorage.getItem("lingua-en-rate"));
-      if (savedEnRate >= 0.6 && savedEnRate <= 1.5) setEnSpeechRate(savedEnRate);
-      const savedEnPitch = Number(localStorage.getItem("lingua-en-pitch"));
-      if (savedEnPitch >= 0.7 && savedEnPitch <= 1.3) setEnSpeechPitch(savedEnPitch);
     } catch {}
 
     if ("speechSynthesis" in window) {
@@ -1287,18 +1086,6 @@ export default function Home() {
     setSelectedViVoiceId(voiceId);
     try { localStorage.setItem("lingua-vi-voice-id", voiceId); } catch {}
   }
-  function updateEnVoice(voiceId: string) {
-    setSelectedEnVoiceId(voiceId);
-    try { localStorage.setItem("lingua-en-voice-id", voiceId); } catch {}
-  }
-  function updateAccent(accent: AccentRegion) {
-    setSelectedAccent(accent);
-    try { localStorage.setItem("lingua-selected-accent", accent); } catch {}
-  }
-  function updateGender(gender: "all" | "female" | "male") {
-    setSelectedGender(gender);
-    try { localStorage.setItem("lingua-selected-gender", gender); } catch {}
-  }
   function updateViRate(rate: number) {
     setViSpeechRate(rate);
     try { localStorage.setItem("lingua-vi-rate", String(rate)); } catch {}
@@ -1307,56 +1094,6 @@ export default function Home() {
     setViSpeechPitch(pitch);
     try { localStorage.setItem("lingua-vi-pitch", String(pitch)); } catch {}
   }
-  function updateEnRate(rate: number) {
-    setEnSpeechRate(rate);
-    try { localStorage.setItem("lingua-en-rate", String(rate)); } catch {}
-  }
-  function updateEnPitch(pitch: number) {
-    setEnSpeechPitch(pitch);
-    try { localStorage.setItem("lingua-en-pitch", String(pitch)); } catch {}
-  }
-
-  useEffect(() => {
-    try {
-      const storedVoices: unknown = JSON.parse(localStorage.getItem(GOOGLE_SPEECH_VOICES_STORAGE) ?? "[]");
-      if (Array.isArray(storedVoices)) {
-        setGoogleSpeechVoices(storedVoices.filter((voice): voice is GoogleSpeechVoice =>
-          typeof voice === "object" && voice !== null &&
-          "id" in voice && typeof voice.id === "string" && isSpeechVoiceId(voice.id) &&
-          "label" in voice && typeof voice.label === "string" &&
-          "gender" in voice && (voice.gender === "male" || voice.gender === "female") &&
-          "accent" in voice && typeof voice.accent === "string" &&
-          "description" in voice && typeof voice.description === "string").slice(0, 20));
-      }
-      const savedVoice = localStorage.getItem(`${SPEECH_VOICE_STORAGE}-${aiProvider}`);
-      if (aiProvider === "google") {
-        const legacyVoice = localStorage.getItem(SPEECH_VOICE_STORAGE);
-        const googleVoice = savedVoice ?? legacyVoice;
-        if (googleVoice && isSpeechVoiceId(googleVoice)) setSpeechVoice(googleVoice);
-      } else if (savedVoice && OPENAI_SPEECH_VOICES.some((voice) => voice.id === savedVoice)) {
-        setOpenAiSpeechVoice(savedVoice);
-      }
-      const savedAccent = localStorage.getItem("lingua-speech-accent-openai");
-      if (savedAccent && OPENAI_ACCENTS.includes(savedAccent as (typeof OPENAI_ACCENTS)[number])) {
-        setOpenAiSpeechAccent(savedAccent);
-      }
-      const savedDeliveryStyle = localStorage.getItem(SPEECH_DELIVERY_STYLE_STORAGE);
-      if (SPEECH_DELIVERY_STYLES.some((style) => style.id === savedDeliveryStyle)) {
-        setSpeechDeliveryStyle(savedDeliveryStyle as SpeechDeliveryStyle);
-      }
-    } catch {
-      setSpeechError("Không thể đọc lựa chọn giọng đọc đã lưu trên thiết bị.");
-    }
-  }, [aiProvider]);
-
-  useEffect(() => {
-    if (googleSpeechVoices.length === 0) return;
-    try {
-      localStorage.setItem(GOOGLE_SPEECH_VOICES_STORAGE, JSON.stringify(googleSpeechVoices));
-    } catch {
-      setSpeechVoicesError("Không thể lưu danh sách giọng đọc trên thiết bị này.");
-    }
-  }, [googleSpeechVoices]);
 
   useEffect(() => {
     if (!aiSettingsLoaded) return;
@@ -1422,6 +1159,43 @@ export default function Home() {
     if (materialUrl) URL.revokeObjectURL(materialUrl);
   }, [materialUrl]);
 
+  useEffect(() => {
+    if (section !== "practice") {
+      classroomBootRef.current = false;
+      speechAudioRef.current?.pause();
+      if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+      return;
+    }
+    if (!aiSettingsLoaded || !progressLoaded || classroomBootRef.current) return;
+    classroomBootRef.current = true;
+    void connectClassroom();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [section, aiSettingsLoaded, progressLoaded]);
+
+  useEffect(() => {
+    if (!pendingLessonStartRef.current || section !== "practice") return;
+    pendingLessonStartRef.current = false;
+    void startLesson();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tutorLessonId]);
+
+  useEffect(() => {
+    if (section !== "practice") return;
+    const list = chatListRef.current;
+    if (list) list.scrollTop = list.scrollHeight;
+  }, [messages, section]);
+
+  useEffect(() => {
+    if (section !== "lessons" && section !== "practice") return;
+    const course = coursePacks.find((item) => item.id === progress.profile);
+    if (course?.version !== CURRICULUM_VERSION) {
+      void syncCourse(progress.profile);
+      return;
+    }
+    if (section === "lessons" && !selectedCourseId) openDownloadedCourse(course.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [section, coursePacks, progress.profile]);
+
   function selectProfile(id: string) {
     const nextProfile = profiles.find((item) => item.id === id);
     if (!nextProfile) return;
@@ -1431,38 +1205,171 @@ export default function Home() {
     practiceSessionCounted.current = false;
     setSelectedCourseId("");
     setSelectedLessonId("");
-    setCourseExamLevel(null);
-    setCourseExamAnswers([]);
-    setCourseExamSubmitted(false);
-    navigateToSection("lessons");
+    navigateToSection("mode");
   }
 
-  async function withAvailableApiKey<T>(operation: (key: string) => Promise<T>): Promise<T> {
-    const keys = apiKeys[aiProvider];
-    if (!keys.length) {
-      throw new Error(`Chưa có API key ${aiProvider === "google" ? "Google AI" : "OpenAI"}. Hãy thêm key trong mục Cài đặt.`);
+  async function withAvailableApiKey<T>(
+    operation: (key: string, model: string) => Promise<T>,
+    onStatus?: (message: string) => void,
+  ): Promise<T> {
+    const result = await runWithFailover(
+      {
+        provider: aiProvider,
+        keys: apiKeys[aiProvider],
+        preferredKeyId: activeKeyIds[aiProvider],
+        models: modelCandidates(aiProvider, activeModel),
+        onStatus,
+      },
+      operation,
+    );
+    rememberWorkingConnection(result.keyId, result.model);
+    return result.value;
+  }
+
+  function rememberWorkingConnection(keyId: string, model: string) {
+    if (activeKeyIds[aiProvider] !== keyId) setActiveKeyIds((current) => ({ ...current, [aiProvider]: keyId }));
+    if (activeModel !== model) setSelectedModels((current) => ({ ...current, [aiProvider]: model }));
+  }
+
+  async function testAiConnection(): Promise<boolean> {
+    if (!apiKeys[aiProvider].length) {
+      setConnection({ status: "error", message: `Chưa có API key ${aiProvider === "google" ? "Google AI" : "OpenAI"}. Hãy thêm key trong Cài đặt.` });
+      return false;
     }
-    const activeIndex = keys.findIndex((entry) => entry.id === activeKeyIds[aiProvider]);
-    const orderedKeys = activeIndex < 0
-      ? keys
-      : [...keys.slice(activeIndex), ...keys.slice(0, activeIndex)];
-    let lastError: unknown;
-    for (const [index, entry] of orderedKeys.entries()) {
-      try {
-        const result = await operation(entry.value);
-        if (activeKeyIds[aiProvider] !== entry.id) {
-          setActiveKeyIds((current) => ({ ...current, [aiProvider]: entry.id }));
-        }
-        return result;
-      } catch (error) {
-        lastError = error;
-        const canRotate = error instanceof Error &&
-          (/HTTP (401|403|429)\b/.test(error.message) ||
-            (/HTTP 400\b/.test(error.message) && /api[\s_-]?key|API_KEY_INVALID/i.test(error.message)));
-        if (!canRotate || index === orderedKeys.length - 1) throw error;
-      }
+    setConnection({ status: "checking", message: "Đang kết nối với gia sư AI…" });
+    const report: ConnectionReport = await checkConnection({
+      provider: aiProvider,
+      keys: apiKeys[aiProvider],
+      preferredKeyId: activeKeyIds[aiProvider],
+      models: modelCandidates(aiProvider, activeModel),
+      onStatus: (message) => setConnection({ status: "checking", message }),
+    });
+    if (report.ok) {
+      rememberWorkingConnection(report.keyId, report.model);
+      setConnection({ status: "ok", message: `Đã kết nối · ${report.model} · ${(report.ms / 1000).toFixed(1)}s`, ms: report.ms });
+      return true;
     }
-    throw lastError instanceof Error ? lastError : new Error("Không thể hoàn tất yêu cầu với các API key đã lưu.");
+    setConnection({ status: "error", message: report.error.message });
+    return false;
+  }
+
+  /** The lesson the AI teacher is teaching: one chosen from the course, else the learner's next unfinished lesson. */
+  function tutorLesson(): CourseLesson | undefined {
+    const course = coursePacks.find((item) => item.id === progress.profile);
+    if (!course) return undefined;
+    return course.lessons.find((item) => item.id === tutorLessonId) ?? nextLessonFor(course);
+  }
+
+  function buildTutorSystemPrompt(): string {
+    const persona = TUTOR_PERSONAS[tutorPersona];
+    const self = persona.kind === "man" ? "thầy" : persona.kind === "woman" ? "cô" : "Cú Alex";
+    const level = COURSE_LEVELS.includes(progress.level as CourseLevel) ? progress.level as CourseLevel : "A2";
+    const lesson = tutorLesson();
+    const lessonBlock = lesson
+      ? `TODAY'S LESSON (from the learner's course, CEFR ${lesson.level}): "${lesson.title}".
+Goal: ${lesson.objective}
+Key vocabulary: ${lesson.vocabulary.map((v) => `${v.term} (${v.definition})`).join("; ")}.
+${lesson.grammar ? `Grammar focus: ${lesson.grammar.title} — ${lesson.grammar.explanation}` : ""}
+${lesson.pronunciation ? `Pronunciation focus: ${lesson.pronunciation.focus} — words: ${lesson.pronunciation.words.join(", ")}.` : ""}
+${lesson.speakingTasks?.length ? `Speaking tasks: ${lesson.speakingTasks.join(" | ")}` : ""}
+Teach THIS lesson. Use its vocabulary and grammar in every situation you create.`
+      : `TOPIC: "${profile.title}", scenario: "${profile.scene}".`;
+    return `You are ${persona.name.replace(/^(Cô|Thầy|Cú) /, "")}, an expert, PROACTIVE English teacher (${persona.kind === "mascot" ? "a friendly owl mascot" : persona.kind === "man" ? "male" : "female"}) for a Vietnamese learner. In Vietnamese you call yourself "${self}" and the learner "em" (mascot: "mình" and "bạn").
+Learner: CEFR ${level}, field "${profile.title}".
+${lessonBlock}
+
+HOW TO TEACH AT ${level}:
+${LEVEL_PEDAGOGY[level]}
+
+LESSON FLOW — you lead, the learner follows. Move to the next stage when the learner is ready:
+1. Warm-up: greet, one easy question linked to the topic.
+2. Present: teach 2–3 key words or the grammar point with one clear example each.
+3. Guided practice: ask the learner to repeat, fill a gap, or transform a sentence.
+4. Situations: run at least 3 DIFFERENT realistic situations (you play the other person: customer, colleague, doctor…). Make each slightly harder.
+5. Check: ask 2 quick questions that test the lesson goal, then summarise strengths and 1–2 things to improve, and suggest the next step (the quiz or a new situation).
+
+CORRECTING — the most important part. After EVERY learner answer:
+- Praise one specific thing.
+- For each real mistake (grammar, word choice, word order, missing words, Vietlish), write ONE line exactly in this format:
+✏️ "<what they said>" → "<natural correct English>" — <short Vietnamese reason>
+- If the learner's pronunciation was assessed (voice message) and a word was unclear or wrong, write a line:
+🔈 <word>: <what was wrong> → <how to say it, in Vietnamese>
+- Then continue the lesson immediately with the next question or situation.
+- If there is no mistake, say so briefly and raise the difficulty.
+
+RULES:
+- Put every English sentence the learner should say inside double quotes "...". No markdown asterisks or headings.
+- One clear question or task at the end of every turn. Never end on a statement.
+- Keep each turn under ${level === "A1" || level === "A2" ? 90 : 120} words.
+- First line of EVERY reply: a mood tag [mood:happy] [mood:cheer] [mood:thinking] [mood:surprised] or [mood:neutral] (cheer for praise, thinking for corrections, surprised for excellent answers).
+- After the learner has answered at least 4 times, add on the second line your current estimate of their real level as [level:A1|A2|B1|B2] and update it whenever it changes. Tags are hidden from the learner.`;
+  }
+
+  /** Strips the hidden [mood:…] and [level:…] tags the teacher puts at the top of a reply. */
+  function parseMood(text: string): { text: string; mood?: AvatarEmotion; level?: CourseLevel } {
+    let rest = text;
+    let mood: AvatarEmotion | undefined;
+    let level: CourseLevel | undefined;
+    for (;;) {
+      const tag = /^\s*\[(mood|level):\s*([a-z0-9]+)\s*\]\s*/i.exec(rest);
+      if (!tag) break;
+      const value = tag[2].toLowerCase();
+      if (tag[1].toLowerCase() === "mood" && ["neutral", "happy", "cheer", "thinking", "surprised"].includes(value)) mood = value as AvatarEmotion;
+      if (tag[1].toLowerCase() === "level" && COURSE_LEVELS.includes(value.toUpperCase() as CourseLevel)) level = value.toUpperCase() as CourseLevel;
+      rest = rest.slice(tag[0].length);
+    }
+    // A tag still streaming in must not flash on screen.
+    rest = rest.replace(/^\s*\[[^\]]{0,16}$/, "");
+    return { text: rest, mood, level };
+  }
+
+  function normalizeForApi(history: Message[]): Message[] {
+    const merged: Message[] = [];
+    for (const message of history) {
+      if (!message.content.trim()) continue;
+      const last = merged[merged.length - 1];
+      if (last && last.role === message.role) last.content += `\n${message.content}`;
+      else merged.push({ ...message });
+    }
+    if (merged[0]?.role === "assistant") merged.unshift({ role: "user", content: "(Em đã vào lớp học.)" });
+    return merged;
+  }
+
+  /** One streamed teacher turn. `base` is what the learner sees; `apiHistory` is what the model receives. */
+  async function tutorTurn(base: Message[], apiHistory: Message[]): Promise<boolean> {
+    setMessages([...base, { role: "assistant", content: "" }]);
+    setChatBusy(true);
+    setChatError("");
+    setTutorSubtitle("");
+    try {
+      let shown = "";
+      const raw = await withAvailableApiKey(
+        (key, model) => streamChat(aiProvider, key, model, buildTutorSystemPrompt(), normalizeForApi(apiHistory), (full) => {
+          const parsed = parseMood(full);
+          shown = parsed.text;
+          if (parsed.mood) setTutorEmotion(parsed.mood);
+          if (parsed.level) setAiLevelEstimate(parsed.level);
+          setMessages([...base, { role: "assistant", content: parsed.text }]);
+        }),
+        (status) => setTutorSubtitle(status),
+      );
+      const parsed = parseMood(raw);
+      const finalReply = (parsed.text || shown).trim();
+      setMessages([...base, { role: "assistant", content: finalReply }]);
+      setProgress((current) => recordPractice(current, 2, !practiceSessionCounted.current));
+      practiceSessionCounted.current = true;
+      setConnection((current) => current.status === "ok" ? current : { status: "ok", message: "Đã kết nối" });
+      void playSpeech(finalReply);
+      return true;
+    } catch (error) {
+      setMessages(base);
+      setChatError(error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
+      retryTurnRef.current = () => { void tutorTurn(base, apiHistory); };
+      return false;
+    } finally {
+      setChatBusy(false);
+      setTutorSubtitle("");
+    }
   }
 
   async function sendMessage(event?: FormEvent, requestedPrompt?: string) {
@@ -1474,65 +1381,28 @@ export default function Home() {
       return;
     }
     const conversation = [...messages, { role: "user" as const, content }];
-    // Insert empty assistant placeholder for instant streaming
-    setMessages([...conversation, { role: "assistant" as const, content: "" }]);
     setDraft("");
-    setChatBusy(true);
-    setChatError("");
-    try {
-      const systemPrompt = `You are Maya, an ACTIVE, PROACTIVE, and warm English teacher for a Vietnamese learner.
-Learner profile: "${profile.title}", CEFR level: ${progress.level}.
+    await tutorTurn(conversation, conversation.slice(-12));
+  }
 
-CRITICAL PEDAGOGICAL PRINCIPLES:
-1. LEAD AND INSTRUCT (Do NOT just passively answer):
-   - You are the teacher guiding the session. Every turn, you must guide the learner what to do next.
-   - For A1-A2 (Beginners): Provide explanations in Vietnamese first. Teach 1 useful sentence structure/phrase, provide the Vietnamese translation, and explicitly ask the learner to repeat or answer with a clear example.
-   - For B1-B2 (Intermediate): Lead a realistic roleplay dialogue in English related to "${profile.title}". Set the scene, speak your line, and ask a targeted question for the learner to reply.
+  /** The teacher opens the class: greets, states the goal and sets the first situation. */
+  async function startLesson() {
+    // The built-in scripted greetings are replaced by the teacher's own opening.
+    const scripted = new Set([initialMessage.content, ...profiles.map((item) => item.prompt)]);
+    const history = messages
+      .filter((message) => message.content.trim() && !(message.role === "assistant" && scripted.has(message.content)))
+      .slice(-10);
+    const returning = history.length > 1;
+    const opening = `[CLASS START] The learner has just entered the classroom. ${returning
+      ? "Welcome them back warmly, recap in one line what you practised last time, then continue with a NEW situation."
+      : "Greet them warmly and introduce yourself in one line."} State today's lesson and its goal in one sentence, then begin stage 1 (warm-up) and give the first task. Start speaking now.`;
+    await tutorTurn(history, [...history, { role: "user", content: opening }]);
+  }
 
-2. ALWAYS END WITH A CLEAR NEXT PROMPT:
-   - Never end your turn with just a statement. Always finish with ONE clear question, roleplay response, or practice request so the learner always knows what to say next.
-   - Provide a brief hint in parentheses if helpful: e.g. "(Gợi ý: bạn có thể trả lời: 'I usually...')"
-
-3. SANDWICH FEEDBACK:
-   - When the learner speaks or writes:
-     1. Praise: Warmly acknowledge their effort ("Very good!", "Tuyệt vời!").
-     2. Correct: If there are grammar mistakes or "Vietlish" word-for-word translation, kindly point it out and provide the natural native English phrasing, with a quick explanation in Vietnamese.
-     3. Next Step: Continue the dialogue by asking the next question.
-
-4. BILINGUAL CLARITY:
-   - Put English practice sentences, examples, and key phrases inside quotation marks "..." so the learner (and the speech engine) can distinguish them clearly from Vietnamese explanations.
-   - Keep responses encouraging, bite-sized (under 120 words), and tailored to ${progress.level}.`;
-
-      let streamedText = "";
-      const reply = await withAvailableApiKey((key) =>
-        generateAiText(
-          aiProvider,
-          key,
-          activeModel,
-          systemPrompt,
-          conversation.slice(-12),
-          (chunk) => {
-            streamedText = chunk;
-            setMessages([...conversation, { role: "assistant", content: chunk }]);
-          }
-        )
-      );
-
-      const finalReply = reply || streamedText;
-      setMessages([...conversation, { role: "assistant", content: finalReply }]);
-      setProgress((current) => recordPractice(current, 2, !practiceSessionCounted.current));
-      practiceSessionCounted.current = true;
-      void playSpeech(finalReply);
-    } catch (error) {
-      setMessages(conversation);
-      const timedOut = error instanceof Error &&
-        (error.name === "TimeoutError" || /signal timed out|timed out|timeout/i.test(error.message));
-      setChatError(timedOut
-        ? "AI chưa phản hồi trong 60 giây. Hãy kiểm tra kết nối Internet, thử đổi mô hình (ví dụ: gemini-2.0-flash hoặc gemini-1.5-flash) hoặc kiểm tra API key trong Cài đặt."
-        : error instanceof Error ? error.message : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé.");
-    } finally {
-      setChatBusy(false);
-    }
+  async function connectClassroom() {
+    if (chatBusy) return;
+    const ok = await testAiConnection();
+    if (ok) await startLesson();
   }
 
   function startVoiceInput() {
@@ -1541,7 +1411,8 @@ CRITICAL PEDAGOGICAL PRINCIPLES:
       webkitSpeechRecognition?: SpeechRecognitionConstructor;
     };
     const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
-    if (!Recognition) {
+    // Gemini listens to the recording itself and can correct pronunciation, so prefer it.
+    if (!Recognition || aiProvider === "google") {
       void startVoiceChatRecording();
       return;
     }
@@ -1587,39 +1458,57 @@ CRITICAL PEDAGOGICAL PRINCIPLES:
           setVoiceError("Chưa ghi được âm thanh. Bạn vui lòng thử lại nhé.");
           return;
         }
+        if (aiProvider !== "google") {
+          // OpenAI: transcribe, then the normal streamed teacher turn.
+          setChatBusy(true);
+          setChatError("");
+          let learnerMessage = "";
+          try {
+            learnerMessage = await withAvailableApiKey((key) => transcribeWithOpenAi(key, blob));
+          } catch (error) {
+            setChatError(error instanceof Error ? error.message : "Không chép được lời nói. Bạn vui lòng thử lại nhé.");
+            setChatBusy(false);
+            return;
+          }
+          setChatBusy(false);
+          const conversation = [...messages, { role: "user" as const, content: learnerMessage }];
+          await tutorTurn(conversation, conversation.slice(-12));
+          return;
+        }
+        // Gemini hears the audio itself, so it can also judge pronunciation.
         setChatBusy(true);
         setChatError("");
+        setTutorSubtitle("Đang nghe và chấm phát âm…");
         try {
-          const transcript = messages.slice(-12).map((message) =>
-            `${message.role === "user" ? "Người học" : "Gia sư"}: ${message.content}`).join("\n");
-          let learnerMessage = "";
-          let coachMessage = "";
-          if (aiProvider === "google") {
-            const audio = await getAudioData(blob);
-            const response = await withAvailableApiKey((key) => generateGeminiMultimodalResponse(key, [
-              {
-                text: `You are Maya, a warm English tutor for a Vietnamese learner. Their profile is "${profile.title}" and CEFR level is "${progress.level}". Transcribe what they said in the language they used, then reply as their teacher. Keep teaching material and practice in English; answer questions in Vietnamese when asked. Keep the reply under 100 words. Conversation so far:\n${transcript}\nReturn ONLY valid JSON: {"transcript":"what the learner said","reply":"your level-appropriate coach response"}.`,
-              },
-              { inlineData: audio },
-            ], activeModel));
-            const data: unknown = JSON.parse(response.replace(/^```(?:json)?\s*|\s*```$/g, ""));
-            if (typeof data !== "object" || data === null || !("transcript" in data) ||
-                typeof data.transcript !== "string" || !("reply" in data) ||
-                typeof data.reply !== "string" || !data.transcript.trim() || !data.reply.trim()) {
-              throw new Error("Gia sư AI trả lời không đúng định dạng. Vui lòng thử lại.");
-            }
-            learnerMessage = data.transcript.trim();
-            coachMessage = data.reply.trim();
-          } else {
-            learnerMessage = await withAvailableApiKey((key) => transcribeWithOpenAi(key, blob));
-            coachMessage = await withAvailableApiKey((key) => generateAiText(
-              aiProvider,
-              key,
-              activeModel,
-              `You are Maya, a warm English tutor for a Vietnamese learner studying "${profile.title}" at CEFR ${progress.level}. Respond to the learner's transcribed voice message in context. Adapt to their level, answer questions, and ask one focused follow-up question. Keep lessons and practice in English, but explain in Vietnamese when they ask. Keep your answer under 100 words.`,
-              [...messages.slice(-12), { role: "user", content: learnerMessage }],
-            ));
+          const history = normalizeForApi(messages.slice(-10)).map((message) =>
+            `${message.role === "user" ? "LEARNER" : "TEACHER"}: ${message.content}`).join("\n");
+          const audio = await getAudioData(blob);
+          const response = await withAvailableApiKey((key, model) => generateGeminiMultimodalResponse(key, [
+            {
+              text: `${buildTutorSystemPrompt()}
+
+CONVERSATION SO FAR:
+${history}
+
+The learner has just answered by VOICE (audio attached).
+1. Transcribe exactly what they said, keeping their mistakes (do not correct the transcript).
+2. Listen carefully to their pronunciation: ending sounds, word stress, /θ/ /ð/ /ʃ/ /z/ and vowel length are common problems for Vietnamese speakers. Add 🔈 lines for the words that were unclear or wrong.
+3. Reply as the teacher following every rule above, including the tags and ✏️ corrections.
+Return ONLY valid JSON: {"transcript":"...","reply":"..."}`,
+            },
+            { inlineData: audio },
+          ], model));
+          const data: unknown = JSON.parse(response.replace(/^```(?:json)?\s*|\s*```$/g, ""));
+          if (typeof data !== "object" || data === null || !("transcript" in data) ||
+              typeof data.transcript !== "string" || !("reply" in data) ||
+              typeof data.reply !== "string" || !data.transcript.trim() || !data.reply.trim()) {
+            throw new Error("Gia sư AI trả lời không đúng định dạng. Vui lòng thử lại.");
           }
+          const parsed = parseMood(data.reply);
+          if (parsed.mood) setTutorEmotion(parsed.mood);
+          if (parsed.level) setAiLevelEstimate(parsed.level);
+          const coachMessage = parsed.text.trim();
+          const learnerMessage = data.transcript.trim();
           setMessages((current) => [
             ...current,
             { role: "user", content: learnerMessage },
@@ -1632,6 +1521,7 @@ CRITICAL PEDAGOGICAL PRINCIPLES:
           setChatError(error instanceof Error ? error.message : "Gia sư chưa thể xử lý bản ghi. Bạn vui lòng thử lại nhé.");
         } finally {
           setChatBusy(false);
+          setTutorSubtitle("");
         }
       };
       recorder.start();
@@ -1689,7 +1579,7 @@ CRITICAL PEDAGOGICAL PRINCIPLES:
         try {
           const audio = await getAudioData(blob);
           const targetPhrase = (targetPronunciationPhrase.trim() || profile.words[0]).trim();
-          const response = await withAvailableApiKey((key) => generateGeminiMultimodalResponse(key, [
+          const response = await withAvailableApiKey((key, model) => generateGeminiMultimodalResponse(key, [
             {
               text: `Listen to the learner's audio and evaluate how understandable and accurate their pronunciation is for the English phrase: "${targetPhrase}".
 Pay special attention to common pronunciation challenges for Vietnamese speakers of English (e.g., missing ending consonant sounds like /s/, /z/, /t/, /d/, /k/, /ʃ/, /tʃ/, /θ/, incorrect word stress, and consonant clusters).
@@ -1697,7 +1587,7 @@ Be supportive, warm, and specific. Treat this as an encouraging AI coaching aid.
 Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": short transcript of what you heard, "feedback": one or two concise sentences in Vietnamese giving constructive feedback, "soundsToPractice": array of at most 3 short English words or sounds}. If audio is unclear, say so in feedback and give a low-confidence score.`,
             },
             { inlineData: audio },
-          ], activeModel));
+          ], model));
           const data: unknown = JSON.parse(response.replace(/^```(?:json)?\s*|\s*```$/g, ""));
           if (typeof data !== "object" || data === null || !("score" in data) ||
               typeof data.score !== "number" || !("heard" in data) || typeof data.heard !== "string" ||
@@ -1787,34 +1677,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     }
   }
 
-  async function loadSpeechVoices() {
-    if (aiProvider !== "google") {
-      setSpeechVoicesError("Danh sách giọng có thông tin giới tính và vùng phát âm hiện được cung cấp bởi Google Gemini.");
-      return;
-    }
-    if (!apiKey) {
-      setSpeechVoicesError("Hãy lưu API key Google AI trước khi tải danh sách giọng.");
-      return;
-    }
-    setSpeechVoicesBusy(true);
-    setSpeechVoicesError("");
-    try {
-      const catalog = await withAvailableApiKey((key) => fetchGoogleSpeechVoices(key));
-      const voices = catalog.voices;
-      setGoogleSpeechVoices(voices);
-      setSpeechVoicesError(catalog.failedRegions.length
-        ? `Không tải được danh mục cho các vùng: ${catalog.failedRegions.map(getGoogleAccentLabel).join(", ")}.`
-        : "");
-      if (!voices.some((voice) => voice.id === speechVoice)) {
-        setSpeechVoice(voices[0]?.id ?? "Kore");
-      }
-    } catch (error) {
-      setSpeechVoicesError(error instanceof Error ? error.message : "Không thể tải danh sách giọng đọc.");
-    } finally {
-      setSpeechVoicesBusy(false);
-    }
-  }
-
   function playNativeUtterance(text: string, lang: "vi" | "en"): Promise<void> {
     return new Promise((resolve) => {
       if (typeof window === "undefined" || !("speechSynthesis" in window)) {
@@ -1834,47 +1696,15 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         utterance.rate = viSpeechRate;
         utterance.pitch = viSpeechPitch;
         const userVoice = voices.find((v) => v.voiceURI === selectedViVoiceId || v.name === selectedViVoiceId);
-        if (userVoice) {
-          utterance.voice = userVoice;
-        } else {
-          const viVoice =
-            voices.find((v) => (v.lang.startsWith("vi") || v.lang.includes("VN")) && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("HoaiMy") || v.name.includes("NamMinh"))) ||
-            voices.find((v) => v.lang.startsWith("vi") || v.lang.includes("VN"));
-          if (viVoice) utterance.voice = viVoice;
-        }
+        const viVoice = userVoice ??
+          voices.find((v) => (v.lang.startsWith("vi") || v.lang.includes("VN")) && /Natural|Google|HoaiMy|NamMinh/.test(v.name)) ??
+          voices.find((v) => v.lang.startsWith("vi") || v.lang.includes("VN"));
+        if (viVoice) utterance.voice = viVoice;
       } else {
-        const preset = getAccentPreset(selectedAccent);
-        utterance.rate = enSpeechRate * preset.tuning.rateMultiplier;
-        utterance.pitch = enSpeechPitch * preset.tuning.pitchMultiplier;
-
-        let matchedVoice: SpeechSynthesisVoice | undefined;
-        if (selectedEnVoiceId) {
-          matchedVoice = voices.find((v) => v.voiceURI === selectedEnVoiceId || v.name === selectedEnVoiceId);
-        }
-
-        // If no explicit voice or selected voice doesn't match selected accent (when not "all")
-        if (!matchedVoice && selectedAccent !== "all") {
-          const candidates = voices.filter((v) => {
-            const info = parseVoiceInfo(v.name, v.lang);
-            const matchesAccent = info.countryCode === selectedAccent;
-            const matchesGender = selectedGender === "all" || info.gender === selectedGender;
-            return matchesAccent && matchesGender;
-          });
-          if (candidates.length > 0) {
-            matchedVoice = candidates.find((c) => parseVoiceInfo(c.name, c.lang).isNatural) || candidates[0];
-          }
-        }
-
-        if (matchedVoice) {
-          utterance.voice = matchedVoice;
-          utterance.lang = matchedVoice.lang || preset.code;
-        } else {
-          utterance.lang = preset.code;
-          const fallback =
-            voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Google") || v.name.includes("Natural") || v.name.includes("Jenny") || v.name.includes("George"))) ||
-            voices.find((v) => v.lang.startsWith("en"));
-          if (fallback) utterance.voice = fallback;
-        }
+        const voice = pickDeviceVoice(voices, voiceProfile, guessVoiceGender);
+        utterance.rate = voiceProfile.speed;
+        if (voice) utterance.voice = voice;
+        utterance.lang = voice?.lang ?? getAccent(voiceProfile.accent).locales[0];
       }
 
       utterance.onend = () => resolve();
@@ -1883,78 +1713,119 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     });
   }
 
-  async function playPracticePhrase(text: string) {
-    const phrase = cleanSpeechText(text);
-    if (!phrase || speechBusy) return;
+  function guessVoiceGender(voice: SpeechSynthesisVoice): VoiceGender {
+    return parseVoiceInfo(voice.name, voice.lang).gender;
+  }
 
+  function updateVoiceProfile(patch: Partial<VoiceProfile>) {
+    setVoiceProfile((current) => {
+      const next = { ...current, ...patch };
+      if (patch.gender) {
+        next.googleVoice = voiceForGender(GOOGLE_VOICES, next.googleVoice, patch.gender);
+        next.openaiVoice = voiceForGender(OPENAI_VOICES, next.openaiVoice, patch.gender);
+        next.deviceVoice = "";
+      }
+      if (patch.accent) next.deviceVoice = "";
+      try { localStorage.setItem(VOICE_PROFILE_STORAGE, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
+
+  /** Cloud audio for one English sentence, or null when the device voice should be used. */
+  async function englishAudio(text: string, profile = voiceProfile): Promise<Blob | null> {
+    const engine = profile.engine;
+    if (engine === "device" || !apiKeys[engine].length) return null;
+    const cacheKey = `v2:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}`;
+    try {
+      const cached = await getCachedSpeech(cacheKey, text);
+      if (cached) return cached;
+    } catch {}
+    const { value } = await runWithFailover(
+      {
+        provider: engine,
+        keys: apiKeys[engine],
+        preferredKeyId: activeKeyIds[engine],
+        models: engine === "google" ? GOOGLE_TTS_MODELS : OPENAI_TTS_MODELS,
+        deadlineMs: 40_000,
+      },
+      (key, model) => synthesizeCloudSpeech(engine, key, model, profile, text),
+    );
+    try { await saveCachedSpeech(cacheKey, text, value); } catch {}
+    return value;
+  }
+
+  function playBlob(blob: Blob): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const objectUrl = URL.createObjectURL(blob);
+      const audio = new Audio(objectUrl);
+      speechAudioRef.current = audio;
+      speechObjectUrlRef.current = objectUrl;
+      const done = () => {
+        if (speechAudioRef.current === audio) {
+          speechAudioRef.current = null;
+          speechObjectUrlRef.current = null;
+        }
+        URL.revokeObjectURL(objectUrl);
+        resolve();
+      };
+      audio.onended = done;
+      audio.onpause = done;
+      audio.onerror = () => reject(new Error("Không phát được âm thanh."));
+      audio.play().catch(reject);
+    });
+  }
+
+  function stopSpeech() {
+    speechRunRef.current += 1;
     speechAudioRef.current?.pause();
     speechAudioRef.current = null;
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-    if (speechObjectUrlRef.current) {
-      URL.revokeObjectURL(speechObjectUrlRef.current);
-      speechObjectUrlRef.current = null;
-    }
+    if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+  }
+
+  /** Plays text: Vietnamese parts with the device voice, English parts with the chosen practice voice. */
+  async function speak(text: string, englishOnly = false) {
+    const clean = text.trim();
+    if (!clean) return;
+    stopSpeech();
+    const run = speechRunRef.current;
+    const segments = englishOnly ? [{ text: cleanSpeechText(clean), lang: "en" as const }] : splitBilingualText(clean);
+    // Fetch every English clip up front so the reply plays without gaps.
+    const clips = segments.map((segment) => segment.lang === "en"
+      ? englishAudio(segment.text).catch((error: unknown) => {
+        setSpeechNotice(`Giọng AI chưa dùng được (${error instanceof Error ? error.message : "lỗi"}) — đang dùng giọng trên máy.`);
+        return null;
+      })
+      : Promise.resolve(null));
     setSpeechBusy(true);
     setSpeechError("");
-    setSpeechNotice("Đang phát mẫu câu tiếng Anh chuẩn...");
-
     try {
-      if (apiKey) {
-        let blob: Blob | null = null;
-        const speechCacheKey = `${aiProvider}:${activeModel}:${activeSpeechVoice}:${activeSpeechAccent}:${speechDeliveryStyle}`;
-        try {
-          blob = await getCachedSpeech(speechCacheKey, phrase);
-        } catch {}
-        if (!blob) {
+      for (const [index, segment] of segments.entries()) {
+        if (speechRunRef.current !== run) return;
+        const clip = await clips[index];
+        if (speechRunRef.current !== run) return;
+        if (clip) {
           try {
-            blob = await withAvailableApiKey((key) =>
-              generateProviderSpeech(aiProvider, key, activeModel, activeSpeechVoice, phrase, activeSpeechAccent, speechDeliveryStyle));
-            try {
-              await saveCachedSpeech(speechCacheKey, phrase, blob);
-            } catch {}
-          } catch {
-            await playNativeUtterance(phrase, "en");
-            setSpeechNotice("Đang phát bằng giọng Tiếng Anh chuẩn trên thiết bị.");
-            return;
-          }
+            await playBlob(clip);
+            continue;
+          } catch {}
         }
-        if (blob) {
-          const objectUrl = URL.createObjectURL(blob);
-          const audio = new Audio(objectUrl);
-          speechAudioRef.current = audio;
-          speechObjectUrlRef.current = objectUrl;
-          await new Promise<void>((resolve) => {
-            audio.onended = () => {
-              if (speechAudioRef.current === audio) {
-                speechAudioRef.current = null;
-                speechObjectUrlRef.current = null;
-                URL.revokeObjectURL(objectUrl);
-              }
-              resolve();
-            };
-            audio.onerror = async () => {
-              await playNativeUtterance(phrase, "en");
-              resolve();
-            };
-            audio.play().catch(async () => {
-              await playNativeUtterance(phrase, "en");
-              resolve();
-            });
-          });
-          setSpeechNotice("Đã hoàn tất phát mẫu câu tiếng Anh.");
-          return;
-        }
+        await playNativeUtterance(segment.text, segment.lang);
       }
-
-      await playNativeUtterance(phrase, "en");
-      setSpeechNotice("Đang phát bằng giọng Tiếng Anh chuẩn trên thiết bị.");
-    } catch (error) {
-      setSpeechError(error instanceof Error ? error.message : "Không thể phát giọng đọc mẫu.");
     } finally {
-      setSpeechBusy(false);
+      if (speechRunRef.current === run) setSpeechBusy(false);
     }
+  }
+
+  function playPracticePhrase(text: string) {
+    return speak(text, true);
+  }
+
+  function playSpeech(text: string) {
+    if (text.length > 4000) {
+      setSpeechError("Đoạn nghe quá dài. Hãy chọn một đoạn ngắn hơn (tối đa 4.000 ký tự).");
+      return Promise.resolve();
+    }
+    return speak(text);
   }
 
   function handlePracticePhraseFromMessage(content: string, specificPhrase?: string) {
@@ -1979,148 +1850,124 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
     setTargetPronunciationPhrase(target);
     void playPracticePhrase(target);
-    setSpeechNotice(`🎯 Đã chọn câu mẫu: “${target}”. Hãy lắng nghe phát âm và bấm 'Luyện phát âm' bên trái để ghi âm nói nhé!`);
-
     if (typeof document !== "undefined") {
-      const el = document.getElementById("pronunciation-section");
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      const panel = document.querySelector<HTMLDetailsElement>(".cr-pronounce");
+      if (panel) {
+        panel.open = true;
+        panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
     }
   }
 
-  async function playSpeech(text: string) {
-    const phrase = text.trim();
-    if (!phrase || speechBusy) return;
-    if (phrase.length > 4000) {
-      setSpeechError("Đoạn nghe quá dài. Hãy chọn một đoạn ngắn hơn (tối đa 4.000 ký tự).");
-      return;
-    }
+  function renderVoiceStudio() {
+    const accent = getAccent(voiceProfile.accent);
+    const groups = [...new Set(ACCENTS.map((item) => item.group))];
+    const cloudList = voiceProfile.engine === "openai" ? OPENAI_VOICES : GOOGLE_VOICES;
+    const deviceList = deviceVoicesForAccent(systemVoices, voiceProfile.accent);
+    const engineReady = voiceProfile.engine === "device" || apiKeys[voiceProfile.engine].length > 0;
+    return (
+      <section className="panel settings-panel voice-studio">
+        <div className="settings-section-heading">
+          <span className="settings-icon" aria-hidden="true">🌍</span>
+          <div><h3>Giọng tiếng Anh để luyện nghe</h3><p>Chọn vùng miền, nam/nữ và giọng cụ thể. Áp dụng cho bài học, câu mẫu và lời thầy/cô AI.</p></div>
+        </div>
 
-    speechAudioRef.current?.pause();
-    speechAudioRef.current = null;
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-    if (speechObjectUrlRef.current) {
-      URL.revokeObjectURL(speechObjectUrlRef.current);
-      speechObjectUrlRef.current = null;
-    }
-    setSpeechBusy(true);
-    setSpeechError("");
-    setSpeechNotice("");
+        <span className="settings-label">1 · Nguồn giọng</span>
+        <div className="voice-engines" role="radiogroup" aria-label="Nguồn giọng">
+          {([
+            ["google", "Giọng AI Google", "22 giọng, đọc được mọi vùng miền"],
+            ["openai", "Giọng AI OpenAI", "11 giọng, đọc được mọi vùng miền"],
+            ["device", "Giọng trên máy", "Miễn phí, chạy offline; vùng miền tùy thiết bị"],
+          ] as const).map(([id, label, hint]) => (
+            <button key={id} type="button" role="radio" aria-checked={voiceProfile.engine === id}
+              className={voiceProfile.engine === id ? "voice-engine active" : "voice-engine"}
+              onClick={() => updateVoiceProfile({ engine: id })}>
+              <strong>{label}</strong><small>{hint}</small>
+              {id !== "device" && !apiKeys[id].length && <em>Cần API key {id === "google" ? "Google" : "OpenAI"}</em>}
+            </button>
+          ))}
+        </div>
+        {!engineReady && <p className="error-message">Chưa có API key cho nguồn này — app sẽ dùng giọng trên máy cho tới khi bạn thêm key ở mục Nhà cung cấp AI.</p>}
 
-    try {
-      const segments = splitBilingualText(phrase);
+        <span className="settings-label">2 · Vùng miền</span>
+        {groups.map((group) => (
+          <div className="voice-accent-group" key={group}>
+            <small>{group}</small>
+            <div className="voice-chips">
+              {ACCENTS.filter((item) => item.group === group).map((item) => {
+                const deviceCount = deviceVoicesForAccent(systemVoices, item.id).length;
+                return (
+                  <button key={item.id} type="button"
+                    className={voiceProfile.accent === item.id ? "voice-chip active" : "voice-chip"}
+                    onClick={() => updateVoiceProfile({ accent: item.id })}
+                    title={voiceProfile.engine === "device" && !deviceCount ? "Máy này chưa có giọng vùng này" : item.name}>
+                    {item.flag} {item.name}
+                    {voiceProfile.engine === "device" && !deviceCount && <i aria-hidden="true"> ·  không có trên máy</i>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))}
 
-      // If it is a single pure English sentence and online key is available, use provider TTS if possible:
-      if (segments.length === 1 && segments[0].lang === "en" && apiKey) {
-        let blob: Blob | null = null;
-        const speechCacheKey = `${aiProvider}:${activeModel}:${activeSpeechVoice}:${activeSpeechAccent}:${speechDeliveryStyle}`;
-        try {
-          blob = await getCachedSpeech(speechCacheKey, phrase);
-        } catch {}
-        if (!blob) {
-          try {
-            blob = await withAvailableApiKey((key) =>
-              generateProviderSpeech(aiProvider, key, activeModel, activeSpeechVoice, phrase, activeSpeechAccent, speechDeliveryStyle));
-            try {
-              await saveCachedSpeech(speechCacheKey, phrase, blob);
-            } catch {}
-          } catch {
-            await playNativeUtterance(phrase, "en");
-            setSpeechNotice("Đang phát bằng giọng Tiếng Anh chuẩn trên thiết bị.");
-            return;
-          }
-        }
-        if (blob) {
-          const objectUrl = URL.createObjectURL(blob);
-          const audio = new Audio(objectUrl);
-          speechAudioRef.current = audio;
-          speechObjectUrlRef.current = objectUrl;
-          await new Promise<void>((resolve) => {
-            audio.onended = () => {
-              if (speechAudioRef.current === audio) {
-                speechAudioRef.current = null;
-                speechObjectUrlRef.current = null;
-                URL.revokeObjectURL(objectUrl);
-              }
-              resolve();
-            };
-            audio.onerror = async () => {
-              await playNativeUtterance(phrase, "en");
-              resolve();
-            };
-            audio.play().catch(async () => {
-              await playNativeUtterance(phrase, "en");
-              resolve();
-            });
-          });
-          return;
-        }
-      }
+        <span className="settings-label">3 · Giới tính</span>
+        <div className="voice-chips">
+          {([["female", "👩 Nữ"], ["male", "👨 Nam"]] as const).map(([id, label]) => (
+            <button key={id} type="button" className={voiceProfile.gender === id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ gender: id })}>{label}</button>
+          ))}
+        </div>
 
-      // Bilingual sequential playback:
-      for (const segment of segments) {
-        if (!segment.text.trim()) continue;
-        await playNativeUtterance(segment.text, segment.lang);
-      }
-      const hasVi = segments.some((s) => s.lang === "vi");
-      const hasEn = segments.some((s) => s.lang === "en");
-      setSpeechNotice(
-        hasVi && hasEn
-          ? "Đang phát đọc song ngữ: Tiếng Việt giải thích & Tiếng Anh chuẩn cho câu mẫu."
-          : hasVi
-          ? "Đang phát bằng giọng Tiếng Việt."
-          : "Đang phát bằng giọng Tiếng Anh chuẩn."
-      );
-    } catch (error) {
-      setSpeechError(error instanceof Error ? error.message : "Không thể phát giọng đọc.");
-    } finally {
-      setSpeechBusy(false);
-    }
-  }
+        <span className="settings-label">4 · Chọn giọng</span>
+        {voiceProfile.engine === "device" ? (
+          deviceList.length ? (
+            <select className="settings-select" value={voiceProfile.deviceVoice} onChange={(event) => updateVoiceProfile({ deviceVoice: event.target.value })}>
+              <option value="">Tự chọn giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} phù hợp nhất</option>
+              {deviceList.map((voice) => (
+                <option key={voice.voiceURI} value={voice.voiceURI}>{voice.name} ({voice.lang}) · {guessVoiceGender(voice) === "female" ? "nữ" : "nam"}</option>
+              ))}
+            </select>
+          ) : (
+            <p className="settings-hint">Máy này chưa có giọng {accent.flag} {accent.name}. Hãy chọn Giọng AI, hoặc cài thêm giọng tiếng Anh trong cài đặt ngôn ngữ của hệ điều hành (Windows: Settings → Time &amp; language → Speech; Android: Text-to-speech; iPhone: Accessibility → Spoken Content → Voices).</p>
+          )
+        ) : (
+          <div className="voice-named-grid">
+            {cloudList.filter((voice) => voice.gender === voiceProfile.gender).map((voice) => {
+              const selected = cloudVoiceId(voiceProfile) === voice.id;
+              return (
+                <button key={voice.id} type="button" className={selected ? "voice-named active" : "voice-named"}
+                  onClick={() => updateVoiceProfile(voiceProfile.engine === "openai" ? { openaiVoice: voice.id } : { googleVoice: voice.id })}>
+                  <strong>{voice.id}</strong><small>{voice.character}</small>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
-  function selectSpeechVoice(voice: string) {
-    if (aiProvider === "google") {
-      if (!isSpeechVoiceId(voice)) return;
-      setSpeechVoice(voice);
-    } else {
-      if (!OPENAI_SPEECH_VOICES.some((item) => item.id === voice)) return;
-      setOpenAiSpeechVoice(voice);
-    }
-    setSpeechError("");
-    setSpeechNotice("");
-    try {
-      localStorage.setItem(`${SPEECH_VOICE_STORAGE}-${aiProvider}`, voice);
-      if (aiProvider === "google" && isSpeechVoiceId(voice)) localStorage.setItem(SPEECH_VOICE_STORAGE, voice);
-    } catch {
-      setSpeechError("Không thể lưu lựa chọn giọng đọc trên thiết bị này.");
-    }
-  }
+        <span className="settings-label">5 · Phong cách và tốc độ</span>
+        <div className="voice-chips">
+          {VOICE_STYLES.map((style) => (
+            <button key={style.id} type="button" className={voiceProfile.style === style.id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ style: style.id })}>{style.label}</button>
+          ))}
+        </div>
+        <label className="voice-speed">
+          <span>Tốc độ: {voiceProfile.speed.toFixed(2)}×</span>
+          <input type="range" min="0.7" max="1.2" step="0.05" value={voiceProfile.speed} onChange={(event) => updateVoiceProfile({ speed: Number(event.target.value) })} />
+        </label>
 
-  function selectOpenAiSpeechAccent(accent: string) {
-    if (!OPENAI_ACCENTS.includes(accent as (typeof OPENAI_ACCENTS)[number])) return;
-    setOpenAiSpeechAccent(accent);
-    setSpeechError("");
-    setSpeechNotice("");
-    try {
-      localStorage.setItem("lingua-speech-accent-openai", accent);
-    } catch {
-      setSpeechError("Không thể lưu lựa chọn giọng vùng trên thiết bị này.");
-    }
-  }
-
-  function selectSpeechDeliveryStyle(style: string) {
-    if (!SPEECH_DELIVERY_STYLES.some((item) => item.id === style)) return;
-    setSpeechDeliveryStyle(style as SpeechDeliveryStyle);
-    setSpeechError("");
-    setSpeechNotice("");
-    try {
-      localStorage.setItem(SPEECH_DELIVERY_STYLE_STORAGE, style);
-    } catch {
-      setSpeechError("Không thể lưu sắc thái giọng đọc trên thiết bị này.");
-    }
+        <div className="voice-preview">
+          <p>“{accent.sample}”</p>
+          <div className="cr-connect-actions">
+            <button type="button" className="button button-primary" disabled={speechBusy} onClick={() => { void playPracticePhrase(accent.sample); }}>
+              {speechBusy ? "Đang phát…" : `▶ Nghe thử ${accent.flag} ${accent.name}`}
+            </button>
+            {speechBusy && <button type="button" className="button button-outline" onClick={() => { stopSpeech(); setSpeechBusy(false); }}>■ Dừng</button>}
+            <button type="button" className="button button-outline" onClick={() => { void removeSavedSpeech(); }}>Xóa âm thanh đã lưu</button>
+          </div>
+          {speechNotice && <p className="settings-hint" role="status">{speechNotice}</p>}
+          <small className="settings-hint">Giọng AI được tạo khi nghe lần đầu rồi lưu trên máy để nghe lại offline. Giọng AI có thể tính vào hạn mức API của bạn.</small>
+        </div>
+      </section>
+    );
   }
 
   async function removeSavedSpeech() {
@@ -2215,9 +2062,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       }
       setCourseAnswers([]);
       setCourseQuizSubmitted(false);
-      setCourseExamLevel(null);
-      setCourseExamAnswers([]);
-      setCourseExamSubmitted(false);
       navigateToSection("lessons");
     } catch (error) {
       const message = error instanceof Error ? error.message : "";
@@ -2238,7 +2082,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         setSelectedCourseId("");
         setSelectedLessonId("");
         setOfflineAudioUrl("");
-        setCourseExamLevel(null);
       }
     } catch (error) {
       setCourseError(error instanceof Error ? error.message : "Không thể xóa giáo trình khỏi thiết bị.");
@@ -2289,6 +2132,29 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     }
   }
 
+  /** First lesson the learner can open but has not passed — "học tiếp bài đang học". */
+  function nextLessonFor(course: CoursePackage): CourseLesson | undefined {
+    const completed = courseProgress[course.id] ?? [];
+    const open = unlockedLessonIds(course, completed, progress.level);
+    return course.lessons.find((item) => open.has(item.id) && !completed.includes(item.id));
+  }
+
+  /** Quietly stores the bundled pack for a profile (or refreshes an older version). */
+  async function syncCourse(courseId: string) {
+    const stored = coursePacks.find((item) => item.id === courseId);
+    if (stored?.version === CURRICULUM_VERSION || courseSyncing) return;
+    setCourseSyncing(true);
+    setCourseError("");
+    try {
+      await downloadCoursePackage(courseId, process.env.NEXT_PUBLIC_BASE_PATH ?? "", () => {});
+      setCoursePacks(await listDownloadedCourses());
+    } catch (error) {
+      setCourseError(error instanceof Error ? error.message : "Không thể tải giáo trình. Hãy kiểm tra kết nối mạng.");
+    } finally {
+      setCourseSyncing(false);
+    }
+  }
+
   function openDownloadedCourse(courseId: string) {
     const course = coursePacks.find((item) => item.id === courseId);
     if (!course) {
@@ -2296,21 +2162,15 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       return;
     }
     setSelectedCourseId(course.id);
-    setSelectedLessonId(
-      course.lessons.find((item) => item.level === progress.level)?.id ??
-      course.lessons[0]?.id ??
-      "",
-    );
+    setSelectedLessonId(nextLessonFor(course)?.id ?? course.lessons[0]?.id ?? "");
+    setLessonTab("learn");
     const nextProfile = profiles.find((item) => item.id === courseId);
-    if (nextProfile) {
+    if (nextProfile && progress.profile !== courseId) {
       setProgress((current) => ({ ...current, profile: courseId }));
       setMessages(loadMessages(courseId) ?? [{ role: "assistant", content: nextProfile.prompt }]);
     }
     setCourseAnswers([]);
     setCourseQuizSubmitted(false);
-    setCourseExamLevel(null);
-    setCourseExamAnswers([]);
-    setCourseExamSubmitted(false);
     setCourseError("");
     setOfflineAudioUrl("");
     navigateToSection("lessons");
@@ -2318,11 +2178,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
   function openCourseLesson(lessonId: string) {
     setSelectedLessonId(lessonId);
+    setLessonTab("learn");
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
     setCourseAnswers([]);
     setCourseQuizSubmitted(false);
-    setCourseExamLevel(null);
-    setCourseExamAnswers([]);
-    setCourseExamSubmitted(false);
     setCourseError("");
     setOfflineAudioUrl("");
   }
@@ -2349,7 +2208,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       (total, question, index) => total + (courseAnswers[index] === question.answer ? 1 : 0),
       0,
     );
-    const passed = score >= Math.ceil(questions.length * 0.7);
+    const passed = score >= Math.ceil(questions.length * LESSON_PASS_RATIO);
     const percentage = Math.round((score / questions.length) * 100);
     setCourseQuizSubmitted(true);
     const updatedScores = {
@@ -2369,10 +2228,18 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     setCourseLessonScores(updatedScores);
     if (passed) {
       setCourseProgress(updatedProgress);
+      // Finishing every lesson of the learner's current level moves them up one level.
+      const levelIndex = COURSE_LEVELS.findIndex((level) => level === progress.level);
+      const currentLevel = COURSE_LEVELS[Math.max(levelIndex, 0)];
+      const levelLessons = course.lessons.filter((item) => item.level === currentLevel);
+      if (levelLessons.length && levelLessons.every((item) => updatedProgress[course.id].includes(item.id)) &&
+          levelIndex < COURSE_LEVELS.length - 1) {
+        setProgress((current) => ({ ...current, level: COURSE_LEVELS[Math.max(levelIndex, 0) + 1] }));
+      }
     }
     try {
-      localStorage.setItem("lingua-course-lesson-scores", JSON.stringify(updatedScores));
-      if (passed) localStorage.setItem("lingua-course-progress", JSON.stringify(updatedProgress));
+      localStorage.setItem("lingua-course-lesson-scores-v2", JSON.stringify(updatedScores));
+      if (passed) localStorage.setItem("lingua-course-progress-v2", JSON.stringify(updatedProgress));
       setCourseError("");
     } catch {
       setCourseError("Không thể lưu điểm hoặc tiến độ bài học trên thiết bị này.");
@@ -2381,8 +2248,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
   function renderSettings() {
     const keyEntries = apiKeys[aiProvider];
-    const maleVoices = googleSpeechVoices.filter((voice) => voice.gender === "male");
-    const femaleVoices = googleSpeechVoices.filter((voice) => voice.gender === "female");
     return (
       <>
         <div className="page-intro">
@@ -2498,7 +2363,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               <div className="settings-section-heading">
                 <span className="settings-icon" aria-hidden="true">🎓</span>
                 <div>
-                  <h3>Chọn Gia sư AI đồng hành</h3>
+                  <h3>Chọn nhân vật gia sư 3D</h3>
                   <p>Lựa chọn hình tượng gia sư phù hợp với sở thích và phong cách học tập của bạn.</p>
                 </div>
               </div>
@@ -2521,7 +2386,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                       aria-pressed={isSelected}
                     >
                       <div className="persona-card-avatar">
-                        <TeacherMascot persona={pKey} status="idle" size={68} />
+                        <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={84} interactive={false} />
                       </div>
                       <div className="persona-card-details">
                         <div className="persona-card-top">
@@ -2598,6 +2463,13 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               {apiKeyBusy ? "Đang xác thực key…" : "＋ Kiểm tra và lưu key"}
             </button>
           </form>
+          <div className="settings-connection">
+            <button type="button" className="button button-outline" onClick={() => { void testAiConnection(); }} disabled={connection.status === "checking" || !keyEntries.length}>
+              {connection.status === "checking" ? "Đang kiểm tra…" : "⚡ Kiểm tra kết nối AI"}
+            </button>
+            {connection.message && <p className={connection.status === "error" ? "error-message" : "api-key-success"} role="status">{connection.message}</p>}
+            <small className="settings-hint">App tự thử lần lượt các key và mô hình dự phòng, rồi ghi nhớ cấu hình chạy được.</small>
+          </div>
         </section>
 
         <section className="panel settings-panel">
@@ -2621,7 +2493,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <details name="settings-groups" className="settings-group">
           <summary className="settings-group-summary">
             <span className="settings-icon"><IllustrationIcon name="speaker" /></span>
-            <span><strong>Giọng đọc & phát âm</strong><small>Giọng tiếng Việt, tiếng Anh và tốc độ đọc</small></span>
+            <span><strong>Giọng đọc & phát âm</strong><small>{getAccent(voiceProfile.accent).flag} {getAccent(voiceProfile.accent).name} · {voiceProfile.gender === "female" ? "nữ" : "nam"} · {voiceProfile.engine === "device" ? "giọng trên máy" : voiceProfile.engine === "google" ? `Google ${voiceProfile.googleVoice}` : `OpenAI ${voiceProfile.openaiVoice}`}</small></span>
             <span className="settings-group-chevron" aria-hidden="true">⌄</span>
           </summary>
           <div className="settings-group-content">
@@ -2723,271 +2595,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               </div>
             </section>
 
-            {/* 2. ENGLISH VOICE & ACCENTS BY COUNTRY */}
-            <section className="panel settings-panel" style={{ marginTop: "16px" }}>
-              <div className="settings-section-heading">
-                <span className="settings-icon" aria-hidden="true">🌐</span>
-                <div>
-                  <h3>Kiểu phát âm Tiếng Anh theo Quốc gia & Giới tính</h3>
-                  <p>Chọn kiểu phát âm theo từng nước (Mỹ, Anh, Ấn Độ, Úc, Canada, Đức...) và giới tính (Nam/Nữ) để rèn luyện phản xạ nghe - nói đa văn hóa tùy mục đích học tập.</p>
-                </div>
-              </div>
-
-              {/* Accent presets tabs / grid */}
-              <label className="settings-label">1. Chọn Quốc gia & Kiểu phát âm mục tiêu</label>
-              <div className="accent-presets-grid">
-                {ACCENT_PRESETS.map((preset) => {
-                  const isSelected = selectedAccent === preset.id;
-                  return (
-                    <button
-                      key={preset.id}
-                      type="button"
-                      className={`accent-preset-card ${isSelected ? "selected" : ""}`}
-                      onClick={() => updateAccent(preset.id)}
-                    >
-                      <div className="accent-card-top">
-                        <span className="accent-card-flag">{preset.flag}</span>
-                        <strong>{preset.name}</strong>
-                      </div>
-                      <span className="accent-card-code">{preset.code}</span>
-                      <small className="accent-card-desc">{preset.description}</small>
-                      {isSelected && <span className="accent-card-check">✓ Đang chọn</span>}
-                    </button>
-                  );
-                })}
-                <button
-                  type="button"
-                  className={`accent-preset-card ${selectedAccent === "all" ? "selected" : ""}`}
-                  onClick={() => updateAccent("all")}
-                >
-                  <div className="accent-card-top">
-                    <span className="accent-card-flag">🌐</span>
-                    <strong>Tất cả các nước</strong>
-                  </div>
-                  <span className="accent-card-code">Toàn cầu</span>
-                  <small className="accent-card-desc">Hiển thị mọi giọng đọc tiếng Anh hiện có trên thiết bị của bạn.</small>
-                  {selectedAccent === "all" && <span className="accent-card-check">✓ Đang chọn</span>}
-                </button>
-              </div>
-
-              {/* Gender filter */}
-              <div style={{ marginTop: "14px" }}>
-                <label className="settings-label">2. Lọc theo Giới tính</label>
-                <div className="voice-gender-filter-row">
-                  <button
-                    type="button"
-                    className={`gender-filter-btn ${selectedGender === "all" ? "active" : ""}`}
-                    onClick={() => updateGender("all")}
-                  >
-                    👥 Tất cả
-                  </button>
-                  <button
-                    type="button"
-                    className={`gender-filter-btn ${selectedGender === "female" ? "active" : ""}`}
-                    onClick={() => updateGender("female")}
-                  >
-                    👩 Giọng Nữ (Female)
-                  </button>
-                  <button
-                    type="button"
-                    className={`gender-filter-btn ${selectedGender === "male" ? "active" : ""}`}
-                    onClick={() => updateGender("male")}
-                  >
-                    👨 Giọng Nam (Male)
-                  </button>
-                </div>
-              </div>
-
-              {/* Filtered device voices list */}
-              <div style={{ marginTop: "14px" }}>
-                <label className="settings-label" htmlFor="en-device-voice">
-                  3. Danh sách giọng đọc cụ thể trên thiết bị ({(() => {
-                    const enVoices = systemVoices.filter((v) => {
-                      if (!v.lang.toLowerCase().startsWith("en") && !v.lang.toLowerCase().startsWith("de")) return false;
-                      const info = parseVoiceInfo(v.name, v.lang);
-                      const matchesAccent = selectedAccent === "all" || info.countryCode === selectedAccent;
-                      const matchesGender = selectedGender === "all" || info.gender === selectedGender;
-                      return matchesAccent && matchesGender;
-                    });
-                    return `${enVoices.length} giọng phù hợp`;
-                  })()})
-                </label>
-                {(() => {
-                  const filtered = systemVoices.filter((v) => {
-                    if (!v.lang.toLowerCase().startsWith("en") && !v.lang.toLowerCase().startsWith("de")) return false;
-                    const info = parseVoiceInfo(v.name, v.lang);
-                    const matchesAccent = selectedAccent === "all" || info.countryCode === selectedAccent;
-                    const matchesGender = selectedGender === "all" || info.gender === selectedGender;
-                    return matchesAccent && matchesGender;
-                  });
-
-                  return (
-                    <>
-                      <select
-                        id="en-device-voice"
-                        className="settings-select"
-                        value={selectedEnVoiceId}
-                        onChange={(e) => updateEnVoice(e.target.value)}
-                      >
-                        <option value="">
-                          {selectedAccent === "all"
-                            ? "Giọng Tiếng Anh mặc định chuẩn của hệ thống"
-                            : `Tự động áp dụng ngữ điệu ${getAccentPreset(selectedAccent).name} (${getAccentPreset(selectedAccent).code})`}
-                        </option>
-                        {filtered.map((v) => {
-                          const info = parseVoiceInfo(v.name, v.lang);
-                          return (
-                            <option key={v.voiceURI || v.name} value={v.voiceURI || v.name}>
-                              {info.flag} {v.name} · {info.gender === "female" ? "👩 Nữ" : "👨 Nam"} {info.isNatural ? "🌟 Tự nhiên" : ""} ({v.lang})
-                            </option>
-                          );
-                        })}
-                      </select>
-
-                      {filtered.length === 0 && selectedAccent !== "all" && (
-                        <div className="voice-missing-banner" style={{ marginTop: "8px", padding: "10px 14px", background: "#fef3c7", border: "1px solid #fde68a", borderRadius: "8px", fontSize: "0.85rem", color: "#92400e" }}>
-                          ℹ️ <strong>Chưa có file giọng riêng của {getAccentPreset(selectedAccent).name} trên máy:</strong> Ứng dụng tự động điều chỉnh ngữ điệu qua mã chuẩn <code>{getAccentPreset(selectedAccent).code}</code> và nhịp điệu đặc trưng. Bạn có thể mở mục <em>“Hướng dẫn tải thêm giọng”</em> bên dưới để tải gói giọng {getAccentPreset(selectedAccent).name} miễn phí về máy chỉ trong 1 phút!
-                        </div>
-                      )}
-                    </>
-                  );
-                })()}
-              </div>
-
-              {/* Speed & Pitch controls */}
-              <div className="font-scale-control" style={{ marginTop: "14px" }}>
-                <label className="settings-label" htmlFor="en-speech-rate">Tốc độ phát âm câu mẫu</label>
-                <output className="font-scale-value" htmlFor="en-speech-rate">{enSpeechRate.toFixed(2)}x</output>
-                <input
-                  id="en-speech-rate"
-                  className="font-scale-slider"
-                  type="range"
-                  min="0.7"
-                  max="1.2"
-                  step="0.05"
-                  value={enSpeechRate}
-                  onChange={(e) => updateEnRate(Number(e.target.value))}
-                />
-                <div className="font-scale-endpoints">
-                  <span>0.7x · Chậm dễ nghe</span>
-                  <span>0.92x · Tốc độ chuẩn</span>
-                  <span>1.2x · Nhanh</span>
-                </div>
-              </div>
-
-              <div className="font-scale-control" style={{ marginTop: "12px" }}>
-                <label className="settings-label" htmlFor="en-speech-pitch">Cao độ giọng tiếng Anh (Trầm / Bổng)</label>
-                <output className="font-scale-value" htmlFor="en-speech-pitch">{enSpeechPitch.toFixed(2)}x</output>
-                <input
-                  id="en-speech-pitch"
-                  className="font-scale-slider"
-                  type="range"
-                  min="0.8"
-                  max="1.2"
-                  step="0.05"
-                  value={enSpeechPitch}
-                  onChange={(e) => updateEnPitch(Number(e.target.value))}
-                />
-                <div className="font-scale-endpoints">
-                  <span>0.8x · Trầm ấm</span>
-                  <span>1.0x · Tiêu chuẩn</span>
-                  <span>1.2x · Trong trẻo</span>
-                </div>
-              </div>
-
-              {/* Test Accent Button */}
-              <div style={{ marginTop: "16px", display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  className="button button-primary"
-                  onClick={async () => {
-                    const preset = getAccentPreset(selectedAccent);
-                    setVoiceTestNotice(`Đang phát thử câu chào giọng ${preset.name}...`);
-                    await playNativeUtterance(preset.sampleSentence, "en");
-                    setVoiceTestNotice(`Đã hoàn tất phát thử giọng ${preset.name}.`);
-                  }}
-                >
-                  ▶ Nghe thử kiểu phát âm {getAccentPreset(selectedAccent).name}
-                </button>
-                {voiceTestNotice && <span style={{ fontSize: "0.85rem", color: "var(--theme-text, #134e4a)", fontWeight: "600" }}>{voiceTestNotice}</span>}
-              </div>
-
-              {/* Instructions to download free country voices */}
-              <details className="settings-download-voice-guide" style={{ marginTop: "16px", padding: "12px 14px", background: "#f8fafc", border: "1px solid #cbd5e1", borderRadius: "10px" }}>
-                <summary style={{ cursor: "pointer", fontWeight: "700", color: "#0f172a", fontSize: "0.9rem" }}>
-                  📥 Hướng dẫn tải thêm giọng các nước (Ấn Độ, Anh, Úc, Mỹ) hoàn toàn miễn phí
-                </summary>
-                <div style={{ marginTop: "10px", fontSize: "0.84rem", color: "#334155", lineHeight: "1.6" }}>
-                  <p style={{ margin: "0 0 8px" }}>Hệ điều hành của bạn hỗ trợ tải thêm rất nhiều giọng đọc chất lượng cao (Natural) của từng quốc gia:</p>
-                  <ul style={{ margin: "0", paddingLeft: "18px" }}>
-                    <li style={{ marginBottom: "6px" }}>
-                      <strong>Trên máy tính Windows / Microsoft Edge:</strong> Vào <em>Cài đặt Windows (Settings)</em> ➔ <em>Time & Language</em> ➔ <em>Speech (Giọng nói)</em> ➔ Bấm <em>Add voices</em> ➔ Tích chọn <strong>English (India)</strong>, <strong>English (United Kingdom)</strong>, <strong>English (Australia)</strong> rồi bấm <em>Add</em>. Trình duyệt Edge sẽ tự kích hoạt các giọng Natural cực kỳ mượt mà.
-                    </li>
-                    <li style={{ marginBottom: "6px" }}>
-                      <strong>Trên điện thoại Android (Google Pixel, Samsung, Xiaomi...):</strong> Vào <em>Cài đặt máy</em> ➔ <em>Trợ năng</em> ➔ <em>Đầu ra văn bản sang giọng nói</em> ➔ Bấm biểu tượng Cài đặt bên cạnh <em>Speech Services by Google</em> ➔ <em>Cài đặt dữ liệu giọng nói</em> ➔ Chọn tải các gói tiếng Anh: Ấn Độ (India), Anh (UK), Úc (Australia).
-                    </li>
-                    <li>
-                      <strong>Trên iPhone / iPad (iOS):</strong> Vào <em>Cài đặt</em> ➔ <em>Trợ năng</em> ➔ <em>Nội dung được đọc</em> ➔ <em>Giọng nói</em> ➔ Chọn <em>Tiếng Anh</em> ➔ Tải thêm giọng Ấn Độ, Vương quốc Anh, Úc theo ý thích.
-                    </li>
-                  </ul>
-                </div>
-              </details>
-            </section>
-
-            {/* 3. CLOUD AI SPEECH (Optional when API key exists) */}
-            <section className="panel settings-panel" style={{ marginTop: "16px" }}>
-              <div className="settings-section-heading">
-                <span className="settings-icon"><IllustrationIcon name="sparkles" /></span>
-                <div>
-                  <h3>Giọng đọc Cloud AI nâng cao ({aiProvider === "google" ? "Google AI" : "OpenAI"})</h3>
-                  <p>Tạo audio trực tiếp từ AI đám mây khi có kết nối Internet và API key.</p>
-                </div>
-              </div>
-
-              {aiProvider === "google" && (
-                <button type="button" className="button button-outline" onClick={() => { void loadSpeechVoices(); }} disabled={speechVoicesBusy || !apiKey}>
-                  {speechVoicesBusy ? "Đang tải giọng AI…" : "↻ Tải danh sách giọng AI theo vùng"}
-                </button>
-              )}
-              {speechVoicesError && <p className="error-message" role="alert">{speechVoicesError}</p>}
-
-              <label className="settings-label" htmlFor="speech-voice">Chọn giọng AI {aiProvider === "google" ? "Google" : "OpenAI"}</label>
-              <div className="settings-voice-row">
-                <select id="speech-voice" className="settings-select" value={activeSpeechVoice} onChange={(event) => selectSpeechVoice(event.target.value)}>
-                  {aiProvider === "google" ? (
-                    <>
-                      {googleSpeechVoices.length === 0 && <option value={speechVoice}>{speechVoice} · mặc định</option>}
-                      <optgroup label={`Nam · ${maleVoices.length}/6 vùng`}>
-                        {maleVoices.map((voice) => <option key={voice.id} value={voice.id}>{getGoogleAccentLabel(voice.accent)} · {voice.label}</option>)}
-                      </optgroup>
-                      <optgroup label={`Nữ · ${femaleVoices.length}/6 vùng`}>
-                        {femaleVoices.map((voice) => <option key={voice.id} value={voice.id}>{getGoogleAccentLabel(voice.accent)} · {voice.label}</option>)}
-                      </optgroup>
-                    </>
-                  ) : OPENAI_SPEECH_VOICES.map((voice) => <option key={voice.id} value={voice.id}>{voice.label}</option>)}
-                </select>
-                <button className="button button-outline" onClick={() => void playSpeech(SPEECH_SAMPLE)} disabled={speechBusy || !apiKey}>
-                  {speechBusy ? "Đang tạo…" : "▶ Nghe thử giọng AI"}
-                </button>
-              </div>
-
-              <label className="settings-label" htmlFor="speech-delivery-style">Sắc thái giọng đọc</label>
-              <select id="speech-delivery-style" className="settings-select" value={speechDeliveryStyle} onChange={(event) => selectSpeechDeliveryStyle(event.target.value)}>
-                {SPEECH_DELIVERY_STYLES.map((style) => <option key={style.id} value={style.id}>{style.label}</option>)}
-              </select>
-
-              {aiProvider === "openai" && (
-                <>
-                  <label className="settings-label" htmlFor="speech-accent">Kiểu phát âm vùng (hướng dẫn cho OpenAI)</label>
-                  <select id="speech-accent" className="settings-select" value={openAiSpeechAccent} onChange={(event) => selectOpenAiSpeechAccent(event.target.value)}>
-                    {OPENAI_ACCENTS.map((accent) => <option key={accent} value={accent}>{accent} English</option>)}
-                  </select>
-                </>
-              )}
-
-              {!apiKey && <p className="settings-hint">Chưa có API key: Ứng dụng tự động phát bằng giọng chuẩn trên thiết bị hoàn toàn miễn phí và không cần mạng.</p>}
-              <button className="remove-key-button settings-cache-clear" onClick={() => { void removeSavedSpeech(); }}>Xóa audio đã lưu trên thiết bị</button>
-            </section>
+            {renderVoiceStudio()}
           </div>
         </details>
         <details name="settings-groups" className="settings-group">
@@ -3016,28 +2624,24 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       ? options[selectedOptionIndex]
       : "Chưa chọn đáp án";
     const correctChoice = options[correctOptionIndex] ?? "";
-    const questionText = `Chào cô Maya! Em đang học bài "${lessonTitle}" và có câu hỏi trắc nghiệm này chưa hiểu rõ:
+    const questionText = `Chào thầy/cô! Em đang học bài "${lessonTitle}" và có câu hỏi trắc nghiệm này chưa hiểu rõ:
 - Câu hỏi: "${prompt}"
 - Em chọn: "${userChoice}"
 - Đáp án đúng là: "${correctChoice}"
 - Giải thích: "${explanation}"
 
-Cô Maya giải thích thêm giúp em tại sao lại chọn "${correctChoice}" và cách dùng trong thực tế với ạ?`;
+Thầy/cô giải thích thêm giúp em tại sao lại chọn "${correctChoice}" và cách dùng trong thực tế với ạ?`;
 
+    classroomBootRef.current = true;
     navigateToSection("practice");
     void sendMessage(undefined, questionText);
   }
 
   function askTutorAboutLesson(lesson: CourseLesson) {
-    const vocabList = lesson.vocabulary.map((v) => `${v.term}: ${v.definition}`).slice(0, 3).join(", ");
-    const questionText = `Chào cô Maya! Em vừa học xong bài "${lesson.title}" (${lesson.unit}) thuộc trình độ ${lesson.level}.
-Mục tiêu bài học: ${lesson.objective}
-Từ vựng chính: ${vocabList}
-
-Cô có thể tóm tắt 2 điểm quan trọng nhất của bài này và đặt cho em 1 câu hỏi luyện tập nhỏ để em đối thoại cùng cô được không ạ?`;
-
+    // The classroom opens with this lesson; the teacher starts it by itself.
+    setTutorLessonId(lesson.id);
+    setConnection({ status: "idle", message: "" });
     navigateToSection("practice");
-    void sendMessage(undefined, questionText);
   }
 
   function askTutorAboutGrammar(topic: GrammarTopic, question?: GrammarQuestion, selectedIndex?: number) {
@@ -3045,7 +2649,7 @@ Cô có thể tóm tắt 2 điểm quan trọng nhất của bài này và đặ
     if (question && Number.isInteger(selectedIndex)) {
       const userChoice = question.options[selectedIndex!] ?? "Chưa chọn";
       const correctChoice = question.options[question.answer] ?? "";
-      questionText = `Chào cô Maya! Em đang làm bài tập chủ đề ngữ pháp "${topic.title}" (${topic.level}) và thắc mắc câu này:
+      questionText = `Chào thầy/cô! Em đang làm bài tập chủ đề ngữ pháp "${topic.title}" (${topic.level}) và thắc mắc câu này:
 - Câu hỏi: "${question.prompt}"
 - Em đã chọn: "${userChoice}"
 - Đáp án đúng: "${correctChoice}"
@@ -3053,33 +2657,149 @@ Cô có thể tóm tắt 2 điểm quan trọng nhất của bài này và đặ
 
 Cô giải thích thêm giúp em tại sao lại chọn đáp án này và lỗi người Việt hay mắc phải với ạ?`;
     } else {
-      questionText = `Chào cô Maya! Em đang xem cấu trúc ngữ pháp "${topic.title}" (${topic.structure}).
+      questionText = `Chào thầy/cô! Em đang xem cấu trúc ngữ pháp "${topic.title}" (${topic.structure}).
 Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tình huống thực tế để em thử đặt câu luyện tập với ạ!`;
     }
 
+    classroomBootRef.current = true;
     navigateToSection("practice");
     void sendMessage(undefined, questionText);
   }
 
   function renderPractice() {
+    const persona = TUTOR_PERSONAS[tutorPersona];
+    const course = coursePacks.find((item) => item.id === progress.profile);
+    const currentLesson = tutorLesson();
+    const avatarStatus: "idle" | "thinking" | "speaking" | "listening" =
+      voiceChatRecording ? "listening" : chatBusy ? "thinking" : speechBusy ? "speaking" : "idle";
+    const lastTeacherMessage = [...messages].reverse().find((m) => m.role === "assistant" && m.content.trim());
+    const caption = chatBusy
+      ? tutorSubtitle || `${persona.name} đang chuẩn bị tình huống cho bạn…`
+      : voiceChatRecording
+      ? "Đang lắng nghe bạn… nói xong thì nhấn nút dừng nhé."
+      : cleanSpeechText(lastTeacherMessage?.content ?? persona.greeting).slice(0, 260);
+    const connected = connection.status === "ok" || (connection.status === "idle" && messages.some((m) => m.role === "user"));
+
+    if (!connected) {
+      const checking = connection.status === "checking" || connection.status === "idle";
+      return (
+        <section className="cr-connect">
+          <div className={`cr-connect-avatar${checking ? " waiting" : ""}`}>
+            <TutorAvatar kind={persona.kind} status={checking ? "thinking" : "idle"} emotion={checking ? undefined : "neutral"} size={150} />
+          </div>
+          <h2>{checking ? `Đang gọi ${persona.name} vào lớp…` : "Chưa kết nối được với gia sư AI"}</h2>
+          <p className={checking ? "cr-connect-note" : "error-message"} role={checking ? "status" : "alert"}>
+            {connection.message || "Đang kiểm tra API key và mô hình…"}
+          </p>
+          {!checking && (
+            <div className="cr-connect-actions">
+              <button type="button" className="button button-primary" onClick={() => { void connectClassroom(); }}>↻ Thử lại</button>
+              <button type="button" className="button button-outline" onClick={() => navigateToSection("settings")}>Kiểm tra API key</button>
+            </div>
+          )}
+          {checking && <div className="cr-spinner" aria-hidden="true" />}
+        </section>
+      );
+    }
+
+    const phraseInUse = targetPronunciationPhrase || profile.words[0];
     return (
-      <div className="practice-layout">
-        <section className="panel scene-panel">
-          <span className="eyebrow">TÌNH HUỐNG HÔM NAY</span>
-          <div className={`scene-art ${profile.color}`}><IllustrationIcon name={profile.icon} /><i>✦</i></div>
-          <h2>{profile.scene}</h2>
-          <p>Luyện giao tiếp với Maya qua những tình huống thực tế. Cứ mạnh dạn thử, mắc lỗi cũng không sao — mình sẽ cùng bạn tiến bộ.</p>
+      <div className="cr">
+        <section className="cr-stage" aria-label="Lớp học với gia sư AI">
+          <div className="cr-stage-top">
+            <span className="cr-chip cr-chip-live"><i /> {persona.name}</span>
+            <span className="cr-chip cr-chip-level" title="Trình độ đang học">{progress.level}</span>
+            {aiLevelEstimate && <span className="cr-chip" title="Trình độ AI ước lượng qua cuộc hội thoại">AI đánh giá: {aiLevelEstimate}</span>}
+          </div>
+          {course && (
+            <label className="cr-lesson-pick">
+              <span>Bài đang dạy</span>
+              <select
+                value={currentLesson?.id ?? ""}
+                disabled={chatBusy}
+                onChange={(event) => { pendingLessonStartRef.current = true; setTutorLessonId(event.target.value); }}
+              >
+                {course.lessons.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {(course && (courseProgress[course.id] ?? []).includes(item.id)) ? "✓ " : ""}{item.level} · {item.title}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          <div className="cr-avatar">
+            <TutorAvatar kind={persona.kind} status={avatarStatus} emotion={avatarStatus === "thinking" || avatarStatus === "listening" ? undefined : tutorEmotion} size={210} />
+          </div>
+          <div className={`cr-bubble cr-bubble-${avatarStatus}`}>
+            <p>{caption || "…"}</p>
+            {avatarStatus === "speaking" && <span className="cr-wave" aria-hidden="true"><i /><i /><i /><i /></span>}
+          </div>
+          <div className="cr-stage-actions">
+            <button type="button" className="cr-round" disabled={speechBusy || !lastTeacherMessage} onClick={() => lastTeacherMessage && void playSpeech(lastTeacherMessage.content)} title="Nghe lại">🔊 Nghe lại</button>
+            <button type="button" className="cr-round" disabled={chatBusy} onClick={() => { void sendMessage(undefined, "Thầy/cô ra tình huống mới cho em luyện nhé."); }} title="Tình huống mới">🎬 Tình huống mới</button>
+          </div>
+        </section>
+
+        <section className="cr-chat">
+          <div className="message-list cr-messages" ref={chatListRef}>
+            {messages.filter((m) => m.content.trim() || m.role === "assistant").map((message, index) => {
+              const extractedPhrases = message.role === "assistant" ? extractEnglishPracticePhrases(message.content) : [];
+              return (
+                <div className={`message-row ${message.role}`} key={`${index}-${message.role}`}>
+                  {message.role === "assistant" && <div className="mini-avatar" aria-hidden="true">{persona.badge.split(" ")[0]}</div>}
+                  <div className="message-bubble">
+                    <div className="message-text">
+                      {message.content ? renderFormattedMessage(message.content, (phrase) => void playPracticePhrase(phrase)) : <span className="typing-indicator"><span /> <span /> <span /></span>}
+                    </div>
+                    {message.role === "assistant" && message.content && (
+                      <div className="message-action-bar">
+                        <button type="button" className="speak-button" onClick={() => void playSpeech(message.content)} disabled={speechBusy} aria-label="Nghe lại câu trả lời">
+                          <IllustrationIcon name="speaker" /> Nghe
+                        </button>
+                        {extractedPhrases.length > 0 && (
+                          <button type="button" className="practice-phrase-btn" onClick={() => handlePracticePhraseFromMessage(message.content)} disabled={speechBusy}>
+                            🎙️ Luyện nói câu mẫu
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {chatError && (
+            <div className="chat-error-row" role="alert">
+              <p className="error-message chat-error">{chatError}</p>
+              {retryTurnRef.current && <button type="button" className="button button-outline" onClick={() => { const retry = retryTurnRef.current; retryTurnRef.current = null; setChatError(""); retry?.(); }}>↻ Thử lại</button>}
+            </div>
+          )}
+          <div className="suggested-chips cr-chips">
+            {(PROFILE_SUGGESTIONS[profile.id] || PROFILE_SUGGESTIONS.everyday).slice(0, 3).map((replyText) => (
+              <button type="button" key={replyText} className="suggested-chip" onClick={() => { void sendMessage(undefined, replyText); }} disabled={chatBusy}>{replyText}</button>
+            ))}
+          </div>
+          <form className="composer" onSubmit={sendMessage}>
+            <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Nhập câu trả lời hoặc nhấn micro để nói…" aria-label="Câu trả lời của bạn" />
+            <button type="button" className={voiceChatRecording ? "mic-button recording" : "mic-button"} aria-label={voiceChatRecording ? "Dừng ghi âm" : "Trả lời bằng giọng nói"} onClick={voiceChatRecording ? stopVoiceChatRecording : startVoiceInput} disabled={chatBusy}><IllustrationIcon name={voiceChatRecording ? "stop" : "microphone"} /></button>
+            <button type="submit" className="send-button" disabled={chatBusy || !draft.trim()}>Gửi <span>↑</span></button>
+          </form>
+          {voiceError && !recording && <p className="error-message voice-inline">{voiceError}</p>}
+        </section>
+
+        <details className="cr-pronounce panel">
+          <summary>🎙️ Luyện phát âm có chấm điểm</summary>
           <div className="phrase-box" id="pronunciation-section">
             <span className="eyebrow">CÂU ĐANG LUYỆN NÓI</span>
-            <strong>“{targetPronunciationPhrase || profile.words[0]}”</strong>
-            <span className="phrase-translation">{customMeanings[targetPronunciationPhrase || profile.words[0]] || phraseMeanings[targetPronunciationPhrase || profile.words[0]] || "Tự do luyện phát âm cùng AI"}</span>
-            <button className="speak-button" onClick={() => void playPracticePhrase(targetPronunciationPhrase || profile.words[0])} disabled={speechBusy}>
+            <strong>“{phraseInUse}”</strong>
+            <span className="phrase-translation">{customMeanings[phraseInUse] || phraseMeanings[phraseInUse] || "Tự do luyện phát âm cùng AI"}</span>
+            <button className="speak-button" onClick={() => void playPracticePhrase(phraseInUse)} disabled={speechBusy}>
               <IllustrationIcon name="speaker" /> Nghe mẫu phát âm
             </button>
             <div className="pronunciation-custom-input">
               <input
                 type="text"
-                placeholder="Nhập câu tiếng Anh khác để luyện phát âm..."
+                placeholder="Nhập câu tiếng Anh khác để luyện…"
                 value={customPhraseInput}
                 onChange={(e) => setCustomPhraseInput(e.target.value)}
                 onKeyDown={(e) => {
@@ -3089,25 +2809,16 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                   }
                 }}
               />
-              <button
-                type="button"
-                className="button button-outline"
-                style={{ padding: "4px 8px", fontSize: "0.5625rem" }}
-                onClick={() => {
-                  if (customPhraseInput.trim()) {
-                    setTargetPronunciationPhrase(customPhraseInput.trim());
-                  }
-                }}
-              >
-                Đặt câu này
-              </button>
+              <button type="button" className="button button-outline" onClick={() => { if (customPhraseInput.trim()) setTargetPronunciationPhrase(customPhraseInput.trim()); }}>Đặt câu này</button>
             </div>
           </div>
-          <button className="button button-outline full-button" onClick={startPronunciationRecording} disabled={recording || pronunciationBusy}>
-            {pronunciationBusy ? "Đang nghe và đánh giá…" : <><IllustrationIcon name="microphone" /> Luyện phát âm</>}
+          <div className="word-list">
+            {profile.words.map((word) => <button key={word} className={phraseInUse === word ? "phrase-chip-active" : ""} onClick={() => setTargetPronunciationPhrase(word)}><span className="phrase-word"><strong>{word}</strong><small>{phraseMeanings[word]}</small></span><span>↗</span></button>)}
+          </div>
+          <button className="button button-primary full-button" onClick={startPronunciationRecording} disabled={recording || pronunciationBusy}>
+            {pronunciationBusy ? "Đang nghe và đánh giá…" : <><IllustrationIcon name="microphone" /> Bắt đầu ghi âm</>}
           </button>
           {recording && <button className="button button-recording full-button" onClick={stopPronunciationRecording}><IllustrationIcon name="stop" /> Dừng ghi âm</button>}
-          <p className="small-note">{recording ? "Đang ghi âm… hãy nói rõ câu gợi ý, rồi nhấn dừng để nhận góp ý." : "Ghi âm câu nói để gia sư AI nghe và góp ý."}</p>
           {pronunciation && (
             <div className="pronunciation-result">
               <span className="score-badge">{pronunciation.score}<small>/100</small></span>
@@ -3116,203 +2827,8 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               </div>
             </div>
           )}
-          {voiceError && <p className="error-message">{voiceError}</p>}
-          <div className="word-list">
-            <span className="eyebrow">CÂU NÓI HỮU ÍCH</span>
-            {profile.words.map((word) => <button key={word} className={(targetPronunciationPhrase || profile.words[0]) === word ? "phrase-chip-active" : ""} onClick={() => { setDraft(word); setTargetPronunciationPhrase(word); }}><span className="phrase-word"><strong>{word}</strong><small>{phraseMeanings[word]}</small></span><span>↗</span></button>)}
-          </div>
-        </section>
-
-        <section className="panel chat-panel">
-          <header className="chat-header">
-            <div className="coach-avatar">
-              <TeacherMascot
-                persona={tutorPersona}
-                status={
-                  speechBusy
-                    ? "speaking"
-                    : chatBusy
-                    ? "thinking"
-                    : voiceChatRecording
-                    ? "listening"
-                    : "idle"
-                }
-                size={50}
-              />
-            </div>
-            <div>
-              <strong>{TUTOR_PERSONAS[tutorPersona]?.name ?? "Cô Maya"} {speechBusy && <span className="mascot-speaking-badge">🔊 Đang nói…</span>}</strong>
-              <p>{TUTOR_PERSONAS[tutorPersona]?.title ?? "Gia sư AI"} · {aiProvider === "google" ? "Google AI (Phản hồi tức thì)" : "OpenAI"} <span className="online-dot" /> Đã kết nối</p>
-            </div>
-            <span className="level-chip">{progress.level}</span>
-          </header>
-
-          {/* Prominent Interactive Tutor Stage */}
-          <div className="tutor-stage-banner">
-            <div className="tutor-stage-avatar-container">
-              <TeacherMascot
-                persona={tutorPersona}
-                status={
-                  speechBusy
-                    ? "speaking"
-                    : chatBusy
-                    ? "thinking"
-                    : voiceChatRecording
-                    ? "listening"
-                    : "idle"
-                }
-                size={76}
-              />
-            </div>
-            <div className="tutor-stage-info">
-              <div className="tutor-stage-top-row">
-                <div className="tutor-stage-title-wrap">
-                  <span className="tutor-stage-name">{TUTOR_PERSONAS[tutorPersona]?.name ?? "Cô Maya"}</span>
-                  <span className="tutor-stage-badge">{TUTOR_PERSONAS[tutorPersona]?.badge ?? "👩‍🏫 Nữ gia sư"}</span>
-                  <span className="tutor-stage-accent-chip" title="Kiểu phát âm đang luyện">
-                    {getAccentPreset(selectedAccent).flag} Giọng {getAccentPreset(selectedAccent).name}
-                  </span>
-                  <span className="tutor-stage-online">
-                    <span className="online-indicator-dot" /> Đã kết nối
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  className="tutor-stage-switch-btn"
-                  onClick={() => navigateToSection("settings")}
-                  title="Đổi hình tượng gia sư hoặc chỉnh giọng đọc"
-                >
-                  ⚙️ Đổi gia sư / Giọng đọc
-                </button>
-              </div>
-              <div className="tutor-stage-speech-bubble">
-                {speechBusy ? (
-                  <span className="bubble-speaking">🔊 Đang phát âm câu mẫu tiếng Anh chuẩn...</span>
-                ) : chatBusy ? (
-                  <span className="bubble-thinking">💭 Đang chuẩn bị câu hỏi và hướng dẫn cho bạn...</span>
-                ) : voiceChatRecording ? (
-                  <span className="bubble-listening">🎙️ Đang lắng nghe bạn nói, hãy tự tin phát âm nhé!</span>
-                ) : (
-                  <span className="bubble-idle">“{TUTOR_PERSONAS[tutorPersona]?.greeting ?? "Chào em! Hôm nay cô sẽ đồng hành cùng em luyện nói tiếng Anh nhé."}”</span>
-                )}
-              </div>
-
-              {/* Quick Accent Switcher Bar */}
-              <div className="tutor-accent-quick-bar">
-                <span className="accent-quick-label">Kiểu phát âm:</span>
-                {ACCENT_PRESETS.map((p) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    className={`accent-quick-pill ${selectedAccent === p.id ? "active" : ""}`}
-                    onClick={() => updateAccent(p.id)}
-                    title={`Chuyển sang kiểu phát âm ${p.label}`}
-                  >
-                    {p.flag} {p.name.split(" ")[0]}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="chat-context"><span>💬</span> {profile.title} <span>·</span> {profile.scene}</div>
-          <div className="teacher-quick-actions" aria-label="Yêu cầu nhanh với gia sư">
-            {QUICK_TEACHER_REQUESTS.map((request) => (
-              <button type="button" key={request.label} onClick={() => { void sendMessage(undefined, request.prompt); }} disabled={chatBusy}>
-                {request.label}
-              </button>
-            ))}
-          </div>
-          <div className="message-list">
-            {messages.map((message, index) => {
-              const extractedPhrases = message.role === "assistant" ? extractEnglishPracticePhrases(message.content) : [];
-              return (
-                <div className={`message-row ${message.role}`} key={`${index}-${message.role}`}>
-                  {message.role === "assistant" && (
-                    <div className="mini-avatar">
-                      <TeacherMascot persona={tutorPersona} status="idle" size={32} />
-                    </div>
-                  )}
-                  <div className="message-bubble">
-                    <span className="speaker-label">{message.role === "assistant" ? `${(TUTOR_PERSONAS[tutorPersona]?.name ?? "MAYA").toUpperCase()} · GIA SƯ` : "BẠN"}</span>
-                    <div className="message-text">
-                      {renderFormattedMessage(message.content, (phrase) => void playPracticePhrase(phrase))}
-                    </div>
-                    {message.role === "assistant" && (
-                      <div className="message-actions-container">
-                        <div className="message-action-bar">
-                          <button
-                            type="button"
-                            aria-label="Nghe toàn bộ câu trả lời"
-                            className="speak-button"
-                            onClick={() => void playSpeech(message.content)}
-                            disabled={speechBusy}
-                            title="Nghe toàn bộ: Lời giải thích tiếng Việt bằng giọng Việt, mẫu câu tiếng Anh bằng giọng bản xứ"
-                          >
-                            <IllustrationIcon name="speaker" /> Nghe toàn bộ câu trả lời
-                          </button>
-                          <button
-                            type="button"
-                            className="practice-phrase-btn"
-                            title="Chỉ đọc câu mẫu tiếng Anh và đặt làm mục tiêu luyện nói để AI chấm điểm"
-                            onClick={() => handlePracticePhraseFromMessage(message.content)}
-                            disabled={speechBusy}
-                          >
-                            🎙️ Luyện phát âm câu mẫu {extractedPhrases.length > 1 ? `(${extractedPhrases.length} câu)` : ""}
-                          </button>
-                        </div>
-                        {extractedPhrases.length > 1 && (
-                          <div className="phrase-sub-chips">
-                            <span className="phrase-sub-label">Chọn câu mẫu muốn luyện:</span>
-                            {extractedPhrases.map((phrase, pIdx) => (
-                              <button
-                                key={pIdx}
-                                type="button"
-                                className={`phrase-sub-chip ${targetPronunciationPhrase === phrase ? "active" : ""}`}
-                                onClick={() => handlePracticePhraseFromMessage(message.content, phrase)}
-                                title={`Luyện phát âm câu: ${phrase}`}
-                              >
-                                🗣️ “{phrase.length > 32 ? phrase.slice(0, 30) + "…" : phrase}”
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-            {chatBusy && <div className="typing-indicator"><span /> <span /> <span /> Maya đang suy nghĩ…</div>}
-          </div>
-          {chatError && <p className="error-message chat-error">{chatError}</p>}
-          <div className="suggested-replies-wrap">
-            <span className="suggested-label">💡 Gợi ý trả lời cho bạn:</span>
-            <div className="suggested-chips">
-              {(PROFILE_SUGGESTIONS[profile.id] || PROFILE_SUGGESTIONS.everyday).map((replyText) => (
-                <button
-                  type="button"
-                  key={replyText}
-                  className="suggested-chip"
-                  onClick={() => {
-                    setDraft(replyText);
-                    void sendMessage(undefined, replyText);
-                  }}
-                  disabled={chatBusy}
-                  title="Bấm để gửi nhanh câu này"
-                >
-                  {replyText}
-                </button>
-              ))}
-            </div>
-          </div>
-          <form className="composer" onSubmit={sendMessage}>
-            <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Nhập câu trả lời bằng tiếng Anh hoặc chọn gợi ý ở trên…" aria-label="Câu trả lời của bạn" />
-            <button type="button" className={voiceChatRecording ? "mic-button recording" : "mic-button"} aria-label={voiceChatRecording ? "Dừng ghi âm" : "Trả lời bằng giọng nói"} onClick={voiceChatRecording ? stopVoiceChatRecording : startVoiceInput} disabled={chatBusy}><IllustrationIcon name={voiceChatRecording ? "stop" : "microphone"} /></button>
-            <button type="submit" className="send-button" disabled={chatBusy || !draft.trim()}>Gửi <span>↑</span></button>
-          </form>
-          {voiceError && !recording && <p className="error-message voice-inline">{voiceError}</p>}
-          <p className="chat-footnote">{voiceChatRecording ? "Đang ghi âm… nhấn nút dừng khi bạn nói xong." : "Cứ tự nhiên nhé — đây là nơi an toàn để bạn luyện tập."}</p>
-        </section>
+          {voiceError && recording && <p className="error-message">{voiceError}</p>}
+        </details>
       </div>
     );
   }
@@ -3437,7 +2953,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                 className="button button-outline"
                 onClick={() => askTutorAboutGrammar(topic)}
               >
-                💬 Hỏi cô Maya về cấu trúc này ↗
+                💬 Hỏi thầy/cô AI về cấu trúc này ↗
               </button>
             </div>
           </section>
@@ -3475,7 +2991,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                     className="ask-tutor-inline-btn"
                     onClick={() => askTutorAboutGrammar(topic, question, grammarAnswers[questionIndex])}
                   >
-                    💡 Hỏi cô Maya về câu ngữ pháp này ↗
+                    💡 Hỏi thầy/cô AI về câu này ↗
                   </button>
                 </div>
               </fieldset>
@@ -3492,173 +3008,102 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
   }
 
   function renderHome() {
+    const persona = TUTOR_PERSONAS[tutorPersona];
+    const returning = progress.sessions > 0;
     return (
-      <>
-        <section className="hero">
-          <div className="hero-copy">
-            <span className="eyebrow hero-eyebrow">MỖI NGÀY MỘT CHÚT <span>✦</span> {progress.streak ? `CHUỖI ${progress.streak} NGÀY` : "BẮT ĐẦU HÔM NAY"}</span>
-            <h2>Tiến bộ từng chút.<br /><em>Tự tin hơn mỗi ngày.</em></h2>
-            <p>Học theo cách của bạn. Cùng bắt đầu từ hôm nay nhé!</p>
-            <button className="button button-light" onClick={() => navigateToSection("practice")}>Gia sư AI online <span>→</span></button>
-          </div>
-          <div className="hero-art" aria-hidden="true">
-            <div className="art-sun" /><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" />
-            <div className="art-card"><span className="art-sparkles"><IllustrationIcon name="sparkles" /></span><strong>Bạn đang<br />tiến bộ!</strong><small>Từng cuộc trò chuyện một</small></div>
-            <div className="art-star star-one"><IllustrationIcon name="sparkles" /></div><div className="art-star star-two"><IllustrationIcon name="sparkles" /></div>
-          </div>
-        </section>
-
+      <section className="wz-welcome">
+        <div className="wz-welcome-art">
+          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={190} />
+        </div>
+        <span className="eyebrow">TEACHER AI · GIA SƯ TIẾNG ANH CỦA BẠN</span>
+        <h1>Xin chào! Cùng nói tiếng Anh tự tin hơn nhé.</h1>
+        <p className="wz-lead">
+          Mỗi ngày một chút. Học bài bản theo giáo trình, hoặc trò chuyện với {persona.name} — người sẽ chủ động dẫn dắt bạn qua từng tình huống phù hợp với trình độ của bạn.
+        </p>
+        <ol className="wz-steps" aria-label="3 bước học">
+          <li><b>1</b> Chọn bài học</li>
+          <li><b>2</b> Chọn cách học</li>
+          <li><b>3</b> Bắt đầu</li>
+        </ol>
+        <button type="button" className="button button-primary wz-cta" onClick={() => { setChooseId(""); navigateToSection("choose"); }}>
+          {returning ? "Tiếp tục học" : "Bắt đầu học"} <span>→</span>
+        </button>
+        {returning && <small className="wz-last">Lần trước: {profile.title} · Trình độ {progress.level}</small>}
+        {!apiKey && progressLoaded && (
+          <p className="wz-hint">Để học với AI, bạn cần thêm API key (1 lần) trong <button type="button" className="text-button" onClick={() => navigateToSection("settings")}>Cài đặt</button>.</p>
+        )}
+        <nav className="wz-links" aria-label="Lối tắt">
+          <button type="button" onClick={() => { setPlacementAnswers([]); setPlacementResult(""); navigateToSection("placement"); }}>Kiểm tra trình độ</button>
+          <button type="button" onClick={() => navigateToSection("progress")}>Tiến độ của tôi</button>
+          <button type="button" onClick={() => navigateToSection("settings")}>Cài đặt</button>
+        </nav>
         {renderInstallAppPanel()}
-
-        <div className="section-heading">
-          <div><span className="eyebrow">LỘ TRÌNH HỌC CỦA BẠN</span><h2>Chọn lĩnh vực muốn học</h2></div>
-          <button className="text-button" onClick={() => navigateToSection("profiles")}>Xem tất cả <span>→</span></button>
-        </div>
-        <div className="profile-grid">
-          {profiles.slice(0, 4).map((item) => (
-            <button className={`profile-card ${item.id === progress.profile ? "active-profile" : ""}`} key={item.id} onClick={() => selectProfile(item.id)}>
-              <div className="profile-header-row">
-                <span className={`profile-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>
-                {item.id === progress.profile && <span className="profile-badge-chip active">✓ Đang chọn</span>}
-              </div>
-              <strong className="profile-card-title">{item.title}</strong>
-              <span className="profile-card-subtitle">{item.subtitle}</span>
-              <div className="profile-card-footer">
-                <span className={`profile-select-pill-mini ${item.id === progress.profile ? "active" : ""}`}>
-                  {item.id === progress.profile ? "✓ Đang chọn" : "Chọn →"}
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
-
-        <div className="section-heading">
-          <div><span className="eyebrow">HAI CÁCH HỌC RIÊNG BIỆT</span><h2>Tiếp tục với {profile.title}</h2></div>
-        </div>
-        <div className="learning-path-grid">
-          <button type="button" className="panel learning-path-card home-learning-choice" onClick={() => navigateToSection("lessons")}>
-            <span className="learning-path-icon"><IllustrationIcon name="courses" /></span>
-            <span className="eyebrow">HỌC BÀI BẢN · OFFLINE</span>
-            <h3>Bài học theo giáo trình</h3>
-            <p>Học từng bài theo level, làm bài kiểm tra và theo dõi tiến độ học tập.</p>
-            <span className="button button-outline">Mở lộ trình bài học <span>→</span></span>
-          </button>
-          <button type="button" className="panel learning-path-card home-learning-choice" onClick={() => navigateToSection("practice")}>
-            <span className="learning-path-icon"><IllustrationIcon name="practice" /></span>
-            <span className="eyebrow">LUYỆN GIAO TIẾP · ONLINE</span>
-            <h3>Gia sư AI</h3>
-            <p>Trò chuyện với Maya theo chủ đề và trình độ hiện tại; nhận giải thích và góp ý.</p>
-            <span className="button button-primary">Bắt đầu trò chuyện <span>→</span></span>
-          </button>
-        </div>
-
-        <div className="dashboard-lower">
-          <section className="panel progress-panel">
-            <div className="panel-title"><div><span className="eyebrow">TUẦN NÀY</span><h3>Tiến độ học tập</h3></div><span className="progress-decoration">↗</span></div>
-            <div className="stats-grid">
-              <div><span className="stat-icon lavender"><IllustrationIcon name="timer" /></span><strong>{progress.minutes}<small> phút</small></strong><span>Thời gian luyện tập</span></div>
-              <div><span className="stat-icon peach"><IllustrationIcon name="sessions" /></span><strong>{progress.sessions}</strong><span>Buổi học</span></div>
-              <div><span className="stat-icon mint"><IllustrationIcon name="level" /></span><strong>{progress.level}</strong><span>Trình độ ước tính</span></div>
-            </div>
-            <div className="week-bars" aria-label="Thời gian luyện tập trong tuần">{weekDays.map((day) => <div key={day.key} title={`${day.minutes} phút luyện tập`}><span style={{ height: `${day.minutes ? Math.max(12, day.minutes / maxDailyMinutes * 100) : 5}%` }} className={day.key === todayKey() ? "today-bar" : ""} /><small>{day.label}</small></div>)}</div>
-          </section>
-          <section className="panel next-panel">
-            <span className="eyebrow">GỢI Ý TIẾP THEO</span>
-            <div className="next-lesson"><span className={`lesson-icon ${profile.color}`}><IllustrationIcon name={profile.icon} /></span><div><strong>Gia sư AI: {profile.title}</strong><span>5 phút · Tình huống thực tế</span></div></div>
-            <p>Thực hành giao tiếp theo lĩnh vực bạn đã chọn. Gia sư AI sẽ trò chuyện và góp ý cho bạn.</p>
-            <button className="button button-primary full-button" onClick={() => navigateToSection("practice")}>Tiếp tục với gia sư AI <span>→</span></button>
-          </section>
-        </div>
-        <section className="placement-banner"><span className="placement-icon"><IllustrationIcon name="compass" /></span><div><strong>Bạn mới bắt đầu học?</strong><p>Làm bài kiểm tra ngắn để Maya điều chỉnh bài học theo trình độ của bạn.</p></div><button onClick={() => { setPlacementAnswers([]); setPlacementResult(""); navigateToSection("placement"); }}>Kiểm tra trình độ <span>→</span></button></section>
-      </>
+      </section>
     );
   }
 
-  function renderProfiles() {
+  function renderChoose() {
+    const chosen = chooseId || progress.profile;
+    const isGrammar = chosen === "grammar";
+    const chosenProfile = profiles.find((item) => item.id === chosen);
     return (
-      <>
-        <div className="page-intro"><span className="eyebrow">HỌC ĐIỀU BẠN CẦN</span><h2>Chọn lĩnh vực học tập.</h2><p>Chọn lĩnh vực trước. Ở bước tiếp theo, bạn có thể học theo giáo trình offline hoặc mở gia sư AI để luyện giao tiếp online.</p></div>
-        <div className="offline-status" role={offlineError ? "alert" : "status"}>
-          <span>{offlineReady ? "✓" : offlineError ? "!" : "◌"}</span>
-          <p>{offlineReady ? "Ứng dụng đã lưu phần khung để có thể mở lại khi offline. Hãy tải riêng gói giáo trình để lưu bài học và audio." : offlineError || "Đang chuẩn bị ứng dụng cho chế độ offline…"}</p>
+      <section className="wz-card" aria-labelledby="choose-title">
+        <span className="eyebrow">BƯỚC 1/2</span>
+        <h2 id="choose-title">Bạn muốn học gì hôm nay?</h2>
+        <label className="settings-label" htmlFor="choose-category">Danh mục bài học</label>
+        <select id="choose-category" className="wz-select" value={chosen} onChange={(event) => setChooseId(event.target.value)}>
+          {profiles.map((item) => (
+            <option key={item.id} value={item.id}>{item.id === progress.profile ? "▶ " : ""}{item.title}</option>
+          ))}
+          <option value="grammar">Tiếng Anh ngữ pháp</option>
+        </select>
+        <p className="wz-note">Mặc định là bài bạn đang học lần trước. Mở danh sách để chọn bài khác.</p>
+        <div className={`wz-preview ${chosenProfile?.color ?? "green"}`}>
+          <span className="wz-preview-icon"><IllustrationIcon name={chosenProfile?.icon ?? "grammar"} /></span>
+          <div>
+            <strong>{chosenProfile?.title ?? "Tiếng Anh ngữ pháp"}</strong>
+            <span>{chosenProfile?.subtitle ?? "Học cấu trúc câu và làm bài tập theo trình độ"}</span>
+            {chosenProfile && <small>Tình huống: {chosenProfile.scene}</small>}
+          </div>
         </div>
-        <div className="all-profiles-grid">{profiles.map((item) => (
-          <button key={item.id} className={`profile-card large-profile ${item.id === progress.profile ? "active-profile" : ""}`} onClick={() => selectProfile(item.id)}>
-            <div className="profile-header-row">
-              <span className={`profile-icon ${item.color}`}><IllustrationIcon name={item.icon} /></span>
-              {item.id === progress.profile && <span className="profile-badge-chip active">✓ Đang chọn</span>}
-            </div>
-            <strong className="profile-card-title">{item.title}</strong>
-            <span className="profile-card-subtitle">{item.subtitle}</span>
-            <div className="profile-preview">
-              <span className="preview-label">Tình huống luyện tập</span>
-              <strong className="preview-scene">{item.scene}</strong>
-            </div>
-            <div className="profile-card-footer">
-              <span className={`profile-select-pill ${item.id === progress.profile ? "active" : ""}`}>
-                {item.id === progress.profile ? "✓ ĐANG CHỌN" : "CHỌN LỘ TRÌNH NÀY →"}
-              </span>
-            </div>
-          </button>
-        ))}
-          <button type="button" className="profile-card large-profile grammar-profile-card" onClick={() => navigateToSection("grammar")}>
-            <div className="profile-header-row">
-              <span className="profile-icon"><IllustrationIcon name="grammar" /></span>
-              <span className="profile-badge-chip grammar">Ngữ pháp</span>
-            </div>
-            <strong className="profile-card-title">Tiếng Anh ngữ pháp</strong>
-            <span className="profile-card-subtitle">Học cấu trúc câu và làm bài tập theo trình độ</span>
-            <div className="profile-preview">
-              <span className="preview-label">Lĩnh vực học</span>
-              <strong className="preview-scene">Ngữ pháp tiếng Anh</strong>
-            </div>
-            <div className="profile-card-footer">
-              <span className="profile-select-pill">
-                KHÁM PHÁ BÀI HỌC →
-              </span>
-            </div>
-          </button>
-        </div>
-      </>
+        <button
+          type="button"
+          className="button button-primary wz-cta"
+          onClick={() => {
+            if (isGrammar) navigateToSection("grammar");
+            else selectProfile(chosen);
+          }}
+        >
+          Tiếp tục <span>→</span>
+        </button>
+      </section>
     );
   }
 
-  function completeCourseExam(
-    course: CoursePackage,
-    level: CourseLevel,
-    questions: CoursePackage["lessons"][number]["questions"],
-  ) {
-    if (!questions.length || courseExamAnswers.length !== questions.length ||
-        courseExamAnswers.some((answer) => !Number.isInteger(answer) || answer < 0)) return;
-    const score = questions.reduce(
-      (total, question, index) => total + (courseExamAnswers[index] === question.answer ? 1 : 0),
-      0,
+  function renderMode() {
+    const course = coursePacks.find((item) => item.id === progress.profile);
+    return (
+      <section className="wz-card wz-card-wide" aria-labelledby="mode-title">
+        <span className="eyebrow">BƯỚC 2/2 · {profile.title.toUpperCase()}</span>
+        <h2 id="mode-title">Bạn muốn học theo cách nào?</h2>
+        <div className="wz-modes">
+          <button type="button" className="wz-mode" onClick={() => navigateToSection("lessons")}>
+            <span className="wz-mode-icon"><IllustrationIcon name="courses" /></span>
+            <strong>Bài học (Offline)</strong>
+            <span>Học lần lượt từng bài theo CEFR: hội thoại, từ vựng, ngữ pháp, phát âm và bài kiểm tra 10 câu.</span>
+            <em className="ok">{course
+              ? `${(courseProgress[course.id] ?? []).length}/${course.lessons.length} bài đã đạt`
+              : "Tự tải về khi bắt đầu"}</em>
+          </button>
+          <button type="button" className="wz-mode wz-mode-ai" onClick={() => { setConnection({ status: "idle", message: "" }); navigateToSection("practice"); }}>
+            <span className="wz-mode-icon"><IllustrationIcon name="practice" /></span>
+            <strong>Học với AI (Online)</strong>
+            <span>Thầy/cô AI dạy đúng bài bạn đang học, ra tình huống, sửa lỗi ngữ pháp, từ vựng và phát âm.</span>
+            <em className={apiKey ? "ok" : "warn"}>{apiKey ? "Sẵn sàng" : "Cần thêm API key"}</em>
+          </button>
+        </div>
+      </section>
     );
-    const percentage = Math.round((score / questions.length) * 100);
-    setCourseExamSubmitted(true);
-    const updatedResults = {
-      ...courseLevelResults,
-      [course.id]: {
-        ...courseLevelResults[course.id],
-        [level]: Math.max(courseLevelResults[course.id]?.[level] ?? 0, percentage),
-      },
-    };
-    setCourseLevelResults(updatedResults);
-    const levelIndex = COURSE_LEVELS.indexOf(level);
-    const currentLevelIndex = COURSE_LEVELS.findIndex((currentLevel) => currentLevel === progress.level);
-    if (
-      percentage >= 90 &&
-      levelIndex < COURSE_LEVELS.length - 1 &&
-      levelIndex >= currentLevelIndex
-    ) {
-      setProgress((current) => ({ ...current, level: COURSE_LEVELS[levelIndex + 1] }));
-    }
-    setCourseError("");
-    try {
-      localStorage.setItem("lingua-course-level-results", JSON.stringify(updatedResults));
-    } catch {
-      setCourseError("Không thể lưu kết quả kiểm tra level trên thiết bị này.");
-    }
   }
 
   function renderLessons() {
@@ -3666,45 +3111,26 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     const selectedCourse = coursePacks.find((item) => item.id === selectedCourseId);
     if (course && selectedCourse?.id === course.id) return renderCourses();
     return (
-      <>
-        <div className="page-intro">
-          <span className="eyebrow">LỘ TRÌNH HỌC CỦA BẠN · CEFR {progress.level}</span>
-          <h2>{profile.title}</h2>
-          <p>Chọn cách học phù hợp: theo bài bản offline hoặc luyện giao tiếp cùng gia sư AI online.</p>
-        </div>
-        <div className="learning-path-grid">
-          <section className={`panel learning-path-card${course ? "" : " unavailable"}`}>
-            <span className="learning-path-icon"><IllustrationIcon name="courses" /></span>
-            <span className="eyebrow">HỌC THEO LỘ TRÌNH</span>
-            <h3>Bài học offline</h3>
-            {course ? (
-              <>
-                <p>{course.overview}</p>
-                <p className="learning-path-note">{course.lessons.length} bài · CEFR {course.framework} · Có thể học không cần mạng.</p>
-                <button type="button" className="button button-primary" onClick={() => openDownloadedCourse(course.id)}>Tiếp tục giáo trình <span>→</span></button>
-              </>
-            ) : (
-              <>
-                <p>Giáo trình cho lĩnh vực này chưa có trên thiết bị. Tải gói trong Cài đặt để mở các bài học, bài kiểm tra và lộ trình lên level.</p>
-                <button type="button" className="button button-outline" onClick={() => navigateToSection("settings")}>Vào Cài đặt để tải giáo trình</button>
-              </>
-            )}
-          </section>
-          <section className="panel learning-path-card">
-            <span className="learning-path-icon"><IllustrationIcon name="practice" /></span>
-            <span className="eyebrow">LUYỆN TẬP TRỰC TIẾP</span>
-            <h3>Gia sư AI online</h3>
-            <p>Trò chuyện theo chủ đề <strong>{profile.title}</strong> ở trình độ {progress.level}. AI có thể giải thích câu sai, trả lời thắc mắc và luyện phát âm cùng bạn.</p>
-            {!apiKey && <p className="learning-path-note">Cần kết nối API key trong Cài đặt để bắt đầu.</p>}
-            <button type="button" className="button button-primary" onClick={() => navigateToSection("practice")}>Bắt đầu với gia sư AI <span>→</span></button>
-          </section>
-        </div>
-        {!course && (
-          <p className="course-storage-note" role="status">
-            Chưa có gói giáo trình tải về cho lĩnh vực này. Các file nội dung cần thiết chưa được phát hành cùng ứng dụng; danh sách tải sẽ báo rõ khi gói chưa sẵn sàng.
-          </p>
+      <section className="wz-card" aria-labelledby="lessons-title">
+        <span className="eyebrow">BÀI HỌC OFFLINE · CEFR {progress.level}</span>
+        <h2 id="lessons-title">{profile.title}</h2>
+        {course ? (
+          <>
+            <p>{course.overview}</p>
+            <button type="button" className="button button-primary wz-cta" onClick={() => openDownloadedCourse(course.id)}>Vào bài học <span>→</span></button>
+          </>
+        ) : courseSyncing ? (
+          <div className="cr-connect-actions"><div className="cr-spinner" aria-hidden="true" /><p role="status">Đang tải giáo trình về thiết bị (chỉ lần đầu)…</p></div>
+        ) : (
+          <>
+            <p className="error-message" role="alert">{courseError || "Chưa tải được giáo trình."} Lần đầu cần kết nối mạng; sau đó có thể học offline.</p>
+            <div className="cr-connect-actions">
+              <button type="button" className="button button-primary" onClick={() => { void syncCourse(progress.profile); }}>↻ Tải lại</button>
+              <button type="button" className="button button-outline" onClick={goBack}>← Chọn cách học khác</button>
+            </div>
+          </>
         )}
-      </>
+      </section>
     );
   }
 
@@ -3723,290 +3149,215 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       const lesson = course.lessons.find((item) => item.id === selectedLessonId) ?? course.lessons[0];
       const completedLessons = courseProgress[course.id] ?? [];
       const lessonScores = courseLessonScores[course.id] ?? {};
-      const levelResults = courseLevelResults[course.id] ?? {};
-      const startingLevelIndex = COURSE_LEVELS.findIndex((level) => level === progress.level);
-      const firstLevelToAdvance = startingLevelIndex < 0 ? 0 : startingLevelIndex;
-      let highestUnlockedLevelIndex = firstLevelToAdvance;
-      while (
-        highestUnlockedLevelIndex < COURSE_LEVELS.length - 1 &&
-        (levelResults[COURSE_LEVELS[highestUnlockedLevelIndex]] ?? 0) >= 90
-      ) {
-        highestUnlockedLevelIndex += 1;
-      }
+      const unlocked = unlockedLessonIds(course, completedLessons, progress.level);
+      const lessonIndex = course.lessons.findIndex((item) => item.id === lesson.id);
+      const nextLesson = course.lessons[lessonIndex + 1];
       const answeredAll = lesson.questions.every((_, index) => Number.isInteger(courseAnswers[index]));
       const correctCount = lesson.questions.reduce(
         (total, question, index) => total + (courseAnswers[index] === question.answer ? 1 : 0),
         0,
       );
-      const passed = correctCount >= Math.ceil(lesson.questions.length * 0.7);
-      const examLessons = courseExamLevel
-        ? course.lessons.filter((item) => item.level === courseExamLevel)
-        : [];
-      const examQuestions = examLessons.flatMap((item) => item.questions);
-      const examAnsweredAll = examQuestions.length > 0 &&
-        examQuestions.every((_, index) => Number.isInteger(courseExamAnswers[index]));
-      const examCorrectCount = examQuestions.reduce(
-        (total, question, index) => total + (courseExamAnswers[index] === question.answer ? 1 : 0),
-        0,
-      );
-      const examPercentage = examQuestions.length
-        ? Math.round((examCorrectCount / examQuestions.length) * 100)
-        : 0;
+      const passMark = Math.ceil(lesson.questions.length * LESSON_PASS_RATIO);
+      const passed = correctCount >= passMark;
       const linkedAudio = course.audio.filter((audio) => lesson.audioIds.includes(audio.id));
+      const doneCount = course.lessons.filter((item) => completedLessons.includes(item.id)).length;
       return (
         <>
-          <div className="page-intro">
-            <button className="text-button" onClick={() => { setSelectedCourseId(""); setSelectedLessonId(""); setOfflineAudioUrl(""); setCourseExamLevel(null); }}>← Lộ trình học</button>
-            <span className="eyebrow">{course.framework} · PHIÊN BẢN {course.version}</span>
+          <div className="page-intro lesson-course-head">
+            <span className="eyebrow">{course.framework} · {doneCount}/{course.lessons.length} BÀI ĐÃ ĐẠT</span>
             <h2>{course.title}</h2>
-            <p>{course.overview}</p>
-            <p className="course-license">Giấy phép nội dung: {course.contentLicense}</p>
-            <button type="button" className="button button-outline" onClick={() => navigateToSection("practice")}>Chuyển sang Gia sư AI online</button>
+            <div className="lesson-course-bar" aria-hidden="true"><i style={{ width: `${(doneCount / course.lessons.length) * 100}%` }} /></div>
           </div>
           <div className="course-curriculum-layout">
             <section className="panel course-lesson-list">
-              <span className="eyebrow">LỘ TRÌNH A1–B2</span>
               {COURSE_LEVELS.map((level) => {
                 const levelLessons = course.lessons.filter((item) => item.level === level);
                 if (!levelLessons.length) return null;
-                const levelIndex = COURSE_LEVELS.indexOf(level);
-                const levelUnlocked = levelIndex <= highestUnlockedLevelIndex;
-                const levelComplete = levelLessons.every((item) => completedLessons.includes(item.id));
+                const levelDone = levelLessons.filter((item) => completedLessons.includes(item.id)).length;
                 return (
                   <div className="course-level" key={level}>
-                    <strong>{level} {levelResults[level] !== undefined && `· Bài kiểm tra: ${levelResults[level]}%`}</strong>
-                    {levelLessons.map((item, lessonIndex) => {
+                    <strong className="course-level-title">
+                      <span className="level-chip">{level}</span>
+                      <span>{levelDone}/{levelLessons.length} bài</span>
+                      {levelDone === levelLessons.length && <span className="course-level-done">✓ Hoàn thành</span>}
+                    </strong>
+                    {levelLessons.map((item) => {
                       const complete = completedLessons.includes(item.id);
-                      const lessonUnlocked = levelUnlocked &&
-                        (lessonIndex === 0 || completedLessons.includes(levelLessons[lessonIndex - 1].id));
+                      const open = unlocked.has(item.id);
                       return (
                         <button
                           key={item.id}
                           type="button"
-                          className={`course-lesson${item.id === lesson.id ? " selected" : ""}`}
-                          disabled={!lessonUnlocked}
+                          className={`course-lesson${item.id === lesson.id ? " selected" : ""}${complete ? " passed" : ""}`}
+                          disabled={!open}
                           onClick={() => openCourseLesson(item.id)}
+                          title={open ? item.objective : "Hoàn thành bài trước để mở bài này"}
                         >
-                          <span>{complete ? "✓" : "○"}</span>
+                          <span className="course-lesson-mark" aria-hidden="true">{complete ? "✓" : open ? "○" : "🔒"}</span>
                           <span>
                             {item.title}
-                            {lessonScores[item.id] !== undefined && <small>Điểm cao nhất: {lessonScores[item.id]}%</small>}
+                            <small>
+                              {item.category ?? item.unit}
+                              {lessonScores[item.id] !== undefined && ` · cao nhất ${Math.round(lessonScores[item.id] / 10)}/10`}
+                            </small>
                           </span>
                         </button>
                       );
                     })}
-                    {levelUnlocked && (
-                      <button
-                        type="button"
-                        className="button button-outline course-level-exam"
-                        disabled={!levelComplete}
-                        onClick={() => {
-                          setCourseExamLevel(level);
-                          setCourseExamAnswers([]);
-                          setCourseExamSubmitted(false);
-                          setCourseAnswers([]);
-                          setCourseQuizSubmitted(false);
-                        }}
-                      >
-                        {levelResults[level] !== undefined ? `Làm lại kiểm tra ${level}` : `Kiểm tra cuối ${level}`}
-                      </button>
-                    )}
                   </div>
                 );
               })}
-              <p className="course-progress-note">{completedLessons.length}/{course.lessons.length} bài đạt yêu cầu</p>
-              <p className="course-progress-note">Đạt 70% mỗi bài để hoàn tất; đạt 90% bài kiểm tra cuối level để mở level tiếp theo.</p>
+              <p className="course-progress-note">Đạt từ 8/10 câu để tick hoàn thành và mở bài kế tiếp. Hoàn thành mọi bài của một level sẽ nâng trình độ của bạn.</p>
               <div className="course-references">
-                <strong>Nguồn và giấy phép</strong>
+                <strong>Khung tham chiếu</strong>
                 {course.references.map((reference) => (
-                  <a key={reference.url} href={reference.url} target="_blank" rel="noreferrer">{reference.title} · {reference.license} ↗</a>
+                  <a key={reference.url} href={reference.url} target="_blank" rel="noreferrer">{reference.title} ↗</a>
                 ))}
+                <small>{course.contentLicense}</small>
               </div>
             </section>
             <section className="panel course-lesson-panel">
-              {courseExamLevel ? (
-                <div className="course-final-exam">
-                  <span className="level-chip">{courseExamLevel}</span>
-                  <span className="eyebrow">KIỂM TRA CUỐI LEVEL</span>
-                  <h3>Đạt ít nhất 90% để mở level kế tiếp</h3>
-                  <p className="course-objective">Bài kiểm tra tổng hợp câu hỏi của các bài thuộc level {courseExamLevel}.</p>
-                  {examQuestions.map((question, questionIndex) => (
-                    <fieldset className="question-card" key={`${courseExamLevel}-exam-${questionIndex}`}>
+              <div className="lesson-head">
+                <span className="level-chip">{lesson.level}</span>
+                {lesson.category && <span className="lesson-category">{lesson.category}</span>}
+                {completedLessons.includes(lesson.id) && <span className="course-level-done">✓ Đã đạt</span>}
+              </div>
+              <h3>{lesson.title}</h3>
+              <p className="course-objective"><strong>Mục tiêu:</strong> {lesson.objective}</p>
+              <div className="lesson-tabs" role="tablist">
+                <button type="button" role="tab" aria-selected={lessonTab === "learn"} className={lessonTab === "learn" ? "active" : ""} onClick={() => setLessonTab("learn")}>📖 Học bài</button>
+                <button type="button" role="tab" aria-selected={lessonTab === "quiz"} className={lessonTab === "quiz" ? "active" : ""} onClick={() => setLessonTab("quiz")}>📝 Kiểm tra ({lesson.questions.length} câu)</button>
+              </div>
+
+              {lessonTab === "learn" ? (
+                <div className="lesson-learn">
+                  <section className="lesson-block">
+                    <h4>1 · Hội thoại / Bài đọc</h4>
+                    <div className="course-reading">{lesson.reading}</div>
+                    <button type="button" className="button button-outline" onClick={() => void playSpeech(lesson.reading)} disabled={speechBusy}>
+                      <IllustrationIcon name="speaker" /> Nghe bài
+                    </button>
+                  </section>
+
+                  <section className="lesson-block">
+                    <h4>2 · Từ vựng</h4>
+                    <div className="lesson-vocab">
+                      {lesson.vocabulary.map((item) => (
+                        <div className="lesson-vocab-item" key={item.term}>
+                          <div>
+                            <strong>{item.term}</strong> <span>— {item.definition}</span>
+                            {item.example && <em>“{item.example}”</em>}
+                          </div>
+                          <button type="button" className="vocab-mini-btn" onClick={() => void playPracticePhrase(item.example ?? item.term)} disabled={speechBusy} aria-label={`Nghe: ${item.term}`}>🔊</button>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+
+                  {lesson.grammar && (
+                    <section className="lesson-block">
+                      <h4>3 · Ngữ pháp: {lesson.grammar.title}</h4>
+                      <p>{lesson.grammar.explanation}</p>
+                      <ul className="lesson-examples">
+                        {lesson.grammar.examples.map((example) => (
+                          <li key={example}>
+                            <span>{example}</span>
+                            <button type="button" className="vocab-mini-btn" onClick={() => void playPracticePhrase(example)} disabled={speechBusy} aria-label={`Nghe: ${example}`}>🔊</button>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  )}
+
+                  {lesson.pronunciation && (
+                    <section className="lesson-block">
+                      <h4>4 · Phát âm: {lesson.pronunciation.focus}</h4>
+                      <p>{lesson.pronunciation.tip}</p>
+                      <div className="lesson-pron-words">
+                        {lesson.pronunciation.words.map((word) => (
+                          <button type="button" key={word} onClick={() => void playPracticePhrase(word)} disabled={speechBusy}>🔊 {word}</button>
+                        ))}
+                      </div>
+                    </section>
+                  )}
+
+                  {linkedAudio.length > 0 && (
+                    <section className="lesson-block course-audio">
+                      <h4>Nghe thêm</h4>
+                      {linkedAudio.map((audio) => (
+                        <div className="course-audio-item" key={audio.id}>
+                          <button className="button button-outline" onClick={() => { void playOfflineAudio(course.id, audio.id); }}>▶ Nghe audio</button>
+                          <span>{audio.title}</span>
+                          <small>{audio.attribution} · {audio.license}</small>
+                        </div>
+                      ))}
+                      {offlineAudioUrl && <audio controls preload="metadata" src={offlineAudioUrl}>Trình duyệt không hỗ trợ phát audio.</audio>}
+                    </section>
+                  )}
+
+                  <section className="lesson-block lesson-speaking">
+                    <h4>5 · Luyện nói</h4>
+                    {lesson.speakingTasks?.length ? (
+                      <ul>{lesson.speakingTasks.map((task) => <li key={task}>{task}</li>)}</ul>
+                    ) : <p>Luyện các câu trong bài với thầy/cô AI.</p>}
+                    <div className="cr-connect-actions">
+                      <button type="button" className="button button-outline" onClick={() => askTutorAboutLesson(lesson)}>🎓 Luyện bài này với thầy/cô AI</button>
+                      <button type="button" className="button button-primary" onClick={() => setLessonTab("quiz")}>Làm bài kiểm tra →</button>
+                    </div>
+                  </section>
+                </div>
+              ) : (
+                <div className="course-quiz">
+                  <p className="lesson-quiz-rule">Trả lời đủ {lesson.questions.length} câu. Đạt từ <strong>{passMark}/{lesson.questions.length}</strong> để hoàn thành bài.</p>
+                  {lesson.questions.map((question, questionIndex) => (
+                    <fieldset className="question-card" key={`${lesson.id}-${questionIndex}`}>
                       <legend>{questionIndex + 1}. {question.prompt}</legend>
                       <div className="answer-options">
                         {question.options.map((option, optionIndex) => {
-                          const selected = courseExamAnswers[questionIndex] === optionIndex;
-                          const correct = courseExamSubmitted && question.answer === optionIndex;
-                          const incorrect = courseExamSubmitted && selected && !correct;
+                          const selected = courseAnswers[questionIndex] === optionIndex;
+                          const correct = courseQuizSubmitted && question.answer === optionIndex;
+                          const incorrect = courseQuizSubmitted && selected && !correct;
                           return (
-                            <button
-                              type="button"
-                              key={option}
-                              className={`answer-option${selected ? " selected" : ""}${correct ? " correct" : ""}${incorrect ? " incorrect" : ""}`}
+                            <button type="button" key={option} className={`answer-option${selected ? " selected" : ""}${correct ? " correct" : ""}${incorrect ? " incorrect" : ""}`}
                               onClick={() => {
-                                if (courseExamSubmitted) return;
-                                setCourseExamAnswers((answers) => {
+                                if (courseQuizSubmitted) return;
+                                setCourseAnswers((answers) => {
                                   const updated = [...answers];
                                   updated[questionIndex] = optionIndex;
                                   return updated;
                                 });
-                              }}
-                            >
+                              }}>
                               <span>{String.fromCharCode(65 + optionIndex)}</span>{option}
                             </button>
                           );
                         })}
                       </div>
-                      {courseExamSubmitted && <p className="grammar-explanation">{question.explanation}</p>}
+                      {courseQuizSubmitted && courseAnswers[questionIndex] !== question.answer && (
+                        <div className="lesson-wrong">
+                          <p className="grammar-explanation">{question.explanation}</p>
+                          <button type="button" className="ask-tutor-inline-btn" onClick={() => askTutorAboutQuestion(lesson.title, question.prompt, question.options, courseAnswers[questionIndex], question.answer, question.explanation)}>
+                            💡 Nhờ thầy/cô AI giảng lại câu này
+                          </button>
+                        </div>
+                      )}
                     </fieldset>
                   ))}
-                  {courseExamSubmitted ? (
-                    <div className="placement-result" role="status">
-                      Kết quả: {examCorrectCount}/{examQuestions.length} ({examPercentage}%).
-                      {examPercentage >= 90
-                        ? " Đã đạt yêu cầu; level tiếp theo đã được mở."
-                        : " Cần đạt ít nhất 90%. Hãy ôn lại bài rồi thử lại."}
-                      <button
-                        type="button"
-                        className="button button-outline"
-                        onClick={() => { setCourseExamAnswers([]); setCourseExamSubmitted(false); }}
-                      >
-                        Làm lại kiểm tra
-                      </button>
+                  {courseQuizSubmitted ? (
+                    <div className={`lesson-result ${passed ? "pass" : "fail"}`} role="status">
+                      <strong>{correctCount}/{lesson.questions.length} câu đúng</strong>
+                      <p>{passed
+                        ? "✅ Đạt! Bài học đã được tick hoàn thành."
+                        : `Cần ít nhất ${passMark}/${lesson.questions.length}. Xem lại giải thích các câu sai rồi làm lại nhé.`}</p>
+                      <div className="cr-connect-actions">
+                        {passed && nextLesson && <button type="button" className="button button-primary" onClick={() => openCourseLesson(nextLesson.id)}>Bài tiếp theo →</button>}
+                        {!passed && <button type="button" className="button button-primary" onClick={() => { setCourseAnswers([]); setCourseQuizSubmitted(false); }}>Làm lại ↻</button>}
+                        {!passed && <button type="button" className="button button-outline" onClick={() => setLessonTab("learn")}>Ôn lại bài</button>}
+                      </div>
                     </div>
                   ) : (
-                    <button
-                      type="button"
-                      className="button button-primary"
-                      disabled={!examAnsweredAll}
-                      onClick={() => completeCourseExam(course, courseExamLevel, examQuestions)}
-                    >
-                      Nộp bài kiểm tra
-                    </button>
+                    <button className="button button-primary" disabled={!answeredAll} onClick={() => completeCourseQuiz(course, lesson.id, lesson.questions)}>Chấm bài <span>→</span></button>
                   )}
                 </div>
-              ) : (
-                <>
-              <span className="level-chip">{lesson.level}</span>
-              <span className="eyebrow">{lesson.unit}</span>
-              <h3>{lesson.title}</h3>
-              <p className="course-objective"><strong>Learning objective:</strong> {lesson.objective}</p>
-              <div className="course-reading">{lesson.reading}</div>
-              <div className="lesson-tutor-banner">
-                <button
-                  type="button"
-                  className="button button-outline"
-                  onClick={() => void playSpeech(lesson.reading)}
-                  disabled={speechBusy}
-                >
-                  <IllustrationIcon name="speaker" /> Nghe bài đọc (Audio)
-                </button>
-                <button
-                  type="button"
-                  className="button button-outline"
-                  onClick={() => askTutorAboutLesson(lesson)}
-                >
-                  💬 Hỏi cô Maya về bài học này ↗
-                </button>
-              </div>
-              <div className="course-vocabulary">
-                <h4>Key vocabulary</h4>
-                {lesson.vocabulary.map((item) => (
-                  <p key={item.term} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "6px" }}>
-                    <span>
-                      <strong style={{ marginRight: "8px" }}>{item.term}</strong>
-                      <span>{item.definition}</span>
-                    </span>
-                    <span className="vocab-action-btns">
-                      <button
-                        type="button"
-                        className="vocab-mini-btn"
-                        title="Nghe phát âm từ này"
-                        onClick={() => void playSpeech(item.term)}
-                        disabled={speechBusy}
-                      >
-                        🔊 Nghe
-                      </button>
-                      <button
-                        type="button"
-                        className="vocab-mini-btn"
-                        title="Luyện nói từ này cùng AI"
-                        onClick={() => {
-                          setTargetPronunciationPhrase(item.term);
-                          navigateToSection("practice");
-                        }}
-                      >
-                        🎙️ Luyện nói
-                      </button>
-                    </span>
-                  </p>
-                ))}
-              </div>
-              {linkedAudio.length > 0 && (
-                <div className="course-audio">
-                  <h4>Listening practice</h4>
-                  {linkedAudio.map((audio) => (
-                    <div className="course-audio-item" key={audio.id}>
-                      <button className="button button-outline" onClick={() => { void playOfflineAudio(course.id, audio.id); }}>▶ Nghe audio offline</button>
-                      <span>{audio.title} · {Math.round(audio.durationSeconds / 60)} phút</span>
-                      <small>{audio.attribution} · {audio.license}</small>
-                    </div>
-                  ))}
-                  {offlineAudioUrl && <audio controls preload="metadata" src={offlineAudioUrl}>Trình duyệt không hỗ trợ phát audio.</audio>}
-                </div>
-              )}
-              <div className="course-quiz">
-                <span className="eyebrow">PRACTICE · ENGLISH ONLY</span>
-                {lesson.questions.map((question, questionIndex) => (
-                  <fieldset className="question-card" key={`${lesson.id}-${questionIndex}`}>
-                    <legend>{questionIndex + 1}. {question.prompt}</legend>
-                    <div className="answer-options">
-                      {question.options.map((option, optionIndex) => {
-                        const selected = courseAnswers[questionIndex] === optionIndex;
-                        const correct = courseQuizSubmitted && question.answer === optionIndex;
-                        const incorrect = courseQuizSubmitted && selected && !correct;
-                        return (
-                          <button type="button" key={option} className={`answer-option${selected ? " selected" : ""}${correct ? " correct" : ""}${incorrect ? " incorrect" : ""}`}
-                            onClick={() => {
-                              if (courseQuizSubmitted) return;
-                              setCourseAnswers((answers) => {
-                                const updated = [...answers];
-                                updated[questionIndex] = optionIndex;
-                                return updated;
-                              });
-                            }}>
-                            <span>{String.fromCharCode(65 + optionIndex)}</span>{option}
-                          </button>
-                        );
-                      })}
-                    </div>
-                    {courseQuizSubmitted && <p className="grammar-explanation">{question.explanation}</p>}
-                    <div style={{ marginTop: "6px" }}>
-                      <button
-                        type="button"
-                        className="ask-tutor-inline-btn"
-                        onClick={() => askTutorAboutQuestion(
-                          lesson.title,
-                          question.prompt,
-                          question.options,
-                          courseAnswers[questionIndex],
-                          question.answer,
-                          question.explanation,
-                        )}
-                      >
-                        💡 Hỏi cô Maya về câu này ↗
-                      </button>
-                    </div>
-                  </fieldset>
-                ))}
-                {courseQuizSubmitted
-                  ? <div className="placement-result" role="status">
-                      Kết quả: {correctCount}/{lesson.questions.length} ({Math.round((correctCount / lesson.questions.length) * 100)}%). {passed ? "Đã hoàn thành bài học." : "Cần đạt ít nhất 70% để hoàn thành bài. Hãy xem lại giải thích rồi thử lại."}
-                      {!passed && <button className="button button-outline" onClick={() => { setCourseAnswers([]); setCourseQuizSubmitted(false); }}>Làm lại bài <span>↻</span></button>}
-                    </div>
-                  : <button className="button button-primary" disabled={!answeredAll} onClick={() => completeCourseQuiz(course, lesson.id, lesson.questions)}>Chấm bài <span>→</span></button>}
-              </div>
-                </>
               )}
             </section>
           </div>
@@ -4138,19 +3489,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     );
   }
 
-  const nav: { id: Section; icon: IllustrationName; label: string }[] = [
-    { id: "home", icon: "home", label: "Trang chủ" },
-    { id: "lessons", icon: "courses", label: "Bài học" },
-    { id: "practice", icon: "practice", label: "Gia sư AI" },
-    { id: "profiles", icon: "profiles", label: "Lĩnh vực" },
-    { id: "progress", icon: "progress", label: "Tiến độ" },
-    { id: "settings", icon: "settings", label: "Cài đặt" },
-  ];
   const sectionLabels: Record<Section, string> = {
-    home: "Trang chủ",
+    home: "Chào mừng",
+    choose: "Chọn bài học",
+    mode: "Chọn cách học",
     lessons: "Bài học offline",
-    practice: "Gia sư AI online",
-    profiles: "Lĩnh vực",
+    practice: "Học với AI",
     progress: "Tiến độ",
     placement: "Kiểm tra trình độ",
     grammar: "Ngữ pháp",
@@ -4164,14 +3508,10 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       steps: ["Đọc phần giải thích và ví dụ; bấm “Nghe” để luyện nghe câu mẫu.", "Chọn đáp án cho các câu hỏi rồi nhấn “Chấm bài”.", "Đọc phần giải thích sau khi chấm và chọn “Làm lại bài tập” để luyện thêm."],
     }
       : PAGE_HELP[section];
-  const canGoBack = sectionHistoryRef.current.length > 0 || (section === "grammar" && grammarTopicId !== null);
+  const canGoBack = section !== "home";
 
   return (
-    <main className="app-shell">
-      {canGoBack && <button className="floating-back-button" type="button" onClick={goBack} aria-label="Quay lại trang trước" title="Quay lại trang trước">
-        <IllustrationIcon name="back" />
-        <span>Quay lại</span>
-      </button>}
+    <main className="app-shell wizard-shell">
       {showHelp && (
         <div className="help-dialog-backdrop" onClick={() => setShowHelp(false)}>
           <section
@@ -4190,27 +3530,31 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           </section>
         </div>
       )}
-      <aside className="sidebar">
-        <a className="brand" href="#" onClick={(event) => { event.preventDefault(); navigateToSection("home"); }}><span className="brand-mark">T<span>✦</span></span><span>Teacher AI<small>GIA SƯ TIẾNG ANH AI CỦA BẠN</small></span></a>
-        <div className="side-label">HỌC TẬP</div>
-        <nav>{nav.map((item) => <button key={item.id} className={section === item.id ? "nav-item selected" : "nav-item"} onClick={() => navigateToSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span>{item.label}{item.id === "practice" && <i className="nav-live" />}</button>)}</nav>
-        <div className="sidebar-spacer" />
-        <div className="streak-card"><span className="sidebar-streak-icon"><IllustrationIcon name="streak" /></span><div><strong>{progress.streak} ngày liên tục</strong><small>{progress.streak ? "Cố gắng duy trì nhé!" : "Bắt đầu với một bài học"}</small></div><span className="streak-arrow">↗</span></div>
-        <button className="sidebar-profile" onClick={() => navigateToSection("profiles")}><span className="user-avatar">B</span><span><strong>Lộ trình học của bạn</strong><small>{profile.title}</small></span><span className="more-dots">···</span></button>
-      </aside>
       <section className="main-content">
-        <header className="topbar">
-          <div className="breadcrumb"><span>Học tiếng Anh</span><span>/</span><strong>{sectionLabels[section]}</strong></div>
+        <header className="topbar wz-topbar">
+          <div className="wz-topbar-left">
+            {canGoBack && (
+              <button type="button" className="wz-back" onClick={goBack} aria-label="Quay lại trang trước">
+                <IllustrationIcon name="back" /> <span>Quay lại</span>
+              </button>
+            )}
+            <a className="wz-brand" href="#" onClick={(event) => { event.preventDefault(); navigateToSection("home"); }}>
+              <span className="brand-mark">T<span>✦</span></span>
+              <strong>Teacher AI</strong>
+            </a>
+          </div>
+          <div className="wz-crumb" aria-live="polite">{sectionLabels[section]}</div>
           <div className="topbar-actions">
-            <span className="level-chip desktop-level">TRÌNH ĐỘ {progress.level}</span>
             <span className="topbar-version" aria-label={`Phiên bản ${APP_VERSION}`}>v{APP_VERSION}</span>
             <button type="button" className="help-button" aria-label={`Hướng dẫn: ${sectionLabels[section]}`} title="Hướng dẫn trang này" onClick={() => setShowHelp(true)}>?</button>
-            <button className={apiKey ? "ai-settings-button connected" : "ai-settings-button"} aria-label="Mở cài đặt chung" onClick={() => navigateToSection("settings")}>
-              <span className="ai-key-icon"><IllustrationIcon name="settings" /></span><span>{apiKey ? "Cài đặt" : "Thiết lập AI"}</span>
-            </button>
+            {section !== "settings" && (
+              <button className={apiKey ? "ai-settings-button connected" : "ai-settings-button"} aria-label="Mở cài đặt" onClick={() => navigateToSection("settings")}>
+                <span className="ai-key-icon"><IllustrationIcon name="settings" /></span><span className="wz-settings-label">{apiKey ? "Cài đặt" : "Thiết lập AI"}</span>
+              </button>
+            )}
           </div>
         </header>
-        <div className="content-wrap">
+        <div className={`content-wrap wz-page wz-page-${section}`}>
           {versionCheckStatus === "update-available" && (
             <aside className="update-available-banner" role="alert">
               <span>Đã có phiên bản mới v{latestVersion}. Tải lại ứng dụng để cập nhật.</span>
@@ -4223,15 +3567,13 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               <button type="button" className="button button-outline" onClick={() => setVersionCheckAttempt((attempt) => attempt + 1)}>Kiểm tra lại</button>
             </aside>
           )}
-          {progressLoaded && !apiKey && section !== "settings" && <section className="api-reminder"><span className="reminder-key-icon"><IllustrationIcon name="key" /></span><div><strong>Kết nối AI để bắt đầu học cùng Maya</strong><p>Thêm API key Google AI hoặc OpenAI trong Cài đặt. Key chỉ lưu trên thiết bị này.</p></div><button onClick={() => navigateToSection("settings")}>Thiết lập AI</button></section>}
-          {speechBusy && <p className="speech-status" role="status">Đang tạo giọng đọc AI…</p>}
           {speechError && <p className="error-message speech-status" role="alert">{speechError}</p>}
-          {speechNotice && <p className="speech-notice" role="status">{speechNotice}</p>}
           {section === "home" && renderHome()}
+          {section === "choose" && renderChoose()}
+          {section === "mode" && renderMode()}
           {section === "lessons" && renderLessons()}
-          {section === "practice" && <><div className="section-heading practice-heading"><div><span className="eyebrow">GIA SƯ AI · HỌC ONLINE</span><h2>Trò chuyện cùng Cô Maya</h2></div><button className="text-button" onClick={() => navigateToSection("profiles")}>Đổi lĩnh vực ↗</button></div>{renderPractice()}</>}
+          {section === "practice" && renderPractice()}
           {section === "placement" && renderPlacement()}
-          {section === "profiles" && renderProfiles()}
           {section === "progress" && renderProgress()}
           {section === "grammar" && renderGrammar()}
           {section === "library" && renderPersonalLibrary()}
@@ -4239,7 +3581,6 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         </div>
         <footer className="site-footer">Dành cho khoảnh khắc bạn nghĩ: “Mình làm được!” <span>✦</span> <span className="site-version">v{APP_VERSION}</span></footer>
       </section>
-      <nav className="mobile-nav">{nav.map((item) => <button key={item.id} className={section === item.id ? "mobile-nav-item selected" : "mobile-nav-item"} onClick={() => navigateToSection(item.id)}><span className="nav-icon"><IllustrationIcon name={item.icon} /></span><small>{item.label}</small></button>)}</nav>
     </main>
   );
 }

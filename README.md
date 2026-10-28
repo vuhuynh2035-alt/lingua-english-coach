@@ -22,9 +22,25 @@ Trong **Cài đặt**, bạn có thể điều chỉnh cỡ chữ từ 100% đ�
 
 Trong **Cài đặt**, bạn có thể chọn nền trắng với màu khung và điểm nhấn **xanh mint**, **xanh dương** hoặc **đỏ bordeaux**. Giao diện xanh mint ban đầu vẫn được giữ lại; lựa chọn được lưu trên thiết bị hiện tại.
 
-Khi chọn một **Lĩnh vực**, ứng dụng mở trang lựa chọn hai hình thức học: **Bài học offline** theo giáo trình hoặc **Gia sư AI online** để luyện hội thoại. Chọn lĩnh vực không tự động mở chat. Bài học chưa tải được hiển thị mờ và hướng dẫn vào **Cài đặt → Giáo trình offline**. Cài đặt được gom theo nhóm accordion, mỗi lần chỉ mở một nhóm; **Tài liệu cá nhân** nằm cùng nhóm giáo trình offline. Mục **Ngữ pháp** nằm trong danh sách **Lĩnh vực**.
+Ứng dụng đi theo từng trang: **Trang chào mừng → Chọn bài học → Chọn cách học → Bài học (Offline) hoặc Học với AI (Online)**. Trang chọn bài học có danh sách xổ xuống, mặc định là danh mục đang học lần trước; mục **Tiếng Anh ngữ pháp** nằm trong cùng danh sách. Nút **Quay lại**, **?** (hướng dẫn) và **Cài đặt** luôn ở thanh trên cùng.
 
-Trong giáo trình offline, hoàn thành mỗi bài cần đạt ít nhất 70%; hoàn thành toàn bộ bài của level để làm bài kiểm tra cuối level. Đạt ít nhất 90% bài kiểm tra cuối level sẽ mở level tiếp theo và cập nhật trình độ hiện tại. Điểm cao nhất và tiến độ được lưu trên thiết bị. Hiện repository chưa có các gói giáo trình JSON và audio để tải; giao diện sẽ báo rõ gói chưa sẵn sàng cho đến khi nội dung được bổ sung.
+Khi vào **Học với AI**, ứng dụng kiểm tra kết nối thật (thử lần lượt các key đã lưu và các mô hình dự phòng `gemini-2.5-flash` → `gemini-2.5-flash-lite` → `gemini-flash-latest`, rồi ghi nhớ cấu hình chạy được). Kết nối xong, nhân vật 3D (cô giáo, thầy giáo hoặc linh vật Cú Alex — chọn trong **Cài đặt → Gia sư AI đồng hành**) xuất hiện, tự chào, nêu mục tiêu buổi học và đưa ra tình huống phù hợp trình độ; nhân vật chớp mắt, đổi biểu cảm theo nội dung và nhép miệng khi đọc. Nếu không kết nối được, trang hiển thị nguyên nhân cụ thể (key bị từ chối, hết hạn mức, mạng, mô hình ngừng hỗ trợ) cùng nút **Thử lại**. Trong Cài đặt có nút **Kiểm tra kết nối AI**.
+
+## Giáo trình (từ v0.4.0)
+
+Giáo trình gồm 7 khóa, 88 bài, 880 câu hỏi, chia theo khung CEFR A1–B2: Giao tiếp hằng ngày (16 bài, khóa cốt lõi), Công sở, Du lịch, Công nghệ, Y khoa, Tài chính và Kỹ thuật lạnh (mỗi khóa 12 bài). Nội dung do Teacher AI tự biên soạn; danh mục chủ đề/ngữ pháp theo từng level tham chiếu khung CEFR của Hội đồng châu Âu và British Council/EAQUALS Core Inventory (chỉ tham khảo phân cấp, không sao chép nội dung có bản quyền).
+
+Mỗi bài có: hội thoại/bài đọc, từ vựng kèm câu ví dụ, điểm ngữ pháp, mẹo phát âm cho người Việt, nhiệm vụ luyện nói và bài kiểm tra 10 câu. Đạt **8/10** thì bài được tick hoàn thành và mở bài kế tiếp; hoàn thành mọi bài của level hiện tại sẽ nâng trình độ lên level sau. Lần đầu mở, giáo trình tự tải về thiết bị (IndexedDB) để học offline.
+
+Nội dung nằm trong `scripts/curriculum/<khóa>.py`. Sau khi sửa, chạy `python scripts/curriculum/build.py` để tạo lại `public/courses/*.json` (câu hỏi từ vựng được sinh tự động để đủ 10 câu; thứ tự đáp án được xáo trộn). Khi đổi nội dung, tăng `CURRICULUM_VERSION` trong `src/lib/course-library.ts` và `version` trong `build.py` để thiết bị tải lại bản mới.
+
+## Thầy/cô AI
+
+Thầy/cô AI dạy đúng bài tiếp theo trong giáo trình (có thể đổi bài ngay trong lớp), theo 5 bước: khởi động → dạy từ/ngữ pháp → luyện có hướng dẫn → nhiều tình huống tăng dần độ khó → kiểm tra và tổng kết. Cách dạy khác nhau theo level (A1 giải thích chủ yếu bằng tiếng Việt, B2 thảo luận hoàn toàn bằng tiếng Anh). Mỗi lỗi ngữ pháp/từ vựng/cấu trúc câu được ghi thành dòng ✏️ "câu sai" → "câu đúng" — lý do; khi trả lời bằng micro với Google Gemini, AI nghe trực tiếp giọng của bạn và ghi chú lỗi phát âm ở dòng 🔈. Sau vài lượt, AI ước lượng trình độ thực tế (nhãn "AI đánh giá").
+
+## Giọng luyện nghe
+
+Trong **Cài đặt → Giọng đọc & phát âm** chọn: nguồn giọng (Google AI ~22 giọng, OpenAI 11 giọng, hoặc giọng trên máy), 16 vùng miền (Mỹ chuẩn/miền Nam/New York, Canada, Anh RP/London/Manchester, Scotland, Ireland, Úc, New Zealand, Ấn Độ, Singapore, Philippines, Nam Phi, Nigeria), nam/nữ, giọng cụ thể, phong cách và tốc độ. Giọng AI đọc được mọi vùng miền vì vùng miền được truyền như chỉ dẫn cho mô hình; giọng trên máy chỉ có những vùng mà hệ điều hành đã cài. Âm thanh AI được lưu trên máy để nghe lại offline; nếu giọng AI lỗi, app tự chuyển sang giọng trên máy.
 
 Phiên bản ứng dụng được quản lý trong `package.json`; khi phát hành bản điều chỉnh, hãy tăng phiên bản theo SemVer. Các lệnh `npm run dev` và `npm run build` tự tạo `public/version.json` từ giá trị đó. Ứng dụng hiển thị phiên bản đang chạy ở thanh đầu trang và chân trang, đồng thời kiểm tra phiên bản đã triển khai để báo khi có bản mới.
 

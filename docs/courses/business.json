@@ -1,198 +1,2027 @@
 {
-  "id": "business",
-  "title": "Tiếng Anh công sở",
-  "version": "1.0.0",
-  "framework": "CEFR A1–B2",
-  "overview": "Giáo trình giao tiếp chuyên nghiệp: viết email, tham gia cuộc họp, đàm phán hợp đồng và báo cáo công việc.",
-  "contentLicense": "CC-BY-4.0 / Teacher AI Curated Curriculum",
-  "references": [
+ "id": "business",
+ "title": "Tiếng Anh công sở",
+ "version": "2.0.0",
+ "framework": "CEFR A1–B2",
+ "overview": "12 bài từ A1 đến B2 cho môi trường văn phòng: giới thiệu công việc, email, điện thoại, họp, thuyết trình và đàm phán.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
+ "references": [
+  {
+   "title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)",
+   "url": "https://www.coe.int/en/web/common-european-framework-reference-languages",
+   "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "British Council / EAQUALS – Core Inventory for General English",
+   "url": "https://www.teachingenglish.org.uk/article/british-council-eaquals-core-inventory-general-english",
+   "license": "Tham khảo danh mục chức năng, ngữ pháp, chủ đề theo level (không sao chép nội dung)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "business-a1-1",
+   "level": "A1",
+   "unit": "A1 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Giới thiệu công việc và đồng nghiệp",
+   "objective": "Nói tên công ty, chức vụ, phòng ban và giới thiệu đồng nghiệp.",
+   "reading": "Hello, I'm Thu. I work for ABC Logistics. I'm an accountant in the finance department. My office is on the fifth floor. This is my colleague, Peter. He's a sales manager. He works with customers every day. Our boss is Ms. Lee. She is very friendly.",
+   "vocabulary": [
     {
-      "title": "Teacher AI Official Curriculum - Tiếng Anh công sở",
-      "url": "https://github.com/vuhuynh2035-alt/lingua-english-coach",
-      "license": "CC-BY-4.0"
+     "term": "work for",
+     "definition": "làm việc cho (công ty)",
+     "example": "I work for a bank."
+    },
+    {
+     "term": "department",
+     "definition": "phòng ban",
+     "example": "She works in the sales department."
+    },
+    {
+     "term": "colleague",
+     "definition": "đồng nghiệp",
+     "example": "This is my colleague, Peter."
+    },
+    {
+     "term": "manager",
+     "definition": "quản lý",
+     "example": "He is a sales manager."
+    },
+    {
+     "term": "boss",
+     "definition": "sếp",
+     "example": "Our boss is very friendly."
+    },
+    {
+     "term": "floor",
+     "definition": "tầng",
+     "example": "My office is on the fifth floor."
     }
-  ],
-  "lessons": [
+   ],
+   "grammar": {
+    "title": "Giới từ: work for / work in / work as",
+    "explanation": "work for + công ty (work for Samsung), work in + phòng ban/lĩnh vực (work in marketing), work as + chức danh (work as an engineer).",
+    "examples": [
+     "I work for a small company.",
+     "She works in the HR department.",
+     "He works as a designer."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm: dePARTment, COLleague, MAnager",
+    "tip": "Ba từ công sở này hay bị nhấn sai. colleague đọc /ˈkɒliːg/, không đọc 'cô-li-gơ'.",
+    "words": [
+     "department",
+     "colleague",
+     "manager",
+     "accountant"
+    ]
+   },
+   "speakingTasks": [
+    "Giới thiệu công ty, phòng ban và chức vụ của bạn.",
+    "Giới thiệu một đồng nghiệp với thầy/cô."
+   ],
+   "questions": [
     {
-      "id": "business-a1-1",
-      "level": "A1",
-      "unit": "Bài 1 (A1)",
-      "title": "Gặp gỡ đồng nghiệp và khách hàng",
-      "objective": "Chào hỏi chuyên nghiệp trong môi trường văn phòng và trao đổi danh thiếp.",
-      "reading": "Good morning. I am David from the Marketing Department. Here is my business card. Let me know if you need any assistance regarding our new campaign.",
-      "vocabulary": [
-        {
-          "term": "Department",
-          "definition": "Phòng ban"
-        },
-        {
-          "term": "Business card",
-          "definition": "Danh thiếp"
-        },
-        {
-          "term": "Assistance",
-          "definition": "Sự hỗ trợ"
-        }
-      ],
-      "questions": [
-        {
-          "prompt": "Which department does David work in?",
-          "options": [
-            "Human Resources",
-            "Marketing",
-            "Accounting"
-          ],
-          "answer": 1,
-          "explanation": "David nói: 'I am David from the Marketing Department'."
-        },
-        {
-          "prompt": "What does David give to the listener?",
-          "options": [
-            "A report",
-            "His business card",
-            "A contract"
-          ],
-          "answer": 1,
-          "explanation": "David nói: 'Here is my business card'."
-        }
-      ],
-      "audioIds": []
+     "prompt": "What is Thu's job?",
+     "options": [
+      "Sales manager",
+      "Accountant",
+      "Boss"
+     ],
+     "answer": 1,
+     "explanation": "'I'm an accountant'."
     },
     {
-      "id": "business-a2-1",
-      "level": "A2",
-      "unit": "Bài 2 (A2)",
-      "title": "Viết email xác nhận cuộc họp",
-      "objective": "Soạn email ngắn gọn xác nhận thời gian, địa điểm và nội dung cuộc họp.",
-      "reading": "Dear Mr. Smith,\nThank you for your prompt response. I would like to confirm our meeting on Thursday at 2:00 PM in Conference Room B. Please find the attached agenda for your review.\nBest regards,\nHa Nguyen",
-      "vocabulary": [
-        {
-          "term": "Prompt response",
-          "definition": "Phản hồi nhanh chóng"
-        },
-        {
-          "term": "Confirm",
-          "definition": "Xác nhận"
-        },
-        {
-          "term": "Attached agenda",
-          "definition": "Chương trình họp đính kèm"
-        }
-      ],
-      "questions": [
-        {
-          "prompt": "When is the meeting scheduled?",
-          "options": [
-            "Friday at 10 AM",
-            "Thursday at 2:00 PM",
-            "Monday at 2:00 PM"
-          ],
-          "answer": 1,
-          "explanation": "Email nêu rõ: 'on Thursday at 2:00 PM'."
-        },
-        {
-          "prompt": "Where will the meeting take place?",
-          "options": [
-            "Room A",
-            "Conference Room B",
-            "Online only"
-          ],
-          "answer": 1,
-          "explanation": "Địa điểm là: 'in Conference Room B'."
-        }
-      ],
-      "audioIds": []
+     "prompt": "Which floor is Thu's office on?",
+     "options": [
+      "Fifth",
+      "First",
+      "Third"
+     ],
+     "answer": 0,
+     "explanation": "'on the fifth floor'."
     },
     {
-      "id": "business-b1-1",
-      "level": "B1",
-      "unit": "Bài 3 (B1)",
-      "title": "Báo cáo tiến độ dự án và giải quyết trở ngại",
-      "objective": "Trình bày các mốc dự án đã hoàn thành, sự cố phát sinh và hướng xử lý.",
-      "reading": "During the weekly review, the project lead announced that the team has completed phase one ahead of schedule. However, supplier delays might affect phase two unless alternate vendors are secured by Friday.",
-      "vocabulary": [
-        {
-          "term": "Ahead of schedule",
-          "definition": "Trước tiến độ dự kiến"
-        },
-        {
-          "term": "Supplier delay",
-          "definition": "Chậm trễ từ nhà cung cấp"
-        },
-        {
-          "term": "Alternate vendors",
-          "definition": "Các nhà cung ứng thay thế"
-        }
-      ],
-      "questions": [
-        {
-          "prompt": "What is the status of phase one?",
-          "options": [
-            "Delayed by two weeks",
-            "Completed ahead of schedule",
-            "Cancelled"
-          ],
-          "answer": 1,
-          "explanation": "Dự án: 'completed phase one ahead of schedule'."
-        },
-        {
-          "prompt": "What could affect phase two?",
-          "options": [
-            "Supplier delays",
-            "Lack of staff",
-            "Budget cuts"
-          ],
-          "answer": 0,
-          "explanation": "Nguyên nhân rủi ro: 'supplier delays might affect phase two'."
-        }
-      ],
-      "audioIds": []
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "I work in the sales department.",
+      "I work as the sales department.",
+      "I work for the sales department."
+     ],
+     "answer": 0,
+     "explanation": "Phòng ban dùng 'work in'."
     },
     {
-      "id": "business-b2-1",
-      "level": "B2",
-      "unit": "Bài 4 (B2)",
-      "title": "Đàm phán hợp đồng và điều khoản thanh toán",
-      "objective": "Thương lượng giá cả, điều khoản chiết khấu và quyền lợi đôi bên.",
-      "reading": "We appreciate your proposed terms; nevertheless, our company requires a minimum 10% volume discount for orders exceeding ten thousand units, alongside net-60 payment terms to accommodate cash flow requirements.",
-      "vocabulary": [
-        {
-          "term": "Volume discount",
-          "definition": "Chiết khấu theo số lượng lớn"
-        },
-        {
-          "term": "Payment terms",
-          "definition": "Điều khoản thanh toán"
-        },
-        {
-          "term": "Cash flow",
-          "definition": "Dòng tiền"
-        }
-      ],
-      "questions": [
-        {
-          "prompt": "What discount rate is requested?",
-          "options": [
-            "5%",
-            "At least 10%",
-            "20%"
-          ],
-          "answer": 1,
-          "explanation": "Bên mua yêu cầu: 'a minimum 10% volume discount'."
-        },
-        {
-          "prompt": "Why are net-60 payment terms needed?",
-          "options": [
-            "To delay indefinitely",
-            "To accommodate cash flow requirements",
-            "To cancel the contract"
-          ],
-          "answer": 1,
-          "explanation": "Mục đích là: 'to accommodate cash flow requirements'."
-        }
-      ],
-      "audioIds": []
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "She works in engineer.",
+      "She works as an engineer.",
+      "She works for an engineer job."
+     ],
+     "answer": 1,
+     "explanation": "Chức danh dùng 'work as'."
+    },
+    {
+     "prompt": "How do you introduce a co-worker?",
+     "options": [
+      "He is my colleague, Peter.",
+      "This is my colleague, Peter.",
+      "It is colleague Peter."
+     ],
+     "answer": 1,
+     "explanation": "'This is…' dùng để giới thiệu người khác."
+    },
+    {
+     "prompt": "Complete the sentence: I _____ a bank.",
+     "options": [
+      "manager",
+      "work for",
+      "colleague"
+     ],
+     "answer": 1,
+     "explanation": "“work for” nghĩa là “làm việc cho (công ty)”. Câu đầy đủ: I work for a bank."
+    },
+    {
+     "prompt": "What does “colleague” mean?",
+     "options": [
+      "đồng nghiệp",
+      "tầng",
+      "sếp"
+     ],
+     "answer": 0,
+     "explanation": "“colleague” = đồng nghiệp. Ví dụ: This is my colleague, Peter."
+    },
+    {
+     "prompt": "Complete the sentence: This is my _____, Peter.",
+     "options": [
+      "floor",
+      "colleague",
+      "boss"
+     ],
+     "answer": 1,
+     "explanation": "“colleague” nghĩa là “đồng nghiệp”. Câu đầy đủ: This is my colleague, Peter."
+    },
+    {
+     "prompt": "What does “boss” mean?",
+     "options": [
+      "tầng",
+      "sếp",
+      "quản lý"
+     ],
+     "answer": 1,
+     "explanation": "“boss” = sếp. Ví dụ: Our boss is very friendly."
+    },
+    {
+     "prompt": "Complete the sentence: She works in the sales _____.",
+     "options": [
+      "floor",
+      "department",
+      "boss"
+     ],
+     "answer": 1,
+     "explanation": "“department” nghĩa là “phòng ban”. Câu đầy đủ: She works in the sales department."
     }
-  ],
-  "audio": []
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-a1-2",
+   "level": "A1",
+   "unit": "A1 · Bài 2",
+   "category": "Từ vựng",
+   "title": "Đồ dùng văn phòng và lịch làm việc",
+   "objective": "Gọi tên đồ dùng văn phòng, nói về ngày giờ làm việc và lịch hẹn.",
+   "reading": "Our office opens at 8:30 from Monday to Friday. I usually check my emails first. I use a laptop, a printer and a notebook every day. On Tuesday afternoon we have a team meeting at 2 p.m. On Friday we finish early, at 4 o'clock. I never work on Sundays.",
+   "vocabulary": [
+    {
+     "term": "laptop",
+     "definition": "máy tính xách tay",
+     "example": "I use a laptop at work."
+    },
+    {
+     "term": "printer",
+     "definition": "máy in",
+     "example": "The printer is next to my desk."
+    },
+    {
+     "term": "check emails",
+     "definition": "kiểm tra email",
+     "example": "I check emails every morning."
+    },
+    {
+     "term": "meeting",
+     "definition": "cuộc họp",
+     "example": "We have a meeting at 2 p.m."
+    },
+    {
+     "term": "finish early",
+     "definition": "tan sớm",
+     "example": "We finish early on Fridays."
+    },
+    {
+     "term": "usually",
+     "definition": "thường xuyên",
+     "example": "I usually start work at nine."
+    }
+   ],
+   "grammar": {
+    "title": "Trạng từ tần suất",
+    "explanation": "always (100%) > usually > often > sometimes > rarely > never (0%). Đặt trước động từ thường (I usually check…) và sau to be (She is always on time).",
+    "examples": [
+     "I always arrive at 8:30.",
+     "We sometimes work late.",
+     "He is never late for meetings."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giờ giấc: a.m. / p.m., o'clock",
+    "tip": "Đọc 2 p.m. là 'two p-m' /tuː piː em/; 4 o'clock là /fɔːr əˈklɒk/. Nhấn rõ số giờ.",
+    "words": [
+     "o'clock",
+     "p.m.",
+     "Tuesday",
+     "Thursday"
+    ]
+   },
+   "speakingTasks": [
+    "Mô tả lịch làm việc một tuần của bạn với 3 trạng từ tần suất.",
+    "Hỏi thầy/cô: When do you usually have meetings?"
+   ],
+   "questions": [
+    {
+     "prompt": "What time does the office open?",
+     "options": [
+      "9:00",
+      "8:00",
+      "8:30"
+     ],
+     "answer": 2,
+     "explanation": "'opens at 8:30'."
+    },
+    {
+     "prompt": "When is the team meeting?",
+     "options": [
+      "Monday morning",
+      "Friday at 4",
+      "Tuesday at 2 p.m."
+     ],
+     "answer": 2,
+     "explanation": "'On Tuesday afternoon… at 2 p.m.'"
+    },
+    {
+     "prompt": "Choose the correct word order.",
+     "options": [
+      "I check usually emails.",
+      "I usually check emails.",
+      "Usually I check emails always."
+     ],
+     "answer": 1,
+     "explanation": "Trạng từ tần suất đứng trước động từ thường."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "She is on time always.",
+      "She always is on time.",
+      "She is always on time."
+     ],
+     "answer": 2,
+     "explanation": "Sau to be: is always."
+    },
+    {
+     "prompt": "Which word means 0% of the time?",
+     "options": [
+      "rarely",
+      "never",
+      "sometimes"
+     ],
+     "answer": 1,
+     "explanation": "never = không bao giờ."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ is next to my desk.",
+     "options": [
+      "meeting",
+      "printer",
+      "usually"
+     ],
+     "answer": 1,
+     "explanation": "“printer” nghĩa là “máy in”. Câu đầy đủ: The printer is next to my desk."
+    },
+    {
+     "prompt": "What does “meeting” mean?",
+     "options": [
+      "cuộc họp",
+      "máy tính xách tay",
+      "máy in"
+     ],
+     "answer": 0,
+     "explanation": "“meeting” = cuộc họp. Ví dụ: We have a meeting at 2 p.m."
+    },
+    {
+     "prompt": "Complete the sentence: We have a _____ at 2 p.m.",
+     "options": [
+      "printer",
+      "laptop",
+      "meeting"
+     ],
+     "answer": 2,
+     "explanation": "“meeting” nghĩa là “cuộc họp”. Câu đầy đủ: We have a meeting at 2 p.m."
+    },
+    {
+     "prompt": "What does “usually” mean?",
+     "options": [
+      "cuộc họp",
+      "thường xuyên",
+      "máy tính xách tay"
+     ],
+     "answer": 1,
+     "explanation": "“usually” = thường xuyên. Ví dụ: I usually start work at nine."
+    },
+    {
+     "prompt": "Complete the sentence: I _____ every morning.",
+     "options": [
+      "check emails",
+      "printer",
+      "finish early"
+     ],
+     "answer": 0,
+     "explanation": "“check emails” nghĩa là “kiểm tra email”. Câu đầy đủ: I check emails every morning."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-a1-3",
+   "level": "A1",
+   "unit": "A1 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Nhận và gọi điện thoại đơn giản",
+   "objective": "Trả lời điện thoại, hỏi gặp ai, nhận và để lại lời nhắn.",
+   "reading": "Receptionist: Good morning, Star Company. How can I help you?\nCaller: Hello. Can I speak to Mr. Brown, please?\nReceptionist: I'm sorry, he's in a meeting. Can I take a message?\nCaller: Yes, please. This is Hoa from Sun Travel. Can he call me back?\nReceptionist: Of course. What's your number?\nCaller: It's 0912 345 678.\nReceptionist: Thank you. I'll give him the message.",
+   "vocabulary": [
+    {
+     "term": "Can I speak to…?",
+     "definition": "Cho tôi gặp… được không?",
+     "example": "Can I speak to Ms. Lee, please?"
+    },
+    {
+     "term": "in a meeting",
+     "definition": "đang họp",
+     "example": "Sorry, she's in a meeting."
+    },
+    {
+     "term": "take a message",
+     "definition": "nhận lời nhắn",
+     "example": "Can I take a message?"
+    },
+    {
+     "term": "call back",
+     "definition": "gọi lại",
+     "example": "Can he call me back?"
+    },
+    {
+     "term": "This is…",
+     "definition": "Tôi là… (khi gọi điện)",
+     "example": "Hello, this is Hoa from Sun Travel."
+    },
+    {
+     "term": "number",
+     "definition": "số điện thoại",
+     "example": "What's your number?"
+    }
+   ],
+   "grammar": {
+    "title": "Can I / Can you để đề nghị và nhờ vả",
+    "explanation": "Can I…? để xin phép hoặc đề nghị (Can I take a message?). Can you…? để nhờ (Can you spell that?). Lịch sự hơn: Could you…?",
+    "examples": [
+     "Can I help you?",
+     "Can you call me back?",
+     "Could you spell your name, please?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc số điện thoại theo nhóm",
+    "tip": "Đọc từng chữ số, ngắt theo nhóm: 0912 / 345 / 678. Số 0 có thể đọc 'oh' hoặc 'zero'.",
+    "words": [
+     "zero",
+     "oh",
+     "double five",
+     "message"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai lễ tân: nhận cuộc gọi và ghi lại lời nhắn.",
+    "Gọi cho thầy/cô để hỏi gặp một người và để lại số điện thoại."
+   ],
+   "questions": [
+    {
+     "prompt": "Why can't Mr. Brown answer?",
+     "options": [
+      "He is on holiday.",
+      "He is sick.",
+      "He is in a meeting."
+     ],
+     "answer": 2,
+     "explanation": "'he's in a meeting'."
+    },
+    {
+     "prompt": "Who is calling?",
+     "options": [
+      "Mr. Brown",
+      "The receptionist",
+      "Hoa from Sun Travel"
+     ],
+     "answer": 2,
+     "explanation": "'This is Hoa from Sun Travel.'"
+    },
+    {
+     "prompt": "On the phone, how do you say who you are?",
+     "options": [
+      "This is Hoa.",
+      "Here is Hoa.",
+      "I am Hoa."
+     ],
+     "answer": 0,
+     "explanation": "Trên điện thoại dùng 'This is…'."
+    },
+    {
+     "prompt": "What does the caller want?",
+     "options": [
+      "A meeting room",
+      "An email",
+      "Mr. Brown to call back"
+     ],
+     "answer": 2,
+     "explanation": "'Can he call me back?'"
+    },
+    {
+     "prompt": "Choose the most polite request.",
+     "options": [
+      "Could you spell your name, please?",
+      "Spell name now.",
+      "Spell your name."
+     ],
+     "answer": 0,
+     "explanation": "Could you…, please? là lịch sự nhất."
+    },
+    {
+     "prompt": "Complete the sentence: What's your _____?",
+     "options": [
+      "number",
+      "call back",
+      "This is…"
+     ],
+     "answer": 0,
+     "explanation": "“number” nghĩa là “số điện thoại”. Câu đầy đủ: What's your number?"
+    },
+    {
+     "prompt": "What does “number” mean?",
+     "options": [
+      "Tôi là… (khi gọi điện)",
+      "gọi lại",
+      "số điện thoại"
+     ],
+     "answer": 2,
+     "explanation": "“number” = số điện thoại. Ví dụ: What's your number?"
+    },
+    {
+     "prompt": "Complete the sentence: Can I _____?",
+     "options": [
+      "take a message",
+      "This is…",
+      "in a meeting"
+     ],
+     "answer": 0,
+     "explanation": "“take a message” nghĩa là “nhận lời nhắn”. Câu đầy đủ: Can I take a message?"
+    },
+    {
+     "prompt": "What does “Can I speak to…?” mean?",
+     "options": [
+      "Cho tôi gặp… được không?",
+      "đang họp",
+      "nhận lời nhắn"
+     ],
+     "answer": 0,
+     "explanation": "“Can I speak to…?” = Cho tôi gặp… được không?. Ví dụ: Can I speak to Ms. Lee, please?"
+    },
+    {
+     "prompt": "Complete the sentence: Sorry, she's _____.",
+     "options": [
+      "take a message",
+      "call back",
+      "in a meeting"
+     ],
+     "answer": 2,
+     "explanation": "“in a meeting” nghĩa là “đang họp”. Câu đầy đủ: Sorry, she's in a meeting."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-a2-1",
+   "level": "A2",
+   "unit": "A2 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Viết email công việc ngắn",
+   "objective": "Viết email hỏi thông tin, sắp xếp lịch hẹn và đính kèm tài liệu.",
+   "reading": "Subject: Meeting next week\nHi Daniel,\nI hope you are well. I'd like to arrange a meeting to discuss the new project. Are you available on Wednesday at 10 a.m.? If not, please let me know a better time. I've attached the project plan.\nBest regards,\nLinh",
+   "vocabulary": [
+    {
+     "term": "Subject",
+     "definition": "Tiêu đề (email)",
+     "example": "Subject: Meeting next week"
+    },
+    {
+     "term": "arrange a meeting",
+     "definition": "sắp xếp cuộc họp",
+     "example": "I'd like to arrange a meeting."
+    },
+    {
+     "term": "available",
+     "definition": "rảnh, có thể tham gia",
+     "example": "Are you available on Wednesday?"
+    },
+    {
+     "term": "let me know",
+     "definition": "cho tôi biết",
+     "example": "Please let me know a better time."
+    },
+    {
+     "term": "attach",
+     "definition": "đính kèm",
+     "example": "I've attached the project plan."
+    },
+    {
+     "term": "Best regards",
+     "definition": "Trân trọng (kết thư)",
+     "example": "Best regards, Linh"
+    }
+   ],
+   "grammar": {
+    "title": "I'd like to… để nêu mục đích lịch sự",
+    "explanation": "I'd like to + V = I would like to: cách nói lịch sự hơn 'I want to'. Dùng mở đầu email để nêu mục đích.",
+    "examples": [
+     "I'd like to confirm our meeting.",
+     "I'd like to ask about the price.",
+     "We'd like to invite you to our event."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm /eɪ/ trong available, arrange",
+    "tip": "available /əˈveɪləbl/ và arrange /əˈreɪnʤ/ — âm /eɪ/ là 'ây', trọng âm rơi vào âm tiết thứ hai.",
+    "words": [
+     "available",
+     "arrange",
+     "subject",
+     "attached"
+    ]
+   },
+   "speakingTasks": [
+    "Đọc to một email bạn tự soạn để hẹn họp với khách hàng.",
+    "Thầy/cô trả lời email — bạn xác nhận hoặc đề xuất giờ khác."
+   ],
+   "questions": [
+    {
+     "prompt": "Why is Linh writing?",
+     "options": [
+      "To arrange a meeting",
+      "To cancel a meeting",
+      "To send an invoice"
+     ],
+     "answer": 0,
+     "explanation": "'I'd like to arrange a meeting'."
+    },
+    {
+     "prompt": "What did Linh attach?",
+     "options": [
+      "A photo",
+      "A contract",
+      "The project plan"
+     ],
+     "answer": 2,
+     "explanation": "'I've attached the project plan.'"
+    },
+    {
+     "prompt": "Which closing is suitable for a work email?",
+     "options": [
+      "Best regards, Linh",
+      "Love, Linh",
+      "Bye bye"
+     ],
+     "answer": 0,
+     "explanation": "Best regards dùng phổ biến trong công việc."
+    },
+    {
+     "prompt": "Choose the polite sentence.",
+     "options": [
+      "I'd like to arrange a meeting.",
+      "Give me a meeting.",
+      "I want a meeting."
+     ],
+     "answer": 0,
+     "explanation": "I'd like to… lịch sự hơn I want."
+    },
+    {
+     "prompt": "“Are you available on Wednesday?” asks if Daniel…",
+     "options": [
+      "has the plan",
+      "is free on Wednesday",
+      "is sick"
+     ],
+     "answer": 1,
+     "explanation": "available = rảnh."
+    },
+    {
+     "prompt": "Complete the sentence: I'd like to _____.",
+     "options": [
+      "Best regards",
+      "let me know",
+      "arrange a meeting"
+     ],
+     "answer": 2,
+     "explanation": "“arrange a meeting” nghĩa là “sắp xếp cuộc họp”. Câu đầy đủ: I'd like to arrange a meeting."
+    },
+    {
+     "prompt": "What does “let me know” mean?",
+     "options": [
+      "sắp xếp cuộc họp",
+      "cho tôi biết",
+      "Trân trọng (kết thư)"
+     ],
+     "answer": 1,
+     "explanation": "“let me know” = cho tôi biết. Ví dụ: Please let me know a better time."
+    },
+    {
+     "prompt": "Complete the sentence: _____, Linh",
+     "options": [
+      "arrange a meeting",
+      "attach",
+      "Best regards"
+     ],
+     "answer": 2,
+     "explanation": "“Best regards” nghĩa là “Trân trọng (kết thư)”. Câu đầy đủ: Best regards, Linh"
+    },
+    {
+     "prompt": "What does “arrange a meeting” mean?",
+     "options": [
+      "cho tôi biết",
+      "sắp xếp cuộc họp",
+      "Trân trọng (kết thư)"
+     ],
+     "answer": 1,
+     "explanation": "“arrange a meeting” = sắp xếp cuộc họp. Ví dụ: I'd like to arrange a meeting."
+    },
+    {
+     "prompt": "Complete the sentence: _____: Meeting next week",
+     "options": [
+      "attach",
+      "available",
+      "Subject"
+     ],
+     "answer": 2,
+     "explanation": "“Subject” nghĩa là “Tiêu đề (email)”. Câu đầy đủ: Subject: Meeting next week"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-a2-2",
+   "level": "A2",
+   "unit": "A2 · Bài 2",
+   "category": "Ngữ pháp",
+   "title": "Tiến độ dự án",
+   "objective": "Báo cáo việc đang làm và đã xong bằng hiện tại tiếp diễn và hiện tại hoàn thành.",
+   "reading": "Manager: How's the website project going?\nDuc: It's going well. We've finished the design, and the developers are building the homepage now.\nManager: Have you tested the payment system yet?\nDuc: Not yet. We're going to test it next week.\nManager: Great. Have you sent the report to the client?\nDuc: Yes, I've already sent it.",
+   "vocabulary": [
+    {
+     "term": "How's… going?",
+     "definition": "… tiến triển thế nào?",
+     "example": "How's the project going?"
+    },
+    {
+     "term": "finish",
+     "definition": "hoàn thành",
+     "example": "We've finished the design."
+    },
+    {
+     "term": "test",
+     "definition": "kiểm thử",
+     "example": "We will test the system next week."
+    },
+    {
+     "term": "yet",
+     "definition": "chưa (câu hỏi/phủ định)",
+     "example": "Have you sent it yet?"
+    },
+    {
+     "term": "already",
+     "definition": "đã… rồi",
+     "example": "I've already sent the report."
+    },
+    {
+     "term": "client",
+     "definition": "khách hàng",
+     "example": "The client liked our design."
+    }
+   ],
+   "grammar": {
+    "title": "Hiện tại hoàn thành với already / yet / just",
+    "explanation": "already (đã rồi) đứng giữa câu khẳng định; yet (chưa) ở cuối câu hỏi và phủ định; just (vừa mới). Hiện tại tiếp diễn cho việc đang làm: are building.",
+    "examples": [
+     "I've already finished the report.",
+     "Have you called the client yet?",
+     "We haven't tested it yet."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nhấn mạnh yet / already",
+    "tip": "'Not YET' nhấn mạnh và hơi kéo dài. 'I've alREADY sent it' nhấn âm tiết thứ hai.",
+    "words": [
+     "already",
+     "yet",
+     "finished",
+     "report"
+    ]
+   },
+   "speakingTasks": [
+    "Báo cáo tiến độ một công việc của bạn: đã xong gì, đang làm gì, chưa làm gì.",
+    "Thầy/cô là sếp — trả lời các câu hỏi 'Have you… yet?'"
+   ],
+   "questions": [
+    {
+     "prompt": "What have they finished?",
+     "options": [
+      "The design",
+      "The homepage",
+      "The tests"
+     ],
+     "answer": 0,
+     "explanation": "'We've finished the design'."
+    },
+    {
+     "prompt": "What are the developers doing now?",
+     "options": [
+      "Writing the report",
+      "Testing payments",
+      "Building the homepage"
+     ],
+     "answer": 2,
+     "explanation": "'are building the homepage now'."
+    },
+    {
+     "prompt": "Has the report been sent?",
+     "options": [
+      "Not yet.",
+      "Next week.",
+      "Yes, already."
+     ],
+     "answer": 2,
+     "explanation": "'I've already sent it.'"
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "I've finished it yet.",
+      "Have you finished it yet?",
+      "I've yet finished it."
+     ],
+     "answer": 1,
+     "explanation": "yet dùng ở cuối câu hỏi."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "We already have sent it.",
+      "We've sent already it.",
+      "We've already sent it."
+     ],
+     "answer": 2,
+     "explanation": "have + already + V3."
+    },
+    {
+     "prompt": "Complete the sentence: We've _____ed the design.",
+     "options": [
+      "client",
+      "finish",
+      "already"
+     ],
+     "answer": 1,
+     "explanation": "“finish” nghĩa là “hoàn thành”. Câu đầy đủ: We've finished the design."
+    },
+    {
+     "prompt": "What does “test” mean?",
+     "options": [
+      "kiểm thử",
+      "hoàn thành",
+      "khách hàng"
+     ],
+     "answer": 0,
+     "explanation": "“test” = kiểm thử. Ví dụ: We will test the system next week."
+    },
+    {
+     "prompt": "Complete the sentence: Have you sent it _____?",
+     "options": [
+      "finish",
+      "client",
+      "yet"
+     ],
+     "answer": 2,
+     "explanation": "“yet” nghĩa là “chưa (câu hỏi/phủ định)”. Câu đầy đủ: Have you sent it yet?"
+    },
+    {
+     "prompt": "What does “client” mean?",
+     "options": [
+      "hoàn thành",
+      "đã… rồi",
+      "khách hàng"
+     ],
+     "answer": 2,
+     "explanation": "“client” = khách hàng. Ví dụ: The client liked our design."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ liked our design.",
+     "options": [
+      "finish",
+      "client",
+      "already"
+     ],
+     "answer": 1,
+     "explanation": "“client” nghĩa là “khách hàng”. Câu đầy đủ: The client liked our design."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-a2-3",
+   "level": "A2",
+   "unit": "A2 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Đặt lịch, dời lịch và xin lỗi",
+   "objective": "Đổi giờ hẹn, giải thích lý do, xin lỗi và đề xuất thời gian khác.",
+   "reading": "Kim: Hi Mark, I'm really sorry, but I need to reschedule our meeting on Thursday.\nMark: No problem. What happened?\nKim: Something urgent has come up with a client.\nMark: I see. When would suit you?\nKim: Would Friday morning be OK?\nMark: Friday at nine works for me.\nKim: Perfect. Thanks for being so flexible.",
+   "vocabulary": [
+    {
+     "term": "reschedule",
+     "definition": "dời lịch",
+     "example": "Can we reschedule the meeting?"
+    },
+    {
+     "term": "urgent",
+     "definition": "khẩn cấp",
+     "example": "Something urgent has come up."
+    },
+    {
+     "term": "come up",
+     "definition": "xảy ra (bất ngờ)",
+     "example": "A problem has come up."
+    },
+    {
+     "term": "suit",
+     "definition": "phù hợp (với ai)",
+     "example": "When would suit you?"
+    },
+    {
+     "term": "works for me",
+     "definition": "phù hợp với tôi",
+     "example": "Nine o'clock works for me."
+    },
+    {
+     "term": "flexible",
+     "definition": "linh hoạt",
+     "example": "Thanks for being so flexible."
+    }
+   ],
+   "grammar": {
+    "title": "Would / Could để hỏi lịch sự",
+    "explanation": "Would + chủ ngữ + be OK? / Could we…? lịch sự hơn Can. Xin lỗi kèm lý do: I'm sorry, but… + lý do.",
+    "examples": [
+     "Would Friday be OK?",
+     "Could we meet in the afternoon?",
+     "I'm sorry, but I have another appointment."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm: RE-schedule, UR-gent, FLEX-ible",
+    "tip": "reschedule có thể đọc /ˌriːˈʃedjuːl/ (Anh) hoặc /ˌriːˈskeʤuːl/ (Mỹ) — cả hai đều đúng.",
+    "words": [
+     "reschedule",
+     "urgent",
+     "flexible",
+     "appointment"
+    ]
+   },
+   "speakingTasks": [
+    "Gọi cho thầy/cô để dời một cuộc hẹn, đưa lý do và đề xuất giờ mới.",
+    "Thầy/cô từ chối giờ đầu tiên — bạn đề xuất giờ khác."
+   ],
+   "questions": [
+    {
+     "prompt": "Why does Kim need to reschedule?",
+     "options": [
+      "Something urgent with a client",
+      "She forgot.",
+      "She is ill."
+     ],
+     "answer": 0,
+     "explanation": "'Something urgent has come up with a client.'"
+    },
+    {
+     "prompt": "When is the new meeting?",
+     "options": [
+      "Thursday",
+      "Monday",
+      "Friday at nine"
+     ],
+     "answer": 2,
+     "explanation": "'Friday at nine works for me.'"
+    },
+    {
+     "prompt": "“When would suit you?” asks…",
+     "options": [
+      "what clothes to wear",
+      "what time is good for you",
+      "where to meet"
+     ],
+     "answer": 1,
+     "explanation": "suit = phù hợp (thời gian)."
+    },
+    {
+     "prompt": "Choose the polite request.",
+     "options": [
+      "Change the meeting.",
+      "You change the meeting.",
+      "Could we change the meeting?"
+     ],
+     "answer": 2,
+     "explanation": "Could we…? là lịch sự."
+    },
+    {
+     "prompt": "Choose the correct apology.",
+     "options": [
+      "Sorry, but I have another appointment.",
+      "I sorry, but busy.",
+      "Sorry, I busy."
+     ],
+     "answer": 0,
+     "explanation": "Câu đầy đủ chủ ngữ và động từ."
+    },
+    {
+     "prompt": "Complete the sentence: A problem has _____.",
+     "options": [
+      "suit",
+      "come up",
+      "flexible"
+     ],
+     "answer": 1,
+     "explanation": "“come up” nghĩa là “xảy ra (bất ngờ)”. Câu đầy đủ: A problem has come up."
+    },
+    {
+     "prompt": "What does “urgent” mean?",
+     "options": [
+      "khẩn cấp",
+      "linh hoạt",
+      "phù hợp (với ai)"
+     ],
+     "answer": 0,
+     "explanation": "“urgent” = khẩn cấp. Ví dụ: Something urgent has come up."
+    },
+    {
+     "prompt": "Complete the sentence: Something _____ has come up.",
+     "options": [
+      "flexible",
+      "suit",
+      "urgent"
+     ],
+     "answer": 2,
+     "explanation": "“urgent” nghĩa là “khẩn cấp”. Câu đầy đủ: Something urgent has come up."
+    },
+    {
+     "prompt": "What does “flexible” mean?",
+     "options": [
+      "phù hợp (với ai)",
+      "linh hoạt",
+      "dời lịch"
+     ],
+     "answer": 1,
+     "explanation": "“flexible” = linh hoạt. Ví dụ: Thanks for being so flexible."
+    },
+    {
+     "prompt": "Complete the sentence: Nine o'clock _____.",
+     "options": [
+      "works for me",
+      "reschedule",
+      "come up"
+     ],
+     "answer": 0,
+     "explanation": "“works for me” nghĩa là “phù hợp với tôi”. Câu đầy đủ: Nine o'clock works for me."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-b1-1",
+   "level": "B1",
+   "unit": "B1 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Tham gia và điều hành cuộc họp",
+   "objective": "Mở đầu cuộc họp, xin ý kiến, ngắt lời lịch sự và tóm tắt kết luận.",
+   "reading": "Chair: Right, let's get started. The aim of today's meeting is to agree on the marketing budget. Anna, could you give us an update?\nAnna: Sure. We've spent sixty percent of the budget so far.\nBen: Sorry to interrupt, but does that include the online ads?\nAnna: Yes, it does.\nChair: Thanks. So, to sum up, we'll keep the current budget and review it again next month. Does anyone have anything to add?",
+   "vocabulary": [
+    {
+     "term": "let's get started",
+     "definition": "chúng ta bắt đầu nhé",
+     "example": "OK, let's get started."
+    },
+    {
+     "term": "the aim of",
+     "definition": "mục tiêu của",
+     "example": "The aim of this meeting is to decide the budget."
+    },
+    {
+     "term": "give an update",
+     "definition": "cập nhật tình hình",
+     "example": "Could you give us an update?"
+    },
+    {
+     "term": "sorry to interrupt",
+     "definition": "xin lỗi vì ngắt lời",
+     "example": "Sorry to interrupt, but I have a question."
+    },
+    {
+     "term": "to sum up",
+     "definition": "tóm lại",
+     "example": "To sum up, we will keep the budget."
+    },
+    {
+     "term": "review",
+     "definition": "xem xét lại",
+     "example": "We'll review it next month."
+    }
+   ],
+   "grammar": {
+    "title": "Câu hỏi đuôi và câu hỏi gián tiếp",
+    "explanation": "Câu hỏi gián tiếp lịch sự hơn: Could you tell me what the budget is? (không đảo trợ động từ sau từ hỏi). Câu hỏi đuôi để xác nhận: That includes ads, doesn't it?",
+    "examples": [
+     "Could you tell me when the deadline is?",
+     "Do you know who is responsible?",
+     "We agreed on this, didn't we?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Ngữ điệu câu hỏi đuôi",
+    "tip": "Xuống giọng ở đuôi khi chắc chắn và muốn xác nhận ('doesn't it↘'), lên giọng khi thật sự hỏi ('doesn't it↗').",
+    "words": [
+     "interrupt",
+     "update",
+     "percent",
+     "budget"
+    ]
+   },
+   "speakingTasks": [
+    "Bạn chủ trì một cuộc họp ngắn: mở đầu, hỏi ý kiến, tóm tắt.",
+    "Thầy/cô sẽ ngắt lời — hãy xử lý lịch sự."
+   ],
+   "questions": [
+    {
+     "prompt": "What is the aim of the meeting?",
+     "options": [
+      "To agree on the marketing budget",
+      "To plan a party",
+      "To hire staff"
+     ],
+     "answer": 0,
+     "explanation": "'to agree on the marketing budget'."
+    },
+    {
+     "prompt": "How much of the budget has been spent?",
+     "options": [
+      "Forty percent",
+      "All of it",
+      "Sixty percent"
+     ],
+     "answer": 2,
+     "explanation": "'We've spent sixty percent'."
+    },
+    {
+     "prompt": "Which phrase interrupts politely?",
+     "options": [
+      "Wait!",
+      "Stop talking.",
+      "Sorry to interrupt, but…"
+     ],
+     "answer": 2,
+     "explanation": "'Sorry to interrupt, but…'"
+    },
+    {
+     "prompt": "Choose the correct indirect question.",
+     "options": [
+      "Could you tell me when the deadline is?",
+      "Could you tell me when is the deadline?",
+      "Could you tell me the deadline is when?"
+     ],
+     "answer": 0,
+     "explanation": "Câu hỏi gián tiếp không đảo: when the deadline is."
+    },
+    {
+     "prompt": "What did they decide?",
+     "options": [
+      "Increase the budget",
+      "Keep the budget and review next month",
+      "Cancel online ads"
+     ],
+     "answer": 1,
+     "explanation": "'we'll keep the current budget and review it again next month'."
+    },
+    {
+     "prompt": "Complete the sentence: _____ this meeting is to decide the budget.",
+     "options": [
+      "the aim of",
+      "let's get started",
+      "sorry to interrupt"
+     ],
+     "answer": 0,
+     "explanation": "“the aim of” nghĩa là “mục tiêu của”. Câu đầy đủ: The aim of this meeting is to decide the budget."
+    },
+    {
+     "prompt": "What does “to sum up” mean?",
+     "options": [
+      "tóm lại",
+      "chúng ta bắt đầu nhé",
+      "xin lỗi vì ngắt lời"
+     ],
+     "answer": 0,
+     "explanation": "“to sum up” = tóm lại. Ví dụ: To sum up, we will keep the budget."
+    },
+    {
+     "prompt": "Complete the sentence: _____, but I have a question.",
+     "options": [
+      "to sum up",
+      "let's get started",
+      "sorry to interrupt"
+     ],
+     "answer": 2,
+     "explanation": "“sorry to interrupt” nghĩa là “xin lỗi vì ngắt lời”. Câu đầy đủ: Sorry to interrupt, but I have a question."
+    },
+    {
+     "prompt": "What does “give an update” mean?",
+     "options": [
+      "cập nhật tình hình",
+      "chúng ta bắt đầu nhé",
+      "xin lỗi vì ngắt lời"
+     ],
+     "answer": 0,
+     "explanation": "“give an update” = cập nhật tình hình. Ví dụ: Could you give us an update?"
+    },
+    {
+     "prompt": "Complete the sentence: OK, _____.",
+     "options": [
+      "the aim of",
+      "give an update",
+      "let's get started"
+     ],
+     "answer": 2,
+     "explanation": "“let's get started” nghĩa là “chúng ta bắt đầu nhé”. Câu đầy đủ: OK, let's get started."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-b1-2",
+   "level": "B1",
+   "unit": "B1 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Thuyết trình về số liệu",
+   "objective": "Mô tả xu hướng, biểu đồ và so sánh số liệu khi thuyết trình.",
+   "reading": "Good morning, everyone. Today I'd like to talk about our sales results. As you can see from this chart, sales rose steadily in the first quarter. In April, they dropped slightly because of a supply problem. However, they recovered quickly and reached a peak of two million dollars in June. Overall, our sales were fifteen percent higher than last year.",
+   "vocabulary": [
+    {
+     "term": "as you can see",
+     "definition": "như các bạn có thể thấy",
+     "example": "As you can see, profits went up."
+    },
+    {
+     "term": "rise steadily",
+     "definition": "tăng đều",
+     "example": "Sales rose steadily."
+    },
+    {
+     "term": "drop slightly",
+     "definition": "giảm nhẹ",
+     "example": "Costs dropped slightly in May."
+    },
+    {
+     "term": "recover",
+     "definition": "phục hồi",
+     "example": "The market recovered quickly."
+    },
+    {
+     "term": "reach a peak",
+     "definition": "đạt đỉnh",
+     "example": "Sales reached a peak in June."
+    },
+    {
+     "term": "overall",
+     "definition": "nhìn chung",
+     "example": "Overall, it was a good year."
+    }
+   ],
+   "grammar": {
+    "title": "Động từ + trạng từ mô tả xu hướng",
+    "explanation": "Tăng: rise, increase, go up. Giảm: fall, drop, decrease. Mức độ: slightly (nhẹ), steadily (đều), sharply/dramatically (mạnh). Danh từ: a slight rise, a sharp fall.",
+    "examples": [
+     "Profits increased sharply in March.",
+     "There was a slight drop in April.",
+     "Costs remained stable."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc số lớn và phần trăm",
+    "tip": "2,000,000 = two million (không thêm s). 15% = fifteen percent, nhấn per-CENT.",
+    "words": [
+     "million",
+     "percent",
+     "quarter",
+     "steadily"
+    ]
+   },
+   "speakingTasks": [
+    "Mô tả một biểu đồ (tưởng tượng) về doanh số 6 tháng của công ty bạn.",
+    "Trả lời câu hỏi của thầy/cô về nguyên nhân tăng giảm."
+   ],
+   "questions": [
+    {
+     "prompt": "What happened to sales in April?",
+     "options": [
+      "They dropped slightly.",
+      "They rose sharply.",
+      "They stayed the same."
+     ],
+     "answer": 0,
+     "explanation": "'In April, they dropped slightly'."
+    },
+    {
+     "prompt": "Why did sales drop?",
+     "options": [
+      "Bad weather",
+      "New competitors",
+      "A supply problem"
+     ],
+     "answer": 2,
+     "explanation": "'because of a supply problem'."
+    },
+    {
+     "prompt": "When did sales reach a peak?",
+     "options": [
+      "June",
+      "April",
+      "March"
+     ],
+     "answer": 0,
+     "explanation": "'reached a peak… in June'."
+    },
+    {
+     "prompt": "Choose the correct phrase.",
+     "options": [
+      "two million dollars",
+      "two million of dollars",
+      "two millions dollars"
+     ],
+     "answer": 0,
+     "explanation": "million không thêm s khi có số đứng trước."
+    },
+    {
+     "prompt": "“Sales increased sharply” means sales went up…",
+     "options": [
+      "a lot and quickly",
+      "a little",
+      "slowly"
+     ],
+     "answer": 0,
+     "explanation": "sharply = mạnh, nhanh."
+    },
+    {
+     "prompt": "Complete the sentence: _____, it was a good year.",
+     "options": [
+      "recover",
+      "overall",
+      "rise steadily"
+     ],
+     "answer": 1,
+     "explanation": "“overall” nghĩa là “nhìn chung”. Câu đầy đủ: Overall, it was a good year."
+    },
+    {
+     "prompt": "What does “overall” mean?",
+     "options": [
+      "nhìn chung",
+      "phục hồi",
+      "tăng đều"
+     ],
+     "answer": 0,
+     "explanation": "“overall” = nhìn chung. Ví dụ: Overall, it was a good year."
+    },
+    {
+     "prompt": "Complete the sentence: _____, profits went up.",
+     "options": [
+      "reach a peak",
+      "rise steadily",
+      "as you can see"
+     ],
+     "answer": 2,
+     "explanation": "“as you can see” nghĩa là “như các bạn có thể thấy”. Câu đầy đủ: As you can see, profits went up."
+    },
+    {
+     "prompt": "What does “recover” mean?",
+     "options": [
+      "phục hồi",
+      "nhìn chung",
+      "tăng đều"
+     ],
+     "answer": 0,
+     "explanation": "“recover” = phục hồi. Ví dụ: The market recovered quickly."
+    },
+    {
+     "prompt": "Complete the sentence: The market _____ed quickly.",
+     "options": [
+      "rise steadily",
+      "overall",
+      "recover"
+     ],
+     "answer": 2,
+     "explanation": "“recover” nghĩa là “phục hồi”. Câu đầy đủ: The market recovered quickly."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-b1-3",
+   "level": "B1",
+   "unit": "B1 · Bài 3",
+   "category": "Từ vựng",
+   "title": "Phỏng vấn xin việc",
+   "objective": "Trả lời câu hỏi phỏng vấn về điểm mạnh, kinh nghiệm và mục tiêu nghề nghiệp.",
+   "reading": "Interviewer: Can you tell me a little about yourself?\nCandidate: Certainly. I've worked in customer service for four years. I'm good at solving problems and working under pressure.\nInterviewer: What is your greatest weakness?\nCandidate: I sometimes take on too many tasks. I've learned to prioritise and delegate.\nInterviewer: Where do you see yourself in five years?\nCandidate: I hope to be leading a small team.",
+   "vocabulary": [
+    {
+     "term": "strength",
+     "definition": "điểm mạnh",
+     "example": "My main strength is communication."
+    },
+    {
+     "term": "weakness",
+     "definition": "điểm yếu",
+     "example": "My weakness is public speaking."
+    },
+    {
+     "term": "under pressure",
+     "definition": "dưới áp lực",
+     "example": "I work well under pressure."
+    },
+    {
+     "term": "take on",
+     "definition": "nhận (nhiệm vụ)",
+     "example": "I sometimes take on too many tasks."
+    },
+    {
+     "term": "prioritise",
+     "definition": "ưu tiên",
+     "example": "I've learned to prioritise my tasks."
+    },
+    {
+     "term": "delegate",
+     "definition": "giao việc",
+     "example": "A good manager knows how to delegate."
+    }
+   ],
+   "grammar": {
+    "title": "be good at + V-ing / danh từ",
+    "explanation": "Sau giới từ (at, in, of) động từ phải ở dạng V-ing: good at solving problems, interested in learning. Các cấu trúc tương tự: experienced in, responsible for.",
+    "examples": [
+     "I'm good at working with people.",
+     "She is responsible for training new staff.",
+     "I'm interested in learning new skills."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nối âm và trọng âm câu",
+    "tip": "Nhấn các từ nội dung: I'm GOOD at SOLVing PROBlems. Các từ chức năng (at, a, to) đọc nhẹ, lướt.",
+    "words": [
+     "strength",
+     "weakness",
+     "prioritise",
+     "delegate"
+    ]
+   },
+   "speakingTasks": [
+    "Trả lời câu hỏi: Tell me about yourself (khoảng 5 câu).",
+    "Thầy/cô phỏng vấn bạn với 3 câu hỏi — trả lời theo cấu trúc STAR."
+   ],
+   "questions": [
+    {
+     "prompt": "How long has the candidate worked in customer service?",
+     "options": [
+      "Five years",
+      "Two years",
+      "Four years"
+     ],
+     "answer": 2,
+     "explanation": "'I've worked in customer service for four years.'"
+    },
+    {
+     "prompt": "What is the candidate's weakness?",
+     "options": [
+      "Taking on too many tasks",
+      "Being late",
+      "Poor English"
+     ],
+     "answer": 0,
+     "explanation": "'I sometimes take on too many tasks.'"
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "I'm good at solve problems.",
+      "I'm good in solve problems.",
+      "I'm good at solving problems."
+     ],
+     "answer": 2,
+     "explanation": "good at + V-ing."
+    },
+    {
+     "prompt": "Where does the candidate see themself in five years?",
+     "options": [
+      "Leading a small team",
+      "Changing career",
+      "Retiring"
+     ],
+     "answer": 0,
+     "explanation": "'I hope to be leading a small team.'"
+    },
+    {
+     "prompt": "“Delegate” means…",
+     "options": [
+      "give tasks to others",
+      "quit a job",
+      "work alone"
+     ],
+     "answer": 0,
+     "explanation": "delegate = giao việc cho người khác."
+    },
+    {
+     "prompt": "Complete the sentence: I've learned to _____ my tasks.",
+     "options": [
+      "prioritise",
+      "delegate",
+      "strength"
+     ],
+     "answer": 0,
+     "explanation": "“prioritise” nghĩa là “ưu tiên”. Câu đầy đủ: I've learned to prioritise my tasks."
+    },
+    {
+     "prompt": "What does “strength” mean?",
+     "options": [
+      "điểm mạnh",
+      "ưu tiên",
+      "giao việc"
+     ],
+     "answer": 0,
+     "explanation": "“strength” = điểm mạnh. Ví dụ: My main strength is communication."
+    },
+    {
+     "prompt": "Complete the sentence: A good manager knows how to _____.",
+     "options": [
+      "weakness",
+      "prioritise",
+      "delegate"
+     ],
+     "answer": 2,
+     "explanation": "“delegate” nghĩa là “giao việc”. Câu đầy đủ: A good manager knows how to delegate."
+    },
+    {
+     "prompt": "What does “under pressure” mean?",
+     "options": [
+      "dưới áp lực",
+      "nhận (nhiệm vụ)",
+      "giao việc"
+     ],
+     "answer": 0,
+     "explanation": "“under pressure” = dưới áp lực. Ví dụ: I work well under pressure."
+    },
+    {
+     "prompt": "Complete the sentence: I sometimes _____ too many tasks.",
+     "options": [
+      "delegate",
+      "under pressure",
+      "take on"
+     ],
+     "answer": 2,
+     "explanation": "“take on” nghĩa là “nhận (nhiệm vụ)”. Câu đầy đủ: I sometimes take on too many tasks."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-b2-1",
+   "level": "B2",
+   "unit": "B2 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Đàm phán và thuyết phục",
+   "objective": "Đưa đề nghị, nhượng bộ có điều kiện và đạt thỏa thuận trong đàm phán.",
+   "reading": "Supplier: Our price is twelve dollars per unit.\nBuyer: That's a little higher than we expected. If we ordered ten thousand units, would you be able to offer a discount?\nSupplier: We could reduce it to eleven dollars, provided that you pay within thirty days.\nBuyer: That sounds reasonable. Could you also include free delivery?\nSupplier: I'm afraid that's not possible at this price, but we can offer a two-year warranty.\nBuyer: All right, I think we have a deal.",
+   "vocabulary": [
+    {
+     "term": "per unit",
+     "definition": "mỗi đơn vị (sản phẩm)",
+     "example": "The price is twelve dollars per unit."
+    },
+    {
+     "term": "discount",
+     "definition": "chiết khấu, giảm giá",
+     "example": "Could you offer a discount?"
+    },
+    {
+     "term": "provided that",
+     "definition": "với điều kiện là",
+     "example": "We can deliver early, provided that you pay now."
+    },
+    {
+     "term": "reasonable",
+     "definition": "hợp lý",
+     "example": "That price sounds reasonable."
+    },
+    {
+     "term": "warranty",
+     "definition": "bảo hành",
+     "example": "It comes with a two-year warranty."
+    },
+    {
+     "term": "we have a deal",
+     "definition": "chúng ta thỏa thuận xong",
+     "example": "OK, I think we have a deal."
+    }
+   ],
+   "grammar": {
+    "title": "Câu điều kiện trong đàm phán",
+    "explanation": "Dùng điều kiện loại 2 để đề xuất mềm mỏng: If we ordered more, would you…? Dùng provided that / as long as / unless để đặt điều kiện: We'll agree as long as delivery is free.",
+    "examples": [
+     "If you increased the order, we could lower the price.",
+     "We'll sign, provided that the price is fixed.",
+     "Unless you reduce the price, we can't continue."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng điệu ngập ngừng lịch sự",
+    "tip": "Thêm các từ làm mềm: 'a little', 'I'm afraid', 'perhaps'. Hạ giọng và nói chậm hơn khi từ chối.",
+    "words": [
+     "discount",
+     "reasonable",
+     "warranty",
+     "provided"
+    ]
+   },
+   "speakingTasks": [
+    "Thầy/cô là nhà cung cấp — bạn đàm phán giá, thời hạn thanh toán và giao hàng.",
+    "Nhượng bộ một điểm và đặt một điều kiện bằng 'provided that'."
+   ],
+   "questions": [
+    {
+     "prompt": "What was the first price?",
+     "options": [
+      "$12",
+      "$10",
+      "$11"
+     ],
+     "answer": 0,
+     "explanation": "'twelve dollars per unit'."
+    },
+    {
+     "prompt": "Under what condition will the supplier reduce the price?",
+     "options": [
+      "Free delivery",
+      "Payment within thirty days",
+      "A bigger warehouse"
+     ],
+     "answer": 1,
+     "explanation": "'provided that you pay within thirty days'."
+    },
+    {
+     "prompt": "What does the supplier offer instead of free delivery?",
+     "options": [
+      "A two-year warranty",
+      "A bigger discount",
+      "Faster production"
+     ],
+     "answer": 0,
+     "explanation": "'we can offer a two-year warranty'."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "If we ordered more, would you offer a discount?",
+      "If we would order more, you offer a discount?",
+      "If we order more, would you offered a discount?"
+     ],
+     "answer": 0,
+     "explanation": "Loại 2: If + quá khứ, would + V."
+    },
+    {
+     "prompt": "“Provided that” is closest in meaning to…",
+     "options": [
+      "because",
+      "only if",
+      "although"
+     ],
+     "answer": 1,
+     "explanation": "provided that = chỉ khi, với điều kiện."
+    },
+    {
+     "prompt": "Complete the sentence: The price is twelve dollars _____.",
+     "options": [
+      "provided that",
+      "per unit",
+      "reasonable"
+     ],
+     "answer": 1,
+     "explanation": "“per unit” nghĩa là “mỗi đơn vị (sản phẩm)”. Câu đầy đủ: The price is twelve dollars per unit."
+    },
+    {
+     "prompt": "What does “we have a deal” mean?",
+     "options": [
+      "với điều kiện là",
+      "chúng ta thỏa thuận xong",
+      "mỗi đơn vị (sản phẩm)"
+     ],
+     "answer": 1,
+     "explanation": "“we have a deal” = chúng ta thỏa thuận xong. Ví dụ: OK, I think we have a deal."
+    },
+    {
+     "prompt": "Complete the sentence: We can deliver early, _____ you pay now.",
+     "options": [
+      "discount",
+      "per unit",
+      "provided that"
+     ],
+     "answer": 2,
+     "explanation": "“provided that” nghĩa là “với điều kiện là”. Câu đầy đủ: We can deliver early, provided that you pay now."
+    },
+    {
+     "prompt": "What does “reasonable” mean?",
+     "options": [
+      "chiết khấu, giảm giá",
+      "hợp lý",
+      "bảo hành"
+     ],
+     "answer": 1,
+     "explanation": "“reasonable” = hợp lý. Ví dụ: That price sounds reasonable."
+    },
+    {
+     "prompt": "Complete the sentence: That price sounds _____.",
+     "options": [
+      "warranty",
+      "discount",
+      "reasonable"
+     ],
+     "answer": 2,
+     "explanation": "“reasonable” nghĩa là “hợp lý”. Câu đầy đủ: That price sounds reasonable."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-b2-2",
+   "level": "B2",
+   "unit": "B2 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Xử lý xung đột và phản hồi",
+   "objective": "Đưa và nhận phản hồi mang tính xây dựng, giải quyết bất đồng trong nhóm.",
+   "reading": "Manager: Thanks for coming in, Tuan. I wanted to talk about the last project. Your technical work was excellent. However, the team felt that communication could have been better — some updates arrived late.\nTuan: I appreciate the feedback. To be honest, I was overloaded, but I should have told you earlier.\nManager: That's understandable. Going forward, how about a short weekly update?\nTuan: That would definitely help. I'll set that up.",
+   "vocabulary": [
+    {
+     "term": "feedback",
+     "definition": "phản hồi, góp ý",
+     "example": "Thanks for the feedback."
+    },
+    {
+     "term": "overloaded",
+     "definition": "quá tải",
+     "example": "I was overloaded with work."
+    },
+    {
+     "term": "understandable",
+     "definition": "dễ hiểu, thông cảm được",
+     "example": "Your reaction is understandable."
+    },
+    {
+     "term": "going forward",
+     "definition": "từ nay về sau",
+     "example": "Going forward, let's meet weekly."
+    },
+    {
+     "term": "constructive",
+     "definition": "mang tính xây dựng",
+     "example": "She gave me constructive feedback."
+    },
+    {
+     "term": "set up",
+     "definition": "thiết lập, sắp xếp",
+     "example": "I'll set up a weekly meeting."
+    }
+   ],
+   "grammar": {
+    "title": "should have + V3 để nhìn lại quá khứ",
+    "explanation": "should have + V3: lẽ ra nên làm (nhưng đã không làm). could have been better: lẽ ra có thể tốt hơn. Dùng để nhận lỗi hoặc góp ý nhẹ nhàng.",
+    "examples": [
+     "I should have told you earlier.",
+     "The report could have been clearer.",
+     "We shouldn't have rushed the launch."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Dạng yếu: should've /ˈʃʊdəv/",
+    "tip": "Trong nói nhanh 'should have' thành /ˈʃʊdəv/, 'could have' thành /ˈkʊdəv/. Không viết 'should of'.",
+    "words": [
+     "should've",
+     "could've",
+     "feedback",
+     "overloaded"
+    ]
+   },
+   "speakingTasks": [
+    "Đưa phản hồi cho một đồng nghiệp: khen 1 điểm, góp ý 1 điểm, đề xuất giải pháp.",
+    "Thầy/cô góp ý cho bạn — đáp lại chuyên nghiệp."
+   ],
+   "questions": [
+    {
+     "prompt": "What did the manager praise?",
+     "options": [
+      "Punctuality",
+      "Technical work",
+      "Communication"
+     ],
+     "answer": 1,
+     "explanation": "'Your technical work was excellent.'"
+    },
+    {
+     "prompt": "What was the problem?",
+     "options": [
+      "Missing meetings",
+      "Updates arrived late",
+      "Poor technical quality"
+     ],
+     "answer": 1,
+     "explanation": "'some updates arrived late'."
+    },
+    {
+     "prompt": "How does Tuan react?",
+     "options": [
+      "He gets angry.",
+      "He accepts the feedback.",
+      "He blames the team."
+     ],
+     "answer": 1,
+     "explanation": "'I appreciate the feedback.'"
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "I should have told you earlier.",
+      "I should of told you earlier.",
+      "I should told you earlier."
+     ],
+     "answer": 0,
+     "explanation": "should have + V3."
+    },
+    {
+     "prompt": "What solution do they agree on?",
+     "options": [
+      "A short weekly update",
+      "A new team",
+      "Daily meetings"
+     ],
+     "answer": 0,
+     "explanation": "'how about a short weekly update?'"
+    },
+    {
+     "prompt": "Complete the sentence: Your reaction is _____.",
+     "options": [
+      "understandable",
+      "overloaded",
+      "constructive"
+     ],
+     "answer": 0,
+     "explanation": "“understandable” nghĩa là “dễ hiểu, thông cảm được”. Câu đầy đủ: Your reaction is understandable."
+    },
+    {
+     "prompt": "What does “constructive” mean?",
+     "options": [
+      "phản hồi, góp ý",
+      "dễ hiểu, thông cảm được",
+      "mang tính xây dựng"
+     ],
+     "answer": 2,
+     "explanation": "“constructive” = mang tính xây dựng. Ví dụ: She gave me constructive feedback."
+    },
+    {
+     "prompt": "Complete the sentence: I was _____ with work.",
+     "options": [
+      "understandable",
+      "feedback",
+      "overloaded"
+     ],
+     "answer": 2,
+     "explanation": "“overloaded” nghĩa là “quá tải”. Câu đầy đủ: I was overloaded with work."
+    },
+    {
+     "prompt": "What does “understandable” mean?",
+     "options": [
+      "quá tải",
+      "dễ hiểu, thông cảm được",
+      "mang tính xây dựng"
+     ],
+     "answer": 1,
+     "explanation": "“understandable” = dễ hiểu, thông cảm được. Ví dụ: Your reaction is understandable."
+    },
+    {
+     "prompt": "Complete the sentence: _____, let's meet weekly.",
+     "options": [
+      "feedback",
+      "set up",
+      "going forward"
+     ],
+     "answer": 2,
+     "explanation": "“going forward” nghĩa là “từ nay về sau”. Câu đầy đủ: Going forward, let's meet weekly."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "business-b2-3",
+   "level": "B2",
+   "unit": "B2 · Bài 3",
+   "category": "Từ vựng",
+   "title": "Chiến lược và báo cáo kinh doanh",
+   "objective": "Thảo luận chiến lược, rủi ro và đề xuất với từ vựng kinh doanh nâng cao.",
+   "reading": "Our main competitor has launched a cheaper product, which poses a significant threat to our market share. In order to remain competitive, we propose investing in customer loyalty programmes rather than cutting prices. Although this requires an upfront investment, it is likely to generate long-term revenue. We recommend piloting the programme in two regions before rolling it out nationwide.",
+   "vocabulary": [
+    {
+     "term": "competitor",
+     "definition": "đối thủ cạnh tranh",
+     "example": "Our competitor lowered its prices."
+    },
+    {
+     "term": "market share",
+     "definition": "thị phần",
+     "example": "We want to increase our market share."
+    },
+    {
+     "term": "threat",
+     "definition": "mối đe dọa",
+     "example": "The new product is a threat to us."
+    },
+    {
+     "term": "upfront investment",
+     "definition": "khoản đầu tư ban đầu",
+     "example": "This needs a large upfront investment."
+    },
+    {
+     "term": "revenue",
+     "definition": "doanh thu",
+     "example": "Revenue grew by ten percent."
+    },
+    {
+     "term": "roll out",
+     "definition": "triển khai rộng",
+     "example": "We'll roll out the app nationwide."
+    }
+   ],
+   "grammar": {
+    "title": "Đề xuất trang trọng: recommend / propose / suggest + V-ing hoặc that",
+    "explanation": "recommend/suggest + V-ing (We recommend piloting…) hoặc + that + S + V nguyên mẫu (We suggest that the team start now). Không dùng 'suggest to do'.",
+    "examples": [
+     "We recommend investing in training.",
+     "I suggest that he present the results.",
+     "We propose launching in two regions first."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm danh từ – động từ",
+    "tip": "REvenue, COMpetitor; nhưng proPOSE, recomMEND. Từ ghép: MARket share nhấn từ đầu.",
+    "words": [
+     "revenue",
+     "competitor",
+     "propose",
+     "recommend"
+    ]
+   },
+   "speakingTasks": [
+    "Đề xuất một chiến lược cho công ty bạn: vấn đề, giải pháp, rủi ro, khuyến nghị.",
+    "Thầy/cô là giám đốc — trả lời câu hỏi chất vấn."
+   ],
+   "questions": [
+    {
+     "prompt": "Why is the competitor a threat?",
+     "options": [
+      "It hired our staff.",
+      "It launched a cheaper product.",
+      "It closed stores."
+     ],
+     "answer": 1,
+     "explanation": "'launched a cheaper product'."
+    },
+    {
+     "prompt": "What do they propose instead of cutting prices?",
+     "options": [
+      "Customer loyalty programmes",
+      "New offices",
+      "More advertising"
+     ],
+     "answer": 0,
+     "explanation": "'investing in customer loyalty programmes'."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "We suggest to test it first.",
+      "We suggest testing it first.",
+      "We suggest test it first."
+     ],
+     "answer": 1,
+     "explanation": "suggest + V-ing."
+    },
+    {
+     "prompt": "Where will they pilot the programme?",
+     "options": [
+      "In two regions",
+      "Abroad",
+      "Nationwide"
+     ],
+     "answer": 0,
+     "explanation": "'piloting the programme in two regions'."
+    },
+    {
+     "prompt": "“Roll out nationwide” means…",
+     "options": [
+      "test once",
+      "launch across the whole country",
+      "cancel everywhere"
+     ],
+     "answer": 1,
+     "explanation": "roll out = triển khai rộng rãi."
+    },
+    {
+     "prompt": "Complete the sentence: The new product is a _____ to us.",
+     "options": [
+      "threat",
+      "competitor",
+      "revenue"
+     ],
+     "answer": 0,
+     "explanation": "“threat” nghĩa là “mối đe dọa”. Câu đầy đủ: The new product is a threat to us."
+    },
+    {
+     "prompt": "What does “revenue” mean?",
+     "options": [
+      "mối đe dọa",
+      "đối thủ cạnh tranh",
+      "doanh thu"
+     ],
+     "answer": 2,
+     "explanation": "“revenue” = doanh thu. Ví dụ: Revenue grew by ten percent."
+    },
+    {
+     "prompt": "Complete the sentence: This needs a large _____.",
+     "options": [
+      "upfront investment",
+      "roll out",
+      "market share"
+     ],
+     "answer": 0,
+     "explanation": "“upfront investment” nghĩa là “khoản đầu tư ban đầu”. Câu đầy đủ: This needs a large upfront investment."
+    },
+    {
+     "prompt": "What does “roll out” mean?",
+     "options": [
+      "triển khai rộng",
+      "khoản đầu tư ban đầu",
+      "thị phần"
+     ],
+     "answer": 0,
+     "explanation": "“roll out” = triển khai rộng. Ví dụ: We'll roll out the app nationwide."
+    },
+    {
+     "prompt": "Complete the sentence: _____ grew by ten percent.",
+     "options": [
+      "revenue",
+      "competitor",
+      "threat"
+     ],
+     "answer": 0,
+     "explanation": "“revenue” nghĩa là “doanh thu”. Câu đầy đủ: Revenue grew by ten percent."
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
 }

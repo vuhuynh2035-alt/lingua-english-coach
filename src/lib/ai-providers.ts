@@ -1,50 +1,12 @@
-import { GeminiPart, generateChatWithGemini, generateWithGemini, streamChatWithGemini } from "@/lib/gemini";
-import {
-  GoogleSpeechVoice,
-  SpeechDeliveryStyle,
-  isSpeechVoiceId,
-} from "@/lib/speech";
+import { GeminiPart, generateWithGemini } from "@/lib/gemini";
 
 export type AiProvider = "google" | "openai";
 export type AiModel = { id: string; label: string };
 
 export const DEFAULT_MODELS: Record<AiProvider, string> = {
-  google: "gemini-2.0-flash",
+  google: "gemini-2.5-flash",
   openai: "gpt-4o-mini",
 };
-
-export const OPENAI_SPEECH_VOICES = [
-  { id: "fable", label: "Fable · 🇬🇧 Giọng Anh (British) · Nam biểu cảm", accent: "British", gender: "male" },
-  { id: "alloy", label: "Alloy · 🇺🇸 Giọng Mỹ (American) · Trung tính rõ ràng", accent: "American", gender: "neutral" },
-  { id: "echo", label: "Echo · 🇺🇸 Giọng Mỹ (American) · Nam trầm ấm", accent: "American", gender: "male" },
-  { id: "onyx", label: "Onyx · 🇺🇸 Giọng Mỹ (American) · Nam đĩnh đạc", accent: "American", gender: "male" },
-  { id: "nova", label: "Nova · 🇺🇸 Giọng Mỹ (American) · Nữ năng động trẻ trung", accent: "American", gender: "female" },
-  { id: "shimmer", label: "Shimmer · 🇺🇸 Giọng Mỹ (American) · Nữ êm dịu trong trẻo", accent: "American", gender: "female" },
-  { id: "coral", label: "Coral · 🇺🇸 Giọng Mỹ (American) · Nữ ấm áp", accent: "American", gender: "female" },
-  { id: "ash", label: "Ash · 🇺🇸 Giọng Mỹ (American) · Nam thoải mái", accent: "American", gender: "male" },
-  { id: "sage", label: "Sage · 🇺🇸 Giọng Mỹ (American) · Nữ nhẹ nhàng", accent: "American", gender: "female" },
-] as const;
-
-const GOOGLE_ACCENT_FILTERS = ["American", "Australian", "British", "Indian", "Chinese", "German"] as const;
-
-export type GoogleSpeechVoiceCatalog = {
-  voices: GoogleSpeechVoice[];
-  failedRegions: (typeof GOOGLE_ACCENT_FILTERS)[number][];
-};
-
-function accentMatchesRegion(accent: string, region: string): boolean {
-  const normalized = accent.toLowerCase();
-  const terms: Record<(typeof GOOGLE_ACCENT_FILTERS)[number], string[]> = {
-    American: ["american", "united states", "u.s.", "usa"],
-    Australian: ["australian", "australia"],
-    British: ["british", "united kingdom", "uk", "england"],
-    Indian: ["indian", "india"],
-    Chinese: ["chinese", "china"],
-    German: ["german", "germany"],
-  };
-  return terms[region as (typeof GOOGLE_ACCENT_FILTERS)[number]]
-    .some((term) => normalized.includes(term));
-}
 
 export function isAiProvider(value: string): value is AiProvider {
   return value === "google" || value === "openai";
@@ -91,152 +53,6 @@ export async function fetchAiModels(provider: AiProvider, apiKey: string): Promi
   return models.sort((first, second) => second.id.localeCompare(first.id));
 }
 
-export async function fetchGoogleSpeechVoices(apiKey: string): Promise<GoogleSpeechVoiceCatalog> {
-  const accentResults = await Promise.allSettled(GOOGLE_ACCENT_FILTERS.map(async (accent) => {
-    const query = new URLSearchParams({ type: "prebuilt", page_size: "100", accent });
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/voices?${query}`, {
-      headers: { "x-goog-api-key": apiKey },
-      signal: AbortSignal.timeout(30_000),
-    });
-    const result: unknown = await response.json().catch(() => null);
-    if (!response.ok) throw new Error(getProviderError("google", response.status, result));
-    if (!isRecord(result) || !Array.isArray(result.voices)) {
-      throw new Error(`Google không trả về danh sách giọng ${accent} đúng định dạng.`);
-    }
-
-    const voices = result.voices.flatMap((item): GoogleSpeechVoice[] => {
-      if (!isRecord(item) || typeof item.id !== "string" ||
-          (item.gender !== "male" && item.gender !== "female") ||
-          typeof item.accent !== "string" || !accentMatchesRegion(item.accent, accent)) return [];
-      const id = item.id;
-      if (!isSpeechVoiceId(id)) return [];
-      return [{
-        id,
-        gender: item.gender,
-        accent: item.accent,
-        label: typeof item.displayName === "string" && item.displayName.trim()
-          ? item.displayName.trim()
-          : id,
-        description: typeof item.description === "string" ? item.description : "",
-      }];
-    });
-    return { accent, voices };
-  }));
-
-  const selected: GoogleSpeechVoice[] = [];
-  const failedRegions = accentResults.flatMap((result, index) =>
-    result.status === "rejected" ? [GOOGLE_ACCENT_FILTERS[index]] : []);
-  const successfulResults = accentResults.flatMap((result) =>
-    result.status === "fulfilled" ? [result.value] : []);
-  for (const { voices } of successfulResults) {
-    for (const gender of ["male", "female"] as const) {
-      const voice = voices
-        .filter((item) => item.gender === gender)
-        .sort((first, second) => first.id.localeCompare(second.id))[0];
-      if (voice && !selected.some((item) => item.id === voice.id)) selected.push(voice);
-    }
-  }
-  if (!selected.length) {
-    const firstFailure = accentResults.find((result): result is PromiseRejectedResult => result.status === "rejected");
-    if (firstFailure) throw firstFailure.reason;
-    throw new Error("Chưa tìm thấy giọng nam/nữ theo các vùng đã chọn. Hãy kiểm tra API key hoặc thử lại sau.");
-  }
-  return { voices: selected, failedRegions };
-}
-
-export async function generateAiText(
-  provider: AiProvider,
-  apiKey: string,
-  model: string,
-  systemPrompt: string,
-  messages: { role: "user" | "assistant"; content: string }[],
-  onChunk?: (text: string) => void,
-): Promise<string> {
-  if (provider === "google") {
-    if (onChunk) {
-      return streamChatWithGemini(apiKey, model, systemPrompt, messages, onChunk);
-    }
-    return generateChatWithGemini(apiKey, model, systemPrompt, messages);
-  }
-
-  // OpenAI implementation with optional streaming
-  if (onChunk) {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages.map((message) => ({ role: message.role, content: message.content })),
-        ],
-        temperature: 0.7,
-        max_completion_tokens: 450,
-        stream: true,
-      }),
-      signal: AbortSignal.timeout(60_000),
-    });
-
-    if (!response.ok) {
-      const errResult = await response.json().catch(() => null);
-      throw new Error(getProviderError(provider, response.status, errResult));
-    }
-    if (!response.body) throw new Error("Không thể kết nối luồng phản hồi từ OpenAI.");
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
-    let buffer = "";
-    let fullText = "";
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-      const lines = buffer.split("\n");
-      buffer = lines.pop() ?? "";
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed.startsWith("data: ")) continue;
-        const jsonStr = trimmed.slice(6).trim();
-        if (!jsonStr || jsonStr === "[DONE]") continue;
-        try {
-          const parsed = JSON.parse(jsonStr);
-          const chunk = parsed?.choices?.[0]?.delta?.content;
-          if (typeof chunk === "string") {
-            fullText += chunk;
-            onChunk(fullText);
-          }
-        } catch {}
-      }
-    }
-    if (!fullText.trim()) throw new Error("OpenAI chưa trả về nội dung. Vui lòng thử lại.");
-    return fullText.trim();
-  }
-
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({
-      model,
-      messages: [
-        { role: "system", content: systemPrompt },
-        ...messages.map((message) => ({ role: message.role, content: message.content })),
-      ],
-      temperature: 0.7,
-      max_completion_tokens: 450,
-    }),
-    signal: AbortSignal.timeout(45_000),
-  });
-  const result: unknown = await response.json().catch(() => null);
-  if (!response.ok) throw new Error(getProviderError(provider, response.status, result));
-  if (!isRecord(result) || !Array.isArray(result.choices) || !isRecord(result.choices[0]) ||
-      !isRecord(result.choices[0].message) || typeof result.choices[0].message.content !== "string" ||
-      !result.choices[0].message.content.trim()) {
-    throw new Error("OpenAI trả về câu trả lời không đúng định dạng.");
-  }
-  return result.choices[0].message.content.trim();
-}
-
 export async function transcribeWithOpenAi(apiKey: string, audio: Blob): Promise<string> {
   const mimeType = audio.type || "audio/webm";
   const extension = mimeType.includes("mp4") || mimeType.includes("m4a") ? "m4a"
@@ -260,37 +76,6 @@ export async function transcribeWithOpenAi(apiKey: string, audio: Blob): Promise
     throw new Error("OpenAI không trả về bản chép lời đúng định dạng.");
   }
   return result.text.trim();
-}
-
-export async function generateProviderSpeech(
-  provider: AiProvider,
-  apiKey: string,
-  model: string,
-  voice: string,
-  text: string,
-  accent = "",
-  deliveryStyle: SpeechDeliveryStyle = "balanced",
-): Promise<Blob> {
-  if (provider === "openai") {
-    void accent;
-    void deliveryStyle;
-    const response = await fetch("https://api.openai.com/v1/audio/speech", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: "tts-1",
-        voice,
-        input: text,
-      }),
-      signal: AbortSignal.timeout(60_000),
-    });
-    if (!response.ok) {
-      const result: unknown = await response.json().catch(() => null);
-      throw new Error(getProviderError(provider, response.status, result));
-    }
-    return response.blob();
-  }
-  throw new Error("Chế độ này sử dụng giọng đọc bản xứ trực tiếp trên thiết bị.");
 }
 
 export function generateGeminiMultimodalResponse(

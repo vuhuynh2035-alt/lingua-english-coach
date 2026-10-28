@@ -1,198 +1,2027 @@
 {
-  "id": "finance",
-  "title": "Tiếng Anh ngành tài chính",
-  "version": "1.0.0",
-  "framework": "CEFR A1–B2",
-  "overview": "Báo cáo tài chính, thuật ngữ ngân hàng, phân tích đầu tư, quản trị rủi ro và dự toán ngân sách.",
-  "contentLicense": "CC-BY-4.0 / Teacher AI Curated Curriculum",
-  "references": [
+ "id": "finance",
+ "title": "Tiếng Anh ngành tài chính",
+ "version": "2.0.0",
+ "framework": "CEFR A1–B2",
+ "overview": "12 bài từ A1 đến B2 cho người làm tài chính – ngân hàng: giao dịch, tư vấn sản phẩm, báo cáo số liệu, phân tích và thuyết trình kết quả.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
+ "references": [
+  {
+   "title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)",
+   "url": "https://www.coe.int/en/web/common-european-framework-reference-languages",
+   "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "British Council / EAQUALS – Core Inventory for General English",
+   "url": "https://www.teachingenglish.org.uk/article/british-council-eaquals-core-inventory-general-english",
+   "license": "Tham khảo danh mục chức năng, ngữ pháp, chủ đề theo level (không sao chép nội dung)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "finance-a1-1",
+   "level": "A1",
+   "unit": "A1 · Bài 1",
+   "category": "Từ vựng",
+   "title": "Tiền tệ và giao dịch ngân hàng cơ bản",
+   "objective": "Nói số tiền, đổi tiền, gửi và rút tiền tại ngân hàng.",
+   "reading": "Customer: Good morning. I'd like to change some US dollars into Vietnamese dong.\nTeller: Certainly. How much would you like to change?\nCustomer: Two hundred dollars.\nTeller: The exchange rate today is 25,400 dong to the dollar. Can I see your passport?\nCustomer: Here you are. Can I also withdraw some money from my account?\nTeller: Of course. Please fill in this form.",
+   "vocabulary": [
     {
-      "title": "Teacher AI Official Curriculum - Tiếng Anh ngành tài chính",
-      "url": "https://github.com/vuhuynh2035-alt/lingua-english-coach",
-      "license": "CC-BY-4.0"
+     "term": "exchange rate",
+     "definition": "tỷ giá",
+     "example": "What's the exchange rate today?"
+    },
+    {
+     "term": "change money",
+     "definition": "đổi tiền",
+     "example": "I'd like to change some money."
+    },
+    {
+     "term": "withdraw",
+     "definition": "rút (tiền)",
+     "example": "I want to withdraw some money."
+    },
+    {
+     "term": "deposit",
+     "definition": "gửi (tiền)",
+     "example": "I'd like to deposit this cheque."
+    },
+    {
+     "term": "account",
+     "definition": "tài khoản",
+     "example": "I have an account at this bank."
+    },
+    {
+     "term": "teller",
+     "definition": "giao dịch viên",
+     "example": "The teller checked my passport."
     }
-  ],
-  "lessons": [
+   ],
+   "grammar": {
+    "title": "How much / How many",
+    "explanation": "How much + danh từ không đếm được (How much money?). How many + danh từ đếm được số nhiều (How many dollars?). Tiền tệ: 200 dollars, 5 million dong.",
+    "examples": [
+     "How much money do you need?",
+     "How many notes do you want?",
+     "I'd like to withdraw five million dong."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc số tiền lớn",
+    "tip": "25,400 = twenty-five thousand four hundred. $200 = two hundred dollars. Không thêm 's' vào hundred/thousand khi có số đứng trước.",
+    "words": [
+     "thousand",
+     "hundred",
+     "withdraw",
+     "exchange"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai khách hàng đổi tiền và rút tiền với thầy/cô.",
+    "Đọc to 5 số tiền khác nhau bằng tiếng Anh."
+   ],
+   "questions": [
     {
-      "id": "fin-a1-1",
-      "level": "A1",
-      "unit": "Bài 1 (A1)",
-      "title": "Giao dịch ngân hàng cơ bản",
-      "objective": "Mở tài khoản, nạp rút tiền và hỏi số dư tài khoản.",
-      "reading": "Teller: Good afternoon. How can I assist you?\nCustomer: Hello, I would like to deposit two hundred dollars into my checking account, please.\nTeller: Certainly. Please sign the deposit slip here.",
-      "vocabulary": [
-        {
-          "term": "Deposit",
-          "definition": "Gửi tiền vào tài khoản"
-        },
-        {
-          "term": "Checking account",
-          "definition": "Tài khoản thanh toán / vãng lai"
-        },
-        {
-          "term": "Deposit slip",
-          "definition": "Phiếu nộp tiền"
-        }
-      ],
-      "questions": [
-        {
-          "prompt": "How much does the customer want to deposit?",
-          "options": [
-            "One hundred dollars",
-            "Two hundred dollars",
-            "Five hundred dollars"
-          ],
-          "answer": 1,
-          "explanation": "Khách hàng nói: 'deposit two hundred dollars'."
-        },
-        {
-          "prompt": "Where should the customer sign?",
-          "options": [
-            "On the deposit slip",
-            "On the passport",
-            "Nowhere"
-          ],
-          "answer": 0,
-          "explanation": "Giao dịch viên hướng dẫn: 'Please sign the deposit slip here'."
-        }
-      ],
-      "audioIds": []
+     "prompt": "What currency does the customer change?",
+     "options": [
+      "US dollars",
+      "Euros",
+      "Yen"
+     ],
+     "answer": 0,
+     "explanation": "'change some US dollars'."
     },
     {
-      "id": "fin-a2-1",
-      "level": "A2",
-      "unit": "Bài 2 (A2)",
-      "title": "Theo dõi chi phí và Lập ngân sách tháng",
-      "objective": "Phân loại chi phí cố định, chi phí biến đổi và đối chiếu số liệu.",
-      "reading": "Our monthly operating expenses rose by five percent in October. Rent and utilities remained stable, but travel costs and advertising expenditures increased substantially.",
-      "vocabulary": [
-        {
-          "term": "Operating expenses",
-          "definition": "Chi phí hoạt động"
-        },
-        {
-          "term": "Utilities",
-          "definition": "Tiền điện nước, tiện ích"
-        },
-        {
-          "term": "Expenditures",
-          "definition": "Khoản chi tiêu"
-        }
-      ],
-      "questions": [
-        {
-          "prompt": "By how much did operating expenses increase?",
-          "options": [
-            "2%",
-            "5%",
-            "15%"
-          ],
-          "answer": 1,
-          "explanation": "Báo cáo nêu: 'rose by five percent in October'."
-        },
-        {
-          "prompt": "Which expenses remained stable?",
-          "options": [
-            "Advertising and flights",
-            "Rent and utilities",
-            "Staff bonuses"
-          ],
-          "answer": 1,
-          "explanation": "'Rent and utilities remained stable'."
-        }
-      ],
-      "audioIds": []
+     "prompt": "How much does the customer change?",
+     "options": [
+      "$2,000",
+      "$200",
+      "$100"
+     ],
+     "answer": 1,
+     "explanation": "'Two hundred dollars.'"
     },
     {
-      "id": "fin-b1-1",
-      "level": "B1",
-      "unit": "Bài 3 (B1)",
-      "title": "Phân tích Báo cáo kết quả kinh doanh (P&L Analysis)",
-      "objective": "Trình bày doanh thu thuần, giá vốn hàng bán và lợi nhuận gộp.",
-      "reading": "Despite inflationary headwinds, net revenue reached twelve million dollars, yielding a gross profit margin of thirty-five percent. Cost reduction measures in supply chain logistics contributed significantly to bottom-line profitability.",
-      "vocabulary": [
-        {
-          "term": "Gross profit margin",
-          "definition": "Biên lợi nhuận gộp"
-        },
-        {
-          "term": "Net revenue",
-          "definition": "Doanh thu thuần"
-        },
-        {
-          "term": "Profitability",
-          "definition": "Khả năng sinh lời"
-        }
-      ],
-      "questions": [
-        {
-          "prompt": "What was the gross profit margin?",
-          "options": [
-            "12%",
-            "35%",
-            "50%"
-          ],
-          "answer": 1,
-          "explanation": "Số liệu: 'yielding a gross profit margin of thirty-five percent'."
-        },
-        {
-          "prompt": "What contributed to bottom-line profitability?",
-          "options": [
-            "Cost reduction in logistics",
-            "Raising employee salaries",
-            "Borrowing bank loans"
-          ],
-          "answer": 0,
-          "explanation": "'Cost reduction measures in supply chain logistics contributed significantly'."
-        }
-      ],
-      "audioIds": []
+     "prompt": "What does the teller ask to see?",
+     "options": [
+      "A bank card",
+      "A passport",
+      "A bill"
+     ],
+     "answer": 1,
+     "explanation": "'Can I see your passport?'"
     },
     {
-      "id": "fin-b2-1",
-      "level": "B2",
-      "unit": "Bài 4 (B2)",
-      "title": "Chiến lược Quản trị rủi ro danh mục và Thị trường vốn",
-      "objective": "Thảo luận về đa dạng hóa danh mục đầu tư, phái sinh tài chính và bảo hiểm rủi ro (hedging).",
-      "reading": "In response to heightened currency volatility, institutional investors employ foreign exchange forward contracts and interest rate swaps to hedge against downside valuation risks across international emerging market portfolios.",
-      "vocabulary": [
-        {
-          "term": "Currency volatility",
-          "definition": "Biến động tỷ giá hối đoái"
-        },
-        {
-          "term": "Hedge",
-          "definition": "Phòng hộ / Bảo hiểm rủi ro"
-        },
-        {
-          "term": "Portfolio",
-          "definition": "Danh mục đầu tư"
-        }
-      ],
-      "questions": [
-        {
-          "prompt": "Why do investors employ forward contracts and swaps?",
-          "options": [
-            "To hedge against downside valuation risks",
-            "To speculate on lottery tickets",
-            "To eliminate all taxes"
-          ],
-          "answer": 0,
-          "explanation": "Mục đích: 'to hedge against downside valuation risks'."
-        },
-        {
-          "prompt": "What market condition prompted this strategy?",
-          "options": [
-            "Zero inflation",
-            "Heightened currency volatility",
-            "Low interest rates"
-          ],
-          "answer": 1,
-          "explanation": "Nguyên nhân: 'In response to heightened currency volatility'."
-        }
-      ],
-      "audioIds": []
+     "prompt": "Choose the correct question.",
+     "options": [
+      "How much moneys?",
+      "How many money?",
+      "How much money?"
+     ],
+     "answer": 2,
+     "explanation": "money không đếm được → How much."
+    },
+    {
+     "prompt": "“Withdraw money” means…",
+     "options": [
+      "change money",
+      "take money out",
+      "put money in"
+     ],
+     "answer": 1,
+     "explanation": "withdraw = rút tiền ra."
+    },
+    {
+     "prompt": "Complete the sentence: I want to _____ some money.",
+     "options": [
+      "withdraw",
+      "teller",
+      "deposit"
+     ],
+     "answer": 0,
+     "explanation": "“withdraw” nghĩa là “rút (tiền)”. Câu đầy đủ: I want to withdraw some money."
+    },
+    {
+     "prompt": "What does “withdraw” mean?",
+     "options": [
+      "rút (tiền)",
+      "gửi (tiền)",
+      "giao dịch viên"
+     ],
+     "answer": 0,
+     "explanation": "“withdraw” = rút (tiền). Ví dụ: I want to withdraw some money."
+    },
+    {
+     "prompt": "Complete the sentence: I have an _____ at this bank.",
+     "options": [
+      "account",
+      "withdraw",
+      "deposit"
+     ],
+     "answer": 0,
+     "explanation": "“account” nghĩa là “tài khoản”. Câu đầy đủ: I have an account at this bank."
+    },
+    {
+     "prompt": "What does “exchange rate” mean?",
+     "options": [
+      "gửi (tiền)",
+      "đổi tiền",
+      "tỷ giá"
+     ],
+     "answer": 2,
+     "explanation": "“exchange rate” = tỷ giá. Ví dụ: What's the exchange rate today?"
+    },
+    {
+     "prompt": "Complete the sentence: What's the _____ today?",
+     "options": [
+      "exchange rate",
+      "change money",
+      "deposit"
+     ],
+     "answer": 0,
+     "explanation": "“exchange rate” nghĩa là “tỷ giá”. Câu đầy đủ: What's the exchange rate today?"
     }
-  ],
-  "audio": []
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a1-2",
+   "level": "A1",
+   "unit": "A1 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Mở tài khoản ngân hàng",
+   "objective": "Hỏi và trả lời thông tin khi mở tài khoản, các loại thẻ và phí.",
+   "reading": "Customer: Hi, I'd like to open a savings account.\nOfficer: Sure. Do you have any ID with you?\nCustomer: Yes, my ID card.\nOfficer: Great. Would you like a debit card too?\nCustomer: Yes, please. Is there a monthly fee?\nOfficer: No, there isn't, but you need to keep at least one million dong in the account.\nCustomer: Can I use online banking?\nOfficer: Yes, you can. I'll help you set it up.",
+   "vocabulary": [
+    {
+     "term": "open an account",
+     "definition": "mở tài khoản",
+     "example": "I'd like to open an account."
+    },
+    {
+     "term": "savings account",
+     "definition": "tài khoản tiết kiệm",
+     "example": "I have a savings account."
+    },
+    {
+     "term": "ID card",
+     "definition": "chứng minh/căn cước",
+     "example": "Please show your ID card."
+    },
+    {
+     "term": "debit card",
+     "definition": "thẻ ghi nợ",
+     "example": "Would you like a debit card?"
+    },
+    {
+     "term": "monthly fee",
+     "definition": "phí hàng tháng",
+     "example": "Is there a monthly fee?"
+    },
+    {
+     "term": "online banking",
+     "definition": "ngân hàng trực tuyến",
+     "example": "I use online banking every day."
+    }
+   ],
+   "grammar": {
+    "title": "would like / I'd like",
+    "explanation": "I'd like + danh từ / to + V: lịch sự hơn I want. Câu hỏi: Would you like…? Trả lời: Yes, please. / No, thank you.",
+    "examples": [
+     "I'd like to open an account.",
+     "Would you like a credit card?",
+     "I'd like some information, please."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm /ɜː/ và /ɑː/: card, fee",
+    "tip": "card /kɑːd/ (Anh) — miệng mở rộng, âm dài. fee /fiː/ — âm 'i' dài, không đọc thành 'phi' ngắn.",
+    "words": [
+     "card",
+     "fee",
+     "savings",
+     "account"
+    ]
+   },
+   "speakingTasks": [
+    "Mở một tài khoản ngân hàng với thầy/cô: hỏi phí, thẻ và ngân hàng điện tử.",
+    "Hỏi về lãi suất tiết kiệm."
+   ],
+   "questions": [
+    {
+     "prompt": "What kind of account does the customer open?",
+     "options": [
+      "Business account",
+      "Savings account",
+      "Current account"
+     ],
+     "answer": 1,
+     "explanation": "'a savings account'."
+    },
+    {
+     "prompt": "Is there a monthly fee?",
+     "options": [
+      "Only online",
+      "Yes",
+      "No"
+     ],
+     "answer": 2,
+     "explanation": "'No, there isn't'."
+    },
+    {
+     "prompt": "What is the minimum balance?",
+     "options": [
+      "100,000 dong",
+      "One million dong",
+      "Ten million dong"
+     ],
+     "answer": 1,
+     "explanation": "'at least one million dong'."
+    },
+    {
+     "prompt": "Choose the polite request.",
+     "options": [
+      "I'd like to open an account.",
+      "I want open account.",
+      "Open account for me."
+     ],
+     "answer": 0,
+     "explanation": "I'd like to + V."
+    },
+    {
+     "prompt": "Which card does the officer offer?",
+     "options": [
+      "Debit card",
+      "Credit card",
+      "Gift card"
+     ],
+     "answer": 0,
+     "explanation": "'Would you like a debit card too?'"
+    },
+    {
+     "prompt": "Complete the sentence: Would you like a _____?",
+     "options": [
+      "debit card",
+      "ID card",
+      "monthly fee"
+     ],
+     "answer": 0,
+     "explanation": "“debit card” nghĩa là “thẻ ghi nợ”. Câu đầy đủ: Would you like a debit card?"
+    },
+    {
+     "prompt": "What does “online banking” mean?",
+     "options": [
+      "thẻ ghi nợ",
+      "chứng minh/căn cước",
+      "ngân hàng trực tuyến"
+     ],
+     "answer": 2,
+     "explanation": "“online banking” = ngân hàng trực tuyến. Ví dụ: I use online banking every day."
+    },
+    {
+     "prompt": "Complete the sentence: Is there a _____?",
+     "options": [
+      "savings account",
+      "online banking",
+      "monthly fee"
+     ],
+     "answer": 2,
+     "explanation": "“monthly fee” nghĩa là “phí hàng tháng”. Câu đầy đủ: Is there a monthly fee?"
+    },
+    {
+     "prompt": "What does “monthly fee” mean?",
+     "options": [
+      "ngân hàng trực tuyến",
+      "phí hàng tháng",
+      "tài khoản tiết kiệm"
+     ],
+     "answer": 1,
+     "explanation": "“monthly fee” = phí hàng tháng. Ví dụ: Is there a monthly fee?"
+    },
+    {
+     "prompt": "Complete the sentence: Please show your _____.",
+     "options": [
+      "monthly fee",
+      "online banking",
+      "ID card"
+     ],
+     "answer": 2,
+     "explanation": "“ID card” nghĩa là “chứng minh/căn cước”. Câu đầy đủ: Please show your ID card."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a1-3",
+   "level": "A1",
+   "unit": "A1 · Bài 3",
+   "category": "Ngữ pháp",
+   "title": "Hóa đơn và thanh toán",
+   "objective": "Đọc hóa đơn, hỏi số tiền phải trả, hạn thanh toán và phương thức thanh toán.",
+   "reading": "Invoice no. 1024\nCustomer: Green Café\nItem: 50 kg of coffee beans — $600\nDelivery: $40\nTotal: $640\nPayment due: 30 April\nPayment methods: bank transfer or credit card\nPlease include the invoice number in your payment.",
+   "vocabulary": [
+    {
+     "term": "invoice",
+     "definition": "hóa đơn (bán hàng)",
+     "example": "Please check the invoice."
+    },
+    {
+     "term": "total",
+     "definition": "tổng cộng",
+     "example": "The total is $640."
+    },
+    {
+     "term": "payment due",
+     "definition": "hạn thanh toán",
+     "example": "Payment is due on 30 April."
+    },
+    {
+     "term": "bank transfer",
+     "definition": "chuyển khoản ngân hàng",
+     "example": "I'll pay by bank transfer."
+    },
+    {
+     "term": "credit card",
+     "definition": "thẻ tín dụng",
+     "example": "Can I pay by credit card?"
+    },
+    {
+     "term": "include",
+     "definition": "ghi kèm, bao gồm",
+     "example": "Include the invoice number."
+    }
+   ],
+   "grammar": {
+    "title": "Giới từ: pay by / pay in / due on",
+    "explanation": "pay by card/transfer/cheque; pay in cash; due on + ngày (due on 30 April); due by + hạn chót.",
+    "examples": [
+     "Can I pay by card?",
+     "He paid in cash.",
+     "The payment is due on Friday."
+    ]
+   },
+   "pronunciation": {
+    "focus": "invoice /ˈɪnvɔɪs/",
+    "tip": "Nhấn âm đầu IN-voice. due /djuː/ (Anh) hoặc /duː/ (Mỹ).",
+    "words": [
+     "invoice",
+     "due",
+     "transfer",
+     "total"
+    ]
+   },
+   "speakingTasks": [
+    "Đọc to hóa đơn trên và giải thích cho thầy/cô.",
+    "Hỏi về hạn và cách thanh toán một hóa đơn."
+   ],
+   "questions": [
+    {
+     "prompt": "What is the total amount?",
+     "options": [
+      "$640",
+      "$40",
+      "$600"
+     ],
+     "answer": 0,
+     "explanation": "'Total: $640'."
+    },
+    {
+     "prompt": "When is payment due?",
+     "options": [
+      "1 April",
+      "30 May",
+      "30 April"
+     ],
+     "answer": 2,
+     "explanation": "'Payment due: 30 April'."
+    },
+    {
+     "prompt": "How much is delivery?",
+     "options": [
+      "$600",
+      "$60",
+      "$40"
+     ],
+     "answer": 2,
+     "explanation": "'Delivery: $40'."
+    },
+    {
+     "prompt": "Choose the correct phrase.",
+     "options": [
+      "pay with cash",
+      "pay by cash",
+      "pay in cash"
+     ],
+     "answer": 2,
+     "explanation": "pay in cash."
+    },
+    {
+     "prompt": "What should be included in the payment?",
+     "options": [
+      "The invoice number",
+      "A photo",
+      "The customer's age"
+     ],
+     "answer": 0,
+     "explanation": "'include the invoice number'."
+    },
+    {
+     "prompt": "Complete the sentence: Can I pay by _____?",
+     "options": [
+      "bank transfer",
+      "payment due",
+      "credit card"
+     ],
+     "answer": 2,
+     "explanation": "“credit card” nghĩa là “thẻ tín dụng”. Câu đầy đủ: Can I pay by credit card?"
+    },
+    {
+     "prompt": "What does “invoice” mean?",
+     "options": [
+      "ghi kèm, bao gồm",
+      "tổng cộng",
+      "hóa đơn (bán hàng)"
+     ],
+     "answer": 2,
+     "explanation": "“invoice” = hóa đơn (bán hàng). Ví dụ: Please check the invoice."
+    },
+    {
+     "prompt": "Complete the sentence: I'll pay by _____.",
+     "options": [
+      "bank transfer",
+      "credit card",
+      "payment due"
+     ],
+     "answer": 0,
+     "explanation": "“bank transfer” nghĩa là “chuyển khoản ngân hàng”. Câu đầy đủ: I'll pay by bank transfer."
+    },
+    {
+     "prompt": "What does “bank transfer” mean?",
+     "options": [
+      "thẻ tín dụng",
+      "hạn thanh toán",
+      "chuyển khoản ngân hàng"
+     ],
+     "answer": 2,
+     "explanation": "“bank transfer” = chuyển khoản ngân hàng. Ví dụ: I'll pay by bank transfer."
+    },
+    {
+     "prompt": "Complete the sentence: _____ the invoice number.",
+     "options": [
+      "include",
+      "invoice",
+      "total"
+     ],
+     "answer": 0,
+     "explanation": "“include” nghĩa là “ghi kèm, bao gồm”. Câu đầy đủ: Include the invoice number."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a2-1",
+   "level": "A2",
+   "unit": "A2 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Tư vấn sản phẩm tiết kiệm và vay",
+   "objective": "So sánh các gói tiết kiệm, khoản vay và giải thích lãi suất đơn giản.",
+   "reading": "Customer: I want to save money for two years. What do you recommend?\nAdvisor: Our fixed-term deposit pays 5.5% a year. The flexible savings account pays less — 3% — but you can take your money out at any time.\nCustomer: What happens if I withdraw early from the fixed-term account?\nAdvisor: You'll lose some of the interest.\nCustomer: I see. I think the fixed-term one is better for me because I won't need the money.",
+   "vocabulary": [
+    {
+     "term": "fixed-term deposit",
+     "definition": "tiền gửi có kỳ hạn",
+     "example": "I have a fixed-term deposit."
+    },
+    {
+     "term": "interest",
+     "definition": "tiền lãi",
+     "example": "The account pays 5% interest."
+    },
+    {
+     "term": "interest rate",
+     "definition": "lãi suất",
+     "example": "What's the interest rate?"
+    },
+    {
+     "term": "flexible",
+     "definition": "linh hoạt",
+     "example": "A flexible account lets you withdraw anytime."
+    },
+    {
+     "term": "withdraw early",
+     "definition": "rút trước hạn",
+     "example": "If you withdraw early, you lose interest."
+    },
+    {
+     "term": "loan",
+     "definition": "khoản vay",
+     "example": "I'd like to apply for a loan."
+    }
+   ],
+   "grammar": {
+    "title": "So sánh: more/less + adj, better, the best",
+    "explanation": "Dùng so sánh hơn để tư vấn: higher interest, more flexible, less risky. Câu kết luận: X is better for you because…",
+    "examples": [
+     "The fixed-term account pays higher interest.",
+     "This loan is less expensive.",
+     "That option is the best for short-term saving."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc phần trăm và số thập phân",
+    "tip": "5.5% = five point five percent. 0.25 = zero point two five. Nhấn PER-cent.",
+    "words": [
+     "interest",
+     "percent",
+     "flexible",
+     "deposit"
+    ]
+   },
+   "speakingTasks": [
+    "Tư vấn cho thầy/cô chọn giữa hai gói tiết kiệm, giải thích bằng so sánh.",
+    "Thầy/cô hỏi về khoản vay mua xe — trả lời cơ bản."
+   ],
+   "questions": [
+    {
+     "prompt": "How long does the customer want to save?",
+     "options": [
+      "Five years",
+      "Two years",
+      "One year"
+     ],
+     "answer": 1,
+     "explanation": "'for two years'."
+    },
+    {
+     "prompt": "What rate does the fixed-term deposit pay?",
+     "options": [
+      "3%",
+      "5.5%",
+      "6%"
+     ],
+     "answer": 1,
+     "explanation": "'pays 5.5% a year'."
+    },
+    {
+     "prompt": "What is the advantage of the flexible account?",
+     "options": [
+      "Withdraw at any time",
+      "Higher interest",
+      "No ID needed"
+     ],
+     "answer": 0,
+     "explanation": "'you can take your money out at any time'."
+    },
+    {
+     "prompt": "What happens if the customer withdraws early?",
+     "options": [
+      "They lose some interest.",
+      "Nothing.",
+      "They pay a big fine."
+     ],
+     "answer": 0,
+     "explanation": "'You'll lose some of the interest.'"
+    },
+    {
+     "prompt": "How do you read 5.5%?",
+     "options": [
+      "five point five percent",
+      "five dot five percent",
+      "five comma five percent"
+     ],
+     "answer": 0,
+     "explanation": "Dấu thập phân đọc 'point'."
+    },
+    {
+     "prompt": "Complete the sentence: A _____ account lets you withdraw anytime.",
+     "options": [
+      "interest",
+      "flexible",
+      "loan"
+     ],
+     "answer": 1,
+     "explanation": "“flexible” nghĩa là “linh hoạt”. Câu đầy đủ: A flexible account lets you withdraw anytime."
+    },
+    {
+     "prompt": "What does “fixed-term deposit” mean?",
+     "options": [
+      "lãi suất",
+      "tiền gửi có kỳ hạn",
+      "rút trước hạn"
+     ],
+     "answer": 1,
+     "explanation": "“fixed-term deposit” = tiền gửi có kỳ hạn. Ví dụ: I have a fixed-term deposit."
+    },
+    {
+     "prompt": "Complete the sentence: If you _____, you lose interest.",
+     "options": [
+      "interest rate",
+      "fixed-term deposit",
+      "withdraw early"
+     ],
+     "answer": 2,
+     "explanation": "“withdraw early” nghĩa là “rút trước hạn”. Câu đầy đủ: If you withdraw early, you lose interest."
+    },
+    {
+     "prompt": "What does “loan” mean?",
+     "options": [
+      "linh hoạt",
+      "khoản vay",
+      "tiền lãi"
+     ],
+     "answer": 1,
+     "explanation": "“loan” = khoản vay. Ví dụ: I'd like to apply for a loan."
+    },
+    {
+     "prompt": "Complete the sentence: What's the _____?",
+     "options": [
+      "withdraw early",
+      "interest rate",
+      "fixed-term deposit"
+     ],
+     "answer": 1,
+     "explanation": "“interest rate” nghĩa là “lãi suất”. Câu đầy đủ: What's the interest rate?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a2-2",
+   "level": "A2",
+   "unit": "A2 · Bài 2",
+   "category": "Từ vựng",
+   "title": "Chi phí và ngân sách cá nhân",
+   "objective": "Nói về thu nhập, chi tiêu, tiết kiệm và lập ngân sách tháng.",
+   "reading": "I earn about fifteen million dong a month. I spend five million on rent and three million on food. Transport costs about one million. I try to save four million every month. I don't spend much on clothes, but I sometimes spend too much on eating out. My goal is to save enough money for a motorbike by the end of the year.",
+   "vocabulary": [
+    {
+     "term": "earn",
+     "definition": "kiếm (thu nhập)",
+     "example": "I earn fifteen million a month."
+    },
+    {
+     "term": "spend on",
+     "definition": "chi tiêu cho",
+     "example": "I spend five million on rent."
+    },
+    {
+     "term": "rent",
+     "definition": "tiền thuê nhà",
+     "example": "My rent is quite high."
+    },
+    {
+     "term": "save",
+     "definition": "tiết kiệm",
+     "example": "I save four million every month."
+    },
+    {
+     "term": "cost",
+     "definition": "có giá, tốn",
+     "example": "Transport costs one million."
+    },
+    {
+     "term": "budget",
+     "definition": "ngân sách",
+     "example": "I make a budget every month."
+    }
+   ],
+   "grammar": {
+    "title": "too much / too many / enough",
+    "explanation": "too much + không đếm được (too much money), too many + đếm được (too many coffees). enough + danh từ (enough money) / tính từ + enough (old enough).",
+    "examples": [
+     "I spend too much money on food.",
+     "I buy too many clothes.",
+     "I don't have enough savings yet."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Phân biệt spend /spend/ – spent /spent/",
+    "tip": "Quá khứ spent có âm /t/ cuối rõ: I spent a lot last month.",
+    "words": [
+     "spend",
+     "spent",
+     "earn",
+     "budget"
+    ]
+   },
+   "speakingTasks": [
+    "Mô tả ngân sách tháng của bạn: thu, chi, tiết kiệm.",
+    "Thầy/cô cho lời khuyên — bạn phản hồi."
+   ],
+   "questions": [
+    {
+     "prompt": "How much does the writer earn?",
+     "options": [
+      "50 million",
+      "5 million",
+      "15 million"
+     ],
+     "answer": 2,
+     "explanation": "'about fifteen million dong a month'."
+    },
+    {
+     "prompt": "What is the biggest expense?",
+     "options": [
+      "Transport",
+      "Food",
+      "Rent"
+     ],
+     "answer": 2,
+     "explanation": "Rent 5 triệu là lớn nhất."
+    },
+    {
+     "prompt": "How much does the writer save monthly?",
+     "options": [
+      "5 million",
+      "3 million",
+      "4 million"
+     ],
+     "answer": 2,
+     "explanation": "'save four million every month'."
+    },
+    {
+     "prompt": "What does the writer spend too much on?",
+     "options": [
+      "Clothes",
+      "Rent",
+      "Eating out"
+     ],
+     "answer": 2,
+     "explanation": "'too much on eating out'."
+    },
+    {
+     "prompt": "Choose the correct phrase.",
+     "options": [
+      "too much money",
+      "too many money",
+      "too money"
+     ],
+     "answer": 0,
+     "explanation": "money không đếm được → too much."
+    },
+    {
+     "prompt": "Complete the sentence: Transport _____s one million.",
+     "options": [
+      "cost",
+      "budget",
+      "save"
+     ],
+     "answer": 0,
+     "explanation": "“cost” nghĩa là “có giá, tốn”. Câu đầy đủ: Transport costs one million."
+    },
+    {
+     "prompt": "What does “earn” mean?",
+     "options": [
+      "kiếm (thu nhập)",
+      "ngân sách",
+      "có giá, tốn"
+     ],
+     "answer": 0,
+     "explanation": "“earn” = kiếm (thu nhập). Ví dụ: I earn fifteen million a month."
+    },
+    {
+     "prompt": "Complete the sentence: I _____ four million every month.",
+     "options": [
+      "cost",
+      "save",
+      "rent"
+     ],
+     "answer": 1,
+     "explanation": "“save” nghĩa là “tiết kiệm”. Câu đầy đủ: I save four million every month."
+    },
+    {
+     "prompt": "What does “cost” mean?",
+     "options": [
+      "tiết kiệm",
+      "có giá, tốn",
+      "ngân sách"
+     ],
+     "answer": 1,
+     "explanation": "“cost” = có giá, tốn. Ví dụ: Transport costs one million."
+    },
+    {
+     "prompt": "Complete the sentence: My _____ is quite high.",
+     "options": [
+      "earn",
+      "save",
+      "rent"
+     ],
+     "answer": 2,
+     "explanation": "“rent” nghĩa là “tiền thuê nhà”. Câu đầy đủ: My rent is quite high."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a2-3",
+   "level": "A2",
+   "unit": "A2 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Email nhắc nợ lịch sự",
+   "objective": "Viết và nói lời nhắc thanh toán quá hạn một cách lịch sự, chuyên nghiệp.",
+   "reading": "Subject: Payment reminder – Invoice 1024\nDear Mr. Hung,\nI hope you are well. This is a friendly reminder that invoice 1024 for $640 was due on 30 April. According to our records, we have not received payment yet. If you have already paid, please ignore this email. Otherwise, could you arrange payment by 10 May?\nKind regards,\nLan, Accounts Department",
+   "vocabulary": [
+    {
+     "term": "reminder",
+     "definition": "lời nhắc",
+     "example": "This is a friendly reminder."
+    },
+    {
+     "term": "according to our records",
+     "definition": "theo hồ sơ của chúng tôi",
+     "example": "According to our records, it is unpaid."
+    },
+    {
+     "term": "receive",
+     "definition": "nhận được",
+     "example": "We have not received payment."
+    },
+    {
+     "term": "ignore",
+     "definition": "bỏ qua",
+     "example": "Please ignore this email if you have paid."
+    },
+    {
+     "term": "otherwise",
+     "definition": "nếu không thì",
+     "example": "Otherwise, please pay by Friday."
+    },
+    {
+     "term": "arrange payment",
+     "definition": "sắp xếp thanh toán",
+     "example": "Could you arrange payment soon?"
+    }
+   ],
+   "grammar": {
+    "title": "Hiện tại hoàn thành với yet / already trong email",
+    "explanation": "We have not received payment yet. If you have already paid, … Dùng để nói trạng thái hiện tại của một việc.",
+    "examples": [
+     "We haven't received your reply yet.",
+     "I have already sent the invoice.",
+     "Have you paid the bill yet?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng lịch sự: friendly reminder",
+    "tip": "Nhấn 'FRIENDly REminder' với giọng nhẹ. 'received' /rɪˈsiːvd/ — đuôi -ed /d/.",
+    "words": [
+     "reminder",
+     "received",
+     "otherwise",
+     "records"
+    ]
+   },
+   "speakingTasks": [
+    "Gọi điện nhắc khách hàng (thầy/cô) thanh toán quá hạn một cách lịch sự.",
+    "Khách hàng xin gia hạn — bạn thương lượng ngày mới."
+   ],
+   "questions": [
+    {
+     "prompt": "Which invoice is unpaid?",
+     "options": [
+      "1042",
+      "1024",
+      "6400"
+     ],
+     "answer": 1,
+     "explanation": "'invoice 1024'."
+    },
+    {
+     "prompt": "When was it due?",
+     "options": [
+      "10 May",
+      "1 May",
+      "30 April"
+     ],
+     "answer": 2,
+     "explanation": "'was due on 30 April'."
+    },
+    {
+     "prompt": "What is the new deadline?",
+     "options": [
+      "10 May",
+      "20 May",
+      "30 April"
+     ],
+     "answer": 0,
+     "explanation": "'arrange payment by 10 May'."
+    },
+    {
+     "prompt": "What should the customer do if they have paid?",
+     "options": [
+      "Ignore the email",
+      "Call the bank",
+      "Pay again"
+     ],
+     "answer": 0,
+     "explanation": "'please ignore this email'."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "We haven't receive payment yet.",
+      "We didn't receive payment yet.",
+      "We haven't received payment yet."
+     ],
+     "answer": 2,
+     "explanation": "have not + V3 + yet."
+    },
+    {
+     "prompt": "Complete the sentence: We have not _____d payment.",
+     "options": [
+      "receive",
+      "ignore",
+      "reminder"
+     ],
+     "answer": 0,
+     "explanation": "“receive” nghĩa là “nhận được”. Câu đầy đủ: We have not received payment."
+    },
+    {
+     "prompt": "What does “ignore” mean?",
+     "options": [
+      "bỏ qua",
+      "lời nhắc",
+      "nếu không thì"
+     ],
+     "answer": 0,
+     "explanation": "“ignore” = bỏ qua. Ví dụ: Please ignore this email if you have paid."
+    },
+    {
+     "prompt": "Complete the sentence: This is a friendly _____.",
+     "options": [
+      "reminder",
+      "ignore",
+      "receive"
+     ],
+     "answer": 0,
+     "explanation": "“reminder” nghĩa là “lời nhắc”. Câu đầy đủ: This is a friendly reminder."
+    },
+    {
+     "prompt": "What does “reminder” mean?",
+     "options": [
+      "lời nhắc",
+      "bỏ qua",
+      "nhận được"
+     ],
+     "answer": 0,
+     "explanation": "“reminder” = lời nhắc. Ví dụ: This is a friendly reminder."
+    },
+    {
+     "prompt": "Complete the sentence: Could you _____ soon?",
+     "options": [
+      "receive",
+      "arrange payment",
+      "otherwise"
+     ],
+     "answer": 1,
+     "explanation": "“arrange payment” nghĩa là “sắp xếp thanh toán”. Câu đầy đủ: Could you arrange payment soon?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b1-1",
+   "level": "B1",
+   "unit": "B1 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Mô tả báo cáo tài chính",
+   "objective": "Đọc và giải thích các chỉ số chính: doanh thu, chi phí, lợi nhuận, biên lợi nhuận.",
+   "reading": "In the third quarter, revenue increased by 12% to $4.5 million, driven mainly by strong online sales. However, operating costs rose faster, by 18%, due to higher shipping prices. As a result, net profit fell slightly to $420,000, and our profit margin decreased from 11% to 9.3%. We expect margins to recover in the fourth quarter as new shipping contracts take effect.",
+   "vocabulary": [
+    {
+     "term": "revenue",
+     "definition": "doanh thu",
+     "example": "Revenue increased by 12%."
+    },
+    {
+     "term": "operating costs",
+     "definition": "chi phí hoạt động",
+     "example": "Operating costs rose by 18%."
+    },
+    {
+     "term": "net profit",
+     "definition": "lợi nhuận ròng",
+     "example": "Net profit fell slightly."
+    },
+    {
+     "term": "profit margin",
+     "definition": "biên lợi nhuận",
+     "example": "Our profit margin decreased."
+    },
+    {
+     "term": "driven by",
+     "definition": "được thúc đẩy bởi",
+     "example": "Growth was driven by online sales."
+    },
+    {
+     "term": "take effect",
+     "definition": "có hiệu lực",
+     "example": "The new contracts take effect next month."
+    }
+   ],
+   "grammar": {
+    "title": "Giới từ với số liệu: by / to / from … to",
+    "explanation": "increase BY 12% (mức thay đổi), increase TO $4.5m (giá trị mới), decrease FROM 11% TO 9.3%. due to + danh từ = do, bởi vì.",
+    "examples": [
+     "Sales rose by 5% to $2 million.",
+     "Costs fell from $800,000 to $750,000.",
+     "Profit dropped due to higher taxes."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc số tiền: $4.5 million, $420,000",
+    "tip": "four point five million dollars; four hundred and twenty thousand dollars. Nhấn số, nói rõ 'million'.",
+    "words": [
+     "revenue",
+     "margin",
+     "operating",
+     "quarter"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích một báo cáo quý (tưởng tượng) cho sếp bằng 4–5 câu.",
+    "Thầy/cô hỏi 'Why did costs rise?' — giải thích nguyên nhân."
+   ],
+   "questions": [
+    {
+     "prompt": "By how much did revenue increase?",
+     "options": [
+      "18%",
+      "12%",
+      "9.3%"
+     ],
+     "answer": 1,
+     "explanation": "'revenue increased by 12%'."
+    },
+    {
+     "prompt": "Why did operating costs rise?",
+     "options": [
+      "Higher shipping prices",
+      "Higher salaries",
+      "New offices"
+     ],
+     "answer": 0,
+     "explanation": "'due to higher shipping prices'."
+    },
+    {
+     "prompt": "What happened to net profit?",
+     "options": [
+      "It stayed the same.",
+      "It rose sharply.",
+      "It fell slightly."
+     ],
+     "answer": 2,
+     "explanation": "'net profit fell slightly'."
+    },
+    {
+     "prompt": "Choose the correct preposition: The margin fell ___ 11% ___ 9.3%.",
+     "options": [
+      "by … to",
+      "to … by",
+      "from … to"
+     ],
+     "answer": 2,
+     "explanation": "from (giá trị cũ) to (giá trị mới)."
+    },
+    {
+     "prompt": "Why do they expect margins to recover?",
+     "options": [
+      "Lower revenue",
+      "Fewer customers",
+      "New shipping contracts"
+     ],
+     "answer": 2,
+     "explanation": "'as new shipping contracts take effect'."
+    },
+    {
+     "prompt": "Complete the sentence: _____ rose by 18%.",
+     "options": [
+      "driven by",
+      "operating costs",
+      "profit margin"
+     ],
+     "answer": 1,
+     "explanation": "“operating costs” nghĩa là “chi phí hoạt động”. Câu đầy đủ: Operating costs rose by 18%."
+    },
+    {
+     "prompt": "What does “take effect” mean?",
+     "options": [
+      "có hiệu lực",
+      "biên lợi nhuận",
+      "lợi nhuận ròng"
+     ],
+     "answer": 0,
+     "explanation": "“take effect” = có hiệu lực. Ví dụ: The new contracts take effect next month."
+    },
+    {
+     "prompt": "Complete the sentence: _____ increased by 12%.",
+     "options": [
+      "revenue",
+      "take effect",
+      "operating costs"
+     ],
+     "answer": 0,
+     "explanation": "“revenue” nghĩa là “doanh thu”. Câu đầy đủ: Revenue increased by 12%."
+    },
+    {
+     "prompt": "What does “net profit” mean?",
+     "options": [
+      "biên lợi nhuận",
+      "lợi nhuận ròng",
+      "chi phí hoạt động"
+     ],
+     "answer": 1,
+     "explanation": "“net profit” = lợi nhuận ròng. Ví dụ: Net profit fell slightly."
+    },
+    {
+     "prompt": "Complete the sentence: Our _____ decreased.",
+     "options": [
+      "profit margin",
+      "operating costs",
+      "driven by"
+     ],
+     "answer": 0,
+     "explanation": "“profit margin” nghĩa là “biên lợi nhuận”. Câu đầy đủ: Our profit margin decreased."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b1-2",
+   "level": "B1",
+   "unit": "B1 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Tư vấn đầu tư cơ bản",
+   "objective": "Giải thích rủi ro – lợi nhuận, đa dạng hóa và khẩu vị rủi ro của khách hàng.",
+   "reading": "Advisor: Before we choose any investments, I need to understand your goals. How long are you planning to invest for?\nClient: About ten years, for my children's education.\nAdvisor: And how would you feel if your investment lost 20% in one year?\nClient: Quite nervous, to be honest.\nAdvisor: Then a balanced portfolio would suit you — a mix of bonds, which are lower risk, and shares, which offer higher potential returns. Diversification reduces the impact if one market performs badly.",
+   "vocabulary": [
+    {
+     "term": "invest",
+     "definition": "đầu tư",
+     "example": "I plan to invest for ten years."
+    },
+    {
+     "term": "portfolio",
+     "definition": "danh mục đầu tư",
+     "example": "A balanced portfolio suits you."
+    },
+    {
+     "term": "bond",
+     "definition": "trái phiếu",
+     "example": "Bonds are lower risk."
+    },
+    {
+     "term": "shares",
+     "definition": "cổ phiếu",
+     "example": "Shares can offer higher returns."
+    },
+    {
+     "term": "return",
+     "definition": "lợi nhuận (đầu tư)",
+     "example": "What's the expected return?"
+    },
+    {
+     "term": "diversification",
+     "definition": "đa dạng hóa",
+     "example": "Diversification reduces risk."
+    }
+   ],
+   "grammar": {
+    "title": "Mệnh đề quan hệ which/who để giải thích",
+    "explanation": "Dùng which (vật) / who (người) để giải thích thuật ngữ ngay trong câu: bonds, which are lower risk, … Câu điều kiện loại 2 để hỏi giả định: How would you feel if…?",
+    "examples": [
+     "Shares, which can be volatile, suit long-term investors.",
+     "A client who needs money soon should avoid risk.",
+     "What would you do if the market fell?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm: portFOlio, diversifiCAtion",
+    "tip": "portfolio /pɔːtˈfəʊliəʊ/, diversification /daɪˌvɜːsɪfɪˈkeɪʃən/ — đuôi -tion nhấn âm ngay trước.",
+    "words": [
+     "portfolio",
+     "diversification",
+     "invest",
+     "potential"
+    ]
+   },
+   "speakingTasks": [
+    "Tư vấn đầu tư cho thầy/cô: hỏi mục tiêu, thời gian, khẩu vị rủi ro.",
+    "Giải thích 'diversification' cho người không chuyên."
+   ],
+   "questions": [
+    {
+     "prompt": "How long does the client plan to invest?",
+     "options": [
+      "Two years",
+      "Twenty years",
+      "Ten years"
+     ],
+     "answer": 2,
+     "explanation": "'About ten years'."
+    },
+    {
+     "prompt": "What is the goal?",
+     "options": [
+      "Retirement",
+      "Buying a house",
+      "Children's education"
+     ],
+     "answer": 2,
+     "explanation": "'for my children's education'."
+    },
+    {
+     "prompt": "How would the client feel about a 20% loss?",
+     "options": [
+      "Excited",
+      "Calm",
+      "Nervous"
+     ],
+     "answer": 2,
+     "explanation": "'Quite nervous'."
+    },
+    {
+     "prompt": "Which portfolio does the advisor suggest?",
+     "options": [
+      "A balanced portfolio",
+      "All shares",
+      "Cash only"
+     ],
+     "answer": 0,
+     "explanation": "'a balanced portfolio would suit you'."
+    },
+    {
+     "prompt": "Why diversify?",
+     "options": [
+      "To get guaranteed profits",
+      "To reduce the impact of one bad market",
+      "To pay fewer taxes"
+     ],
+     "answer": 1,
+     "explanation": "'reduces the impact if one market performs badly'."
+    },
+    {
+     "prompt": "Complete the sentence: What's the expected _____?",
+     "options": [
+      "portfolio",
+      "return",
+      "diversification"
+     ],
+     "answer": 1,
+     "explanation": "“return” nghĩa là “lợi nhuận (đầu tư)”. Câu đầy đủ: What's the expected return?"
+    },
+    {
+     "prompt": "What does “shares” mean?",
+     "options": [
+      "đầu tư",
+      "lợi nhuận (đầu tư)",
+      "cổ phiếu"
+     ],
+     "answer": 2,
+     "explanation": "“shares” = cổ phiếu. Ví dụ: Shares can offer higher returns."
+    },
+    {
+     "prompt": "Complete the sentence: _____ can offer higher returns.",
+     "options": [
+      "invest",
+      "shares",
+      "return"
+     ],
+     "answer": 1,
+     "explanation": "“shares” nghĩa là “cổ phiếu”. Câu đầy đủ: Shares can offer higher returns."
+    },
+    {
+     "prompt": "What does “invest” mean?",
+     "options": [
+      "đầu tư",
+      "lợi nhuận (đầu tư)",
+      "trái phiếu"
+     ],
+     "answer": 0,
+     "explanation": "“invest” = đầu tư. Ví dụ: I plan to invest for ten years."
+    },
+    {
+     "prompt": "Complete the sentence: _____s are lower risk.",
+     "options": [
+      "diversification",
+      "bond",
+      "shares"
+     ],
+     "answer": 1,
+     "explanation": "“bond” nghĩa là “trái phiếu”. Câu đầy đủ: Bonds are lower risk."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b1-3",
+   "level": "B1",
+   "unit": "B1 · Bài 3",
+   "category": "Từ vựng",
+   "title": "Kiểm soát chi phí doanh nghiệp",
+   "objective": "Đề xuất cắt giảm chi phí và đánh giá tác động.",
+   "reading": "Our travel expenses have doubled this year. I suggest that we replace most face-to-face meetings with video calls. We could also negotiate better rates with our hotel partners. If we cut travel by 40%, we would save around $60,000 annually. However, we need to make sure that important client relationships aren't affected.",
+   "vocabulary": [
+    {
+     "term": "expenses",
+     "definition": "chi phí",
+     "example": "Travel expenses have doubled."
+    },
+    {
+     "term": "double",
+     "definition": "tăng gấp đôi",
+     "example": "Prices doubled in two years."
+    },
+    {
+     "term": "face-to-face",
+     "definition": "trực tiếp",
+     "example": "We prefer face-to-face meetings."
+    },
+    {
+     "term": "negotiate",
+     "definition": "đàm phán",
+     "example": "Let's negotiate better rates."
+    },
+    {
+     "term": "annually",
+     "definition": "hàng năm",
+     "example": "We would save $60,000 annually."
+    },
+    {
+     "term": "affect",
+     "definition": "ảnh hưởng (động từ)",
+     "example": "This won't affect our clients."
+    }
+   ],
+   "grammar": {
+    "title": "Câu điều kiện loại 2 cho giả định ngân sách",
+    "explanation": "If + quá khứ đơn, would + V: tính toán giả định. If we cut travel by 40%, we would save… affect (động từ) ≠ effect (danh từ).",
+    "examples": [
+     "If we reduced staff, morale would fall.",
+     "If we switched suppliers, we'd save 10%.",
+     "The change had a big effect on costs."
+    ]
+   },
+   "pronunciation": {
+    "focus": "affect /əˈfekt/ vs effect /ɪˈfekt/",
+    "tip": "Phát âm gần giống; phân biệt bằng loại từ: affect là động từ, effect là danh từ.",
+    "words": [
+     "affect",
+     "effect",
+     "annually",
+     "negotiate"
+    ]
+   },
+   "speakingTasks": [
+    "Đề xuất 3 cách cắt giảm chi phí cho công ty và nêu tác động.",
+    "Thầy/cô phản đối một đề xuất — bạn bảo vệ bằng số liệu."
+   ],
+   "questions": [
+    {
+     "prompt": "What has doubled?",
+     "options": [
+      "Salaries",
+      "Revenue",
+      "Travel expenses"
+     ],
+     "answer": 2,
+     "explanation": "'Our travel expenses have doubled'."
+    },
+    {
+     "prompt": "What does the writer suggest?",
+     "options": [
+      "Video calls instead of most meetings",
+      "More trips",
+      "Closing offices"
+     ],
+     "answer": 0,
+     "explanation": "'replace most face-to-face meetings with video calls'."
+    },
+    {
+     "prompt": "How much could they save?",
+     "options": [
+      "$600,000",
+      "$40,000",
+      "$60,000"
+     ],
+     "answer": 2,
+     "explanation": "'around $60,000 annually'."
+    },
+    {
+     "prompt": "What is the concern?",
+     "options": [
+      "Hotel quality",
+      "Internet speed",
+      "Client relationships"
+     ],
+     "answer": 2,
+     "explanation": "'important client relationships aren't affected'."
+    },
+    {
+     "prompt": "Choose the correct word: The new policy had a positive ___ on costs.",
+     "options": [
+      "affect",
+      "effect",
+      "affection"
+     ],
+     "answer": 1,
+     "explanation": "Danh từ: effect."
+    },
+    {
+     "prompt": "Complete the sentence: This won't _____ our clients.",
+     "options": [
+      "affect",
+      "face-to-face",
+      "expenses"
+     ],
+     "answer": 0,
+     "explanation": "“affect” nghĩa là “ảnh hưởng (động từ)”. Câu đầy đủ: This won't affect our clients."
+    },
+    {
+     "prompt": "What does “annually” mean?",
+     "options": [
+      "đàm phán",
+      "tăng gấp đôi",
+      "hàng năm"
+     ],
+     "answer": 2,
+     "explanation": "“annually” = hàng năm. Ví dụ: We would save $60,000 annually."
+    },
+    {
+     "prompt": "Complete the sentence: Let's _____ better rates.",
+     "options": [
+      "annually",
+      "affect",
+      "negotiate"
+     ],
+     "answer": 2,
+     "explanation": "“negotiate” nghĩa là “đàm phán”. Câu đầy đủ: Let's negotiate better rates."
+    },
+    {
+     "prompt": "What does “double” mean?",
+     "options": [
+      "tăng gấp đôi",
+      "ảnh hưởng (động từ)",
+      "đàm phán"
+     ],
+     "answer": 0,
+     "explanation": "“double” = tăng gấp đôi. Ví dụ: Prices doubled in two years."
+    },
+    {
+     "prompt": "Complete the sentence: We prefer _____ meetings.",
+     "options": [
+      "face-to-face",
+      "annually",
+      "negotiate"
+     ],
+     "answer": 0,
+     "explanation": "“face-to-face” nghĩa là “trực tiếp”. Câu đầy đủ: We prefer face-to-face meetings."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b2-1",
+   "level": "B2",
+   "unit": "B2 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Thuyết trình kết quả kinh doanh cho nhà đầu tư",
+   "objective": "Trình bày kết quả, giải thích biến động và đưa dự báo một cách thuyết phục.",
+   "reading": "Despite a challenging macroeconomic environment, we delivered revenue growth of 8% year on year. This was largely attributable to our expansion into Southeast Asia, which now accounts for a quarter of total sales. Gross margin was squeezed by rising input costs; nevertheless, disciplined cost control enabled us to maintain EBITDA broadly in line with expectations. Looking ahead, we anticipate double-digit growth, assuming currency volatility remains manageable.",
+   "vocabulary": [
+    {
+     "term": "year on year",
+     "definition": "so với cùng kỳ năm trước",
+     "example": "Sales grew 8% year on year."
+    },
+    {
+     "term": "attributable to",
+     "definition": "do, nhờ vào",
+     "example": "Growth was attributable to new markets."
+    },
+    {
+     "term": "account for",
+     "definition": "chiếm (tỷ lệ)",
+     "example": "Asia accounts for 25% of sales."
+    },
+    {
+     "term": "squeeze",
+     "definition": "bị ép, thu hẹp",
+     "example": "Margins were squeezed by costs."
+    },
+    {
+     "term": "in line with expectations",
+     "definition": "đúng như kỳ vọng",
+     "example": "Results were in line with expectations."
+    },
+    {
+     "term": "volatility",
+     "definition": "sự biến động",
+     "example": "Currency volatility is a risk."
+    }
+   ],
+   "grammar": {
+    "title": "Ngôn ngữ thận trọng (hedging)",
+    "explanation": "Dùng largely, broadly, approximately, we anticipate, assuming that… để tránh cam kết tuyệt đối. Nhượng bộ: Despite + N, nevertheless.",
+    "examples": [
+     "Growth was largely driven by exports.",
+     "We anticipate modest improvement, assuming demand holds.",
+     "Despite the downturn, margins were broadly stable."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Viết tắt tài chính: EBITDA",
+    "tip": "EBITDA đọc /ˈiːbɪtdɑː/ hoặc /iːˈbɪtdɑː/. YoY đọc 'year on year'. Đọc tự tin, không đánh vần.",
+    "words": [
+     "EBITDA",
+     "volatility",
+     "attributable",
+     "anticipate"
+    ]
+   },
+   "speakingTasks": [
+    "Thuyết trình 1 phút về kết quả kinh doanh (tưởng tượng) cho nhà đầu tư.",
+    "Thầy/cô là nhà đầu tư — hỏi về rủi ro tỷ giá."
+   ],
+   "questions": [
+    {
+     "prompt": "How much did revenue grow?",
+     "options": [
+      "25%",
+      "Double digits",
+      "8%"
+     ],
+     "answer": 2,
+     "explanation": "'revenue growth of 8% year on year'."
+    },
+    {
+     "prompt": "What was growth mainly due to?",
+     "options": [
+      "Price increases",
+      "Expansion into Southeast Asia",
+      "Cost cutting"
+     ],
+     "answer": 1,
+     "explanation": "'attributable to our expansion into Southeast Asia'."
+    },
+    {
+     "prompt": "What share of sales does Southeast Asia represent?",
+     "options": [
+      "A quarter",
+      "Half",
+      "A tenth"
+     ],
+     "answer": 0,
+     "explanation": "'accounts for a quarter of total sales'."
+    },
+    {
+     "prompt": "What squeezed gross margin?",
+     "options": [
+      "Taxes",
+      "Rising input costs",
+      "Lower prices"
+     ],
+     "answer": 1,
+     "explanation": "'squeezed by rising input costs'."
+    },
+    {
+     "prompt": "Which word is an example of hedging?",
+     "options": [
+      "always",
+      "largely",
+      "definitely"
+     ],
+     "answer": 1,
+     "explanation": "largely = phần lớn (thận trọng)."
+    },
+    {
+     "prompt": "Complete the sentence: Margins were _____d by costs.",
+     "options": [
+      "account for",
+      "volatility",
+      "squeeze"
+     ],
+     "answer": 2,
+     "explanation": "“squeeze” nghĩa là “bị ép, thu hẹp”. Câu đầy đủ: Margins were squeezed by costs."
+    },
+    {
+     "prompt": "What does “year on year” mean?",
+     "options": [
+      "chiếm (tỷ lệ)",
+      "đúng như kỳ vọng",
+      "so với cùng kỳ năm trước"
+     ],
+     "answer": 2,
+     "explanation": "“year on year” = so với cùng kỳ năm trước. Ví dụ: Sales grew 8% year on year."
+    },
+    {
+     "prompt": "Complete the sentence: Currency _____ is a risk.",
+     "options": [
+      "volatility",
+      "attributable to",
+      "squeeze"
+     ],
+     "answer": 0,
+     "explanation": "“volatility” nghĩa là “sự biến động”. Câu đầy đủ: Currency volatility is a risk."
+    },
+    {
+     "prompt": "What does “volatility” mean?",
+     "options": [
+      "bị ép, thu hẹp",
+      "do, nhờ vào",
+      "sự biến động"
+     ],
+     "answer": 2,
+     "explanation": "“volatility” = sự biến động. Ví dụ: Currency volatility is a risk."
+    },
+    {
+     "prompt": "Complete the sentence: Sales grew 8% _____.",
+     "options": [
+      "in line with expectations",
+      "year on year",
+      "account for"
+     ],
+     "answer": 1,
+     "explanation": "“year on year” nghĩa là “so với cùng kỳ năm trước”. Câu đầy đủ: Sales grew 8% year on year."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b2-2",
+   "level": "B2",
+   "unit": "B2 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Đàm phán điều khoản tín dụng",
+   "objective": "Đàm phán lãi suất, tài sản bảo đảm và điều khoản vay với ngân hàng.",
+   "reading": "CFO: We're looking for a five-year loan of two million dollars to fund our new factory.\nBanker: Based on your financials, we could offer 7.2%, secured against the property.\nCFO: Given our strong cash flow and clean credit history, we were hoping for something closer to 6.5%.\nBanker: We might be able to go to 6.8% if you agree to maintain a debt-to-equity ratio below 1.5.\nCFO: That's acceptable, provided there's no penalty for early repayment.\nBanker: I'll need to check with our credit committee, but that should be possible.",
+   "vocabulary": [
+    {
+     "term": "fund",
+     "definition": "cấp vốn, tài trợ",
+     "example": "The loan will fund the new factory."
+    },
+    {
+     "term": "secured against",
+     "definition": "được bảo đảm bằng",
+     "example": "The loan is secured against the property."
+    },
+    {
+     "term": "cash flow",
+     "definition": "dòng tiền",
+     "example": "We have strong cash flow."
+    },
+    {
+     "term": "credit history",
+     "definition": "lịch sử tín dụng",
+     "example": "They have a clean credit history."
+    },
+    {
+     "term": "debt-to-equity ratio",
+     "definition": "tỷ lệ nợ trên vốn chủ sở hữu",
+     "example": "Keep the debt-to-equity ratio below 1.5."
+    },
+    {
+     "term": "early repayment",
+     "definition": "trả nợ trước hạn",
+     "example": "Is there a penalty for early repayment?"
+    }
+   ],
+   "grammar": {
+    "title": "Nhượng bộ có điều kiện: if / provided / we were hoping for",
+    "explanation": "Quá khứ tiếp diễn 'we were hoping for…' làm yêu cầu mềm hơn. might be able to + V cho nhượng bộ chưa chắc chắn. provided (that) đặt điều kiện.",
+    "examples": [
+     "We were hoping for a lower rate.",
+     "We might be able to extend the term.",
+     "We'll accept, provided the fees are waived."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc tỷ lệ và lãi suất",
+    "tip": "7.2% seven point two percent; ratio 1.5 'one point five'. Nhấn con số đề xuất khi đàm phán.",
+    "words": [
+     "ratio",
+     "repayment",
+     "secured",
+     "committee"
+    ]
+   },
+   "speakingTasks": [
+    "Đàm phán khoản vay với thầy/cô (ngân hàng): lãi suất, kỳ hạn, điều kiện.",
+    "Đưa một nhượng bộ và đặt một điều kiện."
+   ],
+   "questions": [
+    {
+     "prompt": "What is the loan for?",
+     "options": [
+      "A new factory",
+      "Salaries",
+      "Marketing"
+     ],
+     "answer": 0,
+     "explanation": "'to fund our new factory'."
+    },
+    {
+     "prompt": "What was the bank's first offer?",
+     "options": [
+      "6.5%",
+      "6.8%",
+      "7.2%"
+     ],
+     "answer": 2,
+     "explanation": "'we could offer 7.2%'."
+    },
+    {
+     "prompt": "What condition comes with 6.8%?",
+     "options": [
+      "Debt-to-equity ratio below 1.5",
+      "More collateral",
+      "A ten-year term"
+     ],
+     "answer": 0,
+     "explanation": "'maintain a debt-to-equity ratio below 1.5'."
+    },
+    {
+     "prompt": "What does the CFO want in return?",
+     "options": [
+      "No early repayment penalty",
+      "A longer term",
+      "Lower fees"
+     ],
+     "answer": 0,
+     "explanation": "'no penalty for early repayment'."
+    },
+    {
+     "prompt": "Why does the CFO say “we were hoping for”?",
+     "options": [
+      "To talk about the past",
+      "To refuse",
+      "To sound more polite"
+     ],
+     "answer": 2,
+     "explanation": "Quá khứ tiếp diễn làm yêu cầu mềm mỏng."
+    },
+    {
+     "prompt": "Complete the sentence: We have strong _____.",
+     "options": [
+      "secured against",
+      "early repayment",
+      "cash flow"
+     ],
+     "answer": 2,
+     "explanation": "“cash flow” nghĩa là “dòng tiền”. Câu đầy đủ: We have strong cash flow."
+    },
+    {
+     "prompt": "What does “cash flow” mean?",
+     "options": [
+      "dòng tiền",
+      "trả nợ trước hạn",
+      "được bảo đảm bằng"
+     ],
+     "answer": 0,
+     "explanation": "“cash flow” = dòng tiền. Ví dụ: We have strong cash flow."
+    },
+    {
+     "prompt": "Complete the sentence: The loan is _____ the property.",
+     "options": [
+      "cash flow",
+      "secured against",
+      "early repayment"
+     ],
+     "answer": 1,
+     "explanation": "“secured against” nghĩa là “được bảo đảm bằng”. Câu đầy đủ: The loan is secured against the property."
+    },
+    {
+     "prompt": "What does “secured against” mean?",
+     "options": [
+      "được bảo đảm bằng",
+      "trả nợ trước hạn",
+      "dòng tiền"
+     ],
+     "answer": 0,
+     "explanation": "“secured against” = được bảo đảm bằng. Ví dụ: The loan is secured against the property."
+    },
+    {
+     "prompt": "Complete the sentence: Is there a penalty for _____?",
+     "options": [
+      "cash flow",
+      "credit history",
+      "early repayment"
+     ],
+     "answer": 2,
+     "explanation": "“early repayment” nghĩa là “trả nợ trước hạn”. Câu đầy đủ: Is there a penalty for early repayment?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b2-3",
+   "level": "B2",
+   "unit": "B2 · Bài 3",
+   "category": "Từ vựng",
+   "title": "Rủi ro, tuân thủ và chống rửa tiền",
+   "objective": "Thảo luận rủi ro tài chính, tuân thủ quy định và quy trình KYC/AML.",
+   "reading": "Financial institutions are required to verify the identity of their customers before opening accounts — a process known as Know Your Customer (KYC). Transactions that appear unusual, such as large cash deposits inconsistent with a customer's profile, must be flagged and reported to the authorities. Failure to comply with anti-money laundering (AML) regulations can result in heavy fines and serious reputational damage.",
+   "vocabulary": [
+    {
+     "term": "verify",
+     "definition": "xác minh",
+     "example": "We must verify your identity."
+    },
+    {
+     "term": "identity",
+     "definition": "danh tính",
+     "example": "Please prove your identity."
+    },
+    {
+     "term": "flag",
+     "definition": "đánh dấu cảnh báo",
+     "example": "Unusual transactions are flagged."
+    },
+    {
+     "term": "comply with",
+     "definition": "tuân thủ",
+     "example": "Banks must comply with regulations."
+    },
+    {
+     "term": "money laundering",
+     "definition": "rửa tiền",
+     "example": "Money laundering is a serious crime."
+    },
+    {
+     "term": "reputational damage",
+     "definition": "thiệt hại uy tín",
+     "example": "The scandal caused reputational damage."
+    }
+   ],
+   "grammar": {
+    "title": "Cấu trúc bị động với động từ tường thuật: be required to / be known as",
+    "explanation": "be required to + V (bị yêu cầu phải), known as (được gọi là), result in + N (dẫn đến). Câu bị động giúp văn bản quy định khách quan.",
+    "examples": [
+     "Staff are required to complete AML training.",
+     "This process is known as due diligence.",
+     "Breaches can result in heavy fines."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm: iDENtity, regu-LA-tion, comPLY",
+    "tip": "identity /aɪˈdentəti/, regulation /ˌreɡjuˈleɪʃən/, comply /kəmˈplaɪ/.",
+    "words": [
+     "identity",
+     "regulation",
+     "comply",
+     "laundering"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích cho khách hàng (thầy/cô) vì sao ngân hàng cần xác minh giấy tờ.",
+    "Thảo luận một giao dịch đáng ngờ và cách xử lý."
+   ],
+   "questions": [
+    {
+     "prompt": "What is KYC?",
+     "options": [
+      "Verifying customer identity",
+      "A loan product",
+      "A type of account"
+     ],
+     "answer": 0,
+     "explanation": "'verify the identity of their customers… Know Your Customer'."
+    },
+    {
+     "prompt": "Which transaction might be flagged?",
+     "options": [
+      "A small regular salary",
+      "Large cash deposits inconsistent with the profile",
+      "Paying a bill"
+     ],
+     "answer": 1,
+     "explanation": "'large cash deposits inconsistent with a customer's profile'."
+    },
+    {
+     "prompt": "What can failure to comply result in?",
+     "options": [
+      "Heavy fines and reputational damage",
+      "More customers",
+      "Lower taxes"
+     ],
+     "answer": 0,
+     "explanation": "'heavy fines and serious reputational damage'."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "Staff require to complete training.",
+      "Staff are require completing training.",
+      "Staff are required to complete training."
+     ],
+     "answer": 2,
+     "explanation": "be required to + V."
+    },
+    {
+     "prompt": "“Result in” means…",
+     "options": [
+      "prevent",
+      "lead to",
+      "come from"
+     ],
+     "answer": 1,
+     "explanation": "result in = dẫn đến."
+    },
+    {
+     "prompt": "Complete the sentence: Unusual transactions are _____ged.",
+     "options": [
+      "verify",
+      "flag",
+      "identity"
+     ],
+     "answer": 1,
+     "explanation": "“flag” nghĩa là “đánh dấu cảnh báo”. Câu đầy đủ: Unusual transactions are flagged."
+    },
+    {
+     "prompt": "What does “identity” mean?",
+     "options": [
+      "xác minh",
+      "đánh dấu cảnh báo",
+      "danh tính"
+     ],
+     "answer": 2,
+     "explanation": "“identity” = danh tính. Ví dụ: Please prove your identity."
+    },
+    {
+     "prompt": "Complete the sentence: _____ is a serious crime.",
+     "options": [
+      "money laundering",
+      "reputational damage",
+      "comply with"
+     ],
+     "answer": 0,
+     "explanation": "“money laundering” nghĩa là “rửa tiền”. Câu đầy đủ: Money laundering is a serious crime."
+    },
+    {
+     "prompt": "What does “verify” mean?",
+     "options": [
+      "danh tính",
+      "xác minh",
+      "đánh dấu cảnh báo"
+     ],
+     "answer": 1,
+     "explanation": "“verify” = xác minh. Ví dụ: We must verify your identity."
+    },
+    {
+     "prompt": "Complete the sentence: Banks must _____ regulations.",
+     "options": [
+      "comply with",
+      "reputational damage",
+      "money laundering"
+     ],
+     "answer": 0,
+     "explanation": "“comply with” nghĩa là “tuân thủ”. Câu đầy đủ: Banks must comply with regulations."
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
 }

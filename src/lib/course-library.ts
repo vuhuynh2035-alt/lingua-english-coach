@@ -9,13 +9,23 @@ export type CourseLesson = {
   id: string;
   level: "A1" | "A2" | "B1" | "B2";
   unit: string;
+  /** Lesson focus shown as a tag, e.g. "Giao tiếp", "Ngữ pháp". Packs before 2.0 have none. */
+  category?: string;
   title: string;
   objective: string;
   reading: string;
-  vocabulary: { term: string; definition: string }[];
+  vocabulary: { term: string; definition: string; example?: string }[];
+  grammar?: { title: string; explanation: string; examples: string[] };
+  pronunciation?: { focus: string; tip: string; words: string[] };
+  speakingTasks?: string[];
   questions: CourseQuestion[];
   audioIds: string[];
 };
+
+/** Bundled curriculum version; a stored pack with another version is re-downloaded. */
+export const CURRICULUM_VERSION = "2.0.0";
+/** A lesson is passed with at least this share of correct answers (8/10). */
+export const LESSON_PASS_RATIO = 0.8;
 
 export type CourseAudio = {
   id: string;
