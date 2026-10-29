@@ -682,6 +682,8 @@ export default function Home() {
   const speechQueueRunningRef = useRef(false);
   const speechFallbackRef = useRef("");
   /** After a failure each AI voice provider rests for a while; the other provider is not affected. */
+  /** The voice settings of the reading in progress (a preview can use a voice not saved yet). */
+  const lastSpeechProfileRef = useRef<VoiceProfile | null>(null);
   const cloudSpeechPauseRef = useRef<Record<"google" | "openai", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } });
   const courseSyncRef = useRef<string | null>(null);
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
@@ -2089,8 +2091,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     return merged;
   }
 
-  function enqueueSpeech(text: string, englishOnly = false) {
-    const profile = voiceProfile;
+  function enqueueSpeech(text: string, englishOnly = false, profile = voiceProfile) {
+    lastSpeechProfileRef.current = profile;
     const segments = englishOnly
       ? text.split(/\n+/).map((line) => ({ text: cleanSpeechText(stripReadings(line)), lang: "en" as const })).filter((item) => item.text)
       : splitBilingualText(text);
@@ -2115,7 +2117,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   async function runSpeechQueue() {
     speechQueueRunningRef.current = true;
     const run = speechRunRef.current;
-    const profile = voiceProfile;
     let usedCloud = false;
     let usedOffline = false;
     let spokeEnglish = false;
@@ -2156,10 +2157,13 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       if (speechRunRef.current === run) {
         setSpeechBusy(false);
         if (spokeEnglish) {
+          const profile = lastSpeechProfileRef.current ?? voiceProfile;
           const reason = speechFallbackRef.current;
           const deviceName = pickDeviceVoice(systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [], profile, profile.engine !== "device").voice?.name;
           setSpeechNotice(usedOffline && !usedCloud
-            ? "🔊 Vừa phát bằng giọng tiếng Anh trong app."
+            ? profile.engine === "device" || enSource === "pack"
+              ? "🔊 Vừa phát bằng giọng tiếng Anh trong app."
+              : `⚠️ ${engineLabel(profile)} chưa dùng được (${reason || "không rõ lý do"}), nên vừa phát tạm bằng giọng tiếng Anh trong app.`
             : usedCloud && !reason
             ? `🔊 Vừa phát bằng ${engineLabel(profile)}.`
             : profile.engine === "device"
@@ -2185,6 +2189,18 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       : "";
     setSpeechNotice(voiceProfile.engine === "device" ? "" : `Đang tạo ${engineLabel(voiceProfile)}…`);
     enqueueSpeech(clean, englishOnly);
+  }
+
+  /** Plays the sample sentence in `profile` (a voice just picked), giving the AI voice a fresh try even if it was resting. */
+  function previewVoice(profile = voiceProfile) {
+    stopSpeech();
+    unlockSpeechPlayer();
+    if (profile.engine !== "device") cloudSpeechPauseRef.current[profile.engine] = { until: 0, reason: "" };
+    speechFallbackRef.current = profile.engine !== "device" && !apiKeys[profile.engine].length
+      ? `chưa có API key ${profile.engine === "google" ? "Google" : "OpenAI"}`
+      : "";
+    setSpeechNotice(profile.engine === "device" ? "" : `Đang tạo ${engineLabel(profile)}…`);
+    enqueueSpeech(getAccent(profile.accent).sample, true, profile);
   }
 
   /** Plays a conversation with one voice per person; `only` plays a single line in its speaker's voice. */
@@ -2510,7 +2526,11 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               const selected = cloudVoiceId(voiceProfile) === voice.id;
               return (
                 <button key={voice.id} type="button" className={selected ? "voice-named active" : "voice-named"}
-                  onClick={() => updateVoiceProfile(voiceProfile.engine === "openai" ? { openaiVoice: voice.id } : { googleVoice: voice.id })}>
+                  onClick={() => {
+                    const patch = voiceProfile.engine === "openai" ? { openaiVoice: voice.id } : { googleVoice: voice.id };
+                    updateVoiceProfile(patch);
+                    previewVoice({ ...voiceProfile, ...patch });
+                  }}>
                   <strong>{voice.id}</strong><small>{voice.character}</small>
                 </button>
               );
@@ -2539,7 +2559,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <div className="voice-preview">
           <p>“{accent.sample}”</p>
           <div className="cr-connect-actions">
-            <button type="button" className="button button-primary" onClick={() => { if (speechBusy) { stopSpeech(); setSpeechBusy(false); } else void playPracticePhrase(accent.sample); }}>
+            <button type="button" className="button button-primary" onClick={() => { if (speechBusy) { stopSpeech(); setSpeechBusy(false); } else previewVoice(); }}>
               {speechBusy ? "■ Dừng phát" : `▶ Nghe thử ${accent.flag} ${accent.name}`}
             </button>
             <button type="button" className="button button-outline" onClick={() => { void removeSavedSpeech(); }}>Xóa âm thanh đã lưu</button>
