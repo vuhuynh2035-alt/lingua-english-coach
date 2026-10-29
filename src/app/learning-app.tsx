@@ -551,6 +551,8 @@ export default function Home() {
   const [viSource, setViSource] = useState<"auto" | "pack" | "device">("auto");
   /** Same for English: AI voice if there is a key, then the voice built into the app, then the phone's own. */
   const [enSource, setEnSource] = useState<"auto" | "pack" | "device">("auto");
+  /** Google speech model: "flash" sounds better, "lite" costs about a third less. */
+  const [ttsModelPref, setTtsModelPref] = useState<"flash" | "lite">("flash");
   /** The built-in English voice the learner picked by ear, e.g. "female-0". */
   const [enPackVoice, setEnPackVoice] = useState("female-0");
   const [packReady, setPackReady] = useState<Record<VoicePackId, boolean>>({ vi: false, en: false });
@@ -1063,6 +1065,7 @@ export default function Home() {
       if (savedViSource === "pack" || savedViSource === "device") setViSource(savedViSource);
       const savedEnSource = localStorage.getItem(sharedKey("en-source"));
       if (savedEnSource === "pack" || savedEnSource === "device") setEnSource(savedEnSource);
+      if (localStorage.getItem(sharedKey("tts-model")) === "lite") setTtsModelPref("lite");
       const savedEnVoice = localStorage.getItem(sharedKey("en-pack-voice"));
       if (savedEnVoice && /^(female|male)-[0-3]$/.test(savedEnVoice)) setEnPackVoice(savedEnVoice);
       for (const id of ["vi", "en"] as const) {
@@ -1955,6 +1958,13 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     return null;
   }
 
+  /** Speech models in the order to try: the learner's choice of Flash or Flash-Lite first. */
+  function ttsModelOrder(models: string[]): string[] {
+    const lite = models.filter((id) => /lite/i.test(id));
+    const full = models.filter((id) => !/lite/i.test(id));
+    return ttsModelPref === "lite" ? [...lite, ...full] : [...full, ...lite];
+  }
+
   /** Cloud audio for one English sentence, or null when the device voice should be used. */
   async function englishAudio(text: string, profile = voiceProfile, language: "en" | "vi" = "en"): Promise<Blob | null> {
     const engine = profile.engine;
@@ -1976,7 +1986,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           keys: apiKeys[engine],
           preferredKeyId: activeKeyIds[engine],
           models: engine === "google"
-            ? [...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])].slice(0, 3)
+            ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])]).slice(0, 3)
             : OPENAI_TTS_MODELS,
           deadlineMs: 20_000,
         },
@@ -2425,6 +2435,18 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             </button>
           ))}
         </div>
+        {voiceProfile.engine === "google" && (
+          <>
+            <span className="settings-label">Mô hình giọng AI của Google</span>
+            <div className="voice-chips">
+              {([["flash", "Flash TTS (hay hơn)"], ["lite", "Flash-Lite TTS (rẻ hơn ~1/3)"]] as const).map(([id, label]) => (
+                <button key={id} type="button" className={ttsModelPref === id ? "voice-chip active" : "voice-chip"}
+                  onClick={() => { setTtsModelPref(id); try { localStorage.setItem(sharedKey("tts-model"), id); } catch {} }}>{label}</button>
+              ))}
+            </div>
+            <small className="settings-hint">App tự dùng mô hình đọc riêng (gemini-3.8-flash-tts hoặc gemini-3.8-flash-lite-tts), không phải mô hình trò chuyện bạn chọn ở mục Nhà cung cấp AI.</small>
+          </>
+        )}
         <p className="settings-hint">Giọng AI dùng cho <strong>mọi</strong> phần có đọc {LANG.viName} (bài học offline, câu mẫu, lời thầy/cô) khi có mạng. Mỗi câu chỉ tạo một lần rồi lưu trên máy, nên lần sau nghe lại được cả khi offline. Câu mới mà không có mạng sẽ tự đọc bằng giọng trên máy.</p>
         {!engineReady && <p className="error-message">Chưa có API key cho nguồn này — app sẽ dùng giọng trên máy cho tới khi bạn thêm key ở mục Nhà cung cấp AI.</p>}
 
