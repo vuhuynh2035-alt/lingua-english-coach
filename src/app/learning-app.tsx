@@ -26,6 +26,7 @@ import type { GrammarQuestion, GrammarTopic } from "@/lib/grammar";
 import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
 import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
+import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
 import { LANGUAGES, switchLanguage } from "@/lib/language-meta";
@@ -654,7 +655,8 @@ export default function Home() {
   const retryTurnRef = useRef<(() => void) | null>(null);
   const classroomBootRef = useRef(false);
   const speechRunRef = useRef(0);
-  const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null }[]>([]);
+  const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null; profile?: VoiceProfile }[]>([]);
+  const [dialogueNames, setDialogueNames] = useState(true);
   const speechQueueRunningRef = useRef(false);
   const speechFallbackRef = useRef("");
   const cloudSpeechPausedUntilRef = useRef(0);
@@ -1025,6 +1027,7 @@ export default function Home() {
           setVoiceProfile((current) => ({ ...current, ...voiceForTutor(TUTOR_PERSONAS[savedPersona].kind) }));
         }
       }
+      setDialogueNames(localStorage.getItem(sharedKey("dialogue-names")) !== "0");
       const savedViVoice = localStorage.getItem(sharedKey("vi-voice-id"));
       if (savedViVoice) setSelectedViVoiceId(savedViVoice);
 
@@ -1796,7 +1799,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     }
   }
 
-  function playNativeUtterance(text: string, lang: "vi" | "en"): Promise<void> {
+  function playNativeUtterance(text: string, lang: "vi" | "en", cast?: VoiceProfile): Promise<void> {
     return new Promise((resolve) => {
       if (typeof window === "undefined" || !("speechSynthesis" in window)) {
         resolve();
@@ -1822,9 +1825,11 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       } else {
         // A cloud voice that could not play falls back to a plain, clear voice of this device;
         // pitch and speed are left normal because bending them is what made it sound odd.
+        const castVoice = cast?.deviceVoice ? voices.find((item) => item.voiceURI === cast.deviceVoice) : undefined;
         const standard = voiceProfile.engine !== "device";
-        const { voice } = pickDeviceVoice(voices, voiceProfile, standard);
-        utterance.rate = standard ? 1 : voiceProfile.speed;
+        const { voice: picked } = pickDeviceVoice(voices, voiceProfile, standard);
+        const voice = castVoice ?? picked;
+        utterance.rate = cast ? Math.min(cast.speed, 1) : standard ? 1 : voiceProfile.speed;
         utterance.pitch = 1;
         if (voice) utterance.voice = voice;
         utterance.lang = voice?.lang ?? getAccent(voiceProfile.accent).locales[0];
@@ -2007,7 +2012,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           }
         }
         setSpeechPlaying(true);
-        await playNativeUtterance(item.text, item.lang);
+        await playNativeUtterance(item.text, item.lang, item.profile);
         setSpeechPlaying(false);
       }
     } finally {
@@ -2044,6 +2049,51 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       : "";
     setSpeechNotice(voiceProfile.engine === "device" ? "" : `Đang tạo ${engineLabel(voiceProfile)}…`);
     enqueueSpeech(clean, englishOnly);
+  }
+
+  /** Plays a conversation with one voice per person; `only` plays a single line in its speaker's voice. */
+  function speakDialogue(lines: DialogueLine[], only?: number) {
+    if (!lines.length) return;
+    stopSpeech();
+    unlockSpeechPlayer();
+    speechFallbackRef.current = voiceProfile.engine !== "device" && !apiKeys[voiceProfile.engine].length
+      ? `chưa có API key ${voiceProfile.engine === "google" ? "Google" : "OpenAI"}`
+      : "";
+    setSpeechNotice(voiceProfile.engine === "device" ? "" : `Đang tạo ${engineLabel(voiceProfile)}…`);
+    const voices = systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [];
+    const cast = castDialogue(voiceProfile, voices);
+    const people: string[] = [];
+    for (const line of lines) if (line.speaker && !people.includes(line.speaker)) people.push(line.speaker);
+    const queue = (text: string, profile: VoiceProfile) => {
+      const clean = cleanSpeechText(stripReadings(text));
+      if (!clean) return;
+      speechQueueRef.current.push({
+        text: clean, lang: "en", profile,
+        clip: englishAudio(clean, profile).catch((error: unknown) => {
+          speechFallbackRef.current = error instanceof Error ? error.message : "lỗi không xác định";
+          return null;
+        }),
+      });
+    };
+    lines.forEach((line, index) => {
+      if (only !== undefined && index !== only) return;
+      const person = people.indexOf(line.speaker);
+      const profile = cast.speakers[(person < 0 ? 0 : person) % cast.speakers.length];
+      if (only === undefined && dialogueNames && line.speaker) queue(line.speaker, cast.narrator);
+      queue(line.text, profile);
+    });
+    if (!speechQueueRunningRef.current) void runSpeechQueue();
+  }
+
+  function lessonSpoken(lesson: CourseLesson): DialogueLine[] {
+    return lesson.dialogue?.length
+      ? lesson.dialogue.map((line) => ({ speaker: line.speaker ?? "", text: line.text }))
+      : parseDialogue(lesson.reading);
+  }
+
+  function updateDialogueNames(value: boolean) {
+    setDialogueNames(value);
+    try { localStorage.setItem(sharedKey("dialogue-names"), value ? "1" : "0"); } catch {}
   }
 
   /** End of the last complete sentence after `from`, or `from` when none is long enough yet. */
@@ -2424,14 +2474,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     }
   }
 
-  /** The lesson the app suggests: the first one not passed yet, starting at the learner's own level. */
+  /** The first lesson not passed yet, in the order of the course: where "continue" and the AI teacher start. */
   function nextLessonFor(course: CoursePackage): CourseLesson | undefined {
     const completed = courseProgress[course.id] ?? [];
-    const open = unlockedLessonIds(course);
-    const pending = course.lessons.filter((item) => open.has(item.id) && !completed.includes(item.id));
-    // Start at the learner's own level; easier lessons stay open but are not pushed on them.
-    const learnerIndex = Math.max(0, COURSE_LEVELS.findIndex((level) => level === progress.level));
-    return pending.find((item) => COURSE_LEVELS.indexOf(item.level) >= learnerIndex) ?? pending[0];
+    return course.lessons.find((item) => !completed.includes(item.id)) ?? course.lessons[0];
   }
 
   /** Quietly stores the bundled pack for a profile (or refreshes an older version). */
@@ -3903,7 +3949,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <button type="button" className="wz-mode" onClick={() => navigateToSection("lessons")}>
             <span className="wz-mode-icon"><IllustrationIcon name="courses" /></span>
             <strong>Bài học (Offline)</strong>
-            <span>Hội thoại, từ vựng, ngữ pháp, phát âm và bài kiểm tra 10 câu. Chọn bất kỳ bài nào, hoặc để app chọn theo trình độ.</span>
+            <span>Hội thoại, từ vựng, ngữ pháp, phát âm và bài kiểm tra 10 câu. Chọn tình huống bạn muốn học.</span>
             <em className="ok">{course
               ? `${(courseProgress[course.id] ?? []).length}/${course.lessons.length} bài đã đạt`
               : "Tự tải về khi bắt đầu"}</em>
@@ -3972,7 +4018,6 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       const lessonIndex = course.lessons.findIndex((item) => item.id === lesson.id);
       const nextLesson = course.lessons[lessonIndex + 1];
       const prevLesson = lessonIndex > 0 ? course.lessons[lessonIndex - 1] : undefined;
-      const suggestedLesson = nextLessonFor(course);
       const answeredAll = lesson.questions.every((_, index) => Number.isInteger(courseAnswers[index]));
       const correctCount = lesson.questions.reduce(
         (total, question, index) => total + (courseAnswers[index] === question.answer ? 1 : 0),
@@ -4014,13 +4059,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                           onClick={() => openCourseLesson(item.id)}
                           title={item.objective}
                         >
-                          <span className="course-lesson-mark" aria-hidden="true">{complete ? "✓" : item.id === suggestedLesson?.id ? "★" : "○"}</span>
+                          <span className="course-lesson-mark" aria-hidden="true">{complete ? "✓" : "○"}</span>
                           <span>
                             {item.title}
                             <small>
                               {item.category ?? item.unit}
                               {lessonScores[item.id] !== undefined && ` · cao nhất ${Math.round(lessonScores[item.id] / 10)}/10`}
-                              {item.id === suggestedLesson?.id && !complete && " · gợi ý cho bạn"}
                             </small>
                           </span>
                         </button>
@@ -4029,7 +4073,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                   </div>
                 );
               })}
-              <p className="course-progress-note">Bạn có thể học bất kỳ bài nào. Đạt từ 8/10 câu để bài được đánh dấu ✓ đã đạt (★ là bài app gợi ý theo trình độ). Hoàn thành mọi bài của một level sẽ nâng trình độ của bạn.</p>
+              <p className="course-progress-note">Bạn tự chọn tình huống muốn học. Đạt từ 8/10 câu để bài được đánh dấu ✓ đã đạt.</p>
               <div className="course-references">
                 <strong>Khung tham chiếu</strong>
                 {course.references.map((reference) => (
@@ -4048,7 +4092,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                     return (
                       <optgroup key={level} label={`${LANG.levelSystem} ${levelLabel(level)}`}>
                         {items.map((item) => (
-                          <option key={item.id} value={item.id}>{completedLessons.includes(item.id) ? "✓ " : item.id === suggestedLesson?.id ? "★ " : "○ "}{item.title}</option>
+                          <option key={item.id} value={item.id}>{completedLessons.includes(item.id) ? "✓ " : "○ "}{item.title}</option>
                         ))}
                       </optgroup>
                     );
@@ -4057,7 +4101,6 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                 <div className="lesson-picker-actions">
                   <button type="button" className="button button-outline" disabled={!prevLesson} onClick={() => prevLesson && openCourseLesson(prevLesson.id)}>← Bài trước</button>
                   <button type="button" className="button button-outline" disabled={!nextLesson} onClick={() => nextLesson && openCourseLesson(nextLesson.id)}>Bài kế →</button>
-                  <button type="button" className="button button-primary" disabled={!suggestedLesson || suggestedLesson.id === lesson.id} onClick={() => suggestedLesson && openCourseLesson(suggestedLesson.id)}>🎯 App chọn giúp theo trình độ</button>
                   <button type="button" className="button button-outline" onClick={() => document.getElementById("course-lesson-list")?.scrollIntoView({ behavior: "smooth" })}>📋 Xem cả {course.lessons.length} bài</button>
                 </div>
               </div>
@@ -4093,7 +4136,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                               <div className="dialogue-main">
                                 {line.speaker && <b className="dialogue-speaker">{line.speaker}</b>}
                                 <span className="dialogue-text">{line.text}</span>
-                                <button type="button" className="vocab-mini-btn" onClick={() => void playPracticePhrase(line.text)} disabled={speechBusy} aria-label={`Nghe: ${line.text}`}>🔊</button>
+                                <button type="button" className="vocab-mini-btn" onClick={() => { const spoken = lessonSpoken(lesson); if (isConversation(spoken)) speakDialogue(spoken, lineIndex); else void playPracticePhrase(line.text); }} disabled={speechBusy} aria-label={`Nghe: ${line.text}`}>🔊</button>
                               </div>
                               {lessonView.phonetic && line.phonetic && <small className="dialogue-phonetic">{line.phonetic}</small>}
                               {lessonView.translation && line.translation && <small className="dialogue-translation">{line.translation}</small>}
@@ -4104,9 +4147,20 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                     ) : (
                       <div className="course-reading">{lesson.reading}</div>
                     )}
-                    <button type="button" className="button button-outline" onClick={() => void playPracticePhrase(lesson.dialogue?.length ? lesson.dialogue.map((line) => line.text).join("\n") : lesson.reading)} disabled={speechBusy}>
-                      <IllustrationIcon name="speaker" /> Nghe cả bài
-                    </button>
+                    {(() => {
+                      const spoken = lessonSpoken(lesson);
+                      const conversation = isConversation(spoken);
+                      return (
+                        <>
+                          <button type="button" className="button button-outline" onClick={() => { if (conversation) speakDialogue(spoken); else void playPracticePhrase(lesson.dialogue?.length ? lesson.dialogue.map((line) => line.text).join("\n") : lesson.reading); }} disabled={speechBusy}>
+                            <IllustrationIcon name="speaker" /> Nghe cả bài{conversation ? " (mỗi nhân vật một giọng)" : ""}
+                          </button>
+                          {conversation && (
+                            <label className="lesson-toggle-inline"><input type="checkbox" checked={dialogueNames} onChange={(event) => updateDialogueNames(event.target.checked)} /> Đọc cả tên nhân vật (bằng giọng thứ ba)</label>
+                          )}
+                        </>
+                      );
+                    })()}
                   </section>
 
                   <section className="lesson-block">

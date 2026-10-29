@@ -270,7 +270,7 @@ export function guessDeviceVoiceGender(voice: SpeechSynthesisVoice): VoiceGender
 }
 
 /** Natural / neural voices sound best, then Google's, then the well-known system voices. */
-function voiceQuality(voice: SpeechSynthesisVoice): number {
+export function voiceQuality(voice: SpeechSynthesisVoice): number {
   if (/natural|neural|online/i.test(voice.name)) return 3;
   if (/google/i.test(voice.name)) return 2;
   if (/microsoft|samantha|daniel|karen|moira|aria|jenny|zira|david/i.test(voice.name)) return 1;
