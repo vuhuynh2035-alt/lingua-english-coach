@@ -9,7 +9,7 @@ import type { LangId } from "@/lib/language";
  * so a search only loads the few shards it needs and memory stays small. Everything is
  * downloaded once into IndexedDB.
  */
-export type PackId = "vi" | "zh" | "ja" | "hanviet";
+export type PackId = "vi" | "zh" | "ja" | "hanviet" | "envi";
 
 type ZhEntry = [string, string, string, string]; // simplified, traditional, pinyin, english
 type JaEntry = [string, string, string, number]; // kanji "a|b", readings "x|y", english, common
@@ -31,7 +31,7 @@ export type Lookup = { hits: DictHit[]; /** What goes into the other box. */ sum
 
 const DATABASE_NAME = "lingua-dict";
 const STORE = "packs";
-const SHARDED: PackId[] = ["zh", "ja"];
+const SHARDED: PackId[] = ["zh", "ja", "envi"];
 const BUCKETS = 128;
 const SHARD_CACHE_LIMIT = 40;
 
@@ -40,11 +40,12 @@ export const PACK_INFO: Record<PackId, { label: string; mb: number }> = {
   zh: { label: "Từ điển Trung (CC-CEDICT)", mb: 7.7 },
   ja: { label: "Từ điển Nhật (30 nghìn từ thông dụng)", mb: 2.5 },
   hanviet: { label: "Âm đọc tiếng Việt của chữ Hán", mb: 0.05 },
+  envi: { label: "Từ điển Anh ↔ Việt (Wiktionary, 112 nghìn từ)", mb: 5.3 },
 };
 
 /** The packs a language needs. */
 export function packsFor(lang: LangId): PackId[] {
-  return lang === "zh" ? ["zh", "vi", "hanviet"] : lang === "ja" ? ["ja", "vi", "hanviet"] : ["vi"];
+  return lang === "zh" ? ["zh", "envi", "vi", "hanviet"] : lang === "ja" ? ["ja", "envi", "vi", "hanviet"] : ["envi", "vi"];
 }
 
 /** Is everything this language needs installed? */
@@ -88,7 +89,7 @@ export async function installedPacks(): Promise<PackId[]> {
       if (key === "vi" || key === "hanviet") found.add(key);
       else if (key.endsWith("/index.json")) {
         const id = key.split("/")[0];
-        if (id === "zh" || id === "ja") found.add(id);
+        if (id === "zh" || id === "ja" || id === "envi") found.add(id);
       }
     }
     return [...found];
@@ -263,18 +264,24 @@ function vietnameseByFold(entries: ViEntry[]): Map<string, number[]> {
   });
 }
 
-function vietnameseFor(english: string, vi: ViEntry[] | null): string[] {
-  if (!vi) return [];
-  const map = vietnameseByEnglish(vi);
+async function vietnameseFor(english: string, vi: ViEntry[] | null): Promise<string[]> {
   const result: string[] = [];
-  for (const term of englishTerms(english, 4)) {
-    for (const position of map.get(term) ?? []) {
-      const word = vi[position][0];
-      if (!result.includes(word)) result.push(word);
-    }
-    if (result.length >= 5) break;
+  for (const term of englishTerms(english, 3)) {
+    const found = await enviLookup(term);
+    if (found) for (const part of meaningParts(found.meaning)) if (!result.includes(part)) result.push(part);
+    if (result.length >= 3) break;
   }
-  return result.slice(0, 5);
+  if (!result.length && vi) {
+    const map = vietnameseByEnglish(vi);
+    for (const term of englishTerms(english, 4)) {
+      for (const position of map.get(term) ?? []) {
+        const word = vi[position][0];
+        if (!result.includes(word)) result.push(word);
+      }
+      if (result.length >= 4) break;
+    }
+  }
+  return result.slice(0, 4);
 }
 
 function hanvietOf(text: string, map: Record<string, string> | null): string {
@@ -286,6 +293,63 @@ function hanvietOf(text: string, map: Record<string, string> | null): string {
   }
   return parts.join(" ");
 }
+
+// ---------------------------------------------------------------- English <-> Vietnamese (envi shards)
+/** Plausible dictionary forms of an English word: books → book, running → run, studied → study. */
+function baseForms(word: string): string[] {
+  const forms = [word];
+  const add = (form: string) => { if (form.length >= 2 && !forms.includes(form)) forms.push(form); };
+  if (word.endsWith("ies")) add(word.slice(0, -3) + "y");
+  if (word.endsWith("es")) add(word.slice(0, -2));
+  if (word.endsWith("s")) add(word.slice(0, -1));
+  if (word.endsWith("ied")) add(word.slice(0, -3) + "y");
+  if (word.endsWith("ed")) { add(word.slice(0, -2)); add(word.slice(0, -1)); if (/(.)\1ed$/.test(word)) add(word.slice(0, -3)); }
+  if (word.endsWith("ing")) { add(word.slice(0, -3)); add(word.slice(0, -3) + "e"); if (/(.)\1ing$/.test(word)) add(word.slice(0, -4)); }
+  if (word.endsWith("er") || word.endsWith("ly")) add(word.slice(0, -2));
+  return forms;
+}
+
+async function enviMeaning(word: string): Promise<string | null> {
+  const first = word[0] ?? "";
+  const letter = first >= "a" && first <= "z" ? first : "_";
+  const table = await shard<Record<string, string>>("envi", `e-${letter}.json`);
+  return table?.[word] ?? null;
+}
+
+/** The Vietnamese meaning of an English word (or of its dictionary form). */
+async function enviLookup(word: string): Promise<{ word: string; meaning: string } | null> {
+  for (const form of baseForms(word.toLowerCase())) {
+    let meaning = await enviMeaning(form);
+    let found = form;
+    if (meaning?.startsWith("→")) {
+      // an inflected form (books, studied) points at its dictionary word
+      const [base, rest] = meaning.slice(1).split("|");
+      const baseMeaning = await enviMeaning(base);
+      meaning = baseMeaning ?? rest ?? null;
+      if (baseMeaning) found = base;
+    }
+    if (meaning) return { word: found, meaning };
+  }
+  return null;
+}
+
+/** English words whose meaning is a Vietnamese word or phrase, most common first. */
+async function enviReverse(vietnamese: string): Promise<string[]> {
+  const exactText = vietnamese.trim().toLowerCase();
+  const folded = fold(exactText);
+  if (!folded) return [];
+  const letter = folded[0] >= "a" && folded[0] <= "z" ? folded[0] : "_";
+  const table = await shard<Record<string, string[]>>("envi", `q-${letter}.json`);
+  const result: string[] = [];
+  for (const word of [...(table?.[exactText] ?? []), ...(table?.[folded] ?? [])]) if (!result.includes(word)) result.push(word);
+  return result;
+}
+
+/** The first two meanings, cut at an explanation ("Cám ơn: biểu thị…") and kept short. */
+const meaningParts = (meaning: string) => meaning.split("; ").slice(0, 2).map((part) => {
+  const short = part.split(": ")[0].trim();
+  return short.length > 80 ? `${short.slice(0, 77)}…` : short;
+});
 
 // ---------------------------------------------------------------- target-language shards
 type Shard = { entries: Raw[]; keys: Map<string, Raw[]> };
@@ -366,16 +430,16 @@ async function byEnglish(lang: LangId, term: string): Promise<Raw[]> {
   return result;
 }
 
-function zhHit(entry: ZhEntry, vi: ViEntry[] | null, hanviet: Record<string, string> | null): DictHit {
-  return { head: entry[0], alt: entry[1] || undefined, reading: entry[2], hanviet: hanvietOf(entry[0], hanviet), english: entry[3], vietnamese: vietnameseFor(entry[3], vi) };
+async function zhHit(entry: ZhEntry, vi: ViEntry[] | null, hanviet: Record<string, string> | null): Promise<DictHit> {
+  return { head: entry[0], alt: entry[1] || undefined, reading: entry[2], hanviet: hanvietOf(entry[0], hanviet), english: entry[3], vietnamese: await vietnameseFor(entry[3], vi) };
 }
 
-function jaHit(entry: JaEntry, vi: ViEntry[] | null, hanviet: Record<string, string> | null): DictHit {
+async function jaHit(entry: JaEntry, vi: ViEntry[] | null, hanviet: Record<string, string> | null): Promise<DictHit> {
   const forms = entry[0].split("|").filter(Boolean);
   const readings = entry[1].split("|");
   return {
     head: forms[0] ?? readings[0], alt: forms.length ? readings[0] : undefined, reading: forms.length ? readings[0] : "",
-    hanviet: hanvietOf(forms[0] ?? "", hanviet), english: entry[2], vietnamese: vietnameseFor(entry[2], vi),
+    hanviet: hanvietOf(forms[0] ?? "", hanviet), english: entry[2], vietnamese: await vietnameseFor(entry[2], vi),
   };
 }
 
@@ -393,7 +457,7 @@ async function fromTarget(lang: LangId, query: string): Promise<DictHit[]> {
     if (hiragana) {
       for (const form of [hiragana, hiraganaToKatakana(hiragana)]) (await exact(lang, form)).forEach(push);
       if (found.length < 8) for (const form of [hiragana, hiraganaToKatakana(hiragana)]) (await startingWith(lang, form, 12)).forEach(push);
-      return found.map(make);
+      return Promise.all(found.map(make));
     }
   }
   (await exact(lang, query)).forEach(push);
@@ -411,45 +475,48 @@ async function fromTarget(lang: LangId, query: string): Promise<DictHit[]> {
   }
   if (found.length < 8 && hasCjk(query)) (await startingWith(lang, query, 12)).forEach(push);
   else if (found.length < 8 && lang === "zh") (await byPinyin(plainPinyin(query))).forEach(push);
-  return found.map(make);
+  return Promise.all(found.map(make));
 }
 
 /** Looks up a Vietnamese word (with or without diacritics) and finds words with the same meaning. */
 async function fromVietnamese(lang: LangId, query: string): Promise<DictHit[]> {
   const vi = await whole<ViEntry[]>("vi");
-  if (!vi) return [];
   const wanted = query.trim();
   const folded = fold(wanted);
-  const byFold = vietnameseByFold(vi);
-  const entries: number[] = [];
-  const exactMatches = byFold.get(folded) ?? [];
-  for (const position of exactMatches) if (vi[position][0].toLowerCase() === wanted.toLowerCase()) entries.push(position);
-  for (const position of exactMatches) if (!entries.includes(position)) entries.push(position);
-  if (!entries.length && folded.length >= 2) {
-    for (const [key, positions] of byFold) {
-      if (key.startsWith(folded)) positions.forEach((position) => entries.length < 8 && entries.push(position));
-      if (entries.length >= 8) break;
-    }
-  }
-  const hits: DictHit[] = [];
-  const hanviet = lang === "en" ? null : await whole<Record<string, string>>("hanviet");
-  const seen = new Set<string>();
-  for (const position of entries.slice(0, 6)) {
-    const [word, english] = vi[position];
-    if (lang === "en") {
-      hits.push({ head: englishTerms(english, 1)[0] ?? english, reading: "", hanviet: "", english, vietnamese: [word] });
-      continue;
-    }
-    for (const term of englishTerms(english, 3)) {
-      for (const entry of await byEnglish(lang, term)) {
-        const hit = lang === "zh" ? zhHit(entry as ZhEntry, null, hanviet) : jaHit(entry as JaEntry, null, hanviet);
-        const key = `${hit.head}|${hit.reading}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        hit.vietnamese = [word];
-        hits.push(hit);
-        if (hits.length >= 14) return hits;
+
+  // English words with this Vietnamese meaning: the Wiktionary index first, the small word list as a fallback.
+  const english: string[] = await enviReverse(wanted);
+  if (vi) {
+    const byFold = vietnameseByFold(vi);
+    const matches = [...(byFold.get(folded) ?? [])];
+    if (!matches.length && folded.length >= 2) {
+      for (const [key, positions] of byFold) {
+        if (key.startsWith(folded)) positions.forEach((position) => matches.length < 6 && matches.push(position));
+        if (matches.length >= 6) break;
       }
+    }
+    matches.sort((a, b) => Number(vi[b][0].toLowerCase() === wanted.toLowerCase()) - Number(vi[a][0].toLowerCase() === wanted.toLowerCase()));
+    for (const position of matches.slice(0, 5)) for (const term of englishTerms(vi[position][1], 3)) if (!english.includes(term)) english.push(term);
+  }
+
+  const hits: DictHit[] = [];
+  if (lang === "en") {
+    for (const word of english.slice(0, 8)) {
+      const meaning = await enviMeaning(word);
+      hits.push({ head: word, reading: "", hanviet: "", english: "", vietnamese: meaning ? meaningParts(meaning) : [wanted] });
+    }
+    return hits;
+  }
+  const hanviet = await whole<Record<string, string>>("hanviet");
+  const seen = new Set<string>();
+  for (const term of english.slice(0, 8)) {
+    for (const entry of await byEnglish(lang, term)) {
+      const hit = lang === "zh" ? await zhHit(entry as ZhEntry, vi, hanviet) : await jaHit(entry as JaEntry, vi, hanviet);
+      const key = `${hit.head}|${hit.reading}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      hits.push(hit);
+      if (hits.length >= 14) return hits;
     }
   }
   return hits;
@@ -458,17 +525,30 @@ async function fromVietnamese(lang: LangId, query: string): Promise<DictHit[]> {
 /** English word → Vietnamese (English is the language being learned). */
 async function fromEnglish(query: string): Promise<DictHit[]> {
   const vi = await whole<ViEntry[]>("vi");
-  if (!vi) return [];
-  const map = vietnameseByEnglish(vi);
   const words = query.toLowerCase().replace(/[^a-z' -]/g, " ").trim().split(/\s+/).filter(Boolean);
-  const terms = [words.join(" "), ...(words.length > 1 ? words : [])];
   const hits: DictHit[] = [];
   const seen = new Set<string>();
+  // a phrase that is in the dictionary ("good morning") is shown alone; otherwise word by word
+  const phrase = words.length > 1 ? await enviLookup(words.join(" ")) : null;
+  if (phrase) return [{ head: phrase.word, reading: "", hanviet: "", english: "", vietnamese: meaningParts(phrase.meaning) }];
+  if (words.length > 1 && vi) {
+    const positions = vietnameseByEnglish(vi).get(words.join(" ")) ?? [];
+    if (positions.length) return [{ head: words.join(" "), reading: "", hanviet: "", english: "", vietnamese: [...new Set(positions.map((position) => vi[position][0]))].slice(0, 4) }];
+  }
+  const terms = words;
   for (const term of terms) {
-    const positions = map.get(term) ?? map.get(term.replace(/^to /, "")) ?? [];
-    if (!positions.length || seen.has(term)) continue;
-    seen.add(term);
-    hits.push({ head: term, reading: "", hanviet: "", english: vi[positions[0]][1], vietnamese: [...new Set(positions.map((position) => vi[position][0]))].slice(0, 6) });
+    const found = await enviLookup(term.replace(/^to /, ""));
+    if (found && !seen.has(found.word)) {
+      seen.add(found.word);
+      hits.push({ head: found.word, reading: "", hanviet: "", english: "", vietnamese: meaningParts(found.meaning) });
+      continue;
+    }
+    if (found || !vi) continue;
+    const positions = vietnameseByEnglish(vi).get(term) ?? [];
+    if (positions.length && !seen.has(term)) {
+      seen.add(term);
+      hits.push({ head: term, reading: "", hanviet: "", english: "", vietnamese: [...new Set(positions.map((position) => vi[position][0]))].slice(0, 6) });
+    }
   }
   return hits;
 }

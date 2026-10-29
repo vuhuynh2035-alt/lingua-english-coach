@@ -269,25 +269,29 @@ export function guessDeviceVoiceGender(voice: SpeechSynthesisVoice): VoiceGender
   return "unknown";
 }
 
+/** Natural / neural voices sound best, then Google's, then the well-known system voices. */
+function voiceQuality(voice: SpeechSynthesisVoice): number {
+  if (/natural|neural|online/i.test(voice.name)) return 3;
+  if (/google/i.test(voice.name)) return 2;
+  if (/microsoft|samantha|daniel|karen|moira|aria|jenny|zira|david/i.test(voice.name)) return 1;
+  return 0;
+}
+
 /**
- * Device voice for the profile, whether its gender really matches, and the pitch to use.
- * When the device has no voice of the wanted gender, the gender is imitated with pitch.
+ * Device voice for the profile, whether its gender really matches, and the pitch (always 1: the
+ * voice is never bent to imitate a gender, an accent or a child, because that sounds wrong).
+ * `standard`: used when a cloud voice could not be played; it takes the best clear voice of the
+ * default accent (US English) and ignores the accent, gender and voice picked for the cloud engine.
  */
-export function pickDeviceVoice(voices: SpeechSynthesisVoice[], profile: VoiceProfile): { voice?: SpeechSynthesisVoice; genderMatches: boolean; pitch: number } {
-  const chosen = voices.find((v) => v.voiceURI === profile.deviceVoice);
-  const accentVoices = deviceVoicesForAccent(voices, profile.accent);
-  const voice = chosen
-    ?? accentVoices.find((v) => guessDeviceVoiceGender(v) === profile.gender)
-    ?? accentVoices.find((v) => guessDeviceVoiceGender(v) === "unknown")
-    ?? accentVoices[0]
-    ?? voices.find((v) => v.lang.toLowerCase().startsWith(LANG.langPrefix));
+export function pickDeviceVoice(voices: SpeechSynthesisVoice[], profile: VoiceProfile, standard = false): { voice?: SpeechSynthesisVoice; genderMatches: boolean; pitch: number } {
+  const chosen = standard ? undefined : voices.find((v) => v.voiceURI === profile.deviceVoice);
+  const accentVoices = deviceVoicesForAccent(voices, standard ? LANG.accents[0].id : profile.accent);
+  const pool = accentVoices.length ? accentVoices : voices.filter((v) => v.lang.toLowerCase().startsWith(LANG.langPrefix));
+  const score = (voice: SpeechSynthesisVoice) => voiceQuality(voice) * 2 + (!standard && guessDeviceVoiceGender(voice) === profile.gender ? 5 : 0);
+  const best = [...pool].sort((a, b) => score(b) - score(a))[0];
+  const voice = chosen ?? best;
   const actual = voice ? guessDeviceVoiceGender(voice) : "unknown";
-  // A child: a high voice on top of whatever the device has.
-  if (profile.childlike) return { voice, genderMatches: true, pitch: actual === "male" ? 1.9 : 1.6 };
-  if (actual === profile.gender) return { voice, genderMatches: true, pitch: 1 };
-  // Unnamed phone voices are usually the default female voice, so only "male" needs a shift.
-  const pitch = profile.gender === "male" ? 0.72 : actual === "male" ? 1.25 : 1;
-  return { voice, genderMatches: false, pitch };
+  return { voice, genderMatches: standard || actual === "unknown" || actual === profile.gender || profile.childlike, pitch: 1 };
 }
 
 export function deviceVoicesForAccent(voices: SpeechSynthesisVoice[], accentId: string): SpeechSynthesisVoice[] {

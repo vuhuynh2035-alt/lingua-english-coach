@@ -533,6 +533,9 @@ export default function Home() {
   const [dictSearching, setDictSearching] = useState(false);
   const [dictAi, setDictAi] = useState("");
   const [dictMore, setDictMore] = useState(false);
+  const [dictListening, setDictListening] = useState<"target" | "vi" | null>(null);
+  const [dictVoiceNote, setDictVoiceNote] = useState("");
+  const dictRecognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const [dictAiBusy, setDictAiBusy] = useState(false);
   const firstRunChecked = useRef(false);
   // Tutor Persona
@@ -684,6 +687,8 @@ export default function Home() {
     if (section !== "dictionary") return;
     void installedPacks().then(setDictPacks);
   }, [section]);
+
+  useEffect(() => () => { dictRecognitionRef.current?.stop(); }, []);
 
   const dictSource = dictSide === "target" ? dictText.target : dictText.vi;
   useEffect(() => {
@@ -1815,10 +1820,12 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           voices.find((v) => v.lang.startsWith("vi") || v.lang.includes("VN"));
         if (viVoice) utterance.voice = viVoice;
       } else {
-        const { voice, pitch } = pickDeviceVoice(voices, voiceProfile);
-        utterance.rate = voiceProfile.childlike ? Math.min(voiceProfile.speed * 1.08, 1.3) : voiceProfile.speed;
-        // No real voice of that gender on this device (or a child's voice): imitate it with pitch.
-        utterance.pitch = pitch;
+        // A cloud voice that could not play falls back to a plain, clear voice of this device;
+        // pitch and speed are left normal because bending them is what made it sound odd.
+        const standard = voiceProfile.engine !== "device";
+        const { voice } = pickDeviceVoice(voices, voiceProfile, standard);
+        utterance.rate = standard ? 1 : voiceProfile.speed;
+        utterance.pitch = 1;
         if (voice) utterance.voice = voice;
         utterance.lang = voice?.lang ?? getAccent(voiceProfile.accent).locales[0];
       }
@@ -2011,7 +2018,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         setSpeechBusy(false);
         if (spokeEnglish) {
           const reason = speechFallbackRef.current;
-          const deviceName = pickDeviceVoice(systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [], profile).voice?.name;
+          const deviceName = pickDeviceVoice(systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [], profile, profile.engine !== "device").voice?.name;
           setSpeechNotice(usedCloud && !reason
             ? `🔊 Vừa phát bằng ${engineLabel(profile)}.`
             : profile.engine === "device"
@@ -2222,9 +2229,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
         {voiceProfile.engine === "device" && deviceList.length > 0 && !devicePick.genderMatches && (
           <p className="voice-warning">
-            {devicePick.pitch === 1
-              ? <>Máy này không cho biết giọng nào là nam hay nữ, nên đang dùng giọng mặc định của máy.</>
-              : <>Máy này không có giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} thật cho vùng {accent.name}, nên app đang <strong>mô phỏng</strong> bằng cách {voiceProfile.gender === "male" ? "hạ" : "nâng"} cao độ.</>}
+            <>Máy này không có giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} rõ ràng cho vùng {accent.name}, nên dùng giọng chuẩn nhất của máy (không chỉnh cao độ).</>
             {" "}Để có giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} thật, hãy chọn <button type="button" className="text-button" onClick={() => updateVoiceProfile({ engine: "google" })}>Giọng AI Google</button> hoặc cài thêm giọng {LANG.viName} trong cài đặt máy.
           </p>
         )}
@@ -3586,6 +3591,44 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     await refreshDictPacks();
   }
 
+  /** Speak instead of typing: the words go straight into the box and are looked up as they arrive. */
+  function startDictVoice(side: "target" | "vi") {
+    if (dictRecognitionRef.current) {
+      dictRecognitionRef.current.stop(); // a second tap on the microphone stops listening
+      return;
+    }
+    const speechWindow = window as Window & {
+      SpeechRecognition?: SpeechRecognitionConstructor;
+      webkitSpeechRecognition?: SpeechRecognitionConstructor;
+    };
+    const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
+    if (!Recognition) {
+      setDictVoiceNote("Trình duyệt này chưa hỗ trợ nhập bằng giọng nói. Hãy mở bằng Chrome, hoặc dùng biểu tượng micro ngay trên bàn phím điện thoại.");
+      return;
+    }
+    setDictVoiceNote("");
+    const recognition = new Recognition();
+    recognition.lang = side === "vi" ? "vi-VN" : LANG.speechLang;
+    recognition.interimResults = true;
+    recognition.onresult = (event) => {
+      const transcript = Array.from(event.results).map((result) => result[0].transcript).join(" ").trim();
+      setDictSide(side);
+      setDictAi("");
+      setDictMore(false);
+      setDictText((current) => ({ ...current, [side]: transcript }));
+    };
+    recognition.onerror = (event) => {
+      setDictVoiceNote(event.error === "not-allowed" || event.error === "service-not-allowed"
+        ? "Chưa được phép dùng micro. Hãy cho phép micro cho trang này trong cài đặt trình duyệt rồi thử lại."
+        : event.error === "no-speech" ? "Không nghe thấy tiếng nói, hãy nói gần micro hơn rồi thử lại."
+        : `Micro bị lỗi (${event.error}). Hãy thử lại.`);
+    };
+    recognition.onend = () => { dictRecognitionRef.current = null; setDictListening(null); };
+    dictRecognitionRef.current = recognition;
+    setDictListening(side);
+    try { recognition.start(); } catch { dictRecognitionRef.current = null; setDictListening(null); }
+  }
+
   function dictLangCode(side: "target" | "vi"): string {
     return side === "vi" ? "vi" : LANG.id === "zh" ? "zh-CN" : LANG.id;
   }
@@ -3656,7 +3699,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         <div className="page-intro">
           <span className="eyebrow">TỪ ĐIỂN</span>
           <h2 id="dict-title">Từ điển {LANG.viName} ↔ Tiếng Việt</h2>
-          <p>Gõ vào khung nào cũng được, khung còn lại sẽ hiện nghĩa. Nhấn 🔊 để nghe phát âm từng khung.</p>
+          <p>Gõ hoặc nhấn 🎤 để nói vào khung nào cũng được, khung còn lại sẽ hiện nghĩa. Nhấn 🔊 để nghe phát âm từng khung.</p>
         </div>
 
         {LANG.id !== "en" && (
@@ -3698,6 +3741,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             <div className="dict-box-head">
               <strong><span aria-hidden="true">{LANG.flag}</span> {LANG.nameNative}</strong>
               <span className="dict-tools">
+                <button type="button" className={dictListening === "target" ? "vocab-mini-btn listening" : "vocab-mini-btn"} aria-label="Nói để nhập" title="Nói để nhập" onClick={() => startDictVoice("target")}>🎤</button>
                 <button type="button" className="vocab-mini-btn" aria-label="Nghe phát âm" disabled={!dictText.target.trim() || speechBusy} onClick={() => playPracticePhrase(dictText.target)}>🔊</button>
                 <button type="button" className="vocab-mini-btn" aria-label="Xóa" disabled={!dictText.target} onClick={() => { setDictText({ target: "", vi: "" }); setDictHits([]); setDictAi(""); }}>✕</button>
               </span>
@@ -3711,6 +3755,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             <div className="dict-box-head">
               <strong><span aria-hidden="true">🇻🇳</span> Tiếng Việt</strong>
               <span className="dict-tools">
+                <button type="button" className={dictListening === "vi" ? "vocab-mini-btn listening" : "vocab-mini-btn"} aria-label="Nói để nhập" title="Nói để nhập" onClick={() => startDictVoice("vi")}>🎤</button>
                 <button type="button" className="vocab-mini-btn" aria-label="Nghe tiếng Việt" disabled={!dictText.vi.trim()} onClick={() => { void playNativeUtterance(dictText.vi, "vi"); }}>🔊</button>
                 <button type="button" className="vocab-mini-btn" aria-label="Xóa" disabled={!dictText.vi} onClick={() => { setDictText({ target: "", vi: "" }); setDictHits([]); setDictAi(""); }}>✕</button>
               </span>
@@ -3720,6 +3765,8 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           </div>
         </div>
 
+        {dictListening && <p className="dict-listening" role="status">🎤 Đang nghe… hãy nói {dictListening === "vi" ? "tiếng Việt" : LANG.viName}. Nhấn micro lần nữa để dừng.</p>}
+        {dictVoiceNote && <p className="error-message" role="alert">{dictVoiceNote}</p>}
         {ready && sourceText.trim() && !dictHits.length && !dictSearching && (
           <p className="dict-empty">Không tìm thấy trong từ điển offline. Hãy thử tìm mở rộng online ở bên dưới.</p>
         )}

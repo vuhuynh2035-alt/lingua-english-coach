@@ -34,7 +34,7 @@ Mỗi bài có hội thoại (có cách đọc và bản dịch với tiếng Nh
 
 ## Từ điển offline
 
-Mục "Từ điển" (trong bước chọn cách học) tra hai chiều giữa ngôn ngữ đang học và tiếng Việt, có loa ở mỗi khung. Dữ liệu tải một lần về máy: CC-CEDICT (Trung), JMdict (Nhật, 30 nghìn từ thông dụng), Wiktionary (cầu nối Việt–Anh) và Unicode Unihan (âm đọc tiếng Việt của chữ Hán), đều theo giấy phép CC BY-SA. Dữ liệu Trung và Nhật được chia thành nhiều mảnh nhỏ theo chữ đầu để chỉ nạp mảnh cần tra. Gõ romaji (Nhật) hoặc pinyin không dấu (Trung) cũng tra được. Từ hiếm: dùng "Tìm mở rộng online" (AI hoặc Google Dịch). Tạo lại dữ liệu: `python scripts/dict/build_dict.py <thư mục nguồn>`.
+Mục "Từ điển" (trong bước chọn cách học) tra hai chiều giữa ngôn ngữ đang học và tiếng Việt, có loa ở mỗi khung. Dữ liệu tải một lần về máy: CC-CEDICT (Trung), JMdict (Nhật, 30 nghìn từ thông dụng), Wiktionary tiếng Việt (112 nghìn từ Anh có nghĩa tiếng Việt, và chỉ mục tra ngược Việt → Anh) và Unicode Unihan (âm đọc tiếng Việt của chữ Hán), đều theo giấy phép CC BY-SA. Dữ liệu Trung và Nhật được chia thành nhiều mảnh nhỏ theo chữ đầu để chỉ nạp mảnh cần tra. Gõ romaji (Nhật) hoặc pinyin không dấu (Trung) cũng tra được. Từ hiếm: dùng "Tìm mở rộng online" (AI hoặc Google Dịch). Tạo lại dữ liệu: `python scripts/dict/build_dict.py <thư mục nguồn>`.
 
 ## Cấu trúc mã
 
