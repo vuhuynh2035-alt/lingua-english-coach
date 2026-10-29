@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Teacher AI — Học tiếng Anh cùng AI",
+  "name": "Teacher AI — Học ngoại ngữ cùng AI",
   "short_name": "Teacher AI",
-  "description": "Luyện giao tiếp tiếng Anh cùng gia sư AI.",
+  "description": "Luyện giao tiếp tiếng Anh, tiếng Nhật và tiếng Trung cùng gia sư AI, dành cho người Việt.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

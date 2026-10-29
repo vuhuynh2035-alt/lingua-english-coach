@@ -1,3 +1,5 @@
+import { LANG } from "@/lib/language";
+
 export type PersonalMaterial = {
   id: string;
   name: string;
@@ -9,7 +11,7 @@ export type PersonalMaterial = {
 
 type StoredMaterial = PersonalMaterial & { file: Blob };
 
-const DATABASE_NAME = "lingua-personal-library";
+const DATABASE_NAME = `${LANG.storagePrefix}personal-library`;
 const DATABASE_VERSION = 1;
 const MATERIAL_STORE = "materials";
 const MAX_FILE_SIZE = 50 * 1024 * 1024;

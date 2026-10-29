@@ -1,7 +1,9 @@
+param([string]$BasePath = "/teacher-ai")
+
 $ErrorActionPreference = "Stop"
 
 Set-Location (Split-Path -Parent $PSScriptRoot)
-$env:NEXT_PUBLIC_BASE_PATH = "/lingua-english-coach"
+$env:NEXT_PUBLIC_BASE_PATH = $BasePath
 
 npm run build
 if ($LASTEXITCODE -ne 0) {

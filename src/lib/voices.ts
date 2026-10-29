@@ -1,44 +1,18 @@
 import type { AiProvider } from "@/lib/ai-providers";
 import { AiError } from "@/lib/ai-client";
+import { LANG, type Accent } from "@/lib/language";
 
 /**
- * English listening voices: an engine (cloud AI or the device), a regional accent,
+ * Listening voices: an engine (cloud AI or the device), a regional accent,
  * a gender and a named voice. Cloud engines take the accent and style as a spoken
  * direction, so every voice can speak every accent.
  */
 export type VoiceEngine = "google" | "openai" | "device";
 export type VoiceGender = "female" | "male";
 
-export type Accent = {
-  id: string;
-  group: string;
-  flag: string;
-  name: string;
-  /** Device voices are matched on these BCP-47 prefixes. */
-  locales: string[];
-  /** How the accent is described to a cloud TTS model. */
-  prompt: string;
-  sample: string;
-};
-
-export const ACCENTS: Accent[] = [
-  { id: "us", group: "Bắc Mỹ", flag: "🇺🇸", name: "Mỹ – chuẩn", locales: ["en-US"], prompt: "a neutral General American", sample: "Hi there! Let's practise ordering coffee. Could I get a medium latte, please?" },
-  { id: "us-south", group: "Bắc Mỹ", flag: "🇺🇸", name: "Mỹ – miền Nam (Texas)", locales: ["en-US"], prompt: "a warm Southern United States (Texas)", sample: "Well, howdy! It's mighty nice to meet y'all. How's your day going?" },
-  { id: "us-ny", group: "Bắc Mỹ", flag: "🇺🇸", name: "Mỹ – New York", locales: ["en-US"], prompt: "a New York City", sample: "Hey, how you doing? The subway's right around the corner, you can't miss it." },
-  { id: "ca", group: "Bắc Mỹ", flag: "🇨🇦", name: "Canada", locales: ["en-CA"], prompt: "a Canadian English", sample: "Hey, it's pretty cold out today, eh? Let's grab a coffee and warm up." },
-  { id: "uk", group: "Anh & Ireland", flag: "🇬🇧", name: "Anh – chuẩn (RP)", locales: ["en-GB"], prompt: "a standard British Received Pronunciation", sample: "Good afternoon. Would you like a cup of tea before we begin the lesson?" },
-  { id: "uk-london", group: "Anh & Ireland", flag: "🇬🇧", name: "Anh – London", locales: ["en-GB"], prompt: "a modern London (Estuary English)", sample: "Alright mate? The bus to Camden is just over there, about five minutes." },
-  { id: "uk-north", group: "Anh & Ireland", flag: "🇬🇧", name: "Anh – miền Bắc (Manchester)", locales: ["en-GB"], prompt: "a Northern English (Manchester)", sample: "Ey up! It's a lovely day, int it? Fancy a brew before the match?" },
-  { id: "scot", group: "Anh & Ireland", flag: "🏴", name: "Scotland", locales: ["en-GB-scotland", "en-GB"], prompt: "a Scottish (Edinburgh)", sample: "Hello there! Welcome to Edinburgh. The castle is just up the hill." },
-  { id: "ie", group: "Anh & Ireland", flag: "🇮🇪", name: "Ireland", locales: ["en-IE"], prompt: "an Irish (Dublin)", sample: "How's it going? Grand weather today, so let's go for a walk by the river." },
-  { id: "au", group: "Úc & New Zealand", flag: "🇦🇺", name: "Úc", locales: ["en-AU"], prompt: "an Australian", sample: "G'day! How are you going? Let's head down to the beach this arvo." },
-  { id: "nz", group: "Úc & New Zealand", flag: "🇳🇿", name: "New Zealand", locales: ["en-NZ"], prompt: "a New Zealand", sample: "Kia ora! Sweet as, I'll meet you at the café at ten." },
-  { id: "in", group: "Châu Á & châu Phi", flag: "🇮🇳", name: "Ấn Độ", locales: ["en-IN"], prompt: "an Indian English", sample: "Good morning! Kindly share the report by today evening, it will be very helpful." },
-  { id: "sg", group: "Châu Á & châu Phi", flag: "🇸🇬", name: "Singapore", locales: ["en-SG"], prompt: "a Singaporean English", sample: "Hello! The meeting is at three, can? Please bring the documents." },
-  { id: "ph", group: "Châu Á & châu Phi", flag: "🇵🇭", name: "Philippines", locales: ["en-PH"], prompt: "a Filipino English", sample: "Hi po! Thank you for calling. How may I help you today?" },
-  { id: "za", group: "Châu Á & châu Phi", flag: "🇿🇦", name: "Nam Phi", locales: ["en-ZA"], prompt: "a South African", sample: "Howzit! The meeting has been moved to tomorrow morning at nine." },
-  { id: "ng", group: "Châu Á & châu Phi", flag: "🇳🇬", name: "Nigeria", locales: ["en-NG"], prompt: "a Nigerian English", sample: "Good afternoon! You are welcome. Please, how can I assist you?" },
-];
+export type { Accent };
+/** Regional voices of the language being learned (defined in language.ts). */
+export const ACCENTS: Accent[] = LANG.accents;
 
 export type NamedVoice = { id: string; gender: VoiceGender; character: string };
 
@@ -84,7 +58,7 @@ export const OPENAI_VOICES: NamedVoice[] = [
 ];
 
 export const VOICE_STYLES = [
-  { id: "teacher", label: "Giáo viên – rõ, chậm", prompt: "like a patient English teacher, articulating every word clearly" },
+  { id: "teacher", label: "Giáo viên – rõ, chậm", prompt: "like a patient language teacher, articulating every word clearly" },
   { id: "natural", label: "Tự nhiên", prompt: "in a natural, relaxed conversational way" },
   { id: "warm", label: "Ấm áp", prompt: "warmly and kindly" },
   { id: "energetic", label: "Hào hứng", prompt: "cheerfully and with energy" },
@@ -109,7 +83,7 @@ export type VoiceProfile = {
 
 export const DEFAULT_VOICE_PROFILE: VoiceProfile = {
   engine: "device",
-  accent: "us",
+  accent: LANG.accents[0].id,
   gender: "female",
   googleVoice: "Kore",
   openaiVoice: "coral",
@@ -284,8 +258,8 @@ export async function synthesizeCloudSpeech(
 }
 
 // Names device voices use on Windows/Edge, macOS/iOS, Chrome and Android (Google "x-" voice codes).
-const FEMALE_HINTS = /\b(female|woman|zira|susan|hazel|heera|catherine|linda|jenny|aria|ana|michelle|emma|ava|sonia|libby|maisie|natasha|clara|emily|molly|neerja|ashley|cora|elizabeth|amber|jane|nancy|sara|samantha|karen|moira|fiona|tessa|veena|victoria|allison|serena|kate|stephanie|nicky|zoe|isha|salli|joanna|kendra|kimberly|ivy|olivia|ruth|amy|nicole|aditi|raveena|google us english|wavenet [acef]|standard [acef]|neural2 [acef]|iob|iog|sfg|tpc|tpf|gba|gbc|gbg|aua|auc|ahp|cxx|ene)\b/i;
-const MALE_HINTS = /\b(male|man|david|mark|george|guy|ryan|eric|roger|christopher|brian|andrew|steffan|thomas|william|liam|ravi|prabhat|connor|mitchell|james|daniel|alex|fred|oliver|aaron|arthur|gordon|lee|rishi|matthew|joey|justin|kevin|russell|wavenet [bdj]|standard [bdj]|neural2 [bdj]|iol|iom|tpd|gbb|gbd|rjs|aub|aud|end)\b/i;
+const FEMALE_HINTS = /\b(female|haruka|ayumi|sayaka|nanami|mayu|shiori|kyoko|o-ren|huihui|yaoyao|xiaoxiao|xiaoyi|xiaohan|xiaomeng|xiaomo|xiaoqiu|xiaorui|xiaoshuang|xiaoxuan|xiaoyan|xiaoyou|tingting|meijia|sinji|hanhan|yating|hsiaochen|hsiaoyu|woman|zira|susan|hazel|heera|catherine|linda|jenny|aria|ana|michelle|emma|ava|sonia|libby|maisie|natasha|clara|emily|molly|neerja|ashley|cora|elizabeth|amber|jane|nancy|sara|samantha|karen|moira|fiona|tessa|veena|victoria|allison|serena|kate|stephanie|nicky|zoe|isha|salli|joanna|kendra|kimberly|ivy|olivia|ruth|amy|nicole|aditi|raveena|google us english|wavenet [acef]|standard [acef]|neural2 [acef]|iob|iog|sfg|tpc|tpf|gba|gbc|gbg|aua|auc|ahp|cxx|ene)\b/i;
+const MALE_HINTS = /\b(male|ichiro|keita|naoki|otoya|hattori|kangkang|yunxi|yunyang|yunjian|yunhao|yunxia|yunze|zhiwei|yunjhe|danny|man|david|mark|george|guy|ryan|eric|roger|christopher|brian|andrew|steffan|thomas|william|liam|ravi|prabhat|connor|mitchell|james|daniel|alex|fred|oliver|aaron|arthur|gordon|lee|rishi|matthew|joey|justin|kevin|russell|wavenet [bdj]|standard [bdj]|neural2 [bdj]|iol|iom|tpd|gbb|gbd|rjs|aub|aud|end)\b/i;
 
 /** Best guess of a device voice's gender from its name; many phones expose no hint at all. */
 export function guessDeviceVoiceGender(voice: SpeechSynthesisVoice): VoiceGender | "unknown" {
@@ -306,7 +280,7 @@ export function pickDeviceVoice(voices: SpeechSynthesisVoice[], profile: VoicePr
     ?? accentVoices.find((v) => guessDeviceVoiceGender(v) === profile.gender)
     ?? accentVoices.find((v) => guessDeviceVoiceGender(v) === "unknown")
     ?? accentVoices[0]
-    ?? voices.find((v) => v.lang.toLowerCase().startsWith("en"));
+    ?? voices.find((v) => v.lang.toLowerCase().startsWith(LANG.langPrefix));
   const actual = voice ? guessDeviceVoiceGender(voice) : "unknown";
   // A child: a high voice on top of whatever the device has.
   if (profile.childlike) return { voice, genderMatches: true, pitch: actual === "male" ? 1.9 : 1.6 };

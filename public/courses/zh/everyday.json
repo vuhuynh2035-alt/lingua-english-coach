@@ -1,0 +1,3161 @@
+{
+ "id": "everyday",
+ "title": "Tiếng Trung giao tiếp hằng ngày",
+ "version": "1.1.0",
+ "framework": "HSK 1–5",
+ "overview": "16 bài từ HSK 1 đến HSK 5: chào hỏi, gia đình, mua sắm, thói quen, gọi món, hỏi đường, kể kinh nghiệm, nhờ vả, sức khỏe, nêu ý kiến, kể chuyện và văn hóa ứng xử. Mỗi bài có hội thoại có pinyin và bản dịch, từ vựng, ngữ pháp, phát âm và bài kiểm tra 10 câu.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI, phân cấp theo HSK/CEFR",
+ "references": [
+  {
+   "title": "Chinese Proficiency Grading Standards for International Chinese Language Education",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Khung tham chiếu năng lực tiếng Trung theo HSK (chỉ dùng để phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "HSK – Hanyu Shuiping Kaoshi",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Tham khảo cấp độ HSK 1–5 (không sao chép đề thi)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "everyday-a1-1",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Chào hỏi và tự giới thiệu",
+   "objective": "Chào khi gặp lần đầu, nói tên, quê quán và nghề nghiệp.",
+   "reading": "小王: 你好!我叫王力。\n小明: 你好!我叫明。我是越南人。\n小王: 你是学生吗?\n小明: 是的,我是学生。认识你很高兴。",
+   "dialogue": [
+    {
+     "speaker": "小王",
+     "text": "你好!我叫王力。",
+     "phonetic": "Nǐ hǎo! Wǒ jiào Wáng Lì.",
+     "translation": "Xin chào! Tôi tên là Vương Lực."
+    },
+    {
+     "speaker": "小明",
+     "text": "你好!我叫明。我是越南人。",
+     "phonetic": "Nǐ hǎo! Wǒ jiào Míng. Wǒ shì Yuènán rén.",
+     "translation": "Xin chào! Tôi tên là Minh. Tôi là người Việt Nam."
+    },
+    {
+     "speaker": "小王",
+     "text": "你是学生吗?",
+     "phonetic": "Nǐ shì xuésheng ma?",
+     "translation": "Bạn là sinh viên phải không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "是的,我是学生。认识你很高兴。",
+     "phonetic": "Shì de, wǒ shì xuésheng. Rènshi nǐ hěn gāoxìng.",
+     "translation": "Vâng, tôi là sinh viên. Rất vui được làm quen với bạn."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "你好",
+     "reading": "nǐ hǎo",
+     "definition": "xin chào",
+     "example": "你好,我叫明。 (Xin chào, tôi tên là Minh.)"
+    },
+    {
+     "term": "叫",
+     "reading": "jiào",
+     "definition": "tên là, gọi là",
+     "example": "我叫王力。 (Tôi tên là Vương Lực.)"
+    },
+    {
+     "term": "学生",
+     "reading": "xuésheng",
+     "definition": "học sinh, sinh viên",
+     "example": "我是学生。 (Tôi là sinh viên.)"
+    },
+    {
+     "term": "认识",
+     "reading": "rènshi",
+     "definition": "quen biết, làm quen",
+     "example": "认识你很高兴。 (Rất vui được làm quen với bạn.)"
+    },
+    {
+     "term": "老师",
+     "reading": "lǎoshī",
+     "definition": "giáo viên",
+     "example": "王力是老师。 (Vương Lực là giáo viên.)"
+    }
+   ],
+   "grammar": {
+    "title": "A 是 B",
+    "explanation": "是 (shì) nối hai danh từ, gần như “là”. Phủ định dùng 不是. Hỏi thêm 吗 ở cuối câu. Giới thiệu tên: 我叫……",
+    "examples": [
+     "我是学生。[wǒ shì xuésheng] (Tôi là sinh viên.)",
+     "他是老师吗?[tā shì lǎoshī ma] (Anh ấy là giáo viên phải không?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Bốn thanh điệu",
+    "tip": "Thanh 1 cao đều (mā), thanh 2 đi lên (má), thanh 3 xuống rồi lên (mǎ), thanh 4 đi xuống (mà). 你好 thực tế đọc là ní hǎo vì hai thanh 3 đứng liền.",
+    "words": [
+     "你好",
+     "学生",
+     "老师",
+     "认识"
+    ]
+   },
+   "speakingTasks": [
+    "Giới thiệu tên, quê quán và nghề nghiệp của bạn bằng 3 câu.",
+    "Hỏi thầy/cô: 你叫什么名字?"
+   ],
+   "questions": [
+    {
+     "prompt": "Câu “Tôi tên là Minh.” là:",
+     "options": [
+      "我是叫明。",
+      "我叫明。",
+      "我名叫是明。"
+     ],
+     "answer": 1,
+     "explanation": "Giới thiệu tên dùng 我叫……"
+    },
+    {
+     "prompt": "Hỏi “Bạn có phải sinh viên không?” là:",
+     "options": [
+      "你是学生吗?",
+      "你吗是学生?",
+      "你学生是吗?"
+     ],
+     "answer": 0,
+     "explanation": "Thêm 吗 vào cuối câu để hỏi."
+    },
+    {
+     "prompt": "Câu nào nói “Rất vui được làm quen”?",
+     "options": [
+      "对不起,没关系。",
+      "再见,明天见。",
+      "认识你很高兴。"
+     ],
+     "answer": 2,
+     "explanation": "认识你很高兴 dùng khi gặp lần đầu."
+    },
+    {
+     "prompt": "「你好」 thực tế được đọc là:",
+     "options": [
+      "nī hāo",
+      "ní hǎo",
+      "nǐ hào"
+     ],
+     "answer": 1,
+     "explanation": "Hai thanh 3 liền nhau: thanh đầu đọc thành thanh 2."
+    },
+    {
+     "prompt": "「叫」 có nghĩa là gì?",
+     "options": [
+      "học sinh, sinh viên",
+      "giáo viên",
+      "tên là, gọi là"
+     ],
+     "answer": 2,
+     "explanation": "「叫」 [jiào] = tên là, gọi là."
+    },
+    {
+     "prompt": "「学生」 đọc là gì?",
+     "options": [
+      "lǎoshī",
+      "xuésheng",
+      "rènshi"
+     ],
+     "answer": 1,
+     "explanation": "「学生」 đọc là [xuésheng], nghĩa là học sinh, sinh viên."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我是＿＿＿。  (Tôi là sinh viên.)",
+     "options": [
+      "认识",
+      "学生",
+      "老师"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「学生」 (học sinh, sinh viên). Câu đầy đủ: 我是学生。"
+    },
+    {
+     "prompt": "「老师」 có nghĩa là gì?",
+     "options": [
+      "tên là, gọi là",
+      "giáo viên",
+      "quen biết, làm quen"
+     ],
+     "answer": 1,
+     "explanation": "「老师」 [lǎoshī] = giáo viên."
+    },
+    {
+     "prompt": "「老师」 đọc là gì?",
+     "options": [
+      "lǎoshī",
+      "jiào",
+      "rènshi"
+     ],
+     "answer": 0,
+     "explanation": "「老师」 đọc là [lǎoshī], nghĩa là giáo viên."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿,我叫明。  (Xin chào, tôi tên là Minh.)",
+     "options": [
+      "你好",
+      "老师",
+      "叫"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「你好」 (xin chào). Câu đầy đủ: 你好,我叫明。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-a1-2",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 2",
+   "category": "Từ vựng",
+   "title": "Gia đình, số đếm và tuổi",
+   "objective": "Gọi tên người trong gia đình, đếm số và nói tuổi.",
+   "reading": "小明: 这是我的家人的照片。\n小王: 你爸爸多大了?\n小明: 他五十二岁。我妈妈四十八岁。\n小王: 你有兄弟姐妹吗?\n小明: 有,我有一个姐姐。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "这是我的家人的照片。",
+     "phonetic": "Zhè shì wǒ de jiārén de zhàopiàn.",
+     "translation": "Đây là ảnh gia đình tôi."
+    },
+    {
+     "speaker": "小王",
+     "text": "你爸爸多大了?",
+     "phonetic": "Nǐ bàba duō dà le?",
+     "translation": "Bố bạn bao nhiêu tuổi rồi?"
+    },
+    {
+     "speaker": "小明",
+     "text": "他五十二岁。我妈妈四十八岁。",
+     "phonetic": "Tā wǔshí'èr suì. Wǒ māma sìshíbā suì.",
+     "translation": "Ông 52 tuổi. Mẹ tôi 48 tuổi."
+    },
+    {
+     "speaker": "小王",
+     "text": "你有兄弟姐妹吗?",
+     "phonetic": "Nǐ yǒu xiōngdì jiěmèi ma?",
+     "translation": "Bạn có anh chị em không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "有,我有一个姐姐。",
+     "phonetic": "Yǒu, wǒ yǒu yí gè jiějie.",
+     "translation": "Có, tôi có một người chị gái."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "家人",
+     "reading": "jiārén",
+     "definition": "người nhà, gia đình",
+     "example": "我家有四口人。 (Nhà tôi có bốn người.)"
+    },
+    {
+     "term": "爸爸",
+     "reading": "bàba",
+     "definition": "bố",
+     "example": "我爸爸是医生。 (Bố tôi là bác sĩ.)"
+    },
+    {
+     "term": "妈妈",
+     "reading": "māma",
+     "definition": "mẹ",
+     "example": "我妈妈是老师。 (Mẹ tôi là giáo viên.)"
+    },
+    {
+     "term": "岁",
+     "reading": "suì",
+     "definition": "tuổi",
+     "example": "我妈妈四十八岁。 (Mẹ tôi 48 tuổi.)"
+    },
+    {
+     "term": "姐姐",
+     "reading": "jiějie",
+     "definition": "chị gái",
+     "example": "我有一个姐姐。 (Tôi có một chị gái.)"
+    }
+   ],
+   "grammar": {
+    "title": "有 và lượng từ",
+    "explanation": "有 (yǒu) diễn tả sở hữu, phủ định là 没有 (không dùng 不有). Khi đếm phải có lượng từ: 一个姐姐. “Hai” dùng 两 trước lượng từ: 两个哥哥. Hỏi tuổi người lớn: 您多大年纪? Hỏi bạn bè: 你多大?",
+    "examples": [
+     "我有一个姐姐。[wǒ yǒu yí gè jiějie] (Tôi có một chị gái.)",
+     "我没有哥哥。[wǒ méiyǒu gēge] (Tôi không có anh trai.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Số đếm và biến điệu 一",
+    "tip": "一 đọc yī khi đếm riêng; trước thanh 4 đọc yí (一个 yí gè); trước thanh 1, 2, 3 đọc yì (一天 yì tiān). Cẩn thận 四 (sì) và 十 (shí): sì khác shí.",
+    "words": [
+     "四",
+     "十",
+     "一个",
+     "五十"
+    ]
+   },
+   "speakingTasks": [
+    "Nói gia đình bạn có mấy người và tuổi của từng người.",
+    "Hỏi thầy/cô: 你有兄弟姐妹吗?"
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi có hai người anh.” là:",
+     "options": [
+      "我有两个哥哥。",
+      "我有两哥哥。",
+      "我有二个哥哥。"
+     ],
+     "answer": 0,
+     "explanation": "Trước lượng từ dùng 两, và phải có 个."
+    },
+    {
+     "prompt": "Phủ định của 「我有哥哥。」 là:",
+     "options": [
+      "我没有哥哥。",
+      "我没哥哥有。",
+      "我不有哥哥。"
+     ],
+     "answer": 0,
+     "explanation": "有 phủ định bằng 没有."
+    },
+    {
+     "prompt": "「一个」 đọc là:",
+     "options": [
+      "yī gè",
+      "yì gè",
+      "yí gè"
+     ],
+     "answer": 2,
+     "explanation": "一 trước thanh 4 đọc thành thanh 2: yí."
+    },
+    {
+     "prompt": "Hỏi tuổi bạn đồng trang lứa:",
+     "options": [
+      "你什么岁?",
+      "你多大?",
+      "你多少是?"
+     ],
+     "answer": 1,
+     "explanation": "多大 dùng để hỏi tuổi."
+    },
+    {
+     "prompt": "「爸爸」 có nghĩa là gì?",
+     "options": [
+      "bố",
+      "chị gái",
+      "người nhà, gia đình"
+     ],
+     "answer": 0,
+     "explanation": "「爸爸」 [bàba] = bố."
+    },
+    {
+     "prompt": "「妈妈」 đọc là gì?",
+     "options": [
+      "suì",
+      "jiārén",
+      "māma"
+     ],
+     "answer": 2,
+     "explanation": "「妈妈」 đọc là [māma], nghĩa là mẹ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我＿＿＿是老师。  (Mẹ tôi là giáo viên.)",
+     "options": [
+      "妈妈",
+      "家人",
+      "岁"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「妈妈」 (mẹ). Câu đầy đủ: 我妈妈是老师。"
+    },
+    {
+     "prompt": "「姐姐」 có nghĩa là gì?",
+     "options": [
+      "bố",
+      "chị gái",
+      "người nhà, gia đình"
+     ],
+     "answer": 1,
+     "explanation": "「姐姐」 [jiějie] = chị gái."
+    },
+    {
+     "prompt": "「姐姐」 đọc là gì?",
+     "options": [
+      "jiārén",
+      "bàba",
+      "jiějie"
+     ],
+     "answer": 2,
+     "explanation": "「姐姐」 đọc là [jiějie], nghĩa là chị gái."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我有一个＿＿＿。  (Tôi có một chị gái.)",
+     "options": [
+      "家人",
+      "姐姐",
+      "爸爸"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「姐姐」 (chị gái). Câu đầy đủ: 我有一个姐姐。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-a1-3",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Mua sắm và hỏi giá",
+   "objective": "Hỏi giá, chọn món, nói số tiền bằng tệ (元).",
+   "reading": "顾客: 你好,这件衬衫多少钱?\n店员: 一百二十元。\n顾客: 有便宜一点儿的吗?\n店员: 有,这件八十元。\n顾客: 好,我要这件。",
+   "dialogue": [
+    {
+     "speaker": "顾客",
+     "text": "你好,这件衬衫多少钱?",
+     "phonetic": "Nǐ hǎo, zhè jiàn chènshān duōshao qián?",
+     "translation": "Xin chào, chiếc áo sơ mi này bao nhiêu tiền?"
+    },
+    {
+     "speaker": "店员",
+     "text": "一百二十元。",
+     "phonetic": "Yì bǎi èrshí yuán.",
+     "translation": "120 tệ ạ."
+    },
+    {
+     "speaker": "顾客",
+     "text": "有便宜一点儿的吗?",
+     "phonetic": "Yǒu piányi yìdiǎnr de ma?",
+     "translation": "Có cái nào rẻ hơn một chút không?"
+    },
+    {
+     "speaker": "店员",
+     "text": "有,这件八十元。",
+     "phonetic": "Yǒu, zhè jiàn bāshí yuán.",
+     "translation": "Có, chiếc này 80 tệ."
+    },
+    {
+     "speaker": "顾客",
+     "text": "好,我要这件。",
+     "phonetic": "Hǎo, wǒ yào zhè jiàn.",
+     "translation": "Được, tôi lấy chiếc này."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "多少钱",
+     "reading": "duōshao qián",
+     "definition": "bao nhiêu tiền",
+     "example": "这个多少钱?(Cái này bao nhiêu tiền?)"
+    },
+    {
+     "term": "元",
+     "reading": "yuán",
+     "definition": "tệ, đồng (tiền Trung Quốc)",
+     "example": "一百元。 (100 tệ.)"
+    },
+    {
+     "term": "便宜",
+     "reading": "piányi",
+     "definition": "rẻ",
+     "example": "这家店很便宜。 (Cửa hàng này rất rẻ.)"
+    },
+    {
+     "term": "贵",
+     "reading": "guì",
+     "definition": "đắt",
+     "example": "这件太贵了。 (Chiếc này đắt quá.)"
+    },
+    {
+     "term": "要",
+     "reading": "yào",
+     "definition": "muốn lấy, cần",
+     "example": "我要这件。 (Tôi lấy chiếc này.)"
+    }
+   ],
+   "grammar": {
+    "title": "这/那 + lượng từ và 太……了",
+    "explanation": "这 (gần), 那 (xa); đi kèm lượng từ: 这件, 那个. Hỏi giá: ……多少钱? Nói “quá ~”: 太 + tính từ + 了 (太贵了: đắt quá). Nhờ giảm giá: 能便宜一点儿吗?",
+    "examples": [
+     "这件多少钱?[zhè jiàn duōshao qián] (Chiếc này bao nhiêu tiền?)",
+     "太贵了![tài guì le] (Đắt quá!)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc số tiền",
+    "tip": "Số hàng trăm: 一百 yì bǎi, hai trăm 两百 liǎng bǎi. Số tròn chục 八十 bāshí. Chú ý 十 (shí) và 四 (sì) phân biệt âm cuốn lưỡi sh và âm s.",
+    "words": [
+     "一百",
+     "八十",
+     "两百",
+     "便宜"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai khách hỏi giá 3 món và mua một món.",
+    "Thầy/cô là người bán hàng, hãy hỏi giá và nói “rẻ hơn một chút”."
+   ],
+   "questions": [
+    {
+     "prompt": "Muốn mua chiếc áo này, bạn nói:",
+     "options": [
+      "我有这件。",
+      "我是这件。",
+      "我要这件。"
+     ],
+     "answer": 2,
+     "explanation": "要 dùng khi muốn lấy/mua."
+    },
+    {
+     "prompt": "“Đắt quá!” là:",
+     "options": [
+      "太贵了!",
+      "很贵太!",
+      "贵太了!"
+     ],
+     "answer": 0,
+     "explanation": "太 + tính từ + 了."
+    },
+    {
+     "prompt": "Hỏi “có cái nào rẻ hơn không?”",
+     "options": [
+      "便宜吗有一点?",
+      "有便宜一点儿的吗?",
+      "有便宜的一点儿是?"
+     ],
+     "answer": 1,
+     "explanation": "便宜一点儿 = rẻ hơn một chút."
+    },
+    {
+     "prompt": "“Hai trăm” trong tiền tệ nói là:",
+     "options": [
+      "两百",
+      "二百个",
+      "两个百"
+     ],
+     "answer": 0,
+     "explanation": "Số lớn hơn 100 dùng 两 trước 百."
+    },
+    {
+     "prompt": "「便宜」 có nghĩa là gì?",
+     "options": [
+      "muốn lấy, cần",
+      "rẻ",
+      "đắt"
+     ],
+     "answer": 1,
+     "explanation": "「便宜」 [piányi] = rẻ."
+    },
+    {
+     "prompt": "「贵」 đọc là gì?",
+     "options": [
+      "piányi",
+      "yuán",
+      "guì"
+     ],
+     "answer": 2,
+     "explanation": "「贵」 đọc là [guì], nghĩa là đắt."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 一百＿＿＿。  (100 tệ.)",
+     "options": [
+      "元",
+      "贵",
+      "要"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「元」 (tệ, đồng (tiền Trung Quốc)). Câu đầy đủ: 一百元。"
+    },
+    {
+     "prompt": "「要」 có nghĩa là gì?",
+     "options": [
+      "bao nhiêu tiền",
+      "rẻ",
+      "muốn lấy, cần"
+     ],
+     "answer": 2,
+     "explanation": "「要」 [yào] = muốn lấy, cần."
+    },
+    {
+     "prompt": "「便宜」 đọc là gì?",
+     "options": [
+      "piányi",
+      "yào",
+      "guì"
+     ],
+     "answer": 0,
+     "explanation": "「便宜」 đọc là [piányi], nghĩa là rẻ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 这个＿＿＿?  (Cái này bao nhiêu tiền?)",
+     "options": [
+      "元",
+      "贵",
+      "多少钱"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「多少钱」 (bao nhiêu tiền). Câu đầy đủ: 这个多少钱?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-a1-4",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 4",
+   "category": "Từ vựng",
+   "title": "Thời tiết và các mùa",
+   "objective": "Nói về thời tiết hôm nay và mùa yêu thích.",
+   "reading": "小王: 今天天气真好!\n小明: 是啊,不过有点儿热。\n小王: 你最喜欢哪个季节?\n小明: 我最喜欢秋天,因为很凉快。",
+   "dialogue": [
+    {
+     "speaker": "小王",
+     "text": "今天天气真好!",
+     "phonetic": "Jīntiān tiānqì zhēn hǎo!",
+     "translation": "Hôm nay thời tiết đẹp thật!"
+    },
+    {
+     "speaker": "小明",
+     "text": "是啊,不过有点儿热。",
+     "phonetic": "Shì a, búguò yǒudiǎnr rè.",
+     "translation": "Đúng vậy, nhưng hơi nóng."
+    },
+    {
+     "speaker": "小王",
+     "text": "你最喜欢哪个季节?",
+     "phonetic": "Nǐ zuì xǐhuan nǎge jìjié?",
+     "translation": "Bạn thích mùa nào nhất?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我最喜欢秋天,因为很凉快。",
+     "phonetic": "Wǒ zuì xǐhuan qiūtiān, yīnwèi hěn liángkuai.",
+     "translation": "Tôi thích mùa thu nhất, vì trời mát."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "天气",
+     "reading": "tiānqì",
+     "definition": "thời tiết",
+     "example": "明天天气怎么样?(Thời tiết ngày mai thế nào?)"
+    },
+    {
+     "term": "热",
+     "reading": "rè",
+     "definition": "nóng",
+     "example": "夏天很热。 (Mùa hè rất nóng.)"
+    },
+    {
+     "term": "冷",
+     "reading": "lěng",
+     "definition": "lạnh",
+     "example": "冬天很冷。 (Mùa đông rất lạnh.)"
+    },
+    {
+     "term": "季节",
+     "reading": "jìjié",
+     "definition": "mùa",
+     "example": "中国有四个季节。 (Trung Quốc có bốn mùa.)"
+    },
+    {
+     "term": "下雨",
+     "reading": "xià yǔ",
+     "definition": "trời mưa",
+     "example": "今天下雨了。 (Hôm nay trời mưa rồi.)"
+    }
+   ],
+   "grammar": {
+    "title": "最 + động từ/tính từ và 因为",
+    "explanation": "最 = nhất: 最喜欢 (thích nhất). Nêu lý do: 因为 + nguyên nhân. 有点儿 + tính từ: hơi ~ (thường tiêu cực).",
+    "examples": [
+     "我最喜欢夏天。[wǒ zuì xǐhuan xiàtiān] (Tôi thích mùa hè nhất.)",
+     "因为下雨,我没出去。[yīnwèi xià yǔ, wǒ méi chūqù] (Vì mưa nên tôi không ra ngoài.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm r và l",
+    "tip": "热 rè: r cuốn lưỡi nhẹ, không đọc thành “dờ”. 冷 lěng: l đầu lưỡi, vần -eng. 凉快 liángkuai: kuai đọc nhẹ.",
+    "words": [
+     "热",
+     "冷",
+     "凉快",
+     "季节"
+    ]
+   },
+   "speakingTasks": [
+    "Nói thời tiết hôm nay và mùa bạn thích nhất, có lý do.",
+    "Hỏi thầy/cô: 北京的冬天冷吗?"
+   ],
+   "questions": [
+    {
+     "prompt": "“Hôm nay thời tiết đẹp thật!”",
+     "options": [
+      "今天真好天气!",
+      "天气今天好真!",
+      "今天天气真好!"
+     ],
+     "answer": 2,
+     "explanation": "Chủ ngữ + 真 + tính từ."
+    },
+    {
+     "prompt": "“Tôi thích mùa thu nhất.”",
+     "options": [
+      "我最喜欢秋天。",
+      "我喜欢最秋天。",
+      "我秋天最是喜欢。"
+     ],
+     "answer": 0,
+     "explanation": "最 + động từ."
+    },
+    {
+     "prompt": "「冷」 nghĩa là:",
+     "options": [
+      "nóng",
+      "lạnh",
+      "mát"
+     ],
+     "answer": 1,
+     "explanation": "冷 = lạnh."
+    },
+    {
+     "prompt": "“Hơi nóng” là:",
+     "options": [
+      "热有点儿是",
+      "一点儿热有",
+      "有点儿热"
+     ],
+     "answer": 2,
+     "explanation": "有点儿 + tính từ."
+    },
+    {
+     "prompt": "「天气」 có nghĩa là gì?",
+     "options": [
+      "nóng",
+      "thời tiết",
+      "trời mưa"
+     ],
+     "answer": 1,
+     "explanation": "「天气」 [tiānqì] = thời tiết."
+    },
+    {
+     "prompt": "「热」 đọc là gì?",
+     "options": [
+      "rè",
+      "lěng",
+      "tiānqì"
+     ],
+     "answer": 0,
+     "explanation": "「热」 đọc là [rè], nghĩa là nóng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 夏天很＿＿＿。  (Mùa hè rất nóng.)",
+     "options": [
+      "冷",
+      "天气",
+      "热"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「热」 (nóng). Câu đầy đủ: 夏天很热。"
+    },
+    {
+     "prompt": "「下雨」 có nghĩa là gì?",
+     "options": [
+      "mùa",
+      "trời mưa",
+      "lạnh"
+     ],
+     "answer": 1,
+     "explanation": "「下雨」 [xià yǔ] = trời mưa."
+    },
+    {
+     "prompt": "「天气」 đọc là gì?",
+     "options": [
+      "tiānqì",
+      "xià yǔ",
+      "rè"
+     ],
+     "answer": 0,
+     "explanation": "「天气」 đọc là [tiānqì], nghĩa là thời tiết."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 中国有四个＿＿＿。  (Trung Quốc có bốn mùa.)",
+     "options": [
+      "冷",
+      "下雨",
+      "季节"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「季节」 (mùa). Câu đầy đủ: 中国有四个季节。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-a2-1",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 1",
+   "category": "Ngữ pháp",
+   "title": "Thói quen hằng ngày và giờ giấc",
+   "objective": "Kể một ngày bình thường với giờ giấc và trật tự câu.",
+   "reading": "小明: 我每天早上六点起床。\n小王: 你早饭吃什么?\n小明: 我吃面包,喝咖啡。\n小王: 你几点去公司?\n小明: 我八点出门,坐地铁去。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "我每天早上六点起床。",
+     "phonetic": "Wǒ měi tiān zǎoshang liù diǎn qǐchuáng.",
+     "translation": "Mỗi sáng tôi dậy lúc 6 giờ."
+    },
+    {
+     "speaker": "小王",
+     "text": "你早饭吃什么?",
+     "phonetic": "Nǐ zǎofàn chī shénme?",
+     "translation": "Bạn ăn gì vào bữa sáng?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我吃面包,喝咖啡。",
+     "phonetic": "Wǒ chī miànbāo, hē kāfēi.",
+     "translation": "Tôi ăn bánh mì và uống cà phê."
+    },
+    {
+     "speaker": "小王",
+     "text": "你几点去公司?",
+     "phonetic": "Nǐ jǐ diǎn qù gōngsī?",
+     "translation": "Bạn mấy giờ đi đến công ty?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我八点出门,坐地铁去。",
+     "phonetic": "Wǒ bā diǎn chūmén, zuò dìtiě qù.",
+     "translation": "Tôi ra khỏi nhà lúc 8 giờ, đi bằng tàu điện ngầm."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "起床",
+     "reading": "qǐchuáng",
+     "definition": "thức dậy",
+     "example": "我六点起床。 (Tôi dậy lúc 6 giờ.)"
+    },
+    {
+     "term": "早饭",
+     "reading": "zǎofàn",
+     "definition": "bữa sáng",
+     "example": "我常常吃面包当早饭。 (Tôi thường ăn bánh mì cho bữa sáng.)"
+    },
+    {
+     "term": "几点",
+     "reading": "jǐ diǎn",
+     "definition": "mấy giờ",
+     "example": "现在几点?(Bây giờ là mấy giờ?)"
+    },
+    {
+     "term": "公司",
+     "reading": "gōngsī",
+     "definition": "công ty",
+     "example": "我去公司上班。 (Tôi đi công ty làm việc.)"
+    },
+    {
+     "term": "地铁",
+     "reading": "dìtiě",
+     "definition": "tàu điện ngầm",
+     "example": "我坐地铁去公司。 (Tôi đi tàu điện ngầm đến công ty.)"
+    }
+   ],
+   "grammar": {
+    "title": "Trật tự: thời gian + nơi chốn + động từ",
+    "explanation": "Thời gian đứng trước động từ: 八点出门. Phương tiện dùng 坐 + phương tiện + 去: 坐地铁去. Hỏi giờ: 几点? Trả lời: số + 点 (6 giờ = 六点, 2 giờ = 两点).",
+    "examples": [
+     "我八点去公司。[wǒ bā diǎn qù gōngsī] (Tôi 8 giờ đi đến công ty.)",
+     "我坐地铁去学校。[wǒ zuò dìtiě qù xuéxiào] (Tôi đi tàu điện ngầm đến trường.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm cuốn lưỡi",
+    "tip": "zh, ch, sh, r là âm cuốn lưỡi, khác với z, c, s. Ví dụ: 起床 qǐchuáng, 吃饭 chīfàn, 公司 gōngsī. Luyện: zhī – zī, chī – cī, shī – sī.",
+    "words": [
+     "吃",
+     "什么",
+     "公司",
+     "起床"
+    ]
+   },
+   "speakingTasks": [
+    "Kể 5 việc bạn làm từ sáng đến tối, có giờ cụ thể.",
+    "Hỏi thầy/cô: 你几点起床?"
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi 8 giờ đến công ty.” là:",
+     "options": [
+      "我去八点公司。",
+      "我八点去公司。",
+      "我去公司八点。"
+     ],
+     "answer": 1,
+     "explanation": "Thời gian đứng trước động từ."
+    },
+    {
+     "prompt": "“Đi tàu điện ngầm đến trường” là:",
+     "options": [
+      "地铁坐去学校",
+      "坐地铁去学校",
+      "去学校地铁坐"
+     ],
+     "answer": 1,
+     "explanation": "坐 + phương tiện + 去 + nơi chốn."
+    },
+    {
+     "prompt": "Hỏi giờ là:",
+     "options": [
+      "多少是?",
+      "几点?",
+      "什么岁?"
+     ],
+     "answer": 1,
+     "explanation": "几点 hỏi giờ."
+    },
+    {
+     "prompt": "2 giờ chiều nói là:",
+     "options": [
+      "下午个二点",
+      "下午两点",
+      "下午二点"
+     ],
+     "answer": 1,
+     "explanation": "Giờ 2 dùng 两点."
+    },
+    {
+     "prompt": "「起床」 có nghĩa là gì?",
+     "options": [
+      "thức dậy",
+      "tàu điện ngầm",
+      "bữa sáng"
+     ],
+     "answer": 0,
+     "explanation": "「起床」 [qǐchuáng] = thức dậy."
+    },
+    {
+     "prompt": "「公司」 đọc là gì?",
+     "options": [
+      "qǐchuáng",
+      "gōngsī",
+      "dìtiě"
+     ],
+     "answer": 1,
+     "explanation": "「公司」 đọc là [gōngsī], nghĩa là công ty."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我常常吃面包当＿＿＿。  (Tôi thường ăn bánh mì cho bữa sáng.)",
+     "options": [
+      "地铁",
+      "早饭",
+      "起床"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「早饭」 (bữa sáng). Câu đầy đủ: 我常常吃面包当早饭。"
+    },
+    {
+     "prompt": "「公司」 có nghĩa là gì?",
+     "options": [
+      "công ty",
+      "tàu điện ngầm",
+      "thức dậy"
+     ],
+     "answer": 0,
+     "explanation": "「公司」 [gōngsī] = công ty."
+    },
+    {
+     "prompt": "「地铁」 đọc là gì?",
+     "options": [
+      "gōngsī",
+      "qǐchuáng",
+      "dìtiě"
+     ],
+     "answer": 2,
+     "explanation": "「地铁」 đọc là [dìtiě], nghĩa là tàu điện ngầm."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我六点＿＿＿。  (Tôi dậy lúc 6 giờ.)",
+     "options": [
+      "起床",
+      "地铁",
+      "早饭"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「起床」 (thức dậy). Câu đầy đủ: 我六点起床。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-a2-2",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Gọi món ở nhà hàng",
+   "objective": "Gọi món, hỏi món gợi ý, nói sở thích và thanh toán.",
+   "reading": "服务员: 你好,请问几位?\n小明: 两位。请给我们菜单。\n服务员: 你们想吃什么?\n小明: 来一个宫保鸡丁,一碗米饭。不要太辣。\n小明: 服务员,买单!",
+   "dialogue": [
+    {
+     "speaker": "服务员",
+     "text": "你好,请问几位?",
+     "phonetic": "Nǐ hǎo, qǐngwèn jǐ wèi?",
+     "translation": "Xin chào, xin hỏi mấy vị ạ?"
+    },
+    {
+     "speaker": "小明",
+     "text": "两位。请给我们菜单。",
+     "phonetic": "Liǎng wèi. Qǐng gěi wǒmen càidān.",
+     "translation": "Hai người. Làm ơn cho chúng tôi thực đơn."
+    },
+    {
+     "speaker": "服务员",
+     "text": "你们想吃什么?",
+     "phonetic": "Nǐmen xiǎng chī shénme?",
+     "translation": "Các bạn muốn ăn gì?"
+    },
+    {
+     "speaker": "小明",
+     "text": "来一个宫保鸡丁,一碗米饭。不要太辣。",
+     "phonetic": "Lái yí gè gōngbǎo jīdīng, yì wǎn mǐfàn. Bú yào tài là.",
+     "translation": "Cho một món gà xào cay, một bát cơm. Đừng cay quá."
+    },
+    {
+     "speaker": "小明",
+     "text": "服务员,买单!",
+     "phonetic": "Fúwùyuán, mǎidān!",
+     "translation": "Phục vụ ơi, tính tiền!"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "菜单",
+     "reading": "càidān",
+     "definition": "thực đơn",
+     "example": "请给我们菜单。 (Làm ơn cho chúng tôi thực đơn.)"
+    },
+    {
+     "term": "米饭",
+     "reading": "mǐfàn",
+     "definition": "cơm",
+     "example": "我要一碗米饭。 (Tôi muốn một bát cơm.)"
+    },
+    {
+     "term": "辣",
+     "reading": "là",
+     "definition": "cay",
+     "example": "这个菜太辣了。 (Món này cay quá.)"
+    },
+    {
+     "term": "服务员",
+     "reading": "fúwùyuán",
+     "definition": "nhân viên phục vụ",
+     "example": "服务员,买单!(Phục vụ ơi, tính tiền!)"
+    },
+    {
+     "term": "买单",
+     "reading": "mǎidān",
+     "definition": "thanh toán, tính tiền",
+     "example": "我来买单。 (Để tôi thanh toán.)"
+    }
+   ],
+   "grammar": {
+    "title": "想 / 要 và lượng từ",
+    "explanation": "想 + động từ: muốn làm gì (你想吃什么?). 要: muốn lấy/gọi (我要一碗米饭). “Đừng cay quá” nói 不要太辣. Đếm món: 一碗 (bát), 一杯 (cốc), 一盘 (đĩa), 一个 (món).",
+    "examples": [
+     "我想吃饺子。[wǒ xiǎng chī jiǎozi] (Tôi muốn ăn sủi cảo.)",
+     "来一杯茶。[lái yì bēi chá] (Cho một cốc trà.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm bật hơi",
+    "tip": "p, t, k, q, ch bật hơi mạnh, còn b, d, g, j, zh không bật hơi. Người Việt hay lẫn: 买 mǎi, 辣 là, 米 mǐ, 吃 chī. Đặt tờ giấy trước miệng khi nói p/t/k, giấy phải bay.",
+    "words": [
+     "泡",
+     "报",
+     "吃",
+     "米饭"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai khách gọi 2 món và một đồ uống, nói món không quá cay.",
+    "Hỏi thầy/cô: 有什么推荐的菜?"
+   ],
+   "questions": [
+    {
+     "prompt": "Cách xin thực đơn lịch sự:",
+     "options": [
+      "你菜单给我们。",
+      "菜单我们请给。",
+      "请给我们菜单。"
+     ],
+     "answer": 2,
+     "explanation": "请 + 给 + người + vật."
+    },
+    {
+     "prompt": "“Đừng cay quá.” là:",
+     "options": [
+      "没有太辣了。",
+      "不要太辣。",
+      "不是太辣。"
+     ],
+     "answer": 1,
+     "explanation": "不要 + tính từ là lời yêu cầu."
+    },
+    {
+     "prompt": "Gọi tính tiền ở quán:",
+     "options": [
+      "再见!",
+      "买单!",
+      "谢谢你好。"
+     ],
+     "answer": 1,
+     "explanation": "买单 nghĩa là thanh toán."
+    },
+    {
+     "prompt": "Lượng từ của “một bát cơm” là:",
+     "options": [
+      "一杯米饭",
+      "一碗米饭",
+      "一本米饭"
+     ],
+     "answer": 1,
+     "explanation": "碗 là lượng từ của bát."
+    },
+    {
+     "prompt": "「米饭」 có nghĩa là gì?",
+     "options": [
+      "thanh toán, tính tiền",
+      "thực đơn",
+      "cơm"
+     ],
+     "answer": 2,
+     "explanation": "「米饭」 [mǐfàn] = cơm."
+    },
+    {
+     "prompt": "「米饭」 đọc là gì?",
+     "options": [
+      "mǎidān",
+      "càidān",
+      "mǐfàn"
+     ],
+     "answer": 2,
+     "explanation": "「米饭」 đọc là [mǐfàn], nghĩa là cơm."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请给我们＿＿＿。  (Làm ơn cho chúng tôi thực đơn.)",
+     "options": [
+      "服务员",
+      "买单",
+      "菜单"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「菜单」 (thực đơn). Câu đầy đủ: 请给我们菜单。"
+    },
+    {
+     "prompt": "「辣」 có nghĩa là gì?",
+     "options": [
+      "cay",
+      "thực đơn",
+      "nhân viên phục vụ"
+     ],
+     "answer": 0,
+     "explanation": "「辣」 [là] = cay."
+    },
+    {
+     "prompt": "「菜单」 đọc là gì?",
+     "options": [
+      "mǎidān",
+      "càidān",
+      "fúwùyuán"
+     ],
+     "answer": 1,
+     "explanation": "「菜单」 đọc là [càidān], nghĩa là thực đơn."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿,买单!  (Phục vụ ơi, tính tiền!)",
+     "options": [
+      "菜单",
+      "服务员",
+      "买单"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「服务员」 (nhân viên phục vụ). Câu đầy đủ: 服务员,买单!"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-a2-3",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Hỏi đường và đi tàu điện ngầm",
+   "objective": "Hỏi đường, hiểu chỉ dẫn rẽ trái phải và hỏi ga.",
+   "reading": "小明: 请问,地铁站在哪儿?\n路人: 一直走,到红绿灯往右拐。\n小明: 远吗?\n路人: 不远,走五分钟就到了。\n小明: 谢谢您!",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "请问,地铁站在哪儿?",
+     "phonetic": "Qǐngwèn, dìtiězhàn zài nǎr?",
+     "translation": "Xin hỏi, ga tàu điện ngầm ở đâu ạ?"
+    },
+    {
+     "speaker": "路人",
+     "text": "一直走,到红绿灯往右拐。",
+     "phonetic": "Yìzhí zǒu, dào hónglǜdēng wǎng yòu guǎi.",
+     "translation": "Đi thẳng, đến đèn giao thông thì rẽ phải."
+    },
+    {
+     "speaker": "小明",
+     "text": "远吗?",
+     "phonetic": "Yuǎn ma?",
+     "translation": "Có xa không ạ?"
+    },
+    {
+     "speaker": "路人",
+     "text": "不远,走五分钟就到了。",
+     "phonetic": "Bù yuǎn, zǒu wǔ fēnzhōng jiù dào le.",
+     "translation": "Không xa, đi bộ 5 phút là tới."
+    },
+    {
+     "speaker": "小明",
+     "text": "谢谢您!",
+     "phonetic": "Xièxie nín!",
+     "translation": "Cảm ơn bác!"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "地铁站",
+     "reading": "dìtiězhàn",
+     "definition": "ga tàu điện ngầm",
+     "example": "地铁站在前面。 (Ga tàu điện ngầm ở phía trước.)"
+    },
+    {
+     "term": "一直走",
+     "reading": "yìzhí zǒu",
+     "definition": "đi thẳng",
+     "example": "一直走就到了。 (Đi thẳng là tới.)"
+    },
+    {
+     "term": "红绿灯",
+     "reading": "hónglǜdēng",
+     "definition": "đèn giao thông",
+     "example": "到红绿灯往左拐。 (Đến đèn giao thông thì rẽ trái.)"
+    },
+    {
+     "term": "远",
+     "reading": "yuǎn",
+     "definition": "xa",
+     "example": "学校离这儿不远。 (Trường cách đây không xa.)"
+    },
+    {
+     "term": "拐",
+     "reading": "guǎi",
+     "definition": "rẽ",
+     "example": "往右拐。 (Rẽ phải.)"
+    }
+   ],
+   "grammar": {
+    "title": "在, 往 và 离",
+    "explanation": "在 + nơi chốn: ở đâu (地铁站在哪儿?). 往 + hướng + động từ: đi về hướng ~ (往右拐). 离 chỉ khoảng cách giữa hai điểm: 学校离这儿不远. 就 nhấn mạnh nhanh: 走五分钟就到了.",
+    "examples": [
+     "银行在哪儿?[yínháng zài nǎr] (Ngân hàng ở đâu?)",
+     "往前走,然后往左拐。[wǎng qián zǒu, ránhòu wǎng zuǒ guǎi] (Đi thẳng rồi rẽ trái.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm ü và j, q, x",
+    "tip": "ü (như “uy” ngắn, môi tròn) trong 去 qù, 绿 lǜ, 远 yuǎn. j, q, x chỉ ghép với i và ü: 近 jìn, 去 qù, 西 xī. Không đọc thành “ch/s”.",
+    "words": [
+     "去",
+     "绿",
+     "远",
+     "近"
+    ]
+   },
+   "speakingTasks": [
+    "Hỏi đường từ khách sạn đến ga tàu và hiểu chỉ dẫn.",
+    "Nhờ thầy/cô hướng dẫn cách đến một nơi nổi tiếng."
+   ],
+   "questions": [
+    {
+     "prompt": "“Ga tàu điện ngầm ở đâu?” là:",
+     "options": [
+      "哪儿在地铁站?",
+      "地铁站在哪儿?",
+      "地铁站是哪儿在?"
+     ],
+     "answer": 1,
+     "explanation": "Chủ ngữ + 在 + 哪儿."
+    },
+    {
+     "prompt": "“Rẽ phải” là:",
+     "options": [
+      "往右拐",
+      "拐往右",
+      "右往拐"
+     ],
+     "answer": 0,
+     "explanation": "往 + hướng + 拐."
+    },
+    {
+     "prompt": "“Cách đây không xa” là:",
+     "options": [
+      "从这儿不远的",
+      "离这儿不远",
+      "在这儿不远是"
+     ],
+     "answer": 1,
+     "explanation": "离 + địa điểm + 不远."
+    },
+    {
+     "prompt": "Hỏi “có xa không?” là:",
+     "options": [
+      "远是吗?",
+      "是远吗有?",
+      "远吗?"
+     ],
+     "answer": 2,
+     "explanation": "Tính từ + 吗."
+    },
+    {
+     "prompt": "「拐」 có nghĩa là gì?",
+     "options": [
+      "đi thẳng",
+      "rẽ",
+      "xa"
+     ],
+     "answer": 1,
+     "explanation": "「拐」 [guǎi] = rẽ."
+    },
+    {
+     "prompt": "「地铁站」 đọc là gì?",
+     "options": [
+      "hónglǜdēng",
+      "dìtiězhàn",
+      "yuǎn"
+     ],
+     "answer": 1,
+     "explanation": "「地铁站」 đọc là [dìtiězhàn], nghĩa là ga tàu điện ngầm."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 学校离这儿不＿＿＿。  (Trường cách đây không xa.)",
+     "options": [
+      "一直走",
+      "地铁站",
+      "远"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「远」 (xa). Câu đầy đủ: 学校离这儿不远。"
+    },
+    {
+     "prompt": "「远」 có nghĩa là gì?",
+     "options": [
+      "ga tàu điện ngầm",
+      "đi thẳng",
+      "xa"
+     ],
+     "answer": 2,
+     "explanation": "「远」 [yuǎn] = xa."
+    },
+    {
+     "prompt": "「红绿灯」 đọc là gì?",
+     "options": [
+      "hónglǜdēng",
+      "guǎi",
+      "yuǎn"
+     ],
+     "answer": 0,
+     "explanation": "「红绿灯」 đọc là [hónglǜdēng], nghĩa là đèn giao thông."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿在前面。  (Ga tàu điện ngầm ở phía trước.)",
+     "options": [
+      "红绿灯",
+      "远",
+      "地铁站"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「地铁站」 (ga tàu điện ngầm). Câu đầy đủ: 地铁站在前面。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-a2-4",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 4",
+   "category": "Giao tiếp",
+   "title": "Rủ bạn đi chơi cuối tuần",
+   "objective": "Rủ, nhận lời hoặc từ chối và hẹn giờ gặp.",
+   "reading": "小明: 周六我们一起去看电影,好吗?\n朋友: 好啊!几点见?\n小明: 下午两点在地铁站门口见吧。\n朋友: 没问题,不见不散!",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "周六我们一起去看电影,好吗?",
+     "phonetic": "Zhōuliù wǒmen yìqǐ qù kàn diànyǐng, hǎo ma?",
+     "translation": "Thứ Bảy chúng ta cùng đi xem phim nhé?"
+    },
+    {
+     "speaker": "朋友",
+     "text": "好啊!几点见?",
+     "phonetic": "Hǎo a! Jǐ diǎn jiàn?",
+     "translation": "Được! Mấy giờ gặp?"
+    },
+    {
+     "speaker": "小明",
+     "text": "下午两点在地铁站门口见吧。",
+     "phonetic": "Xiàwǔ liǎng diǎn zài dìtiězhàn ménkǒu jiàn ba.",
+     "translation": "2 giờ chiều gặp ở cửa ga tàu điện nhé."
+    },
+    {
+     "speaker": "朋友",
+     "text": "没问题,不见不散!",
+     "phonetic": "Méi wèntí, bú jiàn bú sàn!",
+     "translation": "Không vấn đề, không gặp không về!"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "一起",
+     "reading": "yìqǐ",
+     "definition": "cùng nhau",
+     "example": "我们一起去吧。 (Chúng ta cùng đi nhé.)"
+    },
+    {
+     "term": "电影",
+     "reading": "diànyǐng",
+     "definition": "phim",
+     "example": "我喜欢看电影。 (Tôi thích xem phim.)"
+    },
+    {
+     "term": "门口",
+     "reading": "ménkǒu",
+     "definition": "cửa, lối vào",
+     "example": "在门口等你。 (Đợi bạn ở cửa.)"
+    },
+    {
+     "term": "周六",
+     "reading": "zhōuliù",
+     "definition": "thứ Bảy",
+     "example": "周六你有空吗?(Thứ Bảy bạn rảnh không?)"
+    },
+    {
+     "term": "有空",
+     "reading": "yǒu kòng",
+     "definition": "rảnh",
+     "example": "你明天有空吗?(Mai bạn rảnh không?)"
+    }
+   ],
+   "grammar": {
+    "title": "……,好吗? / 吧",
+    "explanation": "Rủ rê: đề nghị + ,好吗? hoặc ……吧. Từ chối khéo: 不好意思,我那天有事. Hẹn gặp: thời gian + 在 + nơi + 见.",
+    "examples": [
+     "我们去喝咖啡吧。[wǒmen qù hē kāfēi ba] (Chúng ta đi uống cà phê nhé.)",
+     "不好意思,周六我有事。[bù hǎoyìsi, zhōuliù wǒ yǒu shì] (Xin lỗi, thứ Bảy tôi có việc.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Ngữ điệu câu rủ",
+    "tip": "吧 đọc nhẹ, giọng thân thiện. 不见不散 bú jiàn bú sàn: 不 trước thanh 4 thành bú.",
+    "words": [
+     "一起",
+     "电影",
+     "有空",
+     "不见不散"
+    ]
+   },
+   "speakingTasks": [
+    "Rủ bạn đi chơi cuối tuần, hẹn giờ và địa điểm.",
+    "Từ chối lời rủ của thầy/cô một cách khéo léo."
+   ],
+   "questions": [
+    {
+     "prompt": "Rủ “Cùng đi ăn trưa nhé?”",
+     "options": [
+      "我们一起去吃午饭,好吗?",
+      "一起我们好吗吃午饭?",
+      "我们一起吃午饭去了吗?"
+     ],
+     "answer": 0,
+     "explanation": "Đề nghị + 好吗?"
+    },
+    {
+     "prompt": "Hẹn gặp ở cửa ga 2 giờ:",
+     "options": [
+      "在两点地铁站见门口",
+      "两点在地铁站门口见",
+      "地铁站两点见在门口"
+     ],
+     "answer": 1,
+     "explanation": "Thời gian + 在 + nơi + 见."
+    },
+    {
+     "prompt": "Từ chối khéo:",
+     "options": [
+      "没意思。",
+      "我不去,别问了!",
+      "不好意思,我那天有事。"
+     ],
+     "answer": 2,
+     "explanation": "Lịch sự và có lý do."
+    },
+    {
+     "prompt": "「有空」 nghĩa là:",
+     "options": [
+      "bận",
+      "mệt",
+      "rảnh"
+     ],
+     "answer": 2,
+     "explanation": "有空 = có thời gian rảnh."
+    },
+    {
+     "prompt": "「门口」 có nghĩa là gì?",
+     "options": [
+      "phim",
+      "cửa, lối vào",
+      "cùng nhau"
+     ],
+     "answer": 1,
+     "explanation": "「门口」 [ménkǒu] = cửa, lối vào."
+    },
+    {
+     "prompt": "「有空」 đọc là gì?",
+     "options": [
+      "yǒu kòng",
+      "ménkǒu",
+      "diànyǐng"
+     ],
+     "answer": 0,
+     "explanation": "「有空」 đọc là [yǒu kòng], nghĩa là rảnh."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 在＿＿＿等你。  (Đợi bạn ở cửa.)",
+     "options": [
+      "一起",
+      "电影",
+      "门口"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「门口」 (cửa, lối vào). Câu đầy đủ: 在门口等你。"
+    },
+    {
+     "prompt": "「周六」 có nghĩa là gì?",
+     "options": [
+      "rảnh",
+      "cửa, lối vào",
+      "thứ Bảy"
+     ],
+     "answer": 2,
+     "explanation": "「周六」 [zhōuliù] = thứ Bảy."
+    },
+    {
+     "prompt": "「门口」 đọc là gì?",
+     "options": [
+      "diànyǐng",
+      "ménkǒu",
+      "yìqǐ"
+     ],
+     "answer": 1,
+     "explanation": "「门口」 đọc là [ménkǒu], nghĩa là cửa, lối vào."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我喜欢看＿＿＿。  (Tôi thích xem phim.)",
+     "options": [
+      "电影",
+      "有空",
+      "周六"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「电影」 (phim). Câu đầy đủ: 我喜欢看电影。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-b1-1",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 1",
+   "category": "Ngữ pháp",
+   "title": "Kể về kinh nghiệm và kế hoạch",
+   "objective": "Nói về điều đã từng làm và dự định tương lai.",
+   "reading": "小王: 你去过中国吗?\n小明: 去过一次,是去年夏天。\n小王: 你去了哪些城市?\n小明: 北京和上海。我打算明年再去成都。\n小王: 祝你旅途愉快!",
+   "dialogue": [
+    {
+     "speaker": "小王",
+     "text": "你去过中国吗?",
+     "phonetic": "Nǐ qù guo Zhōngguó ma?",
+     "translation": "Bạn đã từng đến Trung Quốc chưa?"
+    },
+    {
+     "speaker": "小明",
+     "text": "去过一次,是去年夏天。",
+     "phonetic": "Qù guo yí cì, shì qùnián xiàtiān.",
+     "translation": "Tôi từng đi một lần, hồi mùa hè năm ngoái."
+    },
+    {
+     "speaker": "小王",
+     "text": "你去了哪些城市?",
+     "phonetic": "Nǐ qù le nǎxiē chéngshì?",
+     "translation": "Bạn đã đi những thành phố nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "北京和上海。我打算明年再去成都。",
+     "phonetic": "Běijīng hé Shànghǎi. Wǒ dǎsuàn míngnián zài qù Chéngdū.",
+     "translation": "Bắc Kinh và Thượng Hải. Tôi dự định năm sau lại đến Thành Đô."
+    },
+    {
+     "speaker": "小王",
+     "text": "祝你旅途愉快!",
+     "phonetic": "Zhù nǐ lǚtú yúkuài!",
+     "translation": "Chúc bạn chuyến đi vui vẻ!"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "过",
+     "reading": "guo",
+     "definition": "đã từng (trợ từ kinh nghiệm)",
+     "example": "我去过中国。 (Tôi từng đến Trung Quốc.)"
+    },
+    {
+     "term": "打算",
+     "reading": "dǎsuàn",
+     "definition": "dự định",
+     "example": "我打算明年去旅行。 (Tôi dự định năm sau đi du lịch.)"
+    },
+    {
+     "term": "城市",
+     "reading": "chéngshì",
+     "definition": "thành phố",
+     "example": "我喜欢大城市。 (Tôi thích thành phố lớn.)"
+    },
+    {
+     "term": "旅行",
+     "reading": "lǚxíng",
+     "definition": "du lịch",
+     "example": "我喜欢旅行。 (Tôi thích đi du lịch.)"
+    },
+    {
+     "term": "愉快",
+     "reading": "yúkuài",
+     "definition": "vui vẻ",
+     "example": "祝你生日愉快!(Chúc bạn sinh nhật vui vẻ!)"
+    }
+   ],
+   "grammar": {
+    "title": "V + 过 và 打算",
+    "explanation": "V + 过 diễn tả kinh nghiệm: 去过, 吃过. Phủ định: 没 + V + 过. Nói về dự định: 打算 + động từ (我打算去旅行). Thời gian: 去年 (năm ngoái), 明年 (năm sau), 夏天 (mùa hè).",
+    "examples": [
+     "我吃过北京烤鸭。[wǒ chī guo Běijīng kǎoyā] (Tôi từng ăn vịt quay Bắc Kinh.)",
+     "我打算下个月去上海。[wǒ dǎsuàn xià gè yuè qù Shànghǎi] (Tôi dự định tháng sau đi Thượng Hải.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Thanh nhẹ và nhịp câu",
+    "tip": "Từ hai âm tiết thường có âm sau đọc nhẹ: 朋友 péngyou, 喜欢 xǐhuan, 东西 dōngxi. Nói đều nhịp từng cụm 2–3 chữ sẽ nghe tự nhiên hơn.",
+    "words": [
+     "朋友",
+     "喜欢",
+     "打算",
+     "愉快"
+    ]
+   },
+   "speakingTasks": [
+    "Kể 3 nơi bạn đã từng đến và 1 nơi bạn muốn đi trong năm sau.",
+    "Hỏi thầy/cô: 你去过越南吗?"
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi chưa từng đến Thượng Hải.” là:",
+     "options": [
+      "我没去过上海。",
+      "我没过去上海。",
+      "我不去过上海。"
+     ],
+     "answer": 0,
+     "explanation": "没 + V + 过."
+    },
+    {
+     "prompt": "“Tôi dự định năm sau học tiếng Trung.” là:",
+     "options": [
+      "我打算学明年中文。",
+      "我明年打算学的中文。",
+      "我打算明年学中文。"
+     ],
+     "answer": 2,
+     "explanation": "打算 + động từ; thời gian đứng trước."
+    },
+    {
+     "prompt": "「去年」 nghĩa là:",
+     "options": [
+      "năm ngoái",
+      "năm sau",
+      "hôm qua"
+     ],
+     "answer": 0,
+     "explanation": "去年 = năm ngoái; 明年 = năm sau."
+    },
+    {
+     "prompt": "Lời chúc đi du lịch vui vẻ:",
+     "options": [
+      "祝你旅途愉快!",
+      "祝你生病快!",
+      "祝你生气快!"
+     ],
+     "answer": 0,
+     "explanation": "旅途愉快 = chuyến đi vui vẻ."
+    },
+    {
+     "prompt": "「过」 có nghĩa là gì?",
+     "options": [
+      "đã từng (trợ từ kinh nghiệm)",
+      "dự định",
+      "vui vẻ"
+     ],
+     "answer": 0,
+     "explanation": "「过」 [guo] = đã từng (trợ từ kinh nghiệm)."
+    },
+    {
+     "prompt": "「打算」 đọc là gì?",
+     "options": [
+      "dǎsuàn",
+      "chéngshì",
+      "yúkuài"
+     ],
+     "answer": 0,
+     "explanation": "「打算」 đọc là [dǎsuàn], nghĩa là dự định."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我喜欢＿＿＿。  (Tôi thích đi du lịch.)",
+     "options": [
+      "打算",
+      "旅行",
+      "过"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「旅行」 (du lịch). Câu đầy đủ: 我喜欢旅行。"
+    },
+    {
+     "prompt": "「旅行」 có nghĩa là gì?",
+     "options": [
+      "du lịch",
+      "đã từng (trợ từ kinh nghiệm)",
+      "dự định"
+     ],
+     "answer": 0,
+     "explanation": "「旅行」 [lǚxíng] = du lịch."
+    },
+    {
+     "prompt": "「旅行」 đọc là gì?",
+     "options": [
+      "guo",
+      "lǚxíng",
+      "dǎsuàn"
+     ],
+     "answer": 1,
+     "explanation": "「旅行」 đọc là [lǚxíng], nghĩa là du lịch."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 祝你生日＿＿＿!  (Chúc bạn sinh nhật vui vẻ!)",
+     "options": [
+      "打算",
+      "城市",
+      "愉快"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「愉快」 (vui vẻ). Câu đầy đủ: 祝你生日愉快!"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-b1-2",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Nhờ vả, xin phép và từ chối khéo",
+   "objective": "Nhờ người khác, xin phép và từ chối một cách lịch sự.",
+   "reading": "小明: 不好意思,能帮我一个忙吗?\n小王: 当然可以,什么事?\n小明: 我可以用一下你的电脑吗?\n小王: 对不起,我现在正在用,可能要等一会儿。\n小明: 没关系,我晚点再来。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "不好意思,能帮我一个忙吗?",
+     "phonetic": "Bù hǎoyìsi, néng bāng wǒ yí gè máng ma?",
+     "translation": "Xin lỗi, bạn có thể giúp tôi một việc được không?"
+    },
+    {
+     "speaker": "小王",
+     "text": "当然可以,什么事?",
+     "phonetic": "Dāngrán kěyǐ, shénme shì?",
+     "translation": "Dĩ nhiên được, việc gì vậy?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我可以用一下你的电脑吗?",
+     "phonetic": "Wǒ kěyǐ yòng yíxià nǐ de diànnǎo ma?",
+     "translation": "Tôi dùng máy tính của bạn một chút được không?"
+    },
+    {
+     "speaker": "小王",
+     "text": "对不起,我现在正在用,可能要等一会儿。",
+     "phonetic": "Duìbuqǐ, wǒ xiànzài zhèngzài yòng, kěnéng yào děng yíhuìr.",
+     "translation": "Xin lỗi, bây giờ tôi đang dùng, có lẽ phải đợi một lát."
+    },
+    {
+     "speaker": "小明",
+     "text": "没关系,我晚点再来。",
+     "phonetic": "Méi guānxi, wǒ wǎndiǎn zài lái.",
+     "translation": "Không sao, lát nữa tôi quay lại."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "帮忙",
+     "reading": "bāngmáng",
+     "definition": "giúp đỡ",
+     "example": "你能帮我一个忙吗?(Bạn có thể giúp tôi một việc không?)"
+    },
+    {
+     "term": "可以",
+     "reading": "kěyǐ",
+     "definition": "được phép, có thể",
+     "example": "我可以坐这儿吗?(Tôi có thể ngồi đây không?)"
+    },
+    {
+     "term": "正在",
+     "reading": "zhèngzài",
+     "definition": "đang (làm)",
+     "example": "我正在开会。 (Tôi đang họp.)"
+    },
+    {
+     "term": "可能",
+     "reading": "kěnéng",
+     "definition": "có lẽ, có thể",
+     "example": "他可能不来了。 (Có lẽ anh ấy không đến nữa.)"
+    },
+    {
+     "term": "没关系",
+     "reading": "méi guānxi",
+     "definition": "không sao",
+     "example": "没关系,别担心。 (Không sao, đừng lo.)"
+    }
+   ],
+   "grammar": {
+    "title": "能 / 可以 / 请 để nhờ vả",
+    "explanation": "能……吗? hoặc 可以……吗? là cách nhờ vả và xin phép lịch sự. Dùng 不好意思 / 对不起 trước khi nhờ. Từ chối khéo: 对不起,我现在……, 可能……, rồi đề xuất thời gian khác.",
+    "examples": [
+     "你能帮我一下吗?[nǐ néng bāng wǒ yíxià ma] (Bạn có thể giúp tôi một chút không?)",
+     "我可以进来吗?[wǒ kěyǐ jìnlái ma] (Tôi vào được không?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Ngữ điệu lịch sự",
+    "tip": "Dùng 一下 (yíxià) làm lời nhờ nhẹ nhàng hơn: 帮我一下. Giọng đi lên cuối câu hỏi với 吗 nhưng không nâng quá cao vì sẽ thành thanh 2.",
+    "words": [
+     "一下",
+     "不好意思",
+     "对不起",
+     "没关系"
+    ]
+   },
+   "speakingTasks": [
+    "Nhờ bạn cùng lớp giúp một việc và xin phép dùng đồ của họ.",
+    "Từ chối một lời mời đi chơi vì bận, có đề xuất lúc khác."
+   ],
+   "questions": [
+    {
+     "prompt": "Câu nhờ vả lịch sự là:",
+     "options": [
+      "你必须帮我忙。",
+      "你帮我一个忙。",
+      "能帮我一个忙吗?"
+     ],
+     "answer": 2,
+     "explanation": "能……吗? nhẹ nhàng và lịch sự."
+    },
+    {
+     "prompt": "Khi xin phép dùng máy tính, nói:",
+     "options": [
+      "你的电脑给我了。",
+      "我可以用一下你的电脑吗?",
+      "我要用你的电脑。"
+     ],
+     "answer": 1,
+     "explanation": "可以……吗? dùng để xin phép."
+    },
+    {
+     "prompt": "「没关系」 dùng khi:",
+     "options": [
+      "Đáp lại lời xin lỗi",
+      "Gọi món ăn",
+      "Hỏi đường"
+     ],
+     "answer": 0,
+     "explanation": "没关系 = không sao."
+    },
+    {
+     "prompt": "「正在」 diễn tả:",
+     "options": [
+      "Chưa bắt đầu",
+      "Đã xong",
+      "Đang diễn ra"
+     ],
+     "answer": 2,
+     "explanation": "正在 = đang."
+    },
+    {
+     "prompt": "「正在」 có nghĩa là gì?",
+     "options": [
+      "không sao",
+      "đang (làm)",
+      "giúp đỡ"
+     ],
+     "answer": 1,
+     "explanation": "「正在」 [zhèngzài] = đang (làm)."
+    },
+    {
+     "prompt": "「可以」 đọc là gì?",
+     "options": [
+      "méi guānxi",
+      "kěyǐ",
+      "bāngmáng"
+     ],
+     "answer": 1,
+     "explanation": "「可以」 đọc là [kěyǐ], nghĩa là được phép, có thể."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我＿＿＿坐这儿吗?  (Tôi có thể ngồi đây không?)",
+     "options": [
+      "帮忙",
+      "可以",
+      "没关系"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「可以」 (được phép, có thể). Câu đầy đủ: 我可以坐这儿吗?"
+    },
+    {
+     "prompt": "「帮忙」 có nghĩa là gì?",
+     "options": [
+      "được phép, có thể",
+      "đang (làm)",
+      "giúp đỡ"
+     ],
+     "answer": 2,
+     "explanation": "「帮忙」 [bāngmáng] = giúp đỡ."
+    },
+    {
+     "prompt": "「没关系」 đọc là gì?",
+     "options": [
+      "bāngmáng",
+      "zhèngzài",
+      "méi guānxi"
+     ],
+     "answer": 2,
+     "explanation": "「没关系」 đọc là [méi guānxi], nghĩa là không sao."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿,别担心。  (Không sao, đừng lo.)",
+     "options": [
+      "正在",
+      "帮忙",
+      "没关系"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「没关系」 (không sao). Câu đầy đủ: 没关系,别担心。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-b1-3",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 3",
+   "category": "Từ vựng",
+   "title": "Sức khỏe và đi khám bệnh",
+   "objective": "Mô tả triệu chứng, hiểu lời dặn của bác sĩ.",
+   "reading": "医生: 你哪儿不舒服?\n小明: 我头疼,还有点儿发烧。\n医生: 有咳嗽吗?\n小明: 有一点儿,从昨天开始。\n医生: 你感冒了,多喝水,按时吃药。",
+   "dialogue": [
+    {
+     "speaker": "医生",
+     "text": "你哪儿不舒服?",
+     "phonetic": "Nǐ nǎr bù shūfu?",
+     "translation": "Bạn thấy khó chịu ở đâu?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我头疼,还有点儿发烧。",
+     "phonetic": "Wǒ tóu téng, hái yǒudiǎnr fāshāo.",
+     "translation": "Tôi đau đầu và hơi sốt."
+    },
+    {
+     "speaker": "医生",
+     "text": "有咳嗽吗?",
+     "phonetic": "Yǒu késou ma?",
+     "translation": "Có ho không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "有一点儿,从昨天开始。",
+     "phonetic": "Yǒu yìdiǎnr, cóng zuótiān kāishǐ.",
+     "translation": "Hơi ho, từ hôm qua."
+    },
+    {
+     "speaker": "医生",
+     "text": "你感冒了,多喝水,按时吃药。",
+     "phonetic": "Nǐ gǎnmào le, duō hē shuǐ, ànshí chī yào.",
+     "translation": "Bạn bị cảm, hãy uống nhiều nước, uống thuốc đúng giờ."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "不舒服",
+     "reading": "bù shūfu",
+     "definition": "khó chịu, không khỏe",
+     "example": "我今天不舒服。 (Hôm nay tôi không khỏe.)"
+    },
+    {
+     "term": "发烧",
+     "reading": "fāshāo",
+     "definition": "sốt",
+     "example": "他发烧了。 (Anh ấy bị sốt rồi.)"
+    },
+    {
+     "term": "咳嗽",
+     "reading": "késou",
+     "definition": "ho",
+     "example": "我咳嗽得很厉害。 (Tôi ho rất nặng.)"
+    },
+    {
+     "term": "感冒",
+     "reading": "gǎnmào",
+     "definition": "cảm",
+     "example": "我感冒了。 (Tôi bị cảm rồi.)"
+    },
+    {
+     "term": "吃药",
+     "reading": "chī yào",
+     "definition": "uống thuốc",
+     "example": "饭后吃药。 (Uống thuốc sau bữa ăn.)"
+    }
+   ],
+   "grammar": {
+    "title": "有点儿 và 一点儿",
+    "explanation": "有点儿 + tính từ/động từ: hơi ~ (thường nghĩa tiêu cực): 有点儿累. Động từ + 一点儿: một chút: 吃一点儿. 从……开始: bắt đầu từ ~. 多 + động từ: nên ~ nhiều hơn: 多喝水.",
+    "examples": [
+     "我有点儿头疼。[wǒ yǒudiǎnr tóuténg] (Tôi hơi đau đầu.)",
+     "你应该多休息。[nǐ yīnggāi duō xiūxi] (Bạn nên nghỉ ngơi nhiều hơn.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm cuốn lưỡi sh và r",
+    "tip": "r trong 热 rè, 人 rén cuốn lưỡi nhẹ, khác với d/z. Cặp dễ nhầm: 咳嗽 késou, 舒服 shūfu, 发烧 fāshāo.",
+    "words": [
+     "热",
+     "舒服",
+     "咳嗽",
+     "发烧"
+    ]
+   },
+   "speakingTasks": [
+    "Mô tả triệu chứng và thời gian bị bệnh với bác sĩ.",
+    "Hỏi thầy/cô: 吃了药还要注意什么?"
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi bị cảm.” là:",
+     "options": [
+      "我感冒着。",
+      "我感冒了。",
+      "我感冒是。"
+     ],
+     "answer": 1,
+     "explanation": "了 báo hiệu trạng thái mới xuất hiện."
+    },
+    {
+     "prompt": "“Tôi hơi đau đầu.” là:",
+     "options": [
+      "我头疼很有点。",
+      "我头疼有一点儿是。",
+      "我有点儿头疼。"
+     ],
+     "answer": 2,
+     "explanation": "有点儿 + tính từ/động từ."
+    },
+    {
+     "prompt": "Lời dặn “uống nhiều nước” là:",
+     "options": [
+      "多喝水",
+      "喝多水",
+      "水喝多"
+     ],
+     "answer": 0,
+     "explanation": "多 + động từ."
+    },
+    {
+     "prompt": "「发烧」 là:",
+     "options": [
+      "ho",
+      "đau đầu",
+      "sốt"
+     ],
+     "answer": 2,
+     "explanation": "发烧 = bị sốt."
+    },
+    {
+     "prompt": "「感冒」 có nghĩa là gì?",
+     "options": [
+      "cảm",
+      "uống thuốc",
+      "sốt"
+     ],
+     "answer": 0,
+     "explanation": "「感冒」 [gǎnmào] = cảm."
+    },
+    {
+     "prompt": "「不舒服」 đọc là gì?",
+     "options": [
+      "bù shūfu",
+      "fāshāo",
+      "chī yào"
+     ],
+     "answer": 0,
+     "explanation": "「不舒服」 đọc là [bù shūfu], nghĩa là khó chịu, không khỏe."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我今天＿＿＿。  (Hôm nay tôi không khỏe.)",
+     "options": [
+      "不舒服",
+      "吃药",
+      "发烧"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「不舒服」 (khó chịu, không khỏe). Câu đầy đủ: 我今天不舒服。"
+    },
+    {
+     "prompt": "「发烧」 có nghĩa là gì?",
+     "options": [
+      "sốt",
+      "uống thuốc",
+      "cảm"
+     ],
+     "answer": 0,
+     "explanation": "「发烧」 [fāshāo] = sốt."
+    },
+    {
+     "prompt": "「发烧」 đọc là gì?",
+     "options": [
+      "gǎnmào",
+      "chī yào",
+      "fāshāo"
+     ],
+     "answer": 2,
+     "explanation": "「发烧」 đọc là [fāshāo], nghĩa là sốt."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我＿＿＿得很厉害。  (Tôi ho rất nặng.)",
+     "options": [
+      "不舒服",
+      "咳嗽",
+      "感冒"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「咳嗽」 (ho). Câu đầy đủ: 我咳嗽得很厉害。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-b1-4",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 4",
+   "category": "Ngữ pháp",
+   "title": "Giả định và điều ước",
+   "objective": "Nói điều kiện giả định và mong muốn với 如果……就……, 要是, 希望.",
+   "reading": "小王: 如果你中了彩票,你会做什么?\n小明: 要是中了,我就去环游世界。\n小王: 真好。我只希望能有更多的时间。\n小明: 要是每天有三十个小时就好了!",
+   "dialogue": [
+    {
+     "speaker": "小王",
+     "text": "如果你中了彩票,你会做什么?",
+     "phonetic": "Rúguǒ nǐ zhòng le cǎipiào, nǐ huì zuò shénme?",
+     "translation": "Nếu trúng xổ số, bạn sẽ làm gì?"
+    },
+    {
+     "speaker": "小明",
+     "text": "要是中了,我就去环游世界。",
+     "phonetic": "Yàoshi zhòng le, wǒ jiù qù huányóu shìjiè.",
+     "translation": "Nếu trúng, tôi sẽ đi du lịch vòng quanh thế giới."
+    },
+    {
+     "speaker": "小王",
+     "text": "真好。我只希望能有更多的时间。",
+     "phonetic": "Zhēn hǎo. Wǒ zhǐ xīwàng néng yǒu gèng duō de shíjiān.",
+     "translation": "Hay quá. Tôi chỉ mong có nhiều thời gian hơn."
+    },
+    {
+     "speaker": "小明",
+     "text": "要是每天有三十个小时就好了!",
+     "phonetic": "Yàoshi měi tiān yǒu sānshí gè xiǎoshí jiù hǎo le!",
+     "translation": "Giá mà mỗi ngày có 30 tiếng thì tốt!"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "如果",
+     "reading": "rúguǒ",
+     "definition": "nếu",
+     "example": "如果下雨,我就不去。 (Nếu mưa thì tôi không đi.)"
+    },
+    {
+     "term": "彩票",
+     "reading": "cǎipiào",
+     "definition": "xổ số",
+     "example": "我买了彩票。 (Tôi đã mua xổ số.)"
+    },
+    {
+     "term": "中",
+     "reading": "zhòng",
+     "definition": "trúng (giải)",
+     "example": "他中了大奖。 (Anh ấy trúng giải lớn.)"
+    },
+    {
+     "term": "希望",
+     "reading": "xīwàng",
+     "definition": "hy vọng, mong",
+     "example": "我希望明天是晴天。 (Tôi mong mai trời nắng.)"
+    },
+    {
+     "term": "世界",
+     "reading": "shìjiè",
+     "definition": "thế giới",
+     "example": "我想去看看世界。 (Tôi muốn đi xem thế giới.)"
+    }
+   ],
+   "grammar": {
+    "title": "如果/要是……就…… và ……就好了",
+    "explanation": "Giả định: 如果 (trang trọng hơn) / 要是 (khẩu ngữ) + điều kiện, 就 + kết quả. Ước gì: 要是……就好了. Mong muốn: 希望 + mệnh đề.",
+    "examples": [
+     "如果有时间,我就帮你。[rúguǒ yǒu shíjiān, wǒ jiù bāng nǐ] (Nếu có thời gian, tôi sẽ giúp bạn.)",
+     "要是我会说日语就好了。[yàoshi wǒ huì shuō Rìyǔ jiù hǎo le] (Giá mà tôi biết nói tiếng Nhật.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đa âm tự 中",
+    "tip": "中 đọc zhōng (giữa, Trung Quốc) và zhòng (trúng): 中国 Zhōngguó / 中奖 zhòngjiǎng. Phân biệt nhờ ngữ cảnh.",
+    "words": [
+     "如果",
+     "彩票",
+     "中奖",
+     "希望"
+    ]
+   },
+   "speakingTasks": [
+    "Nói bạn sẽ làm gì nếu trúng xổ số.",
+    "Nêu 2 điều ước của bạn với 要是……就好了."
+   ],
+   "questions": [
+    {
+     "prompt": "“Nếu mưa thì tôi không đi.”",
+     "options": [
+      "下雨如果,就我不去。",
+      "如果下雨,我不就去。",
+      "如果下雨,我就不去。"
+     ],
+     "answer": 2,
+     "explanation": "如果……就……"
+    },
+    {
+     "prompt": "「要是……就好了」 diễn tả:",
+     "options": [
+      "ước gì",
+      "ra lệnh",
+      "kể quá khứ"
+     ],
+     "answer": 0,
+     "explanation": "Mong muốn khó thành hiện thực."
+    },
+    {
+     "prompt": "「中」 trong 「中彩票」 đọc là:",
+     "options": [
+      "zhǒng",
+      "zhōng",
+      "zhòng"
+     ],
+     "answer": 2,
+     "explanation": "Trúng = zhòng."
+    },
+    {
+     "prompt": "「希望」 nghĩa là:",
+     "options": [
+      "hy vọng",
+      "thất vọng",
+      "quyết định"
+     ],
+     "answer": 0,
+     "explanation": "希望 = mong."
+    },
+    {
+     "prompt": "「希望」 có nghĩa là gì?",
+     "options": [
+      "hy vọng, mong",
+      "xổ số",
+      "trúng (giải)"
+     ],
+     "answer": 0,
+     "explanation": "「希望」 [xīwàng] = hy vọng, mong."
+    },
+    {
+     "prompt": "「希望」 đọc là gì?",
+     "options": [
+      "zhòng",
+      "xīwàng",
+      "cǎipiào"
+     ],
+     "answer": 1,
+     "explanation": "「希望」 đọc là [xīwàng], nghĩa là hy vọng, mong."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我想去看看＿＿＿。  (Tôi muốn đi xem thế giới.)",
+     "options": [
+      "彩票",
+      "世界",
+      "希望"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「世界」 (thế giới). Câu đầy đủ: 我想去看看世界。"
+    },
+    {
+     "prompt": "「中」 có nghĩa là gì?",
+     "options": [
+      "trúng (giải)",
+      "nếu",
+      "hy vọng, mong"
+     ],
+     "answer": 0,
+     "explanation": "「中」 [zhòng] = trúng (giải)."
+    },
+    {
+     "prompt": "「中」 đọc là gì?",
+     "options": [
+      "xīwàng",
+      "zhòng",
+      "rúguǒ"
+     ],
+     "answer": 1,
+     "explanation": "「中」 đọc là [zhòng], nghĩa là trúng (giải)."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 他＿＿＿了大奖。  (Anh ấy trúng giải lớn.)",
+     "options": [
+      "如果",
+      "希望",
+      "中"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「中」 (trúng (giải)). Câu đầy đủ: 他中了大奖。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-b2-1",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Nêu ý kiến, đồng ý và phản đối",
+   "objective": "Trình bày quan điểm có lập luận, đồng ý một phần và phản đối lịch sự.",
+   "reading": "小王: 你觉得在家办公好不好?\n小明: 我认为很方便,不但节省时间,而且更自由。\n小王: 你说得有道理,不过沟通可能会变慢。\n小明: 确实如此,所以需要定期开会。\n小王: 我同意,这样两方面都可以兼顾。",
+   "dialogue": [
+    {
+     "speaker": "小王",
+     "text": "你觉得在家办公好不好?",
+     "phonetic": "Nǐ juéde zài jiā bàngōng hǎo bu hǎo?",
+     "translation": "Bạn thấy làm việc tại nhà có tốt không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我认为很方便,不但节省时间,而且更自由。",
+     "phonetic": "Wǒ rènwéi hěn fāngbiàn, búdàn jiéshěng shíjiān, érqiě gèng zìyóu.",
+     "translation": "Tôi cho rằng rất tiện, không chỉ tiết kiệm thời gian mà còn tự do hơn."
+    },
+    {
+     "speaker": "小王",
+     "text": "你说得有道理,不过沟通可能会变慢。",
+     "phonetic": "Nǐ shuō de yǒu dàolǐ, búguò gōutōng kěnéng huì biàn màn.",
+     "translation": "Bạn nói có lý, có điều giao tiếp có thể sẽ chậm hơn."
+    },
+    {
+     "speaker": "小明",
+     "text": "确实如此,所以需要定期开会。",
+     "phonetic": "Quèshí rúcǐ, suǒyǐ xūyào dìngqī kāihuì.",
+     "translation": "Đúng vậy, nên cần họp định kỳ."
+    },
+    {
+     "speaker": "小王",
+     "text": "我同意,这样两方面都可以兼顾。",
+     "phonetic": "Wǒ tóngyì, zhèyàng liǎng fāngmiàn dōu kěyǐ jiāngù.",
+     "translation": "Tôi đồng ý, như vậy có thể cân đối cả hai mặt."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "认为",
+     "reading": "rènwéi",
+     "definition": "cho rằng, nghĩ rằng",
+     "example": "我认为这个办法不错。 (Tôi cho rằng cách này không tệ.)"
+    },
+    {
+     "term": "有道理",
+     "reading": "yǒu dàolǐ",
+     "definition": "có lý",
+     "example": "你说得有道理。 (Bạn nói có lý.)"
+    },
+    {
+     "term": "沟通",
+     "reading": "gōutōng",
+     "definition": "giao tiếp, trao đổi",
+     "example": "沟通很重要。 (Giao tiếp rất quan trọng.)"
+    },
+    {
+     "term": "同意",
+     "reading": "tóngyì",
+     "definition": "đồng ý",
+     "example": "我同意你的看法。 (Tôi đồng ý với quan điểm của bạn.)"
+    },
+    {
+     "term": "确实",
+     "reading": "quèshí",
+     "definition": "quả thật, đúng là",
+     "example": "确实如此。 (Đúng là như vậy.)"
+    }
+   ],
+   "grammar": {
+    "title": "不但……而且…… và 不过",
+    "explanation": "不但……而且……: không chỉ… mà còn…. 不过 dùng để nêu một mặt khác nhẹ nhàng hơn 但是. Đồng ý một phần: 你说得有道理,不过……. Đưa ý kiến: 我认为 / 我觉得 / 在我看来……",
+    "examples": [
+     "他不但聪明,而且努力。[tā búdàn cōngming, érqiě nǔlì] (Anh ấy không chỉ thông minh mà còn chăm chỉ.)",
+     "你说得对,不过我有不同的看法。[nǐ shuō de duì, búguò wǒ yǒu bùtóng de kànfǎ] (Bạn nói đúng, có điều tôi có cách nhìn khác.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nhấn trọng âm logic",
+    "tip": "Trong câu dài, nhấn mạnh từ khóa (认为, 确实, 不但) và ngắt hơi sau dấu phẩy. Giữ thanh điệu rõ ở các từ then chốt.",
+    "words": [
+     "认为",
+     "确实",
+     "不但",
+     "沟通"
+    ]
+   },
+   "speakingTasks": [
+    "Nêu quan điểm về một chủ đề (làm việc tại nhà) và nêu hai lý do.",
+    "Phản đối ý kiến của thầy/cô một cách lịch sự."
+   ],
+   "questions": [
+    {
+     "prompt": "Đồng ý một phần và nêu ý khác, nói:",
+     "options": [
+      "你说得不对,所以……",
+      "你说得很好,而且不……",
+      "你说得有道理,不过……"
+     ],
+     "answer": 2,
+     "explanation": "不过 mở ra mặt khác sau khi đồng ý."
+    },
+    {
+     "prompt": "「不但……而且……」 diễn tả:",
+     "options": [
+      "Nếu… thì…",
+      "Mặc dù… nhưng…",
+      "Không chỉ… mà còn…"
+     ],
+     "answer": 2,
+     "explanation": "Quan hệ tăng tiến."
+    },
+    {
+     "prompt": "Mở đầu nêu quan điểm của bản thân:",
+     "options": [
+      "我不是……",
+      "我认为……",
+      "我跟着……"
+     ],
+     "answer": 1,
+     "explanation": "我认为 + ý kiến."
+    },
+    {
+     "prompt": "「同意」 nghĩa là:",
+     "options": [
+      "đồng ý",
+      "hiểu lầm",
+      "phản đối"
+     ],
+     "answer": 0,
+     "explanation": "同意 = đồng ý."
+    },
+    {
+     "prompt": "「确实」 có nghĩa là gì?",
+     "options": [
+      "quả thật, đúng là",
+      "giao tiếp, trao đổi",
+      "đồng ý"
+     ],
+     "answer": 0,
+     "explanation": "「确实」 [quèshí] = quả thật, đúng là."
+    },
+    {
+     "prompt": "「认为」 đọc là gì?",
+     "options": [
+      "quèshí",
+      "rènwéi",
+      "yǒu dàolǐ"
+     ],
+     "answer": 1,
+     "explanation": "「认为」 đọc là [rènwéi], nghĩa là cho rằng, nghĩ rằng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我＿＿＿这个办法不错。  (Tôi cho rằng cách này không tệ.)",
+     "options": [
+      "认为",
+      "确实",
+      "有道理"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「认为」 (cho rằng, nghĩ rằng). Câu đầy đủ: 我认为这个办法不错。"
+    },
+    {
+     "prompt": "「有道理」 có nghĩa là gì?",
+     "options": [
+      "có lý",
+      "đồng ý",
+      "giao tiếp, trao đổi"
+     ],
+     "answer": 0,
+     "explanation": "「有道理」 [yǒu dàolǐ] = có lý."
+    },
+    {
+     "prompt": "「确实」 đọc là gì?",
+     "options": [
+      "gōutōng",
+      "quèshí",
+      "tóngyì"
+     ],
+     "answer": 1,
+     "explanation": "「确实」 đọc là [quèshí], nghĩa là quả thật, đúng là."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿很重要。  (Giao tiếp rất quan trọng.)",
+     "options": [
+      "确实",
+      "沟通",
+      "同意"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「沟通」 (giao tiếp, trao đổi). Câu đầy đủ: 沟通很重要。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-b2-2",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Kể chuyện và giải thích lý do",
+   "objective": "Kể một sự việc có trình tự, nêu nguyên nhân và kết quả.",
+   "reading": "小王: 你昨天怎么没来上班?\n小明: 因为路上堵车,所以我迟到了半个小时。\n小王: 后来呢?\n小明: 到了公司以后,我马上向经理解释了情况。\n小王: 原来如此,下次早点儿出门吧。",
+   "dialogue": [
+    {
+     "speaker": "小王",
+     "text": "你昨天怎么没来上班?",
+     "phonetic": "Nǐ zuótiān zěnme méi lái shàngbān?",
+     "translation": "Hôm qua sao bạn không đi làm?"
+    },
+    {
+     "speaker": "小明",
+     "text": "因为路上堵车,所以我迟到了半个小时。",
+     "phonetic": "Yīnwèi lùshang dǔchē, suǒyǐ wǒ chídào le bàn gè xiǎoshí.",
+     "translation": "Vì đường kẹt xe nên tôi đến trễ nửa tiếng."
+    },
+    {
+     "speaker": "小王",
+     "text": "后来呢?",
+     "phonetic": "Hòulái ne?",
+     "translation": "Sau đó thì sao?"
+    },
+    {
+     "speaker": "小明",
+     "text": "到了公司以后,我马上向经理解释了情况。",
+     "phonetic": "Dào le gōngsī yǐhòu, wǒ mǎshàng xiàng jīnglǐ jiěshì le qíngkuàng.",
+     "translation": "Sau khi đến công ty, tôi lập tức giải thích tình hình với giám đốc."
+    },
+    {
+     "speaker": "小王",
+     "text": "原来如此,下次早点儿出门吧。",
+     "phonetic": "Yuánlái rúcǐ, xià cì zǎodiǎnr chūmén ba.",
+     "translation": "Thì ra là vậy, lần sau đi sớm hơn nhé."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "堵车",
+     "reading": "dǔchē",
+     "definition": "kẹt xe",
+     "example": "早上经常堵车。 (Buổi sáng thường kẹt xe.)"
+    },
+    {
+     "term": "迟到",
+     "reading": "chídào",
+     "definition": "đến muộn",
+     "example": "我今天迟到了。 (Hôm nay tôi đến muộn.)"
+    },
+    {
+     "term": "后来",
+     "reading": "hòulái",
+     "definition": "sau đó, về sau",
+     "example": "后来我们成了朋友。 (Về sau chúng tôi thành bạn.)"
+    },
+    {
+     "term": "解释",
+     "reading": "jiěshì",
+     "definition": "giải thích",
+     "example": "请你解释一下原因。 (Xin bạn giải thích nguyên nhân.)"
+    },
+    {
+     "term": "原来",
+     "reading": "yuánlái",
+     "definition": "thì ra",
+     "example": "原来是你!(Thì ra là bạn!)"
+    }
+   ],
+   "grammar": {
+    "title": "因为……所以…… và 以后",
+    "explanation": "因为 (nguyên nhân)……所以 (kết quả)…… dùng cả hai vế. Trình tự: 先……然后……最后…… Sau khi: V + 了 + …… 以后; 后来 dùng cho quá khứ, 以后 có thể dùng cho tương lai.",
+    "examples": [
+     "因为下雨,所以我没去。[yīnwèi xiàyǔ, suǒyǐ wǒ méi qù] (Vì mưa nên tôi không đi.)",
+     "先吃饭,然后看电影。[xiān chīfàn, ránhòu kàn diànyǐng] (Ăn cơm trước rồi xem phim.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Ngắt nghỉ khi kể chuyện",
+    "tip": "Khi kể chuyện dài, ngắt hơi ở các từ nối (因为, 所以, 后来, 然后) và hạ giọng cuối câu. Đừng nuốt mất thanh điệu ở giữa câu.",
+    "words": [
+     "因为",
+     "所以",
+     "后来",
+     "然后"
+    ]
+   },
+   "speakingTasks": [
+    "Kể lại một chuyện của bạn hôm qua theo thứ tự (先……然后……最后……).",
+    "Giải thích vì sao bạn đến trễ một cuộc hẹn."
+   ],
+   "questions": [
+    {
+     "prompt": "“Vì trời mưa nên tôi không đi.” là:",
+     "options": [
+      "因为下雨,所以我没去。",
+      "因为下雨,但是我没去。",
+      "虽然下雨,所以我没去。"
+     ],
+     "answer": 0,
+     "explanation": "因为……所以……"
+    },
+    {
+     "prompt": "Kể thứ tự: ăn trước rồi đi làm:",
+     "options": [
+      "吃饭先,上班然后",
+      "然后吃饭,先去上班",
+      "先吃饭,然后去上班"
+     ],
+     "answer": 2,
+     "explanation": "先……然后……"
+    },
+    {
+     "prompt": "「迟到」 nghĩa là:",
+     "options": [
+      "đến muộn",
+      "không đến",
+      "đến sớm"
+     ],
+     "answer": 0,
+     "explanation": "迟到 = đến muộn."
+    },
+    {
+     "prompt": "「原来」 trong 「原来如此」 nghĩa là:",
+     "options": [
+      "hơn nữa",
+      "nguyên liệu",
+      "thì ra"
+     ],
+     "answer": 2,
+     "explanation": "原来 = thì ra, hóa ra."
+    },
+    {
+     "prompt": "「原来」 có nghĩa là gì?",
+     "options": [
+      "thì ra",
+      "đến muộn",
+      "giải thích"
+     ],
+     "answer": 0,
+     "explanation": "「原来」 [yuánlái] = thì ra."
+    },
+    {
+     "prompt": "「原来」 đọc là gì?",
+     "options": [
+      "yuánlái",
+      "jiěshì",
+      "chídào"
+     ],
+     "answer": 0,
+     "explanation": "「原来」 đọc là [yuánlái], nghĩa là thì ra."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿我们成了朋友。  (Về sau chúng tôi thành bạn.)",
+     "options": [
+      "解释",
+      "原来",
+      "后来"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「后来」 (sau đó, về sau). Câu đầy đủ: 后来我们成了朋友。"
+    },
+    {
+     "prompt": "「迟到」 có nghĩa là gì?",
+     "options": [
+      "thì ra",
+      "đến muộn",
+      "sau đó, về sau"
+     ],
+     "answer": 1,
+     "explanation": "「迟到」 [chídào] = đến muộn."
+    },
+    {
+     "prompt": "「堵车」 đọc là gì?",
+     "options": [
+      "hòulái",
+      "chídào",
+      "dǔchē"
+     ],
+     "answer": 2,
+     "explanation": "「堵车」 đọc là [dǔchē], nghĩa là kẹt xe."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿是你!  (Thì ra là bạn!)",
+     "options": [
+      "迟到",
+      "解释",
+      "原来"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「原来」 (thì ra). Câu đầy đủ: 原来是你!"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-b2-3",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 3",
+   "category": "Văn hóa",
+   "title": "Văn hóa Trung Quốc và quy tắc ứng xử",
+   "objective": "Hiểu và nói về phép lịch sự, quy tắc xã hội và văn hóa ăn uống ở Trung Quốc.",
+   "reading": "小王: 在中国,请客的时候主人一般会怎么做?\n小明: 主人会不停地给客人夹菜,表示热情。\n小王: 那客人应该怎么回应?\n小明: 客人要说谢谢,但也不要吃得太快,否则会显得没礼貌。\n小王: 原来这么讲究,我要多学习。",
+   "dialogue": [
+    {
+     "speaker": "小王",
+     "text": "在中国,请客的时候主人一般会怎么做?",
+     "phonetic": "Zài Zhōngguó, qǐngkè de shíhou zhǔrén yìbān huì zěnme zuò?",
+     "translation": "Ở Trung Quốc, khi mời khách, chủ nhà thường làm thế nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "主人会不停地给客人夹菜,表示热情。",
+     "phonetic": "Zhǔrén huì bù tíng de gěi kèrén jiā cài, biǎoshì rèqíng.",
+     "translation": "Chủ nhà sẽ liên tục gắp thức ăn cho khách để thể hiện sự nhiệt tình."
+    },
+    {
+     "speaker": "小王",
+     "text": "那客人应该怎么回应?",
+     "phonetic": "Nà kèrén yīnggāi zěnme huíyìng?",
+     "translation": "Vậy khách nên đáp lại thế nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "客人要说谢谢,但也不要吃得太快,否则会显得没礼貌。",
+     "phonetic": "Kèrén yào shuō xièxie, dàn yě bú yào chī de tài kuài, fǒuzé huì xiǎnde méi lǐmào.",
+     "translation": "Khách nên nói cảm ơn nhưng cũng đừng ăn quá nhanh, nếu không sẽ có vẻ thiếu lịch sự."
+    },
+    {
+     "speaker": "小王",
+     "text": "原来这么讲究,我要多学习。",
+     "phonetic": "Yuánlái zhème jiǎngjiu, wǒ yào duō xuéxí.",
+     "translation": "Thì ra cầu kỳ như vậy, tôi phải học hỏi nhiều hơn."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "请客",
+     "reading": "qǐngkè",
+     "definition": "mời khách, đãi khách",
+     "example": "今天我请客。 (Hôm nay tôi mời.)"
+    },
+    {
+     "term": "热情",
+     "reading": "rèqíng",
+     "definition": "nhiệt tình",
+     "example": "他对客人很热情。 (Anh ấy rất nhiệt tình với khách.)"
+    },
+    {
+     "term": "礼貌",
+     "reading": "lǐmào",
+     "definition": "lịch sự, lễ phép",
+     "example": "没礼貌是不对的。 (Thiếu lễ phép là không đúng.)"
+    },
+    {
+     "term": "否则",
+     "reading": "fǒuzé",
+     "definition": "nếu không thì",
+     "example": "快点儿,否则会迟到。 (Nhanh lên, nếu không sẽ trễ.)"
+    },
+    {
+     "term": "讲究",
+     "reading": "jiǎngjiu",
+     "definition": "chú trọng, cầu kỳ",
+     "example": "中国人吃饭很讲究。 (Người Trung Quốc ăn uống rất cầu kỳ.)"
+    }
+   ],
+   "grammar": {
+    "title": "否则 và 显得",
+    "explanation": "否则: nếu không thì (nêu hậu quả). 显得 + tính từ: có vẻ ~. Dùng cho khuyên bảo và giải thích văn hóa: 要……,否则会……. Cấu trúc 不停地 + động từ: liên tục làm gì.",
+    "examples": [
+     "要早点儿睡,否则明天会很累。[yào zǎodiǎnr shuì, fǒuzé míngtiān huì hěn lèi] (Nên ngủ sớm, nếu không mai sẽ rất mệt.)",
+     "他显得很紧张。[tā xiǎnde hěn jǐnzhāng] (Anh ấy có vẻ rất căng thẳng.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng điệu trang trọng",
+    "tip": "Khi nói về văn hóa, dùng giọng đều, rõ từng chữ. Chú ý 请客 qǐngkè (q bật hơi), 礼貌 lǐmào, 热情 rèqíng (r cuốn lưỡi nhẹ).",
+    "words": [
+     "请客",
+     "礼貌",
+     "热情",
+     "讲究"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích một quy tắc ứng xử khi đi ăn cùng người Trung Quốc.",
+    "So sánh một phép lịch sự giữa Việt Nam và Trung Quốc."
+   ],
+   "questions": [
+    {
+     "prompt": "Câu nào nghĩa là “nếu không thì sẽ trễ”?",
+     "options": [
+      "而且会迟到",
+      "否则会迟到",
+      "所以会迟到"
+     ],
+     "answer": 1,
+     "explanation": "否则 nêu hậu quả nếu không làm."
+    },
+    {
+     "prompt": "「请客」 nghĩa là:",
+     "options": [
+      "mời khách, đãi khách",
+      "đòi tiền",
+      "từ chối khách"
+     ],
+     "answer": 0,
+     "explanation": "请客 = đãi khách."
+    },
+    {
+     "prompt": "「他显得很紧张」 nghĩa là:",
+     "options": [
+      "Anh ấy rất vui",
+      "Anh ấy có vẻ căng thẳng",
+      "Anh ấy không đến"
+     ],
+     "answer": 1,
+     "explanation": "显得 = có vẻ."
+    },
+    {
+     "prompt": "Chủ nhà gắp thức ăn cho khách thể hiện điều gì?",
+     "options": [
+      "Sự nhiệt tình",
+      "Sự thiếu quan tâm",
+      "Sự giận dữ"
+     ],
+     "answer": 0,
+     "explanation": "Gắp thức ăn cho khách là cách thể hiện thân thiện."
+    },
+    {
+     "prompt": "「礼貌」 có nghĩa là gì?",
+     "options": [
+      "nếu không thì",
+      "lịch sự, lễ phép",
+      "nhiệt tình"
+     ],
+     "answer": 1,
+     "explanation": "「礼貌」 [lǐmào] = lịch sự, lễ phép."
+    },
+    {
+     "prompt": "「讲究」 đọc là gì?",
+     "options": [
+      "lǐmào",
+      "jiǎngjiu",
+      "fǒuzé"
+     ],
+     "answer": 1,
+     "explanation": "「讲究」 đọc là [jiǎngjiu], nghĩa là chú trọng, cầu kỳ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 他对客人很＿＿＿。  (Anh ấy rất nhiệt tình với khách.)",
+     "options": [
+      "请客",
+      "热情",
+      "讲究"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「热情」 (nhiệt tình). Câu đầy đủ: 他对客人很热情。"
+    },
+    {
+     "prompt": "「请客」 có nghĩa là gì?",
+     "options": [
+      "chú trọng, cầu kỳ",
+      "nhiệt tình",
+      "mời khách, đãi khách"
+     ],
+     "answer": 2,
+     "explanation": "「请客」 [qǐngkè] = mời khách, đãi khách."
+    },
+    {
+     "prompt": "「否则」 đọc là gì?",
+     "options": [
+      "qǐngkè",
+      "fǒuzé",
+      "jiǎngjiu"
+     ],
+     "answer": 1,
+     "explanation": "「否则」 đọc là [fǒuzé], nghĩa là nếu không thì."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 没＿＿＿是不对的。  (Thiếu lễ phép là không đúng.)",
+     "options": [
+      "热情",
+      "否则",
+      "礼貌"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「礼貌」 (lịch sự, lễ phép). Câu đầy đủ: 没礼貌是不对的。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "everyday-b2-4",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 4",
+   "category": "Văn hóa",
+   "title": "Thành ngữ (成语) thông dụng",
+   "objective": "Hiểu và dùng đúng các 成语 phổ biến trong hội thoại.",
+   "reading": "师兄: 失败了没关系,失败是成功之母嘛。\n小明: 谢谢师兄。我会坚持下去的,毕竟熟能生巧。\n师兄: 对,不过也不要急于求成,要一步一个脚印。\n小明: 我明白了,从基础开始重新练习。",
+   "dialogue": [
+    {
+     "speaker": "师兄",
+     "text": "失败了没关系,失败是成功之母嘛。",
+     "phonetic": "Shībài le méi guānxi, shībài shì chénggōng zhī mǔ ma.",
+     "translation": "Thất bại cũng không sao, thất bại là mẹ thành công mà."
+    },
+    {
+     "speaker": "小明",
+     "text": "谢谢师兄。我会坚持下去的,毕竟熟能生巧。",
+     "phonetic": "Xièxie shīxiōng. Wǒ huì jiānchí xiàqù de, bìjìng shú néng shēng qiǎo.",
+     "translation": "Cảm ơn anh. Em sẽ kiên trì, dù sao thì quen tay hay việc."
+    },
+    {
+     "speaker": "师兄",
+     "text": "对,不过也不要急于求成,要一步一个脚印。",
+     "phonetic": "Duì, búguò yě bú yào jíyú qiúchéng, yào yí bù yí gè jiǎoyìn.",
+     "translation": "Đúng, nhưng cũng đừng nóng vội, phải chắc chắn từng bước."
+    },
+    {
+     "speaker": "小明",
+     "text": "我明白了,从基础开始重新练习。",
+     "phonetic": "Wǒ míngbai le, cóng jīchǔ kāishǐ chóngxīn liànxí.",
+     "translation": "Em hiểu rồi, sẽ luyện lại từ nền tảng."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "失败",
+     "reading": "shībài",
+     "definition": "thất bại",
+     "example": "失败是成功之母。 (Thất bại là mẹ thành công.)"
+    },
+    {
+     "term": "坚持",
+     "reading": "jiānchí",
+     "definition": "kiên trì",
+     "example": "坚持就是胜利。 (Kiên trì là chiến thắng.)"
+    },
+    {
+     "term": "熟能生巧",
+     "reading": "shú néng shēng qiǎo",
+     "definition": "quen tay hay việc",
+     "example": "多练习吧,熟能生巧。 (Luyện nhiều vào, quen tay hay việc.)"
+    },
+    {
+     "term": "急于求成",
+     "reading": "jíyú qiúchéng",
+     "definition": "nóng vội muốn thành công",
+     "example": "学语言不能急于求成。 (Học ngôn ngữ không thể nóng vội.)"
+    },
+    {
+     "term": "基础",
+     "reading": "jīchǔ",
+     "definition": "nền tảng, cơ bản",
+     "example": "基础很重要。 (Nền tảng rất quan trọng.)"
+    }
+   ],
+   "grammar": {
+    "title": "成语 trong câu",
+    "explanation": "成语 thường bốn chữ, làm vị ngữ hoặc đứng riêng sau 嘛/吧 để kết luận. 毕竟: dù sao thì. V + 下去: tiếp tục làm. 重新 + V: làm lại từ đầu.",
+    "examples": [
+     "我们要坚持下去。[wǒmen yào jiānchí xiàqù] (Chúng ta phải kiên trì tiếp.)",
+     "请重新写一遍。[qǐng chóngxīn xiě yí biàn] (Xin viết lại một lần.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nhịp bốn chữ",
+    "tip": "Đọc 成语 theo nhịp 2+2: 熟能 / 生巧, 急于 / 求成. Giữ đúng thanh từng chữ.",
+    "words": [
+     "熟能生巧",
+     "急于求成",
+     "坚持",
+     "失败"
+    ]
+   },
+   "speakingTasks": [
+    "Kể một trải nghiệm và kết bằng một 成语 phù hợp.",
+    "Hỏi thầy/cô ý nghĩa của 「一步一个脚印」."
+   ],
+   "questions": [
+    {
+     "prompt": "「熟能生巧」 nghĩa gần nhất:",
+     "options": [
+      "Ăn nhanh no lâu",
+      "Học ít biết nhiều",
+      "Quen tay hay việc"
+     ],
+     "answer": 2,
+     "explanation": "Luyện nhiều sẽ thành thạo."
+    },
+    {
+     "prompt": "「急于求成」 khuyên điều gì?",
+     "options": [
+      "Hãy làm thật nhanh",
+      "Bỏ cuộc sớm",
+      "Đừng nóng vội"
+     ],
+     "answer": 2,
+     "explanation": "Nóng vội muốn thành công."
+    },
+    {
+     "prompt": "“Tôi sẽ kiên trì tiếp.”",
+     "options": [
+      "我会坚持下去。",
+      "我会下去坚持。",
+      "我坚持会下去。"
+     ],
+     "answer": 0,
+     "explanation": "V + 下去 = tiếp tục."
+    },
+    {
+     "prompt": "「重新练习」 nghĩa là:",
+     "options": [
+      "luyện lại từ đầu",
+      "ngừng luyện",
+      "luyện ít đi"
+     ],
+     "answer": 0,
+     "explanation": "重新 = làm lại."
+    },
+    {
+     "prompt": "「坚持」 có nghĩa là gì?",
+     "options": [
+      "kiên trì",
+      "nóng vội muốn thành công",
+      "quen tay hay việc"
+     ],
+     "answer": 0,
+     "explanation": "「坚持」 [jiānchí] = kiên trì."
+    },
+    {
+     "prompt": "「基础」 đọc là gì?",
+     "options": [
+      "shú néng shēng qiǎo",
+      "jiānchí",
+      "jīchǔ"
+     ],
+     "answer": 2,
+     "explanation": "「基础」 đọc là [jīchǔ], nghĩa là nền tảng, cơ bản."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿就是胜利。  (Kiên trì là chiến thắng.)",
+     "options": [
+      "急于求成",
+      "坚持",
+      "熟能生巧"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「坚持」 (kiên trì). Câu đầy đủ: 坚持就是胜利。"
+    },
+    {
+     "prompt": "「熟能生巧」 có nghĩa là gì?",
+     "options": [
+      "quen tay hay việc",
+      "kiên trì",
+      "nền tảng, cơ bản"
+     ],
+     "answer": 0,
+     "explanation": "「熟能生巧」 [shú néng shēng qiǎo] = quen tay hay việc."
+    },
+    {
+     "prompt": "「失败」 đọc là gì?",
+     "options": [
+      "jiānchí",
+      "shībài",
+      "jīchǔ"
+     ],
+     "answer": 1,
+     "explanation": "「失败」 đọc là [shībài], nghĩa là thất bại."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿很重要。  (Nền tảng rất quan trọng.)",
+     "options": [
+      "坚持",
+      "基础",
+      "熟能生巧"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「基础」 (nền tảng, cơ bản). Câu đầy đủ: 基础很重要。"
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
+}

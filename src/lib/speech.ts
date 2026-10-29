@@ -1,63 +1,4 @@
-export type ParsedVoiceInfo = {
-  countryCode: "us" | "uk" | "in" | "au" | "ca" | "de" | "other";
-  countryName: string;
-  flag: string;
-  gender: "female" | "male";
-  isNatural: boolean;
-};
-
-export function parseVoiceInfo(name: string, lang: string): ParsedVoiceInfo {
-  const nameLower = name.toLowerCase();
-  const langLower = lang.toLowerCase();
-
-  let countryCode: "us" | "uk" | "in" | "au" | "ca" | "de" | "other" = "other";
-  let countryName = "Quốc tế";
-  let flag = "🌐";
-
-  if (langLower.startsWith("en-us") || nameLower.includes("united states") || nameLower.includes("us english") || nameLower.includes("(us)")) {
-    countryCode = "us";
-    countryName = "Mỹ (USA)";
-    flag = "🇺🇸";
-  } else if (langLower.startsWith("en-gb") || langLower.startsWith("en-uk") || nameLower.includes("united kingdom") || nameLower.includes("uk english") || nameLower.includes("(uk)")) {
-    countryCode = "uk";
-    countryName = "Anh (UK)";
-    flag = "🇬🇧";
-  } else if (langLower.startsWith("en-in") || nameLower.includes("india") || nameLower.includes("indian")) {
-    countryCode = "in";
-    countryName = "Ấn Độ (India)";
-    flag = "🇮🇳";
-  } else if (langLower.startsWith("en-au") || nameLower.includes("australia") || nameLower.includes("australian")) {
-    countryCode = "au";
-    countryName = "Úc (Australia)";
-    flag = "🇦🇺";
-  } else if (langLower.startsWith("en-ca") || nameLower.includes("canada") || nameLower.includes("canadian")) {
-    countryCode = "ca";
-    countryName = "Canada";
-    flag = "🇨🇦";
-  } else if (langLower.startsWith("de") || nameLower.includes("german") || nameLower.includes("deutsch")) {
-    countryCode = "de";
-    countryName = "Đức (Germany)";
-    flag = "🇩🇪";
-  }
-
-  const femaleKeywords = [
-    "female", "zira", "susan", "heera", "catherine", "linda", "hedda", "jenny", "aria",
-    "samantha", "karen", "moira", "fiona", "tessa", "veena", "priya", "neerja", "sangeeta",
-    "victoria", "hazel", "alice", "helena", "eva", "stefanie", "natural female", "wavenet-a", "wavenet-c", "wavenet-e", "wavenet-f"
-  ];
-  const isFemale = femaleKeywords.some((k) => nameLower.includes(k));
-  const gender: "female" | "male" = isFemale ? "female" : "male";
-
-  const isNatural = nameLower.includes("natural") || nameLower.includes("online") || nameLower.includes("google") || nameLower.includes("neural");
-
-  return {
-    countryCode,
-    countryName,
-    flag,
-    gender,
-    isNatural,
-  };
-}
+import { LANG } from "@/lib/language";
 
 const DATABASE_NAME = "lingua-speech-cache";
 const DATABASE_VERSION = 1;
@@ -158,10 +99,19 @@ export async function clearSpeechCache(): Promise<void> {
 
 export type SpeechSegment = {
   text: string;
+  /** "en" is kept as the id of the language being learned (here: Japanese/Chinese); "vi" is Vietnamese. */
   lang: "vi" | "en";
 };
 
 const VIETNAMESE_DIACRITICS_REGEX = /[àáảãạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ]/i;
+
+/**
+ * Readings (romaji / pinyin) are written in [square brackets] for the eyes only: they are
+ * removed before anything is read aloud or used as a practice sentence.
+ */
+export function stripReadings(text: string): string {
+  return text.replace(/\[[^\]]*\]/g, " ");
+}
 
 /**
  * Remove ALL markdown symbols (*, **, ***, _, backticks, bullet dashes, decorative emojis)
@@ -173,7 +123,7 @@ export function cleanSpeechText(text: string): string {
     .replace(/_+/g, "")  // remove all underscores
     .replace(/^#+\s+/gm, "") // remove markdown headers #, ##
     .replace(/^[\s\-*•·✦💡🎯🎙️🔊✨]+\s*/gmu, "") // remove bullets and decorative icons (u: emoji are surrogate pairs)
-    .replace(/[\`~]/g, "") // remove backticks and strikethrough
+    .replace(/[`~]/g, "") // remove backticks and strikethrough
     .replace(/[-–—]\s*$/g, "") // remove trailing dashes
     .replace(/^\s*[-–—]/g, "") // remove leading dashes
     .replace(/\s+/g, " ")
@@ -181,12 +131,78 @@ export function cleanSpeechText(text: string): string {
 }
 
 /**
+ * Sentences of the language being learned that the teacher put in quotes (or bold), for the
+ * "practise this sentence" buttons. Vietnamese explanations and readings are skipped.
+ */
+function extractPracticePhrasesCjk(text: string): string[] {
+  const phrases: string[] = [];
+  const add = (raw: string) => {
+    const candidate = cleanSpeechText(stripReadings(raw))
+      .replace(/^["“「'`]+|["”」'`]+$/g, "")
+      .replace(/[:;–-]+$/, "")
+      .trim();
+    if (candidate.length >= 2 && LANG.targetScript.test(candidate) &&
+        !VIETNAMESE_DIACRITICS_REGEX.test(candidate) && !phrases.includes(candidate)) {
+      phrases.push(candidate);
+    }
+  };
+
+  for (const match of text.matchAll(/["“「`]([^"”」`\n]+)["”」`]/g)) add(match[1]);
+  for (const match of text.matchAll(/\*\*([^*]+)\*\*/g)) {
+    if (!/[:：]$/.test(match[1].trim())) add(match[1]);
+  }
+  // Nothing quoted: fall back to any run of the target language in the text.
+  if (!phrases.length) {
+    for (const match of stripReadings(text).matchAll(new RegExp(LANG.targetRun.source, "g"))) add(match[0]);
+  }
+  return phrases;
+}
+
+/**
+ * Split text into segments for text-to-speech: runs of the language being learned go to
+ * the practice voice, everything else (Vietnamese explanations) to the Vietnamese voice.
+ * Scripts do not overlap (kana/kanji/hanzi vs Latin), so this works inside a sentence too:
+ * “Hôm nay học 「こんにちは」 nhé” becomes three segments.
+ */
+function splitBilingualTextCjk(text: string): SpeechSegment[] {
+  const cleaned = stripReadings(text).trim();
+  if (!cleaned) return [];
+
+  const raw: SpeechSegment[] = [];
+  const push = (part: string, lang: "vi" | "en") => {
+    const value = cleanSpeechText(part);
+    // Skip pieces that carry no letters or digits at all (stray quotes, dashes).
+    if (value && /[\p{L}\p{N}]/u.test(value)) raw.push({ text: value, lang });
+  };
+
+  let last = 0;
+  for (const match of cleaned.matchAll(new RegExp(LANG.targetRun.source, "g"))) {
+    const start = match.index ?? 0;
+    if (start > last) push(cleaned.slice(last, start), "vi");
+    push(match[0], "en");
+    last = start + match[0].length;
+  }
+  if (last < cleaned.length) push(cleaned.slice(last), "vi");
+
+  // Merge neighbours of the same language so the voice does not stutter.
+  const merged: SpeechSegment[] = [];
+  for (const segment of raw) {
+    const previous = merged[merged.length - 1];
+    if (previous && previous.lang === segment.lang) previous.text = cleanSpeechText(`${previous.text} ${segment.text}`);
+    else merged.push({ ...segment });
+  }
+  return merged;
+}
+
+// ---- Languages that share the Latin script with Vietnamese (English) ----
+
+/**
  * Extract targeted English practice phrases/sentences from assistant responses.
  * Detects quoted dialogue/examples ("...", “...”, *"..."*) and bold English sentences,
  * filtering out Vietnamese explanations, structural labels (Tình huống:, Senior Manager),
  * and stripping all markdown asterisks.
  */
-export function extractEnglishPracticePhrases(text: string): string[] {
+function extractPracticePhrasesLatin(text: string): string[] {
   const phrases: string[] = [];
   const trimmed = text.trim();
   if (!trimmed) return phrases;
@@ -274,7 +290,7 @@ function sentenceLanguage(sentence: string, quoted: boolean): "vi" | "en" {
   return vietnamese / words.length >= 0.3 ? "vi" : "en";
 }
 
-export function splitBilingualText(text: string): SpeechSegment[] {
+function splitBilingualTextLatin(text: string): SpeechSegment[] {
   const trimmed = text.trim();
   if (!trimmed) return [];
 
@@ -330,4 +346,14 @@ export function splitBilingualText(text: string): SpeechSegment[] {
 
   const finalCleaned = cleanSpeechText(trimmed);
   return merged.length > 0 ? merged : (finalCleaned ? [{ text: finalCleaned, lang: hasVietnamese ? "vi" : "en" }] : []);
+}
+
+/** Sample sentences of the language being learned that the teacher put in quotes or bold. */
+export function extractPracticePhrases(text: string): string[] {
+  return LANG.scriptMode === "latin" ? extractPracticePhrasesLatin(text) : extractPracticePhrasesCjk(text);
+}
+
+/** Splits text into segments for the practice voice and the Vietnamese voice. */
+export function splitBilingualText(text: string): SpeechSegment[] {
+  return LANG.scriptMode === "latin" ? splitBilingualTextLatin(text) : splitBilingualTextCjk(text);
 }

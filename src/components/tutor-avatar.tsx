@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { realMouthLevel } from "@/lib/lipsync";
+import { LANG, type MascotKind } from "@/lib/language";
 
 export type AvatarKind = "woman" | "man" | "mascot";
 export type AvatarEmotion = "neutral" | "happy" | "cheer" | "thinking" | "surprised";
@@ -9,6 +10,8 @@ export type AvatarStatus = "idle" | "thinking" | "speaking" | "listening";
 
 type Props = {
   kind: AvatarKind;
+  /** Which mascot a "mascot" tutor is; defaults to the one of the language being learned. */
+  mascot?: MascotKind;
   status?: AvatarStatus;
   emotion?: AvatarEmotion;
   size?: number;
@@ -51,6 +54,28 @@ function Defs({ id }: { id: string }) {
         <stop offset="0" stopColor="#4f7bd6" />
         <stop offset="1" stopColor="#18327a" />
       </linearGradient>
+      <radialGradient id={`${id}-owliris`} cx="45%" cy="40%" r="65%">
+        <stop offset="0" stopColor="#ffd25a" />
+        <stop offset="0.7" stopColor="#f59e0b" />
+        <stop offset="1" stopColor="#a8560f" />
+      </radialGradient>
+      <radialGradient id={`${id}-owl`} cx="40%" cy="28%" r="85%">
+        <stop offset="0" stopColor="#ffcf7a" />
+        <stop offset="0.55" stopColor="#ea9530" />
+        <stop offset="1" stopColor="#a8561a" />
+      </radialGradient>
+      <radialGradient id={`${id}-disc`} cx="50%" cy="40%" r="70%">
+        <stop offset="0" stopColor="#fff6e2" />
+        <stop offset="1" stopColor="#f6d9a4" />
+      </radialGradient>
+      <radialGradient id={`${id}-belly`} cx="50%" cy="35%" r="70%">
+        <stop offset="0" stopColor="#fffdf3" />
+        <stop offset="1" stopColor="#f7e2b0" />
+      </radialGradient>
+      <linearGradient id={`${id}-beak`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#ffb547" />
+        <stop offset="1" stopColor="#e2741a" />
+      </linearGradient>
       <radialGradient id={`${id}-nova`} cx="38%" cy="30%" r="78%">
         <stop offset="0" stopColor="#fff4c7" />
         <stop offset="0.55" stopColor="#ffd98a" />
@@ -63,6 +88,19 @@ function Defs({ id }: { id: string }) {
       <linearGradient id={`${id}-leaf`} x1="0" y1="0" x2="1" y2="1">
         <stop offset="0" stopColor="#9be8a8" />
         <stop offset="1" stopColor="#36a86a" />
+      </linearGradient>
+      <radialGradient id={`${id}-fur`} cx="40%" cy="30%" r="80%">
+        <stop offset="0" stopColor="#ffffff" />
+        <stop offset="0.7" stopColor="#f1f2f4" />
+        <stop offset="1" stopColor="#cfd3da" />
+      </radialGradient>
+      <linearGradient id={`${id}-patch`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stopColor="#4a4d57" />
+        <stop offset="1" stopColor="#17181d" />
+      </linearGradient>
+      <linearGradient id={`${id}-scarf`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stopColor="#f04a4a" />
+        <stop offset="1" stopColor="#b91c1c" />
       </linearGradient>
     </defs>
   );
@@ -184,6 +222,66 @@ function Human({ id, kind, emotion, talking }: { id: string; kind: "woman" | "ma
   );
 }
 
+/** Alex the owl: the lower half of the beak drops with the voice while it talks. */
+function Owl({ id, emotion }: { id: string; emotion: AvatarEmotion }) {
+  const brows = browParams(emotion);
+  // Only a thinking owl narrows its eyes; happy owls keep them wide open.
+  const rest = emotion === "thinking" ? 0.3 : 0;
+  const feather = "#e08a2c";
+  return (
+    <g>
+      {/* wings */}
+      <path d="M30 148 C6 172 12 218 48 230 C58 202 54 170 42 146Z" fill={`url(#${id}-owl)`} className="av-wing av-wing-l" />
+      <path d="M170 148 C194 172 188 218 152 230 C142 202 146 170 158 146Z" fill={`url(#${id}-owl)`} className="av-wing av-wing-r" />
+      {/* body */}
+      <g className="av-body">
+        <ellipse cx="100" cy="176" rx="60" ry="62" fill={`url(#${id}-owl)`} />
+        <ellipse cx="100" cy="188" rx="40" ry="46" fill={`url(#${id}-belly)`} />
+        {[0, 1, 2].map((row) => [0, 1, 2].map((col) => (
+          <path key={`${row}${col}`} d={`M${80 + col * 20 - (row % 2) * 10} ${168 + row * 16} q6 8 12 0`} fill="none" stroke="#e4b97a" strokeWidth="2.2" strokeLinecap="round" />
+        )))}
+      </g>
+      <g className="av-head">
+        {/* ear tufts */}
+        <path d="M46 66 L30 18 L78 46Z" fill={`url(#${id}-owl)`} className="av-tuft av-tuft-l" />
+        <path d="M154 66 L170 18 L122 46Z" fill={`url(#${id}-owl)`} className="av-tuft av-tuft-r" />
+        {/* head */}
+        <ellipse cx="100" cy="96" rx="66" ry="60" fill={`url(#${id}-owl)`} />
+        <path d="M70 40 C88 30 112 30 130 42" fill="none" stroke="#ffffff55" strokeWidth="4" strokeLinecap="round" />
+        {/* facial disc: the heart-shaped face of an owl */}
+        <path d="M100 66 C86 46 42 48 40 92 C38 128 76 140 100 128 C124 140 162 128 160 92 C158 48 114 46 100 66Z" fill={`url(#${id}-disc)`} />
+        <path d="M100 66 L100 104" stroke="#e9c48a" strokeWidth="2" />
+        {/* brows (feather ridges) */}
+        <path d="M46 72 Q68 58 94 72" fill="none" stroke="#9a4f16" strokeWidth="5" strokeLinecap="round"
+          style={{ transform: `translateY(${brows.ly}px) rotate(${brows.lr}deg)`, transformOrigin: "70px 68px" }} className="av-brow" />
+        <path d="M106 72 Q132 58 154 72" fill="none" stroke="#9a4f16" strokeWidth="5" strokeLinecap="round"
+          style={{ transform: `translateY(${brows.ry}px) rotate(${brows.rr}deg)`, transformOrigin: "130px 68px" }} className="av-brow" />
+        <Eye id={id} name="l" cx={71} cy={94} rx={21} ry={21} iris={13} irisFill={`url(#${id}-owliris)`} lid={feather} rest={rest} />
+        <Eye id={id} name="r" cx={129} cy={94} rx={21} ry={21} iris={13} irisFill={`url(#${id}-owliris)`} lid={feather} rest={rest} />
+        {/* beak: the lower half drops with the voice, showing a dark mouth between the halves */}
+        <ellipse className="av-mouth-cavity" cx="100" cy="125" rx="10.5" ry="9" fill="#4a1508" />
+        <ellipse className="av-mouth-cavity" cx="100" cy="131" rx="6" ry="3" fill="#e0707f" />
+        <path className="av-beak-low" d="M90 121 Q100 118 110 121 Q107 131 100 134 Q93 131 90 121Z" fill="#d9661a" stroke="#a9480c" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M85 106 Q100 97 115 106 Q114 118 100 127 Q86 118 85 106Z" fill={`url(#${id}-beak)`} stroke="#a9480c" strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M91 107 Q100 102 109 107" fill="none" stroke="#fff" strokeOpacity=".65" strokeWidth="2.4" strokeLinecap="round" />
+        <circle cx="95" cy="106" r="1.3" fill="#7a3409" /><circle cx="105" cy="106" r="1.3" fill="#7a3409" />
+        {(emotion === "happy" || emotion === "cheer") && (
+          <><ellipse cx="50" cy="118" rx="9" ry="5.5" fill="#ff7a8a" opacity=".45" /><ellipse cx="150" cy="118" rx="9" ry="5.5" fill="#ff7a8a" opacity=".45" /></>
+        )}
+        {/* cap */}
+        <g className="av-cap">
+          <path d="M46 46 L100 22 L154 46 L100 70Z" fill="#26324a" />
+          <path d="M72 56 V72 Q100 86 128 72 V56 L100 70Z" fill="#1a2336" />
+          <path d="M154 46 V74" stroke="#f6c23e" strokeWidth="3" strokeLinecap="round" />
+          <circle cx="154" cy="78" r="5" fill="#f6c23e" className="av-tassel" />
+          <circle cx="100" cy="45" r="4" fill="#f6c23e" />
+        </g>
+      </g>
+      <path d="M80 236 l-6 9 M90 238 l-3 9 M110 238 l3 9 M120 236 l6 9" stroke="#e08a1a" strokeWidth="5" strokeLinecap="round" />
+    </g>
+  );
+}
+
 /** Big glossy chibi eye; the lid (body colour) closes from the top for blinks. */
 function NovaEye({ id, name, cx, rest }: { id: string; name: string; cx: number; rest: number }) {
   const cy = 120;
@@ -275,10 +373,90 @@ function Nova({ id, emotion, talking }: { id: string; emotion: AvatarEmotion; ta
   );
 }
 
+function pandaMouth(emotion: AvatarEmotion) {
+  switch (emotion) {
+    case "cheer": return <path d="M89 146 Q100 162 111 146 Q100 150 89 146Z" fill="#5a1e24" stroke="#5a1e24" strokeWidth="2" strokeLinejoin="round" />;
+    case "surprised": return <ellipse cx="100" cy="150" rx="4.5" ry="5.5" fill="#5a1e24" />;
+    case "thinking": return <path d="M94 150 Q100 147 106 151" fill="none" stroke="#2a2a30" strokeWidth="2.6" strokeLinecap="round" />;
+    default: return <path d="M91 145 Q96 151 100 146 Q104 151 109 145" fill="none" stroke="#2a2a30" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />;
+  }
+}
+
+/**
+ * Panda: a round, friendly panda cub with a red scarf. The eyes sit in the black eye
+ * patches; its mouth follows the voice while it talks.
+ */
+function Panda({ id, emotion, talking }: { id: string; emotion: AvatarEmotion; talking: boolean }) {
+  const brows = browParams(emotion);
+  const rest = emotion === "thinking" ? 0.3 : 0;
+  const happyEyes = emotion === "cheer";
+  return (
+    <g>
+      {/* feet */}
+      <ellipse cx="74" cy="232" rx="20" ry="11" fill={`url(#${id}-patch)`} />
+      <ellipse cx="126" cy="232" rx="20" ry="11" fill={`url(#${id}-patch)`} />
+      {/* arms */}
+      <path d="M44 156 C22 162 18 194 32 204 C42 210 54 196 58 180Z" fill={`url(#${id}-patch)`} className="av-wing av-wing-l" />
+      <path d="M156 156 C178 162 182 194 168 204 C158 210 146 196 142 180Z" fill={`url(#${id}-patch)`} className="av-wing av-wing-r" />
+      <g className="av-body">
+        <ellipse cx="100" cy="190" rx="56" ry="46" fill={`url(#${id}-fur)`} />
+        <ellipse cx="100" cy="198" rx="34" ry="28" fill="#ffffff" opacity=".8" />
+        {/* scarf */}
+        <path d="M54 160 Q100 178 146 160 L144 172 Q100 190 56 172Z" fill={`url(#${id}-scarf)`} />
+        <path d="M120 172 L132 204 L118 200 L112 176Z" fill={`url(#${id}-scarf)`} />
+      </g>
+      <g className="av-head">
+        {/* ears */}
+        <circle cx="50" cy="56" r="22" fill={`url(#${id}-patch)`} className="av-tuft av-tuft-l" />
+        <circle cx="150" cy="56" r="22" fill={`url(#${id}-patch)`} className="av-tuft av-tuft-r" />
+        <circle cx="50" cy="56" r="10" fill="#6b6f7a" opacity=".55" />
+        <circle cx="150" cy="56" r="10" fill="#6b6f7a" opacity=".55" />
+        {/* head */}
+        <ellipse cx="100" cy="106" rx="70" ry="62" fill={`url(#${id}-fur)`} />
+        <path d="M62 60 C80 48 120 48 138 60" fill="none" stroke="#ffffff" strokeWidth="5" strokeLinecap="round" opacity=".8" />
+        {/* eye patches */}
+        <ellipse cx="70" cy="108" rx="22" ry="27" transform="rotate(28 70 108)" fill={`url(#${id}-patch)`} />
+        <ellipse cx="130" cy="108" rx="22" ry="27" transform="rotate(-28 130 108)" fill={`url(#${id}-patch)`} />
+        {/* brows */}
+        <path d="M60 80 Q70 74 80 78" fill="none" stroke="#2a2a30" strokeWidth="3" strokeLinecap="round"
+          style={{ transform: `translateY(${brows.ly}px) rotate(${brows.lr}deg)`, transformOrigin: "70px 78px" }} className="av-brow" />
+        <path d="M120 78 Q130 74 140 80" fill="none" stroke="#2a2a30" strokeWidth="3" strokeLinecap="round"
+          style={{ transform: `translateY(${brows.ry}px) rotate(${brows.rr}deg)`, transformOrigin: "130px 78px" }} className="av-brow" />
+        {happyEyes ? (
+          <g fill="none" stroke="#ffffff" strokeWidth="4" strokeLinecap="round">
+            <path d="M62 112 Q72 100 82 112" />
+            <path d="M118 112 Q128 100 138 112" />
+          </g>
+        ) : (
+          <>
+            <Eye id={id} name="l" cx={73} cy={106} rx={11} ry={12} iris={8} irisFill="#2b1a10" lid="#2a2b31" rest={rest} />
+            <Eye id={id} name="r" cx={127} cy={106} rx={11} ry={12} iris={8} irisFill="#2b1a10" lid="#2a2b31" rest={rest} />
+          </>
+        )}
+        {/* nose */}
+        <path d="M91 128 Q100 123 109 128 Q106 137 100 138 Q94 137 91 128Z" fill="#1f2026" />
+        <ellipse cx="97" cy="128" rx="3" ry="1.6" fill="#ffffff" opacity=".5" />
+        <path d="M100 138 V143" stroke="#2a2a30" strokeWidth="2.4" strokeLinecap="round" />
+        {/* rosy cheeks */}
+        <ellipse cx="52" cy="140" rx="10" ry="6" fill="#ff9eb5" opacity={emotion === "happy" || emotion === "cheer" ? 0.6 : 0.35} />
+        <ellipse cx="148" cy="140" rx="10" ry="6" fill="#ff9eb5" opacity={emotion === "happy" || emotion === "cheer" ? 0.6 : 0.35} />
+        {talking ? (
+          <g className="av-mouth-live">
+            <ellipse cx="100" cy="151" rx="8.5" ry="7.5" fill="#5a1e24" />
+            <ellipse cx="100" cy="155" rx="5" ry="3" fill="#ff8a9a" />
+          </g>
+        ) : pandaMouth(emotion)}
+      </g>
+    </g>
+  );
+}
+
+const MASCOT_NAMES: Record<MascotKind, string> = { nova: "Nova", owl: "Alex", panda: "Panda" };
+
 /** Calm, natural-looking random numbers between a and b. */
 const between = (a: number, b: number) => a + Math.random() * (b - a);
 
-export function TutorAvatar({ kind, status = "idle", emotion, size = 120, interactive = true, className = "" }: Props) {
+export function TutorAvatar({ kind, mascot, status = "idle", emotion, size = 120, interactive = true, className = "" }: Props) {
   const rawId = useId();
   const id = `av${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;
   const stageRef = useRef<HTMLDivElement | null>(null);
@@ -366,7 +544,8 @@ export function TutorAvatar({ kind, status = "idle", emotion, size = 120, intera
     };
   }, [interactive]);
 
-  const label = kind === "woman" ? "Cô giáo AI" : kind === "man" ? "Thầy giáo AI" : "Linh vật Nova";
+  const mascotKind: MascotKind = kind === "mascot" ? (mascot ?? LANG.mascot.kind) : "nova";
+  const label = kind === "woman" ? "Cô giáo AI" : kind === "man" ? "Thầy giáo AI" : `Linh vật ${MASCOT_NAMES[mascotKind]}`;
   return (
     <div
       ref={stageRef}
@@ -381,7 +560,9 @@ export function TutorAvatar({ kind, status = "idle", emotion, size = 120, intera
         <svg viewBox="0 0 200 250" width={size} height={size * 1.2} className="av-svg">
           <Defs id={id} />
           {kind === "mascot"
-            ? <Nova id={id} emotion={resolved} talking={talking} />
+            ? (mascotKind === "owl" ? <Owl id={id} emotion={resolved} />
+              : mascotKind === "panda" ? <Panda id={id} emotion={resolved} talking={talking} />
+                : <Nova id={id} emotion={resolved} talking={talking} />)
             : <Human id={id} kind={kind} emotion={resolved} talking={talking} />}
         </svg>
       </div>

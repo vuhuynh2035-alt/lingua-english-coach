@@ -1,3 +1,5 @@
+import { LANG } from "@/lib/language";
+
 export type CourseQuestion = {
   prompt: string;
   options: string[];
@@ -14,7 +16,10 @@ export type CourseLesson = {
   title: string;
   objective: string;
   reading: string;
-  vocabulary: { term: string; definition: string; example?: string }[];
+  /** `reading` is the romaji / pinyin of `term`; `example` is "sentence (Vietnamese meaning)". */
+  vocabulary: { term: string; reading?: string; definition: string; example?: string }[];
+  /** The lesson's conversation, line by line, with its reading aid and Vietnamese translation. */
+  dialogue?: { speaker?: string; text: string; phonetic?: string; translation?: string }[];
   grammar?: { title: string; explanation: string; examples: string[] };
   pronunciation?: { focus: string; tip: string; words: string[] };
   speakingTasks?: string[];
@@ -23,7 +28,9 @@ export type CourseLesson = {
 };
 
 /** Bundled curriculum version; a stored pack with another version is re-downloaded. */
-export const CURRICULUM_VERSION = "2.0.0";
+/** Bump a language's version when its course files change, so devices download them again. */
+const CURRICULUM_VERSIONS = { en: "2.0.0", ja: "1.1.0", zh: "1.1.0" } as const;
+export const CURRICULUM_VERSION: string = CURRICULUM_VERSIONS[LANG.id];
 /** A lesson is passed with at least this share of correct answers (8/10). */
 export const LESSON_PASS_RATIO = 0.8;
 
@@ -53,7 +60,7 @@ export type CoursePackage = {
 export type StoredCourse = CoursePackage & { downloadedAt: string };
 type StoredAudio = { key: string; courseId: string; blob: Blob; mediaType: string };
 
-const DATABASE_NAME = "lingua-offline-courses";
+const DATABASE_NAME = `${LANG.storagePrefix}offline-courses`;
 const DATABASE_VERSION = 1;
 const COURSE_STORE = "courses";
 const AUDIO_STORE = "audio";
@@ -193,7 +200,7 @@ export async function downloadCoursePackage(
   basePath: string,
   onProgress: (completed: number, total: number) => void,
 ): Promise<CoursePackage> {
-  const packageResponse = await fetch(`${basePath}/courses/${encodeURIComponent(courseId)}.json`);
+  const packageResponse = await fetch(`${basePath}/courses/${LANG.id}/${encodeURIComponent(courseId)}.json`);
   if (!packageResponse.ok) {
     throw new Error(`Unable to download this course package (HTTP ${packageResponse.status}).`);
   }

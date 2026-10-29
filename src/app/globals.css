@@ -2214,7 +2214,7 @@ html[data-theme="blue"] .wz-crumb { opacity: .92; }
 .floating-back-button span { font-size: .75rem; }
 .floating-back-button:hover:not(:disabled) { width: 36px; }
 
-/* ===== Nova: sprout sways, body bounces with the voice ===== */
+/* ===== Mascot: sprout sways, body bounces with the voice ===== */
 .av-sprout { transform-box: fill-box; transform-origin: 30% 100%; animation: av-sprout 3.2s ease-in-out infinite; }
 @keyframes av-sprout { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(6deg); } }
 .av-emo-cheer .av-sprout, .av-status-speaking .av-sprout { animation-duration: 1.2s; }
@@ -2254,3 +2254,42 @@ html[data-theme] .floating-back-button { color: #fff; background: #0f172a2e; bor
 .switch-input:checked { background: var(--purple); }
 .switch-input:checked::after { transform: translateX(22px); }
 .switch-input:focus-visible { outline: 3px solid #afa2fa; outline-offset: 2px; }
+
+/* ===== Reading aids and dialogue (romaji / pinyin) ===== */
+.message-phonetic { margin: 0 .25em; color: var(--muted); font-size: .85em; font-style: italic; }
+.dialogue-card-phonetic { margin-top: 2px; color: var(--muted); font-size: .9em; font-style: italic; }
+.dialogue-card-meaning { margin-top: 2px; font-size: .95em; }
+.vocab-reading { color: var(--muted); font-size: .9em; font-style: italic; }
+.lesson-toggles { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 4px; font-size: .9rem; }
+.lesson-toggles label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.lesson-dialogue { display: grid; gap: 8px; }
+.dialogue-line { display: grid; gap: 2px; padding: 8px 10px; border-radius: 10px; background: var(--paper); }
+.dialogue-main { display: flex; gap: 8px; align-items: center; }
+.dialogue-speaker { flex: 0 0 auto; padding: 1px 8px; border-radius: 999px; color: #fff; background: var(--purple); font-size: .8125rem; }
+.dialogue-text { flex: 1; min-width: 0; font-size: 1.125rem; line-height: 1.5; }
+.dialogue-phonetic { color: var(--muted); font-style: italic; padding-left: 2px; }
+.dialogue-translation { color: #3b6a5a; padding-left: 2px; }
+
+/* ===== Language chooser (first screen) and the language pills on the welcome page ===== */
+.lc-page { max-width: 880px; margin: 0 auto; padding: 28px 18px 40px; text-align: center; }
+.lc-brand { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 18px; }
+.lc-brand img { border-radius: 12px; }
+.lc-brand strong { font: 800 1.35rem var(--font-display); }
+.lc-brand small { padding: 2px 8px; border: 1px solid #bde5d2; border-radius: 8px; color: #438367; font-weight: 700; }
+.lc-page h1 { margin: 6px 0 10px; font: 800 clamp(1.5rem, 5vw, 2.1rem)/1.2 var(--font-display); }
+.lc-lead { max-width: 640px; margin: 0 auto 22px; color: #556; }
+.lc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+.lc-card { display: grid; justify-items: center; gap: 6px; padding: 18px 14px 16px; border: 2px solid color-mix(in srgb, var(--lc) 25%, #fff); border-radius: 22px; background: #fff; text-align: center; box-shadow: 0 6px 18px color-mix(in srgb, var(--lc) 14%, transparent); transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease; }
+.lc-card:hover, .lc-card:focus-visible { transform: translateY(-3px); border-color: var(--lc); box-shadow: 0 10px 26px color-mix(in srgb, var(--lc) 26%, transparent); }
+.lc-card strong { font: 800 1.25rem var(--font-display); color: var(--lc); }
+.lc-native { font-size: 1.1rem; font-weight: 700; }
+.lc-card small { color: #667; font-size: .9rem; line-height: 1.35; }
+.lc-card em { margin-top: 4px; padding: 3px 12px; border-radius: 999px; color: var(--lc); background: color-mix(in srgb, var(--lc) 12%, #fff); font-style: normal; font-weight: 700; font-size: .85rem; }
+.lc-foot { margin-top: 20px; color: var(--muted); font-size: .9rem; }
+.lc-loading { display: grid; place-items: center; min-height: 60vh; gap: 10px; }
+.lc-spinner { width: 38px; height: 38px; border: 4px solid #d8efe4; border-top-color: #15966d; border-radius: 50%; animation: lc-spin .8s linear infinite; }
+@keyframes lc-spin { to { transform: rotate(360deg); } }
+.wz-langs { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.wz-lang { padding: 7px 14px; border: 1px solid var(--theme-border, #bde5d2); border-radius: 999px; background: #fff; font-weight: 700; font-size: .9rem; }
+.wz-lang.active { color: #fff; border-color: transparent; background: var(--theme-accent, #15966d); }
+@media (prefers-reduced-motion: reduce) { .lc-spinner { animation: none; } .lc-card { transition: none; } }

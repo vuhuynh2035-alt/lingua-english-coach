@@ -1,0 +1,2381 @@
+{
+ "id": "travel",
+ "title": "Tiếng Trung du lịch",
+ "version": "1.1.0",
+ "framework": "HSK 1–5",
+ "overview": "12 bài từ HSK 1 đến HSK 5 cho chuyến đi Trung Quốc: sân bay, khách sạn, tàu điện và tàu cao tốc, nhà hàng, tham quan, xử lý sự cố, homestay/văn hóa trà và khiếu nại.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI, phân cấp theo HSK/CEFR",
+ "references": [
+  {
+   "title": "Chinese Proficiency Grading Standards for International Chinese Language Education",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Khung tham chiếu năng lực tiếng Trung theo HSK (chỉ dùng để phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "HSK – Hanyu Shuiping Kaoshi",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Tham khảo cấp độ HSK 1–5 (không sao chép đề thi)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "travel-a1-1",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Làm thủ tục ở sân bay",
+   "objective": "Check-in, đưa hộ chiếu, ký gửi hành lý và hỏi cổng ra máy bay.",
+   "reading": "工作人员: 你好,请给我你的护照。\n小明: 给你。我要托运一个行李。\n工作人员: 好的。你的登机口是十二号。\n小明: 请问,几点登机?\n工作人员: 三点半开始登机。",
+   "dialogue": [
+    {
+     "speaker": "工作人员",
+     "text": "你好,请给我你的护照。",
+     "phonetic": "Nǐ hǎo, qǐng gěi wǒ nǐ de hùzhào.",
+     "translation": "Xin chào, làm ơn cho tôi xem hộ chiếu."
+    },
+    {
+     "speaker": "小明",
+     "text": "给你。我要托运一个行李。",
+     "phonetic": "Gěi nǐ. Wǒ yào tuōyùn yí gè xíngli.",
+     "translation": "Của bạn đây. Tôi muốn ký gửi một hành lý."
+    },
+    {
+     "speaker": "工作人员",
+     "text": "好的。你的登机口是十二号。",
+     "phonetic": "Hǎo de. Nǐ de dēngjīkǒu shì shí'èr hào.",
+     "translation": "Được. Cổng lên máy bay của bạn là số 12."
+    },
+    {
+     "speaker": "小明",
+     "text": "请问,几点登机?",
+     "phonetic": "Qǐngwèn, jǐ diǎn dēngjī?",
+     "translation": "Xin hỏi, mấy giờ lên máy bay?"
+    },
+    {
+     "speaker": "工作人员",
+     "text": "三点半开始登机。",
+     "phonetic": "Sān diǎn bàn kāishǐ dēngjī.",
+     "translation": "3 giờ rưỡi bắt đầu lên máy bay."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "护照",
+     "reading": "hùzhào",
+     "definition": "hộ chiếu",
+     "example": "这是我的护照。 (Đây là hộ chiếu của tôi.)"
+    },
+    {
+     "term": "行李",
+     "reading": "xíngli",
+     "definition": "hành lý",
+     "example": "我有一个行李。 (Tôi có một hành lý.)"
+    },
+    {
+     "term": "登机口",
+     "reading": "dēngjīkǒu",
+     "definition": "cổng lên máy bay",
+     "example": "登机口在哪儿?(Cổng lên máy bay ở đâu?)"
+    },
+    {
+     "term": "托运",
+     "reading": "tuōyùn",
+     "definition": "ký gửi",
+     "example": "我要托运行李。 (Tôi muốn ký gửi hành lý.)"
+    },
+    {
+     "term": "登机",
+     "reading": "dēngjī",
+     "definition": "lên máy bay",
+     "example": "几点登机?(Mấy giờ lên máy bay?)"
+    }
+   ],
+   "grammar": {
+    "title": "请 + động từ và 要",
+    "explanation": "请给我……: làm ơn cho tôi ~. 我要 + động từ: tôi muốn làm gì. Hỏi giờ: 几点……? Giờ rưỡi: 三点半. Số hiệu cổng: 十二号 (số 12).",
+    "examples": [
+     "请给我你的护照。[qǐng gěi wǒ nǐ de hùzhào] (Làm ơn cho tôi hộ chiếu của bạn.)",
+     "我要托运行李。[wǒ yào tuōyùn xíngli] (Tôi muốn ký gửi hành lý.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm đầu tuo, deng",
+    "tip": "t bật hơi (托 tuō), d không bật hơi (登 dēng). Luyện: tāng – dāng, tuō – duō.",
+    "words": [
+     "托运",
+     "登机",
+     "护照",
+     "行李"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai hành khách check-in, đưa hộ chiếu và ký gửi 1 hành lý.",
+    "Hỏi thầy/cô: 请问,几点登机?"
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi muốn ký gửi hành lý.” là:",
+     "options": [
+      "我是托运行李。",
+      "我有托运的行李。",
+      "我要托运行李。"
+     ],
+     "answer": 2,
+     "explanation": "要 + động từ: muốn làm gì."
+    },
+    {
+     "prompt": "3 giờ rưỡi nói là:",
+     "options": [
+      "三半点",
+      "三点半",
+      "三点一半个"
+     ],
+     "answer": 1,
+     "explanation": "Giờ rưỡi dùng 半 sau 点."
+    },
+    {
+     "prompt": "「登机口」 là:",
+     "options": [
+      "hộ chiếu",
+      "hành lý",
+      "cổng lên máy bay"
+     ],
+     "answer": 2,
+     "explanation": "登机口 = cổng lên máy bay."
+    },
+    {
+     "prompt": "Lời nhờ lịch sự khi nhân viên cần hộ chiếu:",
+     "options": [
+      "你护照给我了。",
+      "你是护照吗。",
+      "请给我你的护照。"
+     ],
+     "answer": 2,
+     "explanation": "请 + 给我 + vật."
+    },
+    {
+     "prompt": "「托运」 có nghĩa là gì?",
+     "options": [
+      "hộ chiếu",
+      "ký gửi",
+      "lên máy bay"
+     ],
+     "answer": 1,
+     "explanation": "「托运」 [tuōyùn] = ký gửi."
+    },
+    {
+     "prompt": "「托运」 đọc là gì?",
+     "options": [
+      "hùzhào",
+      "dēngjī",
+      "tuōyùn"
+     ],
+     "answer": 2,
+     "explanation": "「托运」 đọc là [tuōyùn], nghĩa là ký gửi."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 这是我的＿＿＿。  (Đây là hộ chiếu của tôi.)",
+     "options": [
+      "行李",
+      "护照",
+      "登机"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「护照」 (hộ chiếu). Câu đầy đủ: 这是我的护照。"
+    },
+    {
+     "prompt": "「行李」 có nghĩa là gì?",
+     "options": [
+      "hành lý",
+      "hộ chiếu",
+      "cổng lên máy bay"
+     ],
+     "answer": 0,
+     "explanation": "「行李」 [xíngli] = hành lý."
+    },
+    {
+     "prompt": "「登机口」 đọc là gì?",
+     "options": [
+      "dēngjīkǒu",
+      "tuōyùn",
+      "xíngli"
+     ],
+     "answer": 0,
+     "explanation": "「登机口」 đọc là [dēngjīkǒu], nghĩa là cổng lên máy bay."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我要＿＿＿行李。  (Tôi muốn ký gửi hành lý.)",
+     "options": [
+      "登机",
+      "护照",
+      "托运"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「托运」 (ký gửi). Câu đầy đủ: 我要托运行李。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a1-2",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 2",
+   "category": "Từ vựng",
+   "title": "Nhận phòng khách sạn",
+   "objective": "Nhận phòng, hỏi giờ ăn sáng, Wi-Fi và giờ trả phòng.",
+   "reading": "小明: 你好,我订了一个房间。\n前台: 请问您贵姓?\n小明: 我姓明,住两天。\n前台: 房间在五楼,早饭从七点到九点。\n小明: 有无线网络吗?",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "你好,我订了一个房间。",
+     "phonetic": "Nǐ hǎo, wǒ dìng le yí gè fángjiān.",
+     "translation": "Xin chào, tôi đã đặt một phòng."
+    },
+    {
+     "speaker": "前台",
+     "text": "请问您贵姓?",
+     "phonetic": "Qǐngwèn nín guìxìng?",
+     "translation": "Xin hỏi quý danh của ngài?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我姓明,住两天。",
+     "phonetic": "Wǒ xìng Míng, zhù liǎng tiān.",
+     "translation": "Tôi họ Minh, ở hai ngày."
+    },
+    {
+     "speaker": "前台",
+     "text": "房间在五楼,早饭从七点到九点。",
+     "phonetic": "Fángjiān zài wǔ lóu, zǎofàn cóng qī diǎn dào jiǔ diǎn.",
+     "translation": "Phòng ở tầng 5, bữa sáng từ 7 đến 9 giờ."
+    },
+    {
+     "speaker": "小明",
+     "text": "有无线网络吗?",
+     "phonetic": "Yǒu wúxiàn wǎngluò ma?",
+     "translation": "Có mạng không dây không?"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "订",
+     "reading": "dìng",
+     "definition": "đặt (phòng)",
+     "example": "我订了房间。 (Tôi đã đặt phòng.)"
+    },
+    {
+     "term": "房间",
+     "reading": "fángjiān",
+     "definition": "phòng",
+     "example": "房间在五楼。 (Phòng ở tầng 5.)"
+    },
+    {
+     "term": "早饭",
+     "reading": "zǎofàn",
+     "definition": "bữa sáng",
+     "example": "早饭几点开始?(Bữa sáng mấy giờ bắt đầu?)"
+    },
+    {
+     "term": "楼",
+     "reading": "lóu",
+     "definition": "tầng, tòa nhà",
+     "example": "电梯在二楼。 (Thang máy ở tầng 2.)"
+    },
+    {
+     "term": "退房",
+     "reading": "tuìfáng",
+     "definition": "trả phòng",
+     "example": "几点可以退房?(Mấy giờ được trả phòng?)"
+    }
+   ],
+   "grammar": {
+    "title": "从……到…… và 住",
+    "explanation": "从 + thời điểm + 到 + thời điểm: từ… đến…. 住 + số ngày: ở lại bao lâu (住两天). Hỏi họ lịch sự: 您贵姓? Trả lời: 我姓……",
+    "examples": [
+     "早饭从七点到九点。[zǎofàn cóng qī diǎn dào jiǔ diǎn] (Bữa sáng từ 7 đến 9 giờ.)",
+     "我住三天。[wǒ zhù sān tiān] (Tôi ở ba ngày.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Vần -ng và -n",
+    "tip": "Vần mũi -n (cuối lưỡi chạm lợi) khác -ng (lưỡi cuối họng): 房间 fángjiān, 无线 wúxiàn, 网络 wǎngluò. Nhiều người Việt nhầm -n và -ng.",
+    "words": [
+     "房间",
+     "无线",
+     "网络",
+     "退房"
+    ]
+   },
+   "speakingTasks": [
+    "Nhận phòng, báo họ tên và số đêm ở.",
+    "Hỏi thầy/cô: 几点可以退房?"
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi đã đặt phòng.” là:",
+     "options": [
+      "我订了房间。",
+      "我订房间着。",
+      "我有订房间的。"
+     ],
+     "answer": 0,
+     "explanation": "了 sau động từ báo hành động đã xong."
+    },
+    {
+     "prompt": "“Bữa sáng từ 7 đến 9 giờ.” là:",
+     "options": [
+      "早饭到七点从九点。",
+      "早饭七点从九点到。",
+      "早饭从七点到九点。"
+     ],
+     "answer": 2,
+     "explanation": "从……到……"
+    },
+    {
+     "prompt": "Hỏi họ lịch sự khách hàng:",
+     "options": [
+      "你是谁啊?",
+      "你叫什么呀?",
+      "请问您贵姓?"
+     ],
+     "answer": 2,
+     "explanation": "您贵姓 là cách hỏi họ lịch sự."
+    },
+    {
+     "prompt": "「退房」 nghĩa là:",
+     "options": [
+      "trả phòng",
+      "dọn phòng",
+      "đặt phòng"
+     ],
+     "answer": 0,
+     "explanation": "退房 = trả phòng."
+    },
+    {
+     "prompt": "「楼」 có nghĩa là gì?",
+     "options": [
+      "phòng",
+      "đặt (phòng)",
+      "tầng, tòa nhà"
+     ],
+     "answer": 2,
+     "explanation": "「楼」 [lóu] = tầng, tòa nhà."
+    },
+    {
+     "prompt": "「早饭」 đọc là gì?",
+     "options": [
+      "dìng",
+      "zǎofàn",
+      "lóu"
+     ],
+     "answer": 1,
+     "explanation": "「早饭」 đọc là [zǎofàn], nghĩa là bữa sáng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我＿＿＿了房间。  (Tôi đã đặt phòng.)",
+     "options": [
+      "早饭",
+      "订",
+      "房间"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「订」 (đặt (phòng)). Câu đầy đủ: 我订了房间。"
+    },
+    {
+     "prompt": "「订」 có nghĩa là gì?",
+     "options": [
+      "phòng",
+      "đặt (phòng)",
+      "bữa sáng"
+     ],
+     "answer": 1,
+     "explanation": "「订」 [dìng] = đặt (phòng)."
+    },
+    {
+     "prompt": "「楼」 đọc là gì?",
+     "options": [
+      "dìng",
+      "lóu",
+      "fángjiān"
+     ],
+     "answer": 1,
+     "explanation": "「楼」 đọc là [lóu], nghĩa là tầng, tòa nhà."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿在五楼。  (Phòng ở tầng 5.)",
+     "options": [
+      "订",
+      "房间",
+      "早饭"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「房间」 (phòng). Câu đầy đủ: 房间在五楼。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a1-3",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Đổi tiền và mua SIM",
+   "objective": "Đổi tiền, hỏi tỷ giá và mua SIM điện thoại.",
+   "reading": "小明: 你好,我想换钱。\n工作人员: 您要换多少?\n小明: 三百美元换人民币。今天的汇率是多少?\n小明: 还有,在哪儿可以买电话卡?",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "你好,我想换钱。",
+     "phonetic": "Nǐ hǎo, wǒ xiǎng huàn qián.",
+     "translation": "Xin chào, tôi muốn đổi tiền."
+    },
+    {
+     "speaker": "工作人员",
+     "text": "您要换多少?",
+     "phonetic": "Nín yào huàn duōshao?",
+     "translation": "Ngài muốn đổi bao nhiêu?"
+    },
+    {
+     "speaker": "小明",
+     "text": "三百美元换人民币。今天的汇率是多少?",
+     "phonetic": "Sānbǎi měiyuán huàn rénmínbì. Jīntiān de huìlǜ shì duōshao?",
+     "translation": "300 đô đổi sang nhân dân tệ. Tỷ giá hôm nay là bao nhiêu?"
+    },
+    {
+     "speaker": "小明",
+     "text": "还有,在哪儿可以买电话卡?",
+     "phonetic": "Hái yǒu, zài nǎr kěyǐ mǎi diànhuàkǎ?",
+     "translation": "Còn nữa, mua SIM điện thoại ở đâu được?"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "换钱",
+     "reading": "huàn qián",
+     "definition": "đổi tiền",
+     "example": "我要换钱。 (Tôi muốn đổi tiền.)"
+    },
+    {
+     "term": "美元",
+     "reading": "měiyuán",
+     "definition": "đô la Mỹ",
+     "example": "我有一百美元。 (Tôi có 100 đô.)"
+    },
+    {
+     "term": "人民币",
+     "reading": "rénmínbì",
+     "definition": "nhân dân tệ",
+     "example": "我需要人民币。 (Tôi cần nhân dân tệ.)"
+    },
+    {
+     "term": "汇率",
+     "reading": "huìlǜ",
+     "definition": "tỷ giá",
+     "example": "今天的汇率是多少?(Tỷ giá hôm nay là bao nhiêu?)"
+    },
+    {
+     "term": "电话卡",
+     "reading": "diànhuàkǎ",
+     "definition": "SIM điện thoại",
+     "example": "我想买一张电话卡。 (Tôi muốn mua một SIM.)"
+    }
+   ],
+   "grammar": {
+    "title": "A 换 B và 在哪儿可以……",
+    "explanation": "Đổi A sang B: A 换 B. Hỏi nơi có thể làm: 在哪儿可以 + động từ? Lượng từ của thẻ/SIM: 张.",
+    "examples": [
+     "一百美元换人民币。[yì bǎi měiyuán huàn rénmínbì] (Đổi 100 đô sang nhân dân tệ.)",
+     "在哪儿可以买票?[zài nǎr kěyǐ mǎi piào] (Mua vé ở đâu được?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm ü trong 率",
+    "tip": "汇率 huìlǜ: lǜ có ü (môi tròn). 人民币 rénmínbì: r cuốn lưỡi.",
+    "words": [
+     "汇率",
+     "人民币",
+     "换钱",
+     "美元"
+    ]
+   },
+   "speakingTasks": [
+    "Đổi tiền tại quầy và hỏi tỷ giá.",
+    "Hỏi thầy/cô nơi mua SIM ở sân bay."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi muốn đổi tiền.”",
+     "options": [
+      "我钱想换。",
+      "我想换钱。",
+      "我换想钱。"
+     ],
+     "answer": 1,
+     "explanation": "想 + động từ."
+    },
+    {
+     "prompt": "Hỏi tỷ giá:",
+     "options": [
+      "汇率今天几点?",
+      "今天的汇率是多少?",
+      "今天的汇率在哪儿?"
+     ],
+     "answer": 1,
+     "explanation": "多少 hỏi số lượng."
+    },
+    {
+     "prompt": "「电话卡」 là:",
+     "options": [
+      "thẻ ngân hàng",
+      "SIM điện thoại",
+      "vé tàu"
+     ],
+     "answer": 1,
+     "explanation": "电话卡 = SIM."
+    },
+    {
+     "prompt": "“Mua ở đâu được?”",
+     "options": [
+      "在哪儿可以买?",
+      "可以买哪儿在?",
+      "哪儿在可以买?"
+     ],
+     "answer": 0,
+     "explanation": "在哪儿可以 + V."
+    },
+    {
+     "prompt": "「电话卡」 có nghĩa là gì?",
+     "options": [
+      "SIM điện thoại",
+      "tỷ giá",
+      "nhân dân tệ"
+     ],
+     "answer": 0,
+     "explanation": "「电话卡」 [diànhuàkǎ] = SIM điện thoại."
+    },
+    {
+     "prompt": "「人民币」 đọc là gì?",
+     "options": [
+      "rénmínbì",
+      "měiyuán",
+      "huàn qián"
+     ],
+     "answer": 0,
+     "explanation": "「人民币」 đọc là [rénmínbì], nghĩa là nhân dân tệ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我需要＿＿＿。  (Tôi cần nhân dân tệ.)",
+     "options": [
+      "美元",
+      "人民币",
+      "换钱"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「人民币」 (nhân dân tệ). Câu đầy đủ: 我需要人民币。"
+    },
+    {
+     "prompt": "「人民币」 có nghĩa là gì?",
+     "options": [
+      "đô la Mỹ",
+      "đổi tiền",
+      "nhân dân tệ"
+     ],
+     "answer": 2,
+     "explanation": "「人民币」 [rénmínbì] = nhân dân tệ."
+    },
+    {
+     "prompt": "「换钱」 đọc là gì?",
+     "options": [
+      "huàn qián",
+      "huìlǜ",
+      "měiyuán"
+     ],
+     "answer": 0,
+     "explanation": "「换钱」 đọc là [huàn qián], nghĩa là đổi tiền."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我想买一张＿＿＿。  (Tôi muốn mua một SIM.)",
+     "options": [
+      "人民币",
+      "电话卡",
+      "汇率"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「电话卡」 (SIM điện thoại). Câu đầy đủ: 我想买一张电话卡。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a2-1",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Mua vé và đi tàu điện ngầm, tàu cao tốc",
+   "objective": "Mua vé, hỏi tàu, hỏi sân ga và chuyển tàu.",
+   "reading": "小明: 你好,我想买两张去上海的高铁票。\n售票员: 要几点的?\n小明: 上午九点左右。\n售票员: 有九点十分的,二等座三百元。\n小明: 好的,哪个站台?",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "你好,我想买两张去上海的高铁票。",
+     "phonetic": "Nǐ hǎo, wǒ xiǎng mǎi liǎng zhāng qù Shànghǎi de gāotiě piào.",
+     "translation": "Xin chào, tôi muốn mua hai vé tàu cao tốc đi Thượng Hải."
+    },
+    {
+     "speaker": "售票员",
+     "text": "要几点的?",
+     "phonetic": "Yào jǐ diǎn de?",
+     "translation": "Muốn chuyến mấy giờ ạ?"
+    },
+    {
+     "speaker": "小明",
+     "text": "上午九点左右。",
+     "phonetic": "Shàngwǔ jiǔ diǎn zuǒyòu.",
+     "translation": "Khoảng 9 giờ sáng."
+    },
+    {
+     "speaker": "售票员",
+     "text": "有九点十分的,二等座三百元。",
+     "phonetic": "Yǒu jiǔ diǎn shí fēn de, èrděng zuò sānbǎi yuán.",
+     "translation": "Có chuyến 9 giờ 10, ghế hạng hai 300 tệ."
+    },
+    {
+     "speaker": "小明",
+     "text": "好的,哪个站台?",
+     "phonetic": "Hǎo de, nǎ gè zhàntái?",
+     "translation": "Được, sân ga nào ạ?"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "高铁",
+     "reading": "gāotiě",
+     "definition": "tàu cao tốc",
+     "example": "我坐高铁去北京。 (Tôi đi tàu cao tốc đến Bắc Kinh.)"
+    },
+    {
+     "term": "票",
+     "reading": "piào",
+     "definition": "vé",
+     "example": "我买两张票。 (Tôi mua hai vé.)"
+    },
+    {
+     "term": "站台",
+     "reading": "zhàntái",
+     "definition": "sân ga",
+     "example": "几号站台?(Sân ga số mấy?)"
+    },
+    {
+     "term": "换乘",
+     "reading": "huànchéng",
+     "definition": "chuyển tàu",
+     "example": "在人民广场换乘。 (Chuyển tàu ở Quảng trường Nhân Dân.)"
+    },
+    {
+     "term": "左右",
+     "reading": "zuǒyòu",
+     "definition": "khoảng",
+     "example": "九点左右出发。 (Khoảng 9 giờ xuất phát.)"
+    }
+   ],
+   "grammar": {
+    "title": "想 + động từ và 左右",
+    "explanation": "想买: muốn mua. Lượng từ của vé: 一张票. 左右 đặt sau con số nghĩa là “khoảng”: 九点左右, 三百元左右. Chuyển tàu: 在……换乘.",
+    "examples": [
+     "我想买一张票。[wǒ xiǎng mǎi yì zhāng piào] (Tôi muốn mua một vé.)",
+     "大概两个小时左右。[dàgài liǎng gè xiǎoshí zuǒyòu] (Khoảng hai tiếng.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Số 一 ở đầu số hiệu",
+    "tip": "Khi đọc số hiệu tàu hoặc số phòng, 一 thường đọc yāo (幺) để tránh nhầm với 七 qī. Ví dụ: G12 đọc là G yāo èr.",
+    "words": [
+     "高铁",
+     "站台",
+     "换乘",
+     "左右"
+    ]
+   },
+   "speakingTasks": [
+    "Mua 2 vé tàu cao tốc đi một thành phố, hỏi giờ và giá.",
+    "Hỏi thầy/cô cách chuyển tàu điện ngầm đến sân bay."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi muốn mua hai vé.” là:",
+     "options": [
+      "我想买二个票。",
+      "我买想两票。",
+      "我想买两张票。"
+     ],
+     "answer": 2,
+     "explanation": "Lượng từ của vé là 张, số 2 dùng 两."
+    },
+    {
+     "prompt": "「左右」 sau số nghĩa là:",
+     "options": [
+      "ít nhất",
+      "khoảng",
+      "chính xác"
+     ],
+     "answer": 1,
+     "explanation": "左右 = khoảng chừng."
+    },
+    {
+     "prompt": "Hỏi sân ga nào là:",
+     "options": [
+      "站台是哪?个",
+      "站台哪个有?",
+      "哪个站台?"
+     ],
+     "answer": 2,
+     "explanation": "哪个 + danh từ."
+    },
+    {
+     "prompt": "“Chuyển tàu” là:",
+     "options": [
+      "买单",
+      "退票",
+      "换乘"
+     ],
+     "answer": 2,
+     "explanation": "换乘 = chuyển tàu."
+    },
+    {
+     "prompt": "「票」 có nghĩa là gì?",
+     "options": [
+      "chuyển tàu",
+      "khoảng",
+      "vé"
+     ],
+     "answer": 2,
+     "explanation": "「票」 [piào] = vé."
+    },
+    {
+     "prompt": "「票」 đọc là gì?",
+     "options": [
+      "zuǒyòu",
+      "huànchéng",
+      "piào"
+     ],
+     "answer": 2,
+     "explanation": "「票」 đọc là [piào], nghĩa là vé."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 几号＿＿＿?  (Sân ga số mấy?)",
+     "options": [
+      "票",
+      "站台",
+      "左右"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「站台」 (sân ga). Câu đầy đủ: 几号站台?"
+    },
+    {
+     "prompt": "「换乘」 có nghĩa là gì?",
+     "options": [
+      "chuyển tàu",
+      "vé",
+      "sân ga"
+     ],
+     "answer": 0,
+     "explanation": "「换乘」 [huànchéng] = chuyển tàu."
+    },
+    {
+     "prompt": "「换乘」 đọc là gì?",
+     "options": [
+      "huànchéng",
+      "zhàntái",
+      "piào"
+     ],
+     "answer": 0,
+     "explanation": "「换乘」 đọc là [huànchéng], nghĩa là chuyển tàu."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 九点＿＿＿出发。  (Khoảng 9 giờ xuất phát.)",
+     "options": [
+      "换乘",
+      "高铁",
+      "左右"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「左右」 (khoảng). Câu đầy đủ: 九点左右出发。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a2-2",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Gọi món và nói về dị ứng",
+   "objective": "Hỏi nguyên liệu, nói dị ứng và nhờ bỏ bớt thành phần.",
+   "reading": "小明: 请问,这个菜里有花生吗?\n服务员: 有,你对花生过敏吗?\n小明: 是的,我对花生过敏。能不放吗?\n服务员: 可以,我告诉厨房。\n小明: 太感谢了!",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "请问,这个菜里有花生吗?",
+     "phonetic": "Qǐngwèn, zhège cài lǐ yǒu huāshēng ma?",
+     "translation": "Xin hỏi, món này có lạc không ạ?"
+    },
+    {
+     "speaker": "服务员",
+     "text": "有,你对花生过敏吗?",
+     "phonetic": "Yǒu, nǐ duì huāshēng guòmǐn ma?",
+     "translation": "Có, bạn bị dị ứng lạc à?"
+    },
+    {
+     "speaker": "小明",
+     "text": "是的,我对花生过敏。能不放吗?",
+     "phonetic": "Shì de, wǒ duì huāshēng guòmǐn. Néng bú fàng ma?",
+     "translation": "Vâng, tôi dị ứng lạc. Có thể không cho vào được không?"
+    },
+    {
+     "speaker": "服务员",
+     "text": "可以,我告诉厨房。",
+     "phonetic": "Kěyǐ, wǒ gàosu chúfáng.",
+     "translation": "Được, tôi sẽ báo với nhà bếp."
+    },
+    {
+     "speaker": "小明",
+     "text": "太感谢了!",
+     "phonetic": "Tài gǎnxiè le!",
+     "translation": "Cảm ơn nhiều quá!"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "花生",
+     "reading": "huāshēng",
+     "definition": "lạc, đậu phộng",
+     "example": "我不吃花生。 (Tôi không ăn lạc.)"
+    },
+    {
+     "term": "过敏",
+     "reading": "guòmǐn",
+     "definition": "dị ứng",
+     "example": "我对海鲜过敏。 (Tôi dị ứng hải sản.)"
+    },
+    {
+     "term": "厨房",
+     "reading": "chúfáng",
+     "definition": "nhà bếp",
+     "example": "厨房在后面。 (Nhà bếp ở phía sau.)"
+    },
+    {
+     "term": "告诉",
+     "reading": "gàosu",
+     "definition": "báo, nói cho biết",
+     "example": "请告诉我。 (Xin hãy cho tôi biết.)"
+    },
+    {
+     "term": "不放",
+     "reading": "bú fàng",
+     "definition": "không cho vào",
+     "example": "请不放辣椒。 (Làm ơn đừng cho ớt.)"
+    }
+   ],
+   "grammar": {
+    "title": "对……过敏 và 能……吗",
+    "explanation": "对 + vật + 过敏: dị ứng với ~. 能……吗? hỏi khả năng/nhờ vả. 不放 + nguyên liệu: đừng cho. 里 sau danh từ chỉ “bên trong”: 菜里 (trong món).",
+    "examples": [
+     "我对牛奶过敏。[wǒ duì niúnǎi guòmǐn] (Tôi dị ứng sữa bò.)",
+     "能不放辣椒吗?[néng bú fàng làjiāo ma] (Có thể không cho ớt được không?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Vần ou và iu",
+    "tip": "huāshēng: sh cuốn lưỡi, ēng vần mũi sau. Luyện: 花生 huāshēng, 过敏 guòmǐn, 牛奶 niúnǎi, 厨房 chúfáng.",
+    "words": [
+     "花生",
+     "过敏",
+     "牛奶",
+     "厨房"
+    ]
+   },
+   "speakingTasks": [
+    "Nói bạn dị ứng với một món và nhờ nhân viên bỏ nguyên liệu đó.",
+    "Hỏi thầy/cô: 这个菜里有什么?"
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi dị ứng hải sản.” là:",
+     "options": [
+      "我海鲜对过敏。",
+      "我过敏对海鲜。",
+      "我对海鲜过敏。"
+     ],
+     "answer": 2,
+     "explanation": "对 + vật + 过敏."
+    },
+    {
+     "prompt": "Nhờ đừng cho ớt:",
+     "options": [
+      "你辣椒不放是?",
+      "能不放辣椒吗?",
+      "不是放辣椒吗不。"
+     ],
+     "answer": 1,
+     "explanation": "能不放……吗?"
+    },
+    {
+     "prompt": "「厨房」 là:",
+     "options": [
+      "phòng khách",
+      "nhà vệ sinh",
+      "nhà bếp"
+     ],
+     "answer": 2,
+     "explanation": "厨房 = nhà bếp."
+    },
+    {
+     "prompt": "Cảm ơn nhiều quá:",
+     "options": [
+      "太不对了!",
+      "太感谢了!",
+      "太没有了!"
+     ],
+     "answer": 1,
+     "explanation": "太……了 nhấn mạnh mức độ."
+    },
+    {
+     "prompt": "「厨房」 có nghĩa là gì?",
+     "options": [
+      "dị ứng",
+      "nhà bếp",
+      "báo, nói cho biết"
+     ],
+     "answer": 1,
+     "explanation": "「厨房」 [chúfáng] = nhà bếp."
+    },
+    {
+     "prompt": "「告诉」 đọc là gì?",
+     "options": [
+      "huāshēng",
+      "guòmǐn",
+      "gàosu"
+     ],
+     "answer": 2,
+     "explanation": "「告诉」 đọc là [gàosu], nghĩa là báo, nói cho biết."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我对海鲜＿＿＿。  (Tôi dị ứng hải sản.)",
+     "options": [
+      "告诉",
+      "花生",
+      "过敏"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「过敏」 (dị ứng). Câu đầy đủ: 我对海鲜过敏。"
+    },
+    {
+     "prompt": "「告诉」 có nghĩa là gì?",
+     "options": [
+      "báo, nói cho biết",
+      "lạc, đậu phộng",
+      "dị ứng"
+     ],
+     "answer": 0,
+     "explanation": "「告诉」 [gàosu] = báo, nói cho biết."
+    },
+    {
+     "prompt": "「过敏」 đọc là gì?",
+     "options": [
+      "gàosu",
+      "guòmǐn",
+      "huāshēng"
+     ],
+     "answer": 1,
+     "explanation": "「过敏」 đọc là [guòmǐn], nghĩa là dị ứng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请＿＿＿辣椒。  (Làm ơn đừng cho ớt.)",
+     "options": [
+      "不放",
+      "花生",
+      "过敏"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「不放」 (không cho vào). Câu đầy đủ: 请不放辣椒。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a2-3",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Đi taxi và gọi xe",
+   "objective": "Nói điểm đến, hỏi thời gian, giá và trả tiền.",
+   "reading": "司机: 您去哪儿?\n小明: 去北京站,谢谢。\n小明: 大概要多长时间?\n司机: 不堵车的话,二十分钟左右。\n小明: 可以用手机支付吗?",
+   "dialogue": [
+    {
+     "speaker": "司机",
+     "text": "您去哪儿?",
+     "phonetic": "Nín qù nǎr?",
+     "translation": "Ngài đi đâu?"
+    },
+    {
+     "speaker": "小明",
+     "text": "去北京站,谢谢。",
+     "phonetic": "Qù Běijīng zhàn, xièxie.",
+     "translation": "Đến ga Bắc Kinh, cảm ơn."
+    },
+    {
+     "speaker": "小明",
+     "text": "大概要多长时间?",
+     "phonetic": "Dàgài yào duō cháng shíjiān?",
+     "translation": "Khoảng mất bao lâu?"
+    },
+    {
+     "speaker": "司机",
+     "text": "不堵车的话,二十分钟左右。",
+     "phonetic": "Bù dǔchē de huà, èrshí fēnzhōng zuǒyòu.",
+     "translation": "Nếu không kẹt xe thì khoảng 20 phút."
+    },
+    {
+     "speaker": "小明",
+     "text": "可以用手机支付吗?",
+     "phonetic": "Kěyǐ yòng shǒujī zhīfù ma?",
+     "translation": "Trả bằng điện thoại được không?"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "司机",
+     "reading": "sījī",
+     "definition": "tài xế",
+     "example": "司机很热情。 (Tài xế rất nhiệt tình.)"
+    },
+    {
+     "term": "大概",
+     "reading": "dàgài",
+     "definition": "khoảng, đại khái",
+     "example": "大概十分钟。 (Khoảng 10 phút.)"
+    },
+    {
+     "term": "多长时间",
+     "reading": "duō cháng shíjiān",
+     "definition": "bao lâu",
+     "example": "要多长时间?(Mất bao lâu?)"
+    },
+    {
+     "term": "支付",
+     "reading": "zhīfù",
+     "definition": "thanh toán",
+     "example": "用手机支付。 (Thanh toán bằng điện thoại.)"
+    },
+    {
+     "term": "发票",
+     "reading": "fāpiào",
+     "definition": "hóa đơn",
+     "example": "请给我发票。 (Cho tôi hóa đơn.)"
+    }
+   ],
+   "grammar": {
+    "title": "去 + nơi chốn / ……的话 / 用……",
+    "explanation": "Điểm đến: 去 + nơi chốn. Điều kiện khẩu ngữ: ……的话. Phương tiện thanh toán: 用 + công cụ + 支付.",
+    "examples": [
+     "去机场,谢谢。[qù jīchǎng, xièxie] (Đến sân bay, cảm ơn.)",
+     "可以刷卡吗?[kěyǐ shuākǎ ma] (Quẹt thẻ được không?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm zh, ch, sh",
+    "tip": "支付 zhīfù, 司机 sījī: phân biệt zh (cuốn lưỡi) và s (thẳng lưỡi). 时间 shíjiān.",
+    "words": [
+     "司机",
+     "支付",
+     "发票",
+     "大概"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai khách đi taxi: nói điểm đến, hỏi thời gian và cách trả tiền.",
+    "Hỏi tài xế có thể quẹt thẻ không."
+   ],
+   "questions": [
+    {
+     "prompt": "“Đến sân bay, cảm ơn.”",
+     "options": [
+      "到去机场谢谢。",
+      "机场去在,谢谢。",
+      "去机场,谢谢。"
+     ],
+     "answer": 2,
+     "explanation": "去 + nơi chốn."
+    },
+    {
+     "prompt": "Hỏi “Mất bao lâu?”",
+     "options": [
+      "要几个钱?",
+      "要多少点?",
+      "要多长时间?"
+     ],
+     "answer": 2,
+     "explanation": "多长时间 = bao lâu."
+    },
+    {
+     "prompt": "「不堵车的话」 nghĩa là:",
+     "options": [
+      "vì kẹt xe",
+      "nếu không kẹt xe",
+      "sau khi kẹt xe"
+     ],
+     "answer": 1,
+     "explanation": "……的话 = nếu."
+    },
+    {
+     "prompt": "Xin hóa đơn:",
+     "options": [
+      "给发票请我。",
+      "请给我发票。",
+      "请发票我给。"
+     ],
+     "answer": 1,
+     "explanation": "请给我 + N."
+    },
+    {
+     "prompt": "「大概」 có nghĩa là gì?",
+     "options": [
+      "bao lâu",
+      "hóa đơn",
+      "khoảng, đại khái"
+     ],
+     "answer": 2,
+     "explanation": "「大概」 [dàgài] = khoảng, đại khái."
+    },
+    {
+     "prompt": "「大概」 đọc là gì?",
+     "options": [
+      "dàgài",
+      "duō cháng shíjiān",
+      "fāpiào"
+     ],
+     "answer": 0,
+     "explanation": "「大概」 đọc là [dàgài], nghĩa là khoảng, đại khái."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿十分钟。  (Khoảng 10 phút.)",
+     "options": [
+      "多长时间",
+      "大概",
+      "发票"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「大概」 (khoảng, đại khái). Câu đầy đủ: 大概十分钟。"
+    },
+    {
+     "prompt": "「支付」 có nghĩa là gì?",
+     "options": [
+      "thanh toán",
+      "khoảng, đại khái",
+      "tài xế"
+     ],
+     "answer": 0,
+     "explanation": "「支付」 [zhīfù] = thanh toán."
+    },
+    {
+     "prompt": "「发票」 đọc là gì?",
+     "options": [
+      "sījī",
+      "fāpiào",
+      "duō cháng shíjiān"
+     ],
+     "answer": 1,
+     "explanation": "「发票」 đọc là [fāpiào], nghĩa là hóa đơn."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿很热情。  (Tài xế rất nhiệt tình.)",
+     "options": [
+      "发票",
+      "司机",
+      "支付"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「司机」 (tài xế). Câu đầy đủ: 司机很热情。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b1-1",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Tham quan và hỏi thông tin",
+   "objective": "Hỏi giờ mở cửa, giá vé, tour và gợi ý địa điểm.",
+   "reading": "小明: 请问,故宫几点开门?\n工作人员: 早上八点半开门,下午五点关门。\n小明: 门票多少钱?学生有优惠吗?\n工作人员: 六十元,学生半价,需要出示学生证。\n小明: 有中文导游吗?",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "请问,故宫几点开门?",
+     "phonetic": "Qǐngwèn, Gùgōng jǐ diǎn kāimén?",
+     "translation": "Xin hỏi, Cố Cung mấy giờ mở cửa?"
+    },
+    {
+     "speaker": "工作人员",
+     "text": "早上八点半开门,下午五点关门。",
+     "phonetic": "Zǎoshang bā diǎn bàn kāimén, xiàwǔ wǔ diǎn guānmén.",
+     "translation": "8 giờ rưỡi sáng mở cửa, 5 giờ chiều đóng cửa."
+    },
+    {
+     "speaker": "小明",
+     "text": "门票多少钱?学生有优惠吗?",
+     "phonetic": "Ménpiào duōshao qián? Xuésheng yǒu yōuhuì ma?",
+     "translation": "Vé vào cửa bao nhiêu tiền? Sinh viên có ưu đãi không?"
+    },
+    {
+     "speaker": "工作人员",
+     "text": "六十元,学生半价,需要出示学生证。",
+     "phonetic": "Liùshí yuán, xuésheng bànjià, xūyào chūshì xuéshēngzhèng.",
+     "translation": "60 tệ, sinh viên giảm nửa giá, cần xuất trình thẻ sinh viên."
+    },
+    {
+     "speaker": "小明",
+     "text": "有中文导游吗?",
+     "phonetic": "Yǒu Zhōngwén dǎoyóu ma?",
+     "translation": "Có hướng dẫn viên tiếng Trung không?"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "门票",
+     "reading": "ménpiào",
+     "definition": "vé vào cửa",
+     "example": "门票多少钱?(Vé vào cửa bao nhiêu tiền?)"
+    },
+    {
+     "term": "优惠",
+     "reading": "yōuhuì",
+     "definition": "ưu đãi",
+     "example": "学生有优惠。 (Sinh viên có ưu đãi.)"
+    },
+    {
+     "term": "半价",
+     "reading": "bànjià",
+     "definition": "nửa giá",
+     "example": "儿童半价。 (Trẻ em nửa giá.)"
+    },
+    {
+     "term": "导游",
+     "reading": "dǎoyóu",
+     "definition": "hướng dẫn viên",
+     "example": "我们需要一个导游。 (Chúng tôi cần một hướng dẫn viên.)"
+    },
+    {
+     "term": "出示",
+     "reading": "chūshì",
+     "definition": "xuất trình",
+     "example": "请出示护照。 (Xin xuất trình hộ chiếu.)"
+    }
+   ],
+   "grammar": {
+    "title": "需要 và 开门 / 关门",
+    "explanation": "需要 + động từ/danh từ: cần ~. 开门 mở cửa, 关门 đóng cửa. Hỏi ưu đãi: 有……优惠吗? Dùng 如果……的话 khi nêu điều kiện: 如果你是学生的话,可以半价.",
+    "examples": [
+     "博物馆几点关门?[bówùguǎn jǐ diǎn guānmén] (Bảo tàng mấy giờ đóng cửa?)",
+     "需要预约吗?[xūyào yùyuē ma] (Có cần đặt trước không?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm trong câu hỏi",
+    "tip": "Câu hỏi với 几点, 多少钱 nhấn vào từ để hỏi. Giữ thanh điệu đủ cao ở cuối câu hỏi nhưng không kéo dài.",
+    "words": [
+     "门票",
+     "优惠",
+     "导游",
+     "出示"
+    ]
+   },
+   "speakingTasks": [
+    "Hỏi giờ mở cửa, giá vé và ưu đãi tại một điểm tham quan.",
+    "Nhờ thầy/cô gợi ý 3 địa điểm nên đi ở một thành phố."
+   ],
+   "questions": [
+    {
+     "prompt": "Hỏi giờ đóng cửa:",
+     "options": [
+      "几点关门?",
+      "关门几点了是?",
+      "关几点门有?"
+     ],
+     "answer": 0,
+     "explanation": "几点 + động từ."
+    },
+    {
+     "prompt": "“Sinh viên nửa giá.” là:",
+     "options": [
+      "学生价半。",
+      "学生半价。",
+      "半价是学生有。"
+     ],
+     "answer": 1,
+     "explanation": "半价 = nửa giá."
+    },
+    {
+     "prompt": "「需要」 nghĩa là:",
+     "options": [
+      "biết",
+      "cần",
+      "muốn"
+     ],
+     "answer": 1,
+     "explanation": "需要 = cần."
+    },
+    {
+     "prompt": "Xin xuất trình hộ chiếu:",
+     "options": [
+      "请给护照出示。",
+      "请出示护照。",
+      "出示护照请你。"
+     ],
+     "answer": 1,
+     "explanation": "请 + động từ + tân ngữ."
+    },
+    {
+     "prompt": "「半价」 có nghĩa là gì?",
+     "options": [
+      "hướng dẫn viên",
+      "xuất trình",
+      "nửa giá"
+     ],
+     "answer": 2,
+     "explanation": "「半价」 [bànjià] = nửa giá."
+    },
+    {
+     "prompt": "「半价」 đọc là gì?",
+     "options": [
+      "dǎoyóu",
+      "bànjià",
+      "chūshì"
+     ],
+     "answer": 1,
+     "explanation": "「半价」 đọc là [bànjià], nghĩa là nửa giá."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 儿童＿＿＿。  (Trẻ em nửa giá.)",
+     "options": [
+      "出示",
+      "半价",
+      "导游"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「半价」 (nửa giá). Câu đầy đủ: 儿童半价。"
+    },
+    {
+     "prompt": "「导游」 có nghĩa là gì?",
+     "options": [
+      "xuất trình",
+      "hướng dẫn viên",
+      "vé vào cửa"
+     ],
+     "answer": 1,
+     "explanation": "「导游」 [dǎoyóu] = hướng dẫn viên."
+    },
+    {
+     "prompt": "「出示」 đọc là gì?",
+     "options": [
+      "ménpiào",
+      "chūshì",
+      "bànjià"
+     ],
+     "answer": 1,
+     "explanation": "「出示」 đọc là [chūshì], nghĩa là xuất trình."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请＿＿＿护照。  (Xin xuất trình hộ chiếu.)",
+     "options": [
+      "门票",
+      "出示",
+      "半价"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「出示」 (xuất trình). Câu đầy đủ: 请出示护照。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b1-2",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Xử lý sự cố: mất đồ, quên đồ",
+   "objective": "Báo mất đồ, mô tả đồ vật và nhờ liên lạc.",
+   "reading": "小明: 您好,我把钱包忘在出租车上了。\n警察: 您的钱包是什么样的?\n小明: 是黑色的,里面有护照和一张银行卡。\n警察: 请留下您的电话,找到了我们会通知您。\n小明: 好的,麻烦您了。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "您好,我把钱包忘在出租车上了。",
+     "phonetic": "Nín hǎo, wǒ bǎ qiánbāo wàng zài chūzūchē shang le.",
+     "translation": "Xin chào, tôi để quên ví trên taxi."
+    },
+    {
+     "speaker": "警察",
+     "text": "您的钱包是什么样的?",
+     "phonetic": "Nín de qiánbāo shì shénme yàng de?",
+     "translation": "Ví của ngài trông như thế nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "是黑色的,里面有护照和一张银行卡。",
+     "phonetic": "Shì hēisè de, lǐmiàn yǒu hùzhào hé yì zhāng yínhángkǎ.",
+     "translation": "Màu đen, bên trong có hộ chiếu và một thẻ ngân hàng."
+    },
+    {
+     "speaker": "警察",
+     "text": "请留下您的电话,找到了我们会通知您。",
+     "phonetic": "Qǐng liúxià nín de diànhuà, zhǎodào le wǒmen huì tōngzhī nín.",
+     "translation": "Xin để lại số điện thoại, tìm được chúng tôi sẽ thông báo."
+    },
+    {
+     "speaker": "小明",
+     "text": "好的,麻烦您了。",
+     "phonetic": "Hǎo de, máfan nín le.",
+     "translation": "Vâng, làm phiền ngài rồi."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "钱包",
+     "reading": "qiánbāo",
+     "definition": "ví tiền",
+     "example": "我的钱包不见了。 (Ví của tôi mất rồi.)"
+    },
+    {
+     "term": "忘",
+     "reading": "wàng",
+     "definition": "quên",
+     "example": "我忘了带手机。 (Tôi quên mang điện thoại.)"
+    },
+    {
+     "term": "警察",
+     "reading": "jǐngchá",
+     "definition": "cảnh sát",
+     "example": "请叫警察。 (Làm ơn gọi cảnh sát.)"
+    },
+    {
+     "term": "通知",
+     "reading": "tōngzhī",
+     "definition": "thông báo",
+     "example": "有消息会通知您。 (Có tin sẽ thông báo cho ngài.)"
+    },
+    {
+     "term": "麻烦",
+     "reading": "máfan",
+     "definition": "làm phiền",
+     "example": "麻烦您了。 (Làm phiền ngài rồi.)"
+    }
+   ],
+   "grammar": {
+    "title": "把 + tân ngữ + động từ + 在……",
+    "explanation": "把 đưa tân ngữ lên trước động từ: 我把钱包忘在出租车上了. Mô tả vật: màu sắc + 的, bên trong 里面有…. Nhờ liên lạc: 请留下您的电话.",
+    "examples": [
+     "我把手机忘在酒店了。[wǒ bǎ shǒujī wàng zài jiǔdiàn le] (Tôi để quên điện thoại ở khách sạn.)",
+     "请把电话号码写在这儿。[qǐng bǎ diànhuà hàomǎ xiě zài zhèr] (Xin viết số điện thoại vào đây.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm quen thuộc dễ nhầm",
+    "tip": "máfan (麻烦) có fan nhẹ; qiánbāo (钱包) q bật hơi, bāo thanh 1. Nhấn rõ thanh điệu của danh từ chỉ đồ vật để người nghe dễ hiểu.",
+    "words": [
+     "钱包",
+     "警察",
+     "通知",
+     "麻烦"
+    ]
+   },
+   "speakingTasks": [
+    "Báo mất đồ: nói đồ gì, màu gì, mất ở đâu.",
+    "Nhờ thầy/cô ghi lại số điện thoại để liên lạc khi tìm được."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi để quên ví trên taxi.” là:",
+     "options": [
+      "我把忘钱包出租车上在了。",
+      "我把钱包忘在出租车上了。",
+      "我钱包忘把在出租车。"
+     ],
+     "answer": 1,
+     "explanation": "把 + tân ngữ + động từ + 在 + nơi chốn."
+    },
+    {
+     "prompt": "Mô tả “ví màu đen”:",
+     "options": [
+      "钱包黑色是的",
+      "黑色的钱包",
+      "黑的是钱包色"
+     ],
+     "answer": 1,
+     "explanation": "tính từ/màu + 的 + danh từ."
+    },
+    {
+     "prompt": "「通知」 nghĩa là:",
+     "options": [
+      "thông báo",
+      "xin lỗi",
+      "tìm kiếm"
+     ],
+     "answer": 0,
+     "explanation": "通知 = thông báo."
+    },
+    {
+     "prompt": "Khi cảm ơn người đã giúp, nói:",
+     "options": [
+      "麻烦您了。",
+      "你来了吗。",
+      "不关你的事。"
+     ],
+     "answer": 0,
+     "explanation": "麻烦您了 = làm phiền ngài rồi (lịch sự)."
+    },
+    {
+     "prompt": "「麻烦」 có nghĩa là gì?",
+     "options": [
+      "ví tiền",
+      "cảnh sát",
+      "làm phiền"
+     ],
+     "answer": 2,
+     "explanation": "「麻烦」 [máfan] = làm phiền."
+    },
+    {
+     "prompt": "「通知」 đọc là gì?",
+     "options": [
+      "wàng",
+      "qiánbāo",
+      "tōngzhī"
+     ],
+     "answer": 2,
+     "explanation": "「通知」 đọc là [tōngzhī], nghĩa là thông báo."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请叫＿＿＿。  (Làm ơn gọi cảnh sát.)",
+     "options": [
+      "钱包",
+      "警察",
+      "通知"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「警察」 (cảnh sát). Câu đầy đủ: 请叫警察。"
+    },
+    {
+     "prompt": "「忘」 có nghĩa là gì?",
+     "options": [
+      "quên",
+      "cảnh sát",
+      "ví tiền"
+     ],
+     "answer": 0,
+     "explanation": "「忘」 [wàng] = quên."
+    },
+    {
+     "prompt": "「警察」 đọc là gì?",
+     "options": [
+      "qiánbāo",
+      "jǐngchá",
+      "tōngzhī"
+     ],
+     "answer": 1,
+     "explanation": "「警察」 đọc là [jǐngchá], nghĩa là cảnh sát."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 有消息会＿＿＿您。  (Có tin sẽ thông báo cho ngài.)",
+     "options": [
+      "通知",
+      "钱包",
+      "忘"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「通知」 (thông báo). Câu đầy đủ: 有消息会通知您。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b1-3",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Trò chuyện với người địa phương",
+   "objective": "Bắt chuyện, hỏi về địa phương và chia sẻ cảm nhận.",
+   "reading": "阿姨: 你是来旅游的吧?从哪儿来的?\n小明: 我是从越南来的。这个小镇真漂亮!\n阿姨: 谢谢!我们这儿以古桥出名。\n小明: 是吗?有什么当地的特色菜推荐吗?",
+   "dialogue": [
+    {
+     "speaker": "阿姨",
+     "text": "你是来旅游的吧?从哪儿来的?",
+     "phonetic": "Nǐ shì lái lǚyóu de ba? Cóng nǎr lái de?",
+     "translation": "Cháu đến du lịch hả? Từ đâu đến vậy?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我是从越南来的。这个小镇真漂亮!",
+     "phonetic": "Wǒ shì cóng Yuènán lái de. Zhège xiǎozhèn zhēn piàoliang!",
+     "translation": "Cháu đến từ Việt Nam. Thị trấn này đẹp thật!"
+    },
+    {
+     "speaker": "阿姨",
+     "text": "谢谢!我们这儿以古桥出名。",
+     "phonetic": "Xièxie! Wǒmen zhèr yǐ gǔ qiáo chūmíng.",
+     "translation": "Cảm ơn! Chỗ chúng tôi nổi tiếng với cây cầu cổ."
+    },
+    {
+     "speaker": "小明",
+     "text": "是吗?有什么当地的特色菜推荐吗?",
+     "phonetic": "Shì ma? Yǒu shénme dāngdì de tèsè cài tuījiàn ma?",
+     "translation": "Vậy ạ? Có món đặc sản địa phương nào nên thử không ạ?"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "小镇",
+     "reading": "xiǎozhèn",
+     "definition": "thị trấn nhỏ",
+     "example": "这个小镇很安静。 (Thị trấn này rất yên tĩnh.)"
+    },
+    {
+     "term": "出名",
+     "reading": "chūmíng",
+     "definition": "nổi tiếng",
+     "example": "杭州以西湖出名。 (Hàng Châu nổi tiếng với Tây Hồ.)"
+    },
+    {
+     "term": "当地",
+     "reading": "dāngdì",
+     "definition": "địa phương",
+     "example": "我问了当地人。 (Tôi đã hỏi người địa phương.)"
+    },
+    {
+     "term": "特色菜",
+     "reading": "tèsè cài",
+     "definition": "món đặc sản",
+     "example": "这是当地的特色菜。 (Đây là món đặc sản địa phương.)"
+    },
+    {
+     "term": "推荐",
+     "reading": "tuījiàn",
+     "definition": "gợi ý, giới thiệu",
+     "example": "你能推荐一下吗?(Bạn có thể gợi ý không?)"
+    }
+   ],
+   "grammar": {
+    "title": "是……的 và 以……出名",
+    "explanation": "Nhấn mạnh thời gian/nơi chốn/cách thức của việc đã xảy ra: 是……的 (我是从越南来的). Nổi tiếng về: 以 + N + 出名/闻名.",
+    "examples": [
+     "我是坐飞机来的。[wǒ shì zuò fēijī lái de] (Tôi đến bằng máy bay.)",
+     "成都以火锅出名。[Chéngdū yǐ huǒguō chūmíng] (Thành Đô nổi tiếng với lẩu.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đáp lời tự nhiên",
+    "tip": "Đệm lời: 是吗?(vậy à?), 真的?, 原来如此. Lên giọng ở 是吗 để thể hiện quan tâm.",
+    "words": [
+     "是吗",
+     "出名",
+     "推荐",
+     "当地"
+    ]
+   },
+   "speakingTasks": [
+    "Bắt chuyện với người địa phương và hỏi món nên thử.",
+    "Kể cho thầy/cô cảm nhận về một thành phố bạn từng đến."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi đến từ Việt Nam.” (nhấn mạnh nơi đến):",
+     "options": [
+      "我从越南是来。",
+      "我是从越南来的。",
+      "我来的是越南从。"
+     ],
+     "answer": 1,
+     "explanation": "是……的 nhấn mạnh."
+    },
+    {
+     "prompt": "“Thành Đô nổi tiếng với lẩu.”",
+     "options": [
+      "成都以火锅出名。",
+      "成都出名以火锅。",
+      "火锅以成都出名。"
+     ],
+     "answer": 0,
+     "explanation": "以 + N + 出名."
+    },
+    {
+     "prompt": "Lời đệm thể hiện quan tâm:",
+     "options": [
+      "不行。",
+      "算了。",
+      "是吗?"
+     ],
+     "answer": 2,
+     "explanation": "是吗 = vậy à."
+    },
+    {
+     "prompt": "「当地」 nghĩa là:",
+     "options": [
+      "địa phương",
+      "thủ đô",
+      "nước ngoài"
+     ],
+     "answer": 0,
+     "explanation": "当地 = tại chỗ, địa phương."
+    },
+    {
+     "prompt": "「当地」 có nghĩa là gì?",
+     "options": [
+      "địa phương",
+      "nổi tiếng",
+      "gợi ý, giới thiệu"
+     ],
+     "answer": 0,
+     "explanation": "「当地」 [dāngdì] = địa phương."
+    },
+    {
+     "prompt": "「出名」 đọc là gì?",
+     "options": [
+      "chūmíng",
+      "tuījiàn",
+      "dāngdì"
+     ],
+     "answer": 0,
+     "explanation": "「出名」 đọc là [chūmíng], nghĩa là nổi tiếng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 杭州以西湖＿＿＿。  (Hàng Châu nổi tiếng với Tây Hồ.)",
+     "options": [
+      "推荐",
+      "出名",
+      "当地"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「出名」 (nổi tiếng). Câu đầy đủ: 杭州以西湖出名。"
+    },
+    {
+     "prompt": "「推荐」 có nghĩa là gì?",
+     "options": [
+      "gợi ý, giới thiệu",
+      "món đặc sản",
+      "thị trấn nhỏ"
+     ],
+     "answer": 0,
+     "explanation": "「推荐」 [tuījiàn] = gợi ý, giới thiệu."
+    },
+    {
+     "prompt": "「特色菜」 đọc là gì?",
+     "options": [
+      "tèsè cài",
+      "dāngdì",
+      "tuījiàn"
+     ],
+     "answer": 0,
+     "explanation": "「特色菜」 đọc là [tèsè cài], nghĩa là món đặc sản."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 这是当地的＿＿＿。  (Đây là món đặc sản địa phương.)",
+     "options": [
+      "当地",
+      "推荐",
+      "特色菜"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「特色菜」 (món đặc sản). Câu đầy đủ: 这是当地的特色菜。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b2-1",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 1",
+   "category": "Văn hóa",
+   "title": "Homestay, trà đạo và phép lịch sự",
+   "objective": "Đặt chỗ homestay, hiểu văn hóa trà và quy tắc ứng xử khi làm khách.",
+   "reading": "小明: 我想订一个有特色的民宿,最好能体验茶文化。\n老板: 没问题,我们每天下午有泡茶活动。\n小明: 喝茶时有什么需要注意的吗?\n老板: 主人倒茶时,客人要用手指轻敲桌子表示感谢。\n小明: 原来还有这样的习惯,我记住了。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "我想订一个有特色的民宿,最好能体验茶文化。",
+     "phonetic": "Wǒ xiǎng dìng yí gè yǒu tèsè de mínsù, zuìhǎo néng tǐyàn chá wénhuà.",
+     "translation": "Tôi muốn đặt một homestay có nét đặc sắc, tốt nhất có thể trải nghiệm văn hóa trà."
+    },
+    {
+     "speaker": "老板",
+     "text": "没问题,我们每天下午有泡茶活动。",
+     "phonetic": "Méi wèntí, wǒmen měi tiān xiàwǔ yǒu pàochá huódòng.",
+     "translation": "Không vấn đề, mỗi chiều chúng tôi có hoạt động pha trà."
+    },
+    {
+     "speaker": "小明",
+     "text": "喝茶时有什么需要注意的吗?",
+     "phonetic": "Hē chá shí yǒu shénme xūyào zhùyì de ma?",
+     "translation": "Khi uống trà có điều gì cần chú ý không?"
+    },
+    {
+     "speaker": "老板",
+     "text": "主人倒茶时,客人要用手指轻敲桌子表示感谢。",
+     "phonetic": "Zhǔrén dào chá shí, kèrén yào yòng shǒuzhǐ qīng qiāo zhuōzi biǎoshì gǎnxiè.",
+     "translation": "Khi chủ rót trà, khách dùng ngón tay gõ nhẹ lên bàn để cảm ơn."
+    },
+    {
+     "speaker": "小明",
+     "text": "原来还有这样的习惯,我记住了。",
+     "phonetic": "Yuánlái hái yǒu zhèyàng de xíguàn, wǒ jìzhù le.",
+     "translation": "Thì ra còn có thói quen như vậy, tôi nhớ rồi."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "民宿",
+     "reading": "mínsù",
+     "definition": "homestay, nhà dân cho thuê",
+     "example": "我们住在一家民宿。 (Chúng tôi ở một homestay.)"
+    },
+    {
+     "term": "体验",
+     "reading": "tǐyàn",
+     "definition": "trải nghiệm",
+     "example": "我想体验当地的生活。 (Tôi muốn trải nghiệm cuộc sống địa phương.)"
+    },
+    {
+     "term": "泡茶",
+     "reading": "pàochá",
+     "definition": "pha trà",
+     "example": "他在泡茶。 (Anh ấy đang pha trà.)"
+    },
+    {
+     "term": "习惯",
+     "reading": "xíguàn",
+     "definition": "thói quen, phong tục",
+     "example": "每个国家的习惯不同。 (Mỗi nước có phong tục khác nhau.)"
+    },
+    {
+     "term": "注意",
+     "reading": "zhùyì",
+     "definition": "chú ý",
+     "example": "请注意安全。 (Xin chú ý an toàn.)"
+    }
+   ],
+   "grammar": {
+    "title": "最好 và 表示",
+    "explanation": "最好 + động từ: tốt nhất là ~. 表示 + danh từ: thể hiện/bày tỏ ~ (表示感谢). Dùng 需要注意的: điều cần chú ý. Hỏi quy tắc: 有什么需要注意的吗?",
+    "examples": [
+     "你最好提前订房。[nǐ zuìhǎo tíqián dìngfáng] (Tốt nhất bạn nên đặt phòng trước.)",
+     "我想表示感谢。[wǒ xiǎng biǎoshì gǎnxiè] (Tôi muốn bày tỏ lòng biết ơn.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng điệu lịch sự và cẩn trọng",
+    "tip": "Khi hỏi về quy tắc văn hóa, nói chậm và rõ. Chú ý 民宿 mínsù, 体验 tǐyàn (tǐ thanh 3), 泡茶 pàochá (p bật hơi).",
+    "words": [
+     "民宿",
+     "体验",
+     "泡茶",
+     "习惯"
+    ]
+   },
+   "speakingTasks": [
+    "Hỏi chủ homestay về quy tắc ứng xử và hoạt động văn hóa.",
+    "Giải thích một phép lịch sự khi uống trà ở Việt Nam."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tốt nhất bạn nên đặt phòng trước.” là:",
+     "options": [
+      "你订最好提前房。",
+      "提前你订最好房。",
+      "你最好提前订房。"
+     ],
+     "answer": 2,
+     "explanation": "最好 + động từ."
+    },
+    {
+     "prompt": "Hỏi “Có điều gì cần chú ý không?”",
+     "options": [
+      "什么注意有需要吗?",
+      "注意需要有什么?",
+      "有什么需要注意的吗?"
+     ],
+     "answer": 2,
+     "explanation": "有什么 + ……的吗?"
+    },
+    {
+     "prompt": "「体验」 nghĩa là:",
+     "options": [
+      "trải nghiệm",
+      "đặt vé",
+      "quên"
+     ],
+     "answer": 0,
+     "explanation": "体验 = trải nghiệm."
+    },
+    {
+     "prompt": "「表示感谢」 là:",
+     "options": [
+      "xin phép đi",
+      "phàn nàn",
+      "bày tỏ lòng cảm ơn"
+     ],
+     "answer": 2,
+     "explanation": "表示 = thể hiện, bày tỏ."
+    },
+    {
+     "prompt": "「民宿」 có nghĩa là gì?",
+     "options": [
+      "trải nghiệm",
+      "homestay, nhà dân cho thuê",
+      "pha trà"
+     ],
+     "answer": 1,
+     "explanation": "「民宿」 [mínsù] = homestay, nhà dân cho thuê."
+    },
+    {
+     "prompt": "「注意」 đọc là gì?",
+     "options": [
+      "zhùyì",
+      "xíguàn",
+      "tǐyàn"
+     ],
+     "answer": 0,
+     "explanation": "「注意」 đọc là [zhùyì], nghĩa là chú ý."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请＿＿＿安全。  (Xin chú ý an toàn.)",
+     "options": [
+      "习惯",
+      "注意",
+      "体验"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「注意」 (chú ý). Câu đầy đủ: 请注意安全。"
+    },
+    {
+     "prompt": "「体验」 có nghĩa là gì?",
+     "options": [
+      "homestay, nhà dân cho thuê",
+      "trải nghiệm",
+      "thói quen, phong tục"
+     ],
+     "answer": 1,
+     "explanation": "「体验」 [tǐyàn] = trải nghiệm."
+    },
+    {
+     "prompt": "「民宿」 đọc là gì?",
+     "options": [
+      "pàochá",
+      "tǐyàn",
+      "mínsù"
+     ],
+     "answer": 2,
+     "explanation": "「民宿」 đọc là [mínsù], nghĩa là homestay, nhà dân cho thuê."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我们住在一家＿＿＿。  (Chúng tôi ở một homestay.)",
+     "options": [
+      "民宿",
+      "泡茶",
+      "体验"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「民宿」 (homestay, nhà dân cho thuê). Câu đầy đủ: 我们住在一家民宿。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b2-2",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Khiếu nại dịch vụ và thương lượng",
+   "objective": "Phàn nàn lịch sự, nêu yêu cầu và thương lượng giải pháp.",
+   "reading": "小明: 不好意思,我们订的是海景房,可是这间房看不到海。\n经理: 真对不起,我马上帮您查一下。\n小明: 如果没有海景房,能不能给我们打个折?\n经理: 明天会有空房,今晚给您打八折,您看可以吗?\n小明: 可以,谢谢你们的处理。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "不好意思,我们订的是海景房,可是这间房看不到海。",
+     "phonetic": "Bù hǎoyìsi, wǒmen dìng de shì hǎijǐng fáng, kěshì zhè jiān fáng kàn bu dào hǎi.",
+     "translation": "Xin lỗi, chúng tôi đặt phòng hướng biển nhưng phòng này không nhìn thấy biển."
+    },
+    {
+     "speaker": "经理",
+     "text": "真对不起,我马上帮您查一下。",
+     "phonetic": "Zhēn duìbuqǐ, wǒ mǎshàng bāng nín chá yíxià.",
+     "translation": "Thành thật xin lỗi, tôi sẽ kiểm tra ngay giúp ngài."
+    },
+    {
+     "speaker": "小明",
+     "text": "如果没有海景房,能不能给我们打个折?",
+     "phonetic": "Rúguǒ méiyǒu hǎijǐng fáng, néng bu néng gěi wǒmen dǎ gè zhé?",
+     "translation": "Nếu không có phòng hướng biển thì có thể giảm giá cho chúng tôi không?"
+    },
+    {
+     "speaker": "经理",
+     "text": "明天会有空房,今晚给您打八折,您看可以吗?",
+     "phonetic": "Míngtiān huì yǒu kòng fáng, jīnwǎn gěi nín dǎ bā zhé, nín kàn kěyǐ ma?",
+     "translation": "Ngày mai sẽ có phòng trống, tối nay giảm 20% cho ngài, ngài thấy có được không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "可以,谢谢你们的处理。",
+     "phonetic": "Kěyǐ, xièxie nǐmen de chǔlǐ.",
+     "translation": "Được, cảm ơn cách xử lý của các bạn."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "海景房",
+     "reading": "hǎijǐng fáng",
+     "definition": "phòng hướng biển",
+     "example": "我们订了海景房。 (Chúng tôi đã đặt phòng hướng biển.)"
+    },
+    {
+     "term": "打折",
+     "reading": "dǎzhé",
+     "definition": "giảm giá",
+     "example": "能打折吗?(Có thể giảm giá không?)"
+    },
+    {
+     "term": "处理",
+     "reading": "chǔlǐ",
+     "definition": "xử lý",
+     "example": "谢谢你们的处理。 (Cảm ơn cách xử lý của các bạn.)"
+    },
+    {
+     "term": "空房",
+     "reading": "kòng fáng",
+     "definition": "phòng trống",
+     "example": "明天有空房吗?(Ngày mai có phòng trống không?)"
+    },
+    {
+     "term": "道歉",
+     "reading": "dàoqiàn",
+     "definition": "xin lỗi",
+     "example": "他向我们道歉了。 (Anh ấy đã xin lỗi chúng tôi.)"
+    }
+   ],
+   "grammar": {
+    "title": "可是 và 如果……能不能",
+    "explanation": "可是 (nhưng) dùng khi nêu điều trái với mong đợi. 能不能 là dạng nhờ vả lịch sự. Thương lượng: 如果……,能不能……? 八折 = giảm 20% (số 8 trên 10 phần giá).",
+    "examples": [
+     "我订的是单人间,可是你们给了双人间。[wǒ dìng de shì dānrénjiān, kěshì nǐmen gěi le shuāngrénjiān] (Tôi đặt phòng đơn nhưng các bạn cho phòng đôi.)",
+     "能不能便宜一点儿?[néng bu néng piányi yìdiǎnr] (Có thể rẻ hơn một chút được không?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng bình tĩnh khi phàn nàn",
+    "tip": "Khi khiếu nại, giữ giọng thấp và đều, không nhấn mạnh quá mức. Chú ý 打折 dǎzhé, 处理 chǔlǐ (ch cuốn lưỡi), 道歉 dàoqiàn.",
+    "words": [
+     "打折",
+     "处理",
+     "道歉",
+     "空房"
+    ]
+   },
+   "speakingTasks": [
+    "Phàn nàn lịch sự về phòng không đúng yêu cầu và đề xuất cách giải quyết.",
+    "Đóng vai quản lý khách sạn xin lỗi và đề nghị giảm giá."
+   ],
+   "questions": [
+    {
+     "prompt": "Nêu điều không đúng như mong đợi:",
+     "options": [
+      "我们订的是海景房,而且……",
+      "我们订的是海景房,可是……",
+      "我们订的是海景房,所以……"
+     ],
+     "answer": 1,
+     "explanation": "可是 nêu sự đối lập."
+    },
+    {
+     "prompt": "「打八折」 nghĩa là:",
+     "options": [
+      "giảm 20%",
+      "giảm 80%",
+      "tăng 20%"
+     ],
+     "answer": 0,
+     "explanation": "八折 = còn 80% giá."
+    },
+    {
+     "prompt": "Nhờ vả lịch sự hỏi giảm giá:",
+     "options": [
+      "能不能打个折?",
+      "打折是不是我?",
+      "你打折给我。"
+     ],
+     "answer": 0,
+     "explanation": "能不能 + động từ."
+    },
+    {
+     "prompt": "「处理」 nghĩa là:",
+     "options": [
+      "gặp mặt",
+      "xử lý",
+      "đặt trước"
+     ],
+     "answer": 1,
+     "explanation": "处理 = xử lý."
+    },
+    {
+     "prompt": "「打折」 có nghĩa là gì?",
+     "options": [
+      "xử lý",
+      "phòng trống",
+      "giảm giá"
+     ],
+     "answer": 2,
+     "explanation": "「打折」 [dǎzhé] = giảm giá."
+    },
+    {
+     "prompt": "「打折」 đọc là gì?",
+     "options": [
+      "dǎzhé",
+      "chǔlǐ",
+      "kòng fáng"
+     ],
+     "answer": 0,
+     "explanation": "「打折」 đọc là [dǎzhé], nghĩa là giảm giá."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 他向我们＿＿＿了。  (Anh ấy đã xin lỗi chúng tôi.)",
+     "options": [
+      "道歉",
+      "海景房",
+      "打折"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「道歉」 (xin lỗi). Câu đầy đủ: 他向我们道歉了。"
+    },
+    {
+     "prompt": "「处理」 có nghĩa là gì?",
+     "options": [
+      "phòng hướng biển",
+      "phòng trống",
+      "xử lý"
+     ],
+     "answer": 2,
+     "explanation": "「处理」 [chǔlǐ] = xử lý."
+    },
+    {
+     "prompt": "「道歉」 đọc là gì?",
+     "options": [
+      "dǎzhé",
+      "dàoqiàn",
+      "hǎijǐng fáng"
+     ],
+     "answer": 1,
+     "explanation": "「道歉」 đọc là [dàoqiàn], nghĩa là xin lỗi."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我们订了＿＿＿。  (Chúng tôi đã đặt phòng hướng biển.)",
+     "options": [
+      "空房",
+      "海景房",
+      "道歉"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「海景房」 (phòng hướng biển). Câu đầy đủ: 我们订了海景房。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b2-3",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Lên kế hoạch chuyến đi dài ngày",
+   "objective": "Lập lịch trình, cân nhắc chi phí và thay đổi kế hoạch.",
+   "reading": "小明: 我打算用两个星期游览云南和四川。\n旅行社: 那您最好坐高铁加飞机,这样既省时间又划算。\n小明: 万一遇到台风,行程可以改吗?\n旅行社: 出发前一天以前,可以免费更改。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "我打算用两个星期游览云南和四川。",
+     "phonetic": "Wǒ dǎsuàn yòng liǎng gè xīngqī yóulǎn Yúnnán hé Sìchuān.",
+     "translation": "Tôi định dùng hai tuần đi Vân Nam và Tứ Xuyên."
+    },
+    {
+     "speaker": "旅行社",
+     "text": "那您最好坐高铁加飞机,这样既省时间又划算。",
+     "phonetic": "Nà nín zuìhǎo zuò gāotiě jiā fēijī, zhèyàng jì shěng shíjiān yòu huásuàn.",
+     "translation": "Vậy tốt nhất ngài đi tàu cao tốc kết hợp máy bay, vừa tiết kiệm thời gian vừa có lợi."
+    },
+    {
+     "speaker": "小明",
+     "text": "万一遇到台风,行程可以改吗?",
+     "phonetic": "Wànyī yùdào táifēng, xíngchéng kěyǐ gǎi ma?",
+     "translation": "Lỡ gặp bão thì có đổi lịch trình được không?"
+    },
+    {
+     "speaker": "旅行社",
+     "text": "出发前一天以前,可以免费更改。",
+     "phonetic": "Chūfā qián yì tiān yǐqián, kěyǐ miǎnfèi gēnggǎi.",
+     "translation": "Trước ngày khởi hành một ngày thì có thể đổi miễn phí."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "游览",
+     "reading": "yóulǎn",
+     "definition": "tham quan",
+     "example": "我们游览了故宫。 (Chúng tôi đã tham quan Cố Cung.)"
+    },
+    {
+     "term": "划算",
+     "reading": "huásuàn",
+     "definition": "có lợi, đáng tiền",
+     "example": "这张票很划算。 (Vé này rất đáng tiền.)"
+    },
+    {
+     "term": "行程",
+     "reading": "xíngchéng",
+     "definition": "lịch trình",
+     "example": "行程安排好了。 (Lịch trình đã sắp xếp xong.)"
+    },
+    {
+     "term": "万一",
+     "reading": "wànyī",
+     "definition": "lỡ như, vạn nhất",
+     "example": "万一下雨怎么办?(Lỡ mưa thì làm sao?)"
+    },
+    {
+     "term": "更改",
+     "reading": "gēnggǎi",
+     "definition": "thay đổi",
+     "example": "可以更改时间吗?(Có thể đổi thời gian không?)"
+    }
+   ],
+   "grammar": {
+    "title": "既……又…… / 万一 / 最好",
+    "explanation": "既 A 又 B: vừa A vừa B. 万一: lỡ như (tình huống xấu ít xảy ra). 最好 + động từ: tốt nhất nên. 打算 + V: dự định.",
+    "examples": [
+     "这家酒店既干净又便宜。[zhè jiā jiǔdiàn jì gānjìng yòu piányi] (Khách sạn này vừa sạch vừa rẻ.)",
+     "万一迟到了,请给我打电话。[wànyī chídào le, qǐng gěi wǒ dǎ diànhuà] (Lỡ đến muộn thì gọi cho tôi.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Câu dài nhiều vế",
+    "tip": "Ngắt nhịp sau 那, 万一, 这样. Thanh điệu: 划算 huásuàn (2-4), 游览 yóulǎn (2-3).",
+    "words": [
+     "游览",
+     "划算",
+     "行程",
+     "更改"
+    ]
+   },
+   "speakingTasks": [
+    "Trình bày lịch trình 10 ngày ở Trung Quốc với ngân sách dự kiến.",
+    "Hỏi thầy/cô cách đổi lịch khi gặp thời tiết xấu."
+   ],
+   "questions": [
+    {
+     "prompt": "“Vừa nhanh vừa rẻ.”",
+     "options": [
+      "既快又便宜",
+      "既快也便宜又",
+      "又快既便宜"
+     ],
+     "answer": 0,
+     "explanation": "既……又……"
+    },
+    {
+     "prompt": "「万一」 nghĩa là:",
+     "options": [
+      "chắc chắn",
+      "lỡ như",
+      "thường xuyên"
+     ],
+     "answer": 1,
+     "explanation": "万一 = vạn nhất."
+    },
+    {
+     "prompt": "“Tốt nhất nên đặt trước.”",
+     "options": [
+      "预订最好提前了吧是。",
+      "最提前好预订。",
+      "最好提前预订。"
+     ],
+     "answer": 2,
+     "explanation": "最好 + động từ."
+    },
+    {
+     "prompt": "「划算」 nghĩa là:",
+     "options": [
+      "đắt đỏ",
+      "có lợi, đáng tiền",
+      "nguy hiểm"
+     ],
+     "answer": 1,
+     "explanation": "划算 = cost-effective."
+    },
+    {
+     "prompt": "「行程」 có nghĩa là gì?",
+     "options": [
+      "lịch trình",
+      "tham quan",
+      "có lợi, đáng tiền"
+     ],
+     "answer": 0,
+     "explanation": "「行程」 [xíngchéng] = lịch trình."
+    },
+    {
+     "prompt": "「划算」 đọc là gì?",
+     "options": [
+      "wànyī",
+      "huásuàn",
+      "xíngchéng"
+     ],
+     "answer": 1,
+     "explanation": "「划算」 đọc là [huásuàn], nghĩa là có lợi, đáng tiền."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 可以＿＿＿时间吗?  (Có thể đổi thời gian không?)",
+     "options": [
+      "游览",
+      "更改",
+      "行程"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「更改」 (thay đổi). Câu đầy đủ: 可以更改时间吗?"
+    },
+    {
+     "prompt": "「万一」 có nghĩa là gì?",
+     "options": [
+      "thay đổi",
+      "lỡ như, vạn nhất",
+      "tham quan"
+     ],
+     "answer": 1,
+     "explanation": "「万一」 [wànyī] = lỡ như, vạn nhất."
+    },
+    {
+     "prompt": "「更改」 đọc là gì?",
+     "options": [
+      "yóulǎn",
+      "xíngchéng",
+      "gēnggǎi"
+     ],
+     "answer": 2,
+     "explanation": "「更改」 đọc là [gēnggǎi], nghĩa là thay đổi."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿安排好了。  (Lịch trình đã sắp xếp xong.)",
+     "options": [
+      "游览",
+      "划算",
+      "行程"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「行程」 (lịch trình). Câu đầy đủ: 行程安排好了。"
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
+}
