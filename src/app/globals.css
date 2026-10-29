@@ -12,7 +12,7 @@
   --font-display: "Manrope", sans-serif;
 }
 
-html { font-size: calc(100% * var(--font-scale, 1)); }
+html { font-size: calc(100% * var(--font-scale, 1)); -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 * { box-sizing: border-box; }
 html, body {
   overflow-x: hidden;
@@ -2422,3 +2422,47 @@ html[data-theme] .floating-back-button { color: #fff; background: #0f172a2e; bor
 .dict-typing { padding: 10px 14px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
 .dict-typing summary { cursor: pointer; font-weight: 700; }
 .dict-typing ul { display: grid; gap: 8px; margin: 10px 0 0; padding-left: 20px; }
+
+/* ===== Setup guide, cleaner and more compact; welcome tiles with names only ===== */
+.sg-wrap { max-width: 560px; gap: 0; }
+.sg-card { gap: 12px; padding: 16px 18px 18px; border-radius: 20px; }
+.sg-bar { height: 6px; margin: -2px 0 2px; border-radius: 999px; background: #e7efeb; overflow: hidden; }
+.sg-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #ff9d4d, #ff7a1a); transition: width .3s ease; }
+.sg-head { display: flex; align-items: center; gap: 12px; }
+.sg-head .eyebrow { display: block; font-size: .75rem; }
+.sg-head h2 { margin-top: 2px; font-size: 1.25rem; }
+.sg-mascot { flex: 0 0 auto; justify-self: auto; margin: 0; }
+.sg-done { margin: 0; padding: 8px 12px; border-radius: 10px; background: #e8f7ee; color: #0d5a3b; font-weight: 700; font-size: .9375rem; }
+.sg-lead { font-size: 1rem; }
+.sg-note { font-size: .875rem; padding: 8px 12px; }
+.sg-checklist, .sg-steps { gap: 6px; font-size: .9375rem; }
+.sg-big { min-height: 48px; font-size: 1rem; }
+.sg-nav { display: grid; grid-template-columns: auto 1fr 1fr; gap: 8px; margin-top: 6px; }
+.sg-nav .button { justify-content: center; min-height: 46px; padding: 0 12px; }
+.sg-nav .button-primary { margin-left: 0; }
+.sg-nav .sg-skip { border-style: dashed; color: #8a4b00; border-color: #e9b97a; background: #fff8ef; }
+.sg-later { font-size: .875rem; }
+.wz-links .wz-tile { grid-template-columns: 40px 1fr; grid-template-rows: auto; align-items: center; min-height: 58px; }
+.wz-tile-icon { grid-row: auto; width: 40px; height: 40px; }
+.wz-tile strong { font-size: .9375rem; }
+.wz-bottom { display: grid; justify-items: center; gap: 6px; margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); width: min(100%, 640px); }
+.wz-bottom small { color: var(--muted); }
+.wz-guide-link { padding: 9px 18px; border: 2px solid #cfe3d8; border-radius: 999px; background: #fff; color: #0d5a3b; font-weight: 800; }
+.wz-guide-link.attention { border-color: #ff7a1a; color: #fff; background: #ff7a1a; box-shadow: 0 6px 14px #ff7a1a44; }
+
+/* ===== iPhone / iPad: pointer to Safari's Share button ===== */
+.ios-hint { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column; align-items: center; background: #0b1f2bd9; color: #fff; padding: 22px 18px; }
+.ios-hint.iphone { justify-content: flex-end; }
+.ios-hint.ipad { justify-content: flex-start; align-items: flex-end; }
+.ios-hint-card { max-width: 420px; padding: 16px 18px; border-radius: 18px; background: #fff; color: var(--ink); display: grid; gap: 8px; box-shadow: 0 12px 34px #0006; }
+.ios-hint-card ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.ios-share { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: 6px; background: #e5f1ff; color: #0a6cff; font-weight: 800; }
+.ios-arrow { font-size: 3rem; margin-top: 8px; animation: sg-bob 1s ease-in-out infinite; }
+.ios-hint.ipad .ios-arrow { align-self: flex-end; transform: rotate(180deg); margin-right: 40px; }
+@media (prefers-reduced-motion: reduce) { .ios-arrow { animation: none; } }
+
+/* ===== Opened inside Zalo / Facebook / Messenger ===== */
+.inapp-notice { display: grid; gap: 6px; margin: 0 0 12px; padding: 12px 14px; border: 2px solid #ffb870; border-radius: 14px; background: #fff4e5; color: #6b3a00; text-align: left; }
+.inapp-notice p { margin: 0; font-size: .9375rem; }
+.inapp-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.inapp-actions .button { text-decoration: none; }
