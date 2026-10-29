@@ -2654,3 +2654,5 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 .settings-section-heading > div { display: contents; }
 .settings-section-heading > div > h3 { grid-column: 2; grid-row: 1; margin: 0; min-width: 0; }
 .settings-section-heading > div > p { grid-column: 1 / -1; grid-row: 2; margin: 0; }
+.vipack-voices { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.vipack-voices .voice-chip { justify-content: center; padding: 8px 4px; white-space: nowrap; }

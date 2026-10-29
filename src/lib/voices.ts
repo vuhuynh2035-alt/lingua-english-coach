@@ -192,7 +192,14 @@ async function httpError(provider: AiProvider, response: Response): Promise<AiEr
   } catch {}
   const name = provider === "google" ? "Google" : "OpenAI";
   if (response.status === 401 || response.status === 403) return new AiError("auth", `${name} từ chối API key (HTTP ${response.status}).`, response.status);
-  if (response.status === 429) return new AiError("quota", `Giọng AI ${name} đã hết hạn mức (HTTP 429).`, 429);
+  if (response.status === 429) {
+    // OpenAI says "insufficient_quota" when the API account has no credit: a ChatGPT Plus plan does not pay for the API.
+    const error = /insufficient_quota|billing|exceeded your current quota/i.test(detail) && provider === "openai"
+      ? new AiError("quota", "Tài khoản OpenAI API chưa có tiền (insufficient_quota). Gói ChatGPT Plus không dùng được cho API; cần nạp tiền tại platform.openai.com.", 429)
+      : new AiError("quota", `Giọng AI ${name} đã hết hạn mức${/per ?day|PerDay|RPD/i.test(detail) ? " trong ngày" : ""} (HTTP 429).`, 429);
+    error.detail = detail;
+    return error;
+  }
   if (response.status === 404 || (response.status === 400 && /model|voice/i.test(detail))) return new AiError("model", `Mô hình giọng không khả dụng (HTTP ${response.status}).`, response.status);
   if (response.status >= 500) return new AiError("busy", `${name} đang bận (HTTP ${response.status}).`, response.status);
   return new AiError("other", `Không tạo được giọng đọc (HTTP ${response.status})${detail ? `: ${detail}` : ""}`, response.status);
