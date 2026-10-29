@@ -58,15 +58,17 @@ async function speak(message) {
   const { config, session } = await loadVoice(message.voice);
   const parts = [];
   let total = 0;
-  const pause = new Float32Array(Math.round(config.audio.sample_rate * 0.18));
   const speed = Math.min(1.4, Math.max(0.6, message.speed || 1));
+  // The model only half follows length_scale (measured), so it is stretched by speed squared to give the asked pace.
+  const stretch = 1 / (speed * speed);
+  const pause = new Float32Array(Math.round(config.audio.sample_rate * 0.3 / speed));
   for (const ids of phonemize(config, message.text)) {
     if (!ids.length) continue;
     const { noise_scale, length_scale, noise_w } = config.inference;
     const inputs = {
       input: new ort.Tensor("int64", BigInt64Array.from(ids, (id) => BigInt(id)), [1, ids.length]),
       input_lengths: new ort.Tensor("int64", BigInt64Array.from([BigInt(ids.length)]), [1]),
-      scales: new ort.Tensor("float32", Float32Array.from([noise_scale, length_scale / speed, noise_w]), [3]),
+      scales: new ort.Tensor("float32", Float32Array.from([noise_scale, length_scale * stretch, noise_w]), [3]),
     };
     if (config.num_speakers > 1) inputs.sid = new ort.Tensor("int64", BigInt64Array.from([BigInt(message.sid || 0)]), [1]);
     const result = await session.run(inputs);
