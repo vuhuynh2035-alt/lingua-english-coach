@@ -5,8 +5,8 @@ export type AiProvider = "google" | "openai";
 export type AiModel = { id: string; label: string };
 
 export const DEFAULT_MODELS: Record<AiProvider, string> = {
-  // An alias Google keeps pointing at its current Flash model, so it never retires.
-  google: "gemini-flash-latest",
+  // Google's current stable Flash model (2.0 was shut down on 1 June 2026; 2.5 is closed to new users).
+  google: "gemini-3.8-flash",
   openai: "gpt-4o-mini",
 };
 
@@ -35,11 +35,14 @@ export async function fetchAiModels(provider: AiProvider, apiKey: string): Promi
           !Array.isArray(item.supportedGenerationMethods) ||
           !item.supportedGenerationMethods.includes("generateContent")) return [];
       const id = item.name.replace(/^models\//, "");
-      if (!isChatModel(id)) return [];
+      // Retired generations are hidden even when an old key still lists them.
+      if (!isChatModel(id) || /^gemini-(1\.|2\.0)/.test(id)) return [];
       return [{ id, label: typeof item.displayName === "string" ? item.displayName : id }];
     });
     if (!models.length) throw new Error("API key Google không có mô hình hỗ trợ tạo nội dung.");
-    return models.sort((first, second) => first.id.localeCompare(second.id));
+    // Newest generation first, so the current models are at the top of the list.
+    const version = (id: string) => Number(/gemini-(\d+(?:\.\d+)?)/.exec(id)?.[1] ?? 0);
+    return models.sort((first, second) => version(second.id) - version(first.id) || first.id.localeCompare(second.id));
   }
 
   if (!isRecord(result) || !Array.isArray(result.data)) {

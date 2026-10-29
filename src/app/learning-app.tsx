@@ -4,7 +4,6 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import packageJson from "../../package.json";
 import { getAudioData } from "@/lib/gemini";
 import {
-  clearSpeechCache,
   cleanSpeechText,
   extractPracticePhrases,
   stripReadings,
@@ -43,12 +42,9 @@ import {
   GOOGLE_VOICES,
   OPENAI_TTS_MODELS,
   OPENAI_VOICES,
-  VOICE_STYLES,
   VoiceProfile,
   cloudVoiceId,
-  deviceVoicesForAccent,
   getAccent,
-  guessDeviceVoiceGender,
   parseVoiceProfile,
   pickDeviceVoice,
   synthesizeCloudSpeech,
@@ -558,6 +554,8 @@ export default function Home() {
   const [ttsModelPref, setTtsModelPref] = useState<"flash" | "lite">("flash");
   /** Speech models the Google key really has, shown in the voice settings (null: not checked yet). */
   const [googleTtsModels, setGoogleTtsModels] = useState<string[] | null>(null);
+  /** The voice sample button that is playing (tap it again to stop). */
+  const [previewing, setPreviewing] = useState<string | null>(null);
   /** The built-in English voice the learner picked by ear, e.g. "female-0". */
   const [enPackVoice, setEnPackVoice] = useState("female-0");
   const [packReady, setPackReady] = useState<Record<VoicePackId, boolean>>({ vi: false, en: false });
@@ -714,6 +712,17 @@ export default function Home() {
     // The first-run check runs once, when the saved settings have loaded.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progressLoaded, aiSettingsLoaded, apiKeys]);
+
+  // A sample read through the speech queue is over when the queue is.
+  useEffect(() => {
+    if (!speechBusy && !speechQueueRunningRef.current) setPreviewing((current) => (current?.startsWith("pack:") ? current : null));
+  }, [speechBusy]);
+
+  // "Giọng AI" always means the AI provider chosen in the AI settings.
+  useEffect(() => {
+    if (aiSettingsLoaded && voiceProfile.engine !== "device" && voiceProfile.engine !== aiProvider) updateVoiceProfile({ engine: aiProvider });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aiProvider, aiSettingsLoaded]);
 
   // A newly added key gets a fresh try at once.
   useEffect(() => {
@@ -885,7 +894,7 @@ export default function Home() {
         if (typeof stored.selectedModels === "object" && stored.selectedModels !== null) {
           const models = stored.selectedModels as Record<string, unknown>;
           setSelectedModels({
-            google: typeof models.google === "string" && !/^gemini-(1\.|2\.0)/.test(models.google) && isChatModel(models.google)
+            google: typeof models.google === "string" && !/^gemini-(1\.|2\.)/.test(models.google) && isChatModel(models.google)
               ? models.google : DEFAULT_MODELS.google,
             openai: typeof models.openai === "string" ? models.openai : DEFAULT_MODELS.openai,
           });
@@ -1070,8 +1079,6 @@ export default function Home() {
       setDialogueNames(localStorage.getItem(sharedKey("dialogue-names")) !== "0");
       const savedViSource = localStorage.getItem(sharedKey("vi-source"));
       if (savedViSource === "pack" || savedViSource === "device") setViSource(savedViSource);
-      const savedEnSource = localStorage.getItem(sharedKey("en-source"));
-      if (savedEnSource === "pack" || savedEnSource === "device") setEnSource(savedEnSource);
       if (localStorage.getItem(sharedKey("tts-model")) === "lite") setTtsModelPref("lite");
       const savedEnVoice = localStorage.getItem(sharedKey("en-pack-voice"));
       if (savedEnVoice && /^(female|male)-[0-3]$/.test(savedEnVoice)) setEnPackVoice(savedEnVoice);
@@ -1960,7 +1967,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       }
     }
     if (enSource !== "device" && packReadyRef.current.en) {
-      const [gender, index] = enPackVoice.split("-");
+      const packGender = profile.gender === "male" ? "male" : "female";
+      const [gender, index] = (enPackVoice.startsWith(packGender) ? enPackVoice : `${packGender}-0`).split("-");
       const sid = main ? await englishSpeaker({ gender: gender === "male" ? "male" : "female", index: Number(index) || 0 }) : await offlineEnglishSpeaker(profile);
       return synthesize("en", text, { sid, speed: Math.min(1.2, Math.max(0.7, profile.speed)) * PACK_PACE });
     }
@@ -2378,7 +2386,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <p>
           {id === "vi"
             ? "Chạy ngay trong ứng dụng nên nghe giống nhau trên mọi điện thoại, không cần cài thêm gì, không cần API key, dùng được cả khi offline."
-            : "Một giọng tiếng Anh Mỹ rõ ràng (nhiều giọng nam/nữ cho bài hội thoại) chạy ngay trong app, thay cho giọng kém của máy. Không cần API key, dùng được offline. Giọng các vùng khác (Anh, Úc, Ấn…) vẫn dùng giọng AI."}
+            : "Giọng tiếng Anh Mỹ rõ ràng chạy ngay trong app, thay cho giọng kém sẵn có của máy. Không cần API key, dùng được offline."}
         </p>
         {packReady[id] ? (
           <div className="vipack-row"><span className="vipack-ok">✓ Đã cài</span><button type="button" className="text-button" onClick={() => { void deletePack(id); }}>Xóa để lấy lại dung lượng</button></div>
@@ -2392,29 +2400,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           <button type="button" className="button button-primary" onClick={() => { void installPack(id); }}>⬇ Tải giọng đọc ({mb}MB)</button>
         )}
         {packError[id] && <p className="error-message" role="alert">{packError[id]}</p>}
-        {id === "en" && packReady.en && (
-          <>
-            <span className="settings-label">Nghe thử và chọn giọng (miễn phí, không tốn hạn mức AI)</span>
-            <div className="vipack-voices">
-              {(["female", "male"] as const).flatMap((gender) => [0, 1, 2, 3].map((index) => {
-                const value = `${gender}-${index}`;
-                return (
-                  <button key={value} type="button" className={enPackVoice === value ? "voice-chip active" : "voice-chip"}
-                    onClick={() => {
-                      setEnPackVoice(value);
-                      try { localStorage.setItem(sharedKey("en-pack-voice"), value); } catch {}
-                      stopSpeech();
-                      unlockSpeechPlayer();
-                      void englishSpeaker({ gender, index }).then((sid) => synthesize("en", "Hello! I'm your English teacher. Let's practice speaking together today.", { sid, speed: voiceProfile.speed * PACK_PACE }))
-                        .then((clip) => { if (clip) return playBlob(clip); }).catch(() => {});
-                    }}>
-                    ▶ {gender === "female" ? "Nữ" : "Nam"} {index + 1}
-                  </button>
-                );
-              }))}
-            </div>
-          </>
-        )}
+        {id === "vi" && (<>
         <span className="settings-label">Dùng giọng nào để đọc {name}?</span>
         <div className="voice-chips">
           {([["auto", "Tự động (khuyên dùng)"], ["pack", "Giọng trong app"], ["device", "Giọng của máy"]] as const).map(([value, label]) => (
@@ -2422,43 +2408,123 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           ))}
         </div>
         <small className="settings-hint">Tự động: dùng giọng AI nếu bạn đã nhập API key, nếu không thì dùng giọng trong app, cuối cùng mới tới giọng của máy.</small>
+        </>)}
         <small className="settings-hint">{id === "vi" ? "Giọng trong app: Piper (rhasspy) huấn luyện từ bộ dữ liệu VAIS-1000, giấy phép CC BY 4.0." : "Giọng trong app: Piper (rhasspy) huấn luyện từ bộ dữ liệu LibriTTS-R, giấy phép CC BY 4.0."}</small>
       </div>
     );
   }
 
+  /** Tap once to play a voice sample, tap the same button again to stop it. */
+  function togglePreview(key: string, start: () => void | Promise<void>) {
+    if (previewing === key) {
+      stopSpeech();
+      setSpeechBusy(false);
+      setPreviewing(null);
+      return;
+    }
+    stopSpeech();
+    setPreviewing(key);
+    void Promise.resolve(start()).finally(() => setPreviewing((current) => (current === key && !speechQueueRunningRef.current ? null : current)));
+  }
+
+  /** Plays the sample sentence with one of the built-in English speakers. */
+  async function playPackSample(value: string) {
+    unlockSpeechPlayer();
+    const [gender, index] = value.split("-");
+    const sid = await englishSpeaker({ gender: gender === "male" ? "male" : "female", index: Number(index) || 0 });
+    const clip = await synthesize("en", getAccent(voiceProfile.accent).sample, { sid, speed: voiceProfile.speed * PACK_PACE });
+    if (clip) await playBlob(clip).catch(() => {});
+  }
+
   function renderVoiceStudio() {
-    const accent = getAccent(voiceProfile.accent);
+    const providerName = aiProvider === "google" ? "Google" : "OpenAI";
+    const aiMode = voiceProfile.engine !== "device";
     const groups = [...new Set(ACCENTS.map((item) => item.group))];
-    const cloudList = voiceProfile.engine === "openai" ? OPENAI_VOICES : GOOGLE_VOICES;
-    const deviceList = deviceVoicesForAccent(systemVoices, voiceProfile.accent);
-    const devicePick = pickDeviceVoice(systemVoices, voiceProfile);
-    const engineReady = voiceProfile.engine === "device" || apiKeys[voiceProfile.engine].length > 0;
+    const packGender = voiceProfile.gender === "male" ? "male" : "female";
+    const packVoice = enPackVoice.startsWith(packGender) ? enPackVoice : `${packGender}-0`;
+    const playing = (key: string) => previewing === key;
     return (
       <section className="panel settings-panel voice-studio">
         <div className="settings-section-heading">
           <span className="settings-icon" aria-hidden="true">🌍</span>
-          <div><h3>Giọng {LANG.viName} để luyện nghe</h3><p>Chọn vùng miền, nam/nữ và giọng cụ thể. Áp dụng cho bài học, câu mẫu và lời thầy/cô AI.</p></div>
+          <div><h3>Giọng {LANG.viName}</h3><p>Giọng nam, nữ hay trẻ em đi theo gia sư bạn chọn ở trên. Nhấn một giọng để nghe, nhấn lần nữa để dừng.</p></div>
         </div>
 
-        {LANG.id === "en" && renderPackCard("en")}
-
-        <span className="settings-label">1 · Nguồn giọng</span>
-        <div className="voice-engines" role="radiogroup" aria-label="Nguồn giọng">
-          {([
-            ["google", "Giọng AI Google", "Tự nhiên nhất · 22 giọng · đọc đúng mọi vùng miền · cần mạng + key Google"],
-            ["openai", "Giọng AI OpenAI", "Tự nhiên · 11 giọng · mọi vùng miền · cần mạng + key OpenAI (tính phí)"],
-            ["device", "Giọng trên máy", "Miễn phí, chạy offline · nghe máy móc hơn · vùng miền, nam/nữ tùy máy"],
-          ] as const).map(([id, label, hint]) => (
-            <button key={id} type="button" role="radio" aria-checked={voiceProfile.engine === id}
-              className={voiceProfile.engine === id ? "voice-engine active" : "voice-engine"}
-              onClick={() => updateVoiceProfile({ engine: id })}>
-              <strong>{label}</strong><small>{hint}</small>
-              {id !== "device" && !apiKeys[id].length && <em>Cần API key {id === "google" ? "Google" : "OpenAI"}</em>}
-            </button>
-          ))}
+        <div className="voice-mode" role="radiogroup" aria-label="Nguồn giọng">
+          <button type="button" role="radio" aria-checked={aiMode} className={aiMode ? "voice-engine active" : "voice-engine"}
+            onClick={() => { stopSpeech(); updateVoiceProfile({ engine: aiProvider }); }}>
+            <strong>Giọng AI</strong><small>{providerName} · tự nhiên, đủ vùng miền · cần mạng và API key</small>
+          </button>
+          <button type="button" role="radio" aria-checked={!aiMode} className={!aiMode ? "voice-engine active" : "voice-engine"}
+            onClick={() => { stopSpeech(); updateVoiceProfile({ engine: "device" }); }}>
+            <strong>Giọng trên máy</strong><small>Miễn phí · chạy offline · giọng Mỹ chuẩn tải về một lần</small>
+          </button>
         </div>
-        {voiceProfile.engine === "google" && (
+
+        {aiMode ? (
+          <>
+            {!apiKeys[aiProvider].length && <p className="voice-warning">Chưa có API key {providerName}. Thêm key ở mục Nhà cung cấp &amp; mô hình AI; trong lúc chờ, app đọc bằng giọng trên máy.</p>}
+            <span className="settings-label">Vùng miền</span>
+            {groups.map((group) => (
+              <div className="voice-accent-group" key={group}>
+                <small>{group}</small>
+                <div className="voice-chips">
+                  {ACCENTS.filter((item) => item.group === group).map((item) => {
+                    const key = `accent:${item.id}`;
+                    return (
+                      <button key={item.id} type="button"
+                        className={`voice-chip${voiceProfile.accent === item.id ? " active" : ""}${playing(key) ? " playing" : ""}`}
+                        onClick={() => togglePreview(key, () => {
+                          updateVoiceProfile({ accent: item.id });
+                          previewVoice({ ...voiceProfile, accent: item.id });
+                        })}>
+                        {playing(key) ? "■" : item.flag} {item.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </>
+        ) : (
+          <>
+            {renderPackCard("en")}
+            {packReady.en ? (
+              <>
+                <span className="settings-label">Chọn giọng {packGender === "male" ? "nam" : "nữ"}</span>
+                <div className="vipack-voices">
+                  {[0, 1, 2, 3].map((index) => {
+                    const value = `${packGender}-${index}`;
+                    const key = `pack:${value}`;
+                    return (
+                      <button key={value} type="button"
+                        className={`voice-chip${packVoice === value ? " active" : ""}${playing(key) ? " playing" : ""}`}
+                        onClick={() => togglePreview(key, () => {
+                          setEnPackVoice(value);
+                          try { localStorage.setItem(sharedKey("en-pack-voice"), value); } catch {}
+                          return playPackSample(value);
+                        })}>
+                        {playing(key) ? "■" : "▶"} {packGender === "male" ? "Nam" : "Nữ"} {index + 1}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <button type="button" className={`voice-chip${playing("device") ? " playing" : ""}`} onClick={() => togglePreview("device", () => previewVoice())}>
+                {playing("device") ? "■ Dừng" : "▶ Nghe giọng sẵn có của máy"}
+              </button>
+            )}
+          </>
+        )}
+
+        <label className="voice-speed">
+          <span>Tốc độ: {voiceProfile.speed.toFixed(2)}×</span>
+          <input type="range" min="0.7" max="1.2" step="0.05" value={voiceProfile.speed} onChange={(event) => updateVoiceProfile({ speed: Number(event.target.value) })} />
+        </label>
+        {speechNotice && <p className="settings-hint" role="status">{speechNotice}</p>}
+
+        {aiMode && aiProvider === "google" && (
           <>
             <span className="settings-label">Mô hình giọng AI của Google</span>
             <div className="voice-chips">
@@ -2467,7 +2533,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   onClick={() => { setTtsModelPref(id); try { localStorage.setItem(sharedKey("tts-model"), id); } catch {} }}>{label}</button>
               ))}
             </div>
-            <small className="settings-hint">App tự dùng mô hình đọc riêng (gemini-3.8-flash-tts hoặc gemini-3.8-flash-lite-tts), không phải mô hình trò chuyện bạn chọn ở mục Nhà cung cấp AI — danh sách đó chỉ hiện mô hình trò chuyện.</small>
             {apiKeys.google.length > 0 && (
               googleTtsModels === null
                 ? <button type="button" className="text-button" onClick={() => { void googleModelIds().then((ids) => setGoogleTtsModels(ids.filter((id) => /tts/i.test(id)))); }}>Kiểm tra key có mô hình đọc nào</button>
@@ -2475,111 +2540,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             )}
           </>
         )}
-        <p className="settings-hint">Giọng AI dùng cho <strong>mọi</strong> phần có đọc {LANG.viName} (bài học offline, câu mẫu, lời thầy/cô) khi có mạng. Mỗi câu chỉ tạo một lần rồi lưu trên máy, nên lần sau nghe lại được cả khi offline. Câu mới mà không có mạng sẽ tự đọc bằng giọng trên máy.</p>
-        {!engineReady && <p className="error-message">Chưa có API key cho nguồn này — app sẽ dùng giọng trên máy cho tới khi bạn thêm key ở mục Nhà cung cấp AI.</p>}
-
-        <span className="settings-label">2 · Vùng miền</span>
-        {groups.map((group) => (
-          <div className="voice-accent-group" key={group}>
-            <small>{group}</small>
-            <div className="voice-chips">
-              {ACCENTS.filter((item) => item.group === group).map((item) => {
-                const deviceCount = deviceVoicesForAccent(systemVoices, item.id).length;
-                return (
-                  <button key={item.id} type="button"
-                    className={voiceProfile.accent === item.id ? "voice-chip active" : "voice-chip"}
-                    onClick={() => updateVoiceProfile({ accent: item.id })}
-                    title={voiceProfile.engine === "device" && !deviceCount ? "Máy này chưa có giọng vùng này" : item.name}>
-                    {item.flag} {item.name}
-                    {voiceProfile.engine === "device" && !deviceCount && <i aria-hidden="true"> ·  không có trên máy</i>}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))}
-
-        <span className="settings-label">3 · Giọng nữ / nam / trẻ em</span>
-        <div className="voice-chips">
-          {([["female", "👩 Nữ"], ["male", "👨 Nam"]] as const).map(([id, label]) => (
-            <button key={id} type="button" className={!voiceProfile.childlike && voiceProfile.gender === id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ gender: id, childlike: false })}>{label}</button>
-          ))}
-          <button type="button" className={voiceProfile.childlike ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile(voiceForTutor("mascot"))}>🧒 Trẻ em</button>
-        </div>
-        <small className="settings-hint">Tự đổi theo nhân vật gia sư: {LANG.tutors.david.name} → nam, {LANG.tutors.maya.name} → nữ, {LANG.tutors.alex.name} → trẻ em. Bạn vẫn có thể chọn lại ở đây.</small>
-
-        <span className="settings-label">4 · Chọn giọng</span>
-        {voiceProfile.engine === "device" ? (
-          deviceList.length ? (
-            <select className="settings-select" value={voiceProfile.deviceVoice} onChange={(event) => updateVoiceProfile({ deviceVoice: event.target.value })}>
-              <option value="">Tự chọn giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} phù hợp nhất</option>
-              {deviceList.map((voice) => (
-                <option key={voice.voiceURI} value={voice.voiceURI}>{voice.name} ({voice.lang}){{ female: " · nữ", male: " · nam", unknown: "" }[guessDeviceVoiceGender(voice)]}</option>
-              ))}
-            </select>
-          ) : (
-            <p className="settings-hint">Máy này chưa có giọng {accent.flag} {accent.name}. Hãy chọn Giọng AI, hoặc cài thêm giọng {LANG.viName} trong cài đặt ngôn ngữ của hệ điều hành (Windows: Settings → Time &amp; language → Speech; Android: Text-to-speech; iPhone: Accessibility → Spoken Content → Voices).</p>
-          )
-        ) : (
-          <div className="voice-named-grid">
-            {cloudList.filter((voice) => voice.gender === voiceProfile.gender).map((voice) => {
-              const selected = cloudVoiceId(voiceProfile) === voice.id;
-              return (
-                <button key={voice.id} type="button" className={selected ? "voice-named active" : "voice-named"}
-                  onClick={() => {
-                    const patch = voiceProfile.engine === "openai" ? { openaiVoice: voice.id } : { googleVoice: voice.id };
-                    updateVoiceProfile(patch);
-                    previewVoice({ ...voiceProfile, ...patch });
-                  }}>
-                  <strong>{voice.id}</strong><small>{voice.character}</small>
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {voiceProfile.engine === "device" && deviceList.length > 0 && !devicePick.genderMatches && (
-          <p className="voice-warning">
-            <>Máy này không có giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} rõ ràng cho vùng {accent.name}, nên dùng giọng chuẩn nhất của máy (không chỉnh cao độ).</>
-            {" "}Để có giọng {voiceProfile.gender === "female" ? "nữ" : "nam"} thật, hãy chọn <button type="button" className="text-button" onClick={() => updateVoiceProfile({ engine: "google" })}>Giọng AI Google</button> hoặc cài thêm giọng {LANG.viName} trong cài đặt máy.
-          </p>
-        )}
-
-        <span className="settings-label">5 · Phong cách và tốc độ</span>
-        <div className="voice-chips">
-          {VOICE_STYLES.map((style) => (
-            <button key={style.id} type="button" className={voiceProfile.style === style.id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ style: style.id })}>{style.label}</button>
-          ))}
-        </div>
-        <label className="voice-speed">
-          <span>Tốc độ: {voiceProfile.speed.toFixed(2)}×</span>
-          <input type="range" min="0.7" max="1.2" step="0.05" value={voiceProfile.speed} onChange={(event) => updateVoiceProfile({ speed: Number(event.target.value) })} />
-        </label>
-
-        <div className="voice-preview">
-          <p>“{accent.sample}”</p>
-          <div className="cr-connect-actions">
-            <button type="button" className="button button-primary" onClick={() => { if (speechBusy) { stopSpeech(); setSpeechBusy(false); } else previewVoice(); }}>
-              {speechBusy ? "■ Dừng phát" : `▶ Nghe thử ${accent.flag} ${accent.name}`}
-            </button>
-            <button type="button" className="button button-outline" onClick={() => { void removeSavedSpeech(); }}>Xóa âm thanh đã lưu</button>
-          </div>
-          {speechNotice && <p className="settings-hint" role="status">{speechNotice}</p>}
-          <small className="settings-hint">Giọng AI được tạo khi nghe lần đầu rồi lưu trên máy để nghe lại offline. Giọng AI có thể tính vào hạn mức API của bạn.</small>
-        </div>
       </section>
     );
-  }
-
-  async function removeSavedSpeech() {
-    setSpeechError("");
-    setSpeechNotice("");
-    try {
-      await clearSpeechCache();
-      setSpeechNotice("Đã xóa các đoạn nghe đã lưu trên thiết bị.");
-    } catch (error) {
-      setSpeechError(error instanceof Error ? error.message : "Không thể xóa các đoạn nghe đã lưu.");
-    }
   }
 
   function removeApiKey(id: string) {
@@ -3214,16 +3176,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             {modelCatalog[aiProvider].map((model) => <option key={model.id} value={model.id}>{model.label}</option>)}
           </select>
         </section>
-          </div>
-        </details>
-        <details name="settings-groups" className="settings-group">
-          <summary className="settings-group-summary">
-            <span className="settings-icon"><IllustrationIcon name="settings" /></span>
-            <span><strong>Cài đặt ứng dụng</strong><small>Hướng dẫn cài ứng dụng lên màn hình chính</small></span>
-            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
-          </summary>
-          <div className="settings-group-content">
-        {renderInstallAppPanel()}
           </div>
         </details>
       </>
