@@ -4109,8 +4109,8 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         </div>
         </div>
         <div className="wz-intro">
-          <span className="eyebrow">TEACHER AI · GIA SƯ NGOẠI NGỮ CỦA BẠN</span>
-          <h1>Xin chào! Mỗi ngày một chút, bạn sẽ nói tự tin hơn.</h1>
+          <span className="eyebrow">TEACHER AI · GIA SƯ NGOẠI NGỮ CÁ NHÂN CỦA BẠN</span>
+          <h1 className="wz-slogan"><span>Mỗi ngày một chút,</span> <em>bạn sẽ nói <b>tự tin</b> hơn.</em></h1>
           <p className="wz-lead">
             Chọn ngôn ngữ, rồi học theo giáo trình hoặc trò chuyện cùng {TUTOR_PERSONAS[tutorPersona].name}.
           </p>
