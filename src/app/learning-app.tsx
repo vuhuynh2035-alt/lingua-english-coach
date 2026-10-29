@@ -556,6 +556,8 @@ export default function Home() {
   const [enSource, setEnSource] = useState<"auto" | "pack" | "device">("auto");
   /** Google speech model: "flash" sounds better, "lite" costs about a third less. */
   const [ttsModelPref, setTtsModelPref] = useState<"flash" | "lite">("flash");
+  /** Speech models the Google key really has, shown in the voice settings (null: not checked yet). */
+  const [googleTtsModels, setGoogleTtsModels] = useState<string[] | null>(null);
   /** The built-in English voice the learner picked by ear, e.g. "female-0". */
   const [enPackVoice, setEnPackVoice] = useState("female-0");
   const [packReady, setPackReady] = useState<Record<VoicePackId, boolean>>({ vi: false, en: false });
@@ -1232,8 +1234,10 @@ export default function Home() {
   async function googleModelIds(): Promise<string[]> {
     if (googleModelsRef.current) return googleModelsRef.current;
     try {
-      const cached = JSON.parse(localStorage.getItem(GOOGLE_MODELS_STORAGE) ?? "null") as { ids?: unknown } | null;
-      if (cached && Array.isArray(cached.ids) && cached.ids.length && cached.ids.every((id) => typeof id === "string")) {
+      const cached = JSON.parse(localStorage.getItem(GOOGLE_MODELS_STORAGE) ?? "null") as { at?: unknown; ids?: unknown } | null;
+      // The list is refreshed once a day, so newly released models are found.
+      const fresh = typeof cached?.at === "number" && Date.now() - cached.at < 24 * 60 * 60_000;
+      if (cached && fresh && Array.isArray(cached.ids) && cached.ids.length && cached.ids.every((id) => typeof id === "string")) {
         googleModelsRef.current = cached.ids as string[];
         return googleModelsRef.current;
       }
@@ -2447,7 +2451,12 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   onClick={() => { setTtsModelPref(id); try { localStorage.setItem(sharedKey("tts-model"), id); } catch {} }}>{label}</button>
               ))}
             </div>
-            <small className="settings-hint">App tự dùng mô hình đọc riêng (gemini-3.8-flash-tts hoặc gemini-3.8-flash-lite-tts), không phải mô hình trò chuyện bạn chọn ở mục Nhà cung cấp AI.</small>
+            <small className="settings-hint">App tự dùng mô hình đọc riêng (gemini-3.8-flash-tts hoặc gemini-3.8-flash-lite-tts), không phải mô hình trò chuyện bạn chọn ở mục Nhà cung cấp AI — danh sách đó chỉ hiện mô hình trò chuyện.</small>
+            {apiKeys.google.length > 0 && (
+              googleTtsModels === null
+                ? <button type="button" className="text-button" onClick={() => { void googleModelIds().then((ids) => setGoogleTtsModels(ids.filter((id) => /tts/i.test(id)))); }}>Kiểm tra key có mô hình đọc nào</button>
+                : <small className="settings-hint">{googleTtsModels.length ? `Mô hình đọc key của bạn dùng được: ${ttsModelOrder(googleTtsModels).join(", ")}.` : "Danh sách của key không có mô hình đọc nào — app sẽ thử gemini-3.8-flash-tts trực tiếp."}</small>
+            )}
           </>
         )}
         <p className="settings-hint">Giọng AI dùng cho <strong>mọi</strong> phần có đọc {LANG.viName} (bài học offline, câu mẫu, lời thầy/cô) khi có mạng. Mỗi câu chỉ tạo một lần rồi lưu trên máy, nên lần sau nghe lại được cả khi offline. Câu mới mà không có mạng sẽ tự đọc bằng giọng trên máy.</p>
