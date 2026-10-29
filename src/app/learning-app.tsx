@@ -4111,14 +4111,17 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           ))}
         </div>
         <div className="wz-welcome-art">
-          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={128} entrance />
+          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={typeof window !== "undefined" && window.innerHeight > 760 ? 156 : 128} entrance />
         </div>
         </div>
-        <span className="eyebrow">TEACHER AI · GIA SƯ {LANG.viName.toUpperCase()} CỦA BẠN</span>
-        <h1>Xin chào! Cùng nói {LANG.viName} tự tin hơn nhé.</h1>
-        <p className="wz-lead">
-          Học theo giáo trình hoặc trò chuyện cùng {TUTOR_PERSONAS[tutorPersona].name}.
-        </p>
+        <div className="wz-intro">
+          <span className="eyebrow">TEACHER AI · GIA SƯ {LANG.viName.toUpperCase()} CỦA BẠN</span>
+          <h1>Xin chào! Cùng nói {LANG.viName} tự tin hơn nhé.</h1>
+          <p className="wz-lead">
+            Học theo giáo trình hoặc trò chuyện cùng {TUTOR_PERSONAS[tutorPersona].name}.
+          </p>
+        </div>
+        <div className="wz-menu">
         <div className="wz-actions">
           <button type="button" className="button button-primary wz-cta" onClick={() => { setChooseId(""); navigateToSection("choose"); }}>
             {returning ? "Tiếp tục" : "Bắt đầu"}
@@ -4136,6 +4139,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             <strong>Tiến độ</strong>
           </button>
         </nav>
+        </div>
         {renderInstallAppPanel()}
         {showGuideLink && (
           <div className="wz-bottom">
