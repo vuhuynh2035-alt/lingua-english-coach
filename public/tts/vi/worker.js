@@ -1,38 +1,42 @@
-/* Vietnamese voice that runs on the phone itself: the espeak-ng phonemizer plus the Piper "vais1000"
-   VITS model (CC BY 4.0, VAIS-1000 corpus) in ONNX Runtime Web. It needs no network once the files
-   are cached, and sounds the same on every device. */
+/* Voices that run on the phone itself: the espeak-ng phonemizer plus Piper VITS models in ONNX Runtime Web.
+   "vi": vais1000 (CC BY 4.0, VAIS-1000 corpus); "en": libritts_r (CC BY 4.0, LibriTTS-R, many speakers).
+   Nothing needs the network once the files are cached, and every device sounds the same. */
 importScripts("ort.min.js", "piper_phonemize.js");
 
 const BASE = self.location.href.replace(/[^/]*$/, "");
-const MODEL = "vi_VN-vais1000-medium.onnx";
-let config = null;
-let session = null;
+const MODELS = { vi: "vi_VN-vais1000-medium.onnx", en: "en_US-libritts_r-medium.onnx" };
 let phonemizer = null;
-let loading = null;
+let phonemizerLoading = null;
+let current = null; // { voice, config, session }
 let chain = Promise.resolve();
 let cancelBefore = 0;
 const lines = [];
 
-function load() {
-  if (!loading) {
-    loading = (async () => {
-      config = await (await fetch(BASE + MODEL + ".json")).json();
-      ort.env.wasm.numThreads = 1;
-      ort.env.wasm.wasmPaths = BASE;
-      phonemizer = await createPiperPhonemize({
-        print: (line) => { try { lines.push(JSON.parse(line).phoneme_ids); } catch (error) { /* not a phoneme line */ } },
-        printErr: () => {},
-        locateFile: (file) => BASE + file,
-      });
-      const model = await (await fetch(BASE + MODEL)).arrayBuffer();
-      session = await ort.InferenceSession.create(model, { executionProviders: ["wasm"] });
-    })();
-    loading.catch(() => { loading = null; });
+function loadPhonemizer() {
+  if (!phonemizerLoading) {
+    ort.env.wasm.numThreads = 1;
+    ort.env.wasm.wasmPaths = BASE;
+    phonemizerLoading = createPiperPhonemize({
+      print: (line) => { try { lines.push(JSON.parse(line).phoneme_ids); } catch (error) { /* not a phoneme line */ } },
+      printErr: () => {},
+      locateFile: (file) => BASE + file,
+    }).then((module) => { phonemizer = module; });
+    phonemizerLoading.catch(() => { phonemizerLoading = null; });
   }
-  return loading;
+  return phonemizerLoading;
 }
 
-function phonemize(text) {
+async function loadVoice(voice) {
+  if (current && current.voice === voice) return current;
+  if (current) { try { await current.session.release(); } catch (error) { /* already gone */ } current = null; }
+  const config = await (await fetch(BASE + MODELS[voice] + ".json")).json();
+  const model = await (await fetch(BASE + MODELS[voice])).arrayBuffer();
+  const session = await ort.InferenceSession.create(model, { executionProviders: ["wasm"] });
+  current = { voice, config, session };
+  return current;
+}
+
+function phonemize(config, text) {
   lines.length = 0;
   phonemizer.callMain(["-l", config.espeak.voice, "--input", JSON.stringify([{ text }]), "--espeak_data", "/espeak-ng-data"]);
   return lines.slice();
@@ -49,19 +53,23 @@ function wav(samples, rate) {
   return view.buffer;
 }
 
-async function speak(text) {
-  await load();
+async function speak(message) {
+  await loadPhonemizer();
+  const { config, session } = await loadVoice(message.voice);
   const parts = [];
   let total = 0;
   const pause = new Float32Array(Math.round(config.audio.sample_rate * 0.18));
-  for (const ids of phonemize(text)) {
+  const speed = Math.min(1.4, Math.max(0.6, message.speed || 1));
+  for (const ids of phonemize(config, message.text)) {
     if (!ids.length) continue;
     const { noise_scale, length_scale, noise_w } = config.inference;
-    const result = await session.run({
+    const inputs = {
       input: new ort.Tensor("int64", BigInt64Array.from(ids, (id) => BigInt(id)), [1, ids.length]),
       input_lengths: new ort.Tensor("int64", BigInt64Array.from([BigInt(ids.length)]), [1]),
-      scales: new ort.Tensor("float32", Float32Array.from([noise_scale, length_scale, noise_w]), [3]),
-    });
+      scales: new ort.Tensor("float32", Float32Array.from([noise_scale, length_scale / speed, noise_w]), [3]),
+    };
+    if (config.num_speakers > 1) inputs.sid = new ort.Tensor("int64", BigInt64Array.from([BigInt(message.sid || 0)]), [1]);
+    const result = await session.run(inputs);
     const data = result.output.data;
     parts.push(data, pause);
     total += data.length + pause.length;
@@ -75,11 +83,14 @@ async function speak(text) {
 self.onmessage = (event) => {
   const message = event.data;
   if (message.type === "cancel") { cancelBefore = message.before; return; }
-  if (message.type === "warm") { load().then(() => self.postMessage({ id: message.id, ok: true }), (error) => self.postMessage({ id: message.id, error: String(error) })); return; }
+  if (message.type === "warm") {
+    chain = chain.then(() => loadPhonemizer().then(() => loadVoice(message.voice))).then(() => self.postMessage({ id: message.id, ok: true }), (error) => self.postMessage({ id: message.id, error: String(error) }));
+    return;
+  }
   chain = chain.then(async () => {
     if (message.id < cancelBefore) { self.postMessage({ id: message.id, cancelled: true }); return; }
     try {
-      const buffer = await speak(message.text);
+      const buffer = await speak(message);
       self.postMessage({ id: message.id, wav: buffer }, [buffer]);
     } catch (error) {
       self.postMessage({ id: message.id, error: String(error) });

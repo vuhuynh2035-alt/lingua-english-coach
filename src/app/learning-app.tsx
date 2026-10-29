@@ -26,7 +26,7 @@ import type { GrammarQuestion, GrammarTopic } from "@/lib/grammar";
 import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
 import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
-import { cancelVietnameseSynthesis, downloadViPack, removeViPack, synthesizeVietnamese, viPackFlag, viPackInstalled, VI_PACK_MB, warmViVoice } from "@/lib/offline-tts";
+import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeaker, isOfflineClip, packFlag as voicePackFlag, packInstalled as voicePackInstalled, packMB as voicePackMB, removePack as removeVoicePack, synthesize, warmVoice, type PackId as VoicePackId } from "@/lib/offline-tts";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
@@ -549,11 +549,15 @@ export default function Home() {
   const [viSpeechRate, setViSpeechRate] = useState<number>(0.95);
   /** Where Vietnamese speech comes from: AI voice if there is a key, then the voice built into the app, then the phone's own. */
   const [viSource, setViSource] = useState<"auto" | "pack" | "device">("auto");
-  const [viPackReady, setViPackReady] = useState(false);
-  const [viPackProgress, setViPackProgress] = useState<number | null>(null);
-  const [viPackError, setViPackError] = useState("");
-  const viPackReadyRef = useRef(false);
-  const viPackAbortRef = useRef<AbortController | null>(null);
+  /** Same for English: AI voice if there is a key, then the voice built into the app, then the phone's own. */
+  const [enSource, setEnSource] = useState<"auto" | "pack" | "device">("auto");
+  /** The built-in English voice the learner picked by ear, e.g. "female-0". */
+  const [enPackVoice, setEnPackVoice] = useState("female-0");
+  const [packReady, setPackReady] = useState<Record<VoicePackId, boolean>>({ vi: false, en: false });
+  const [packProgress, setPackProgress] = useState<Record<VoicePackId, number | null>>({ vi: null, en: null });
+  const [packError, setPackError] = useState<Record<VoicePackId, string>>({ vi: "", en: "" });
+  const packReadyRef = useRef<Record<VoicePackId, boolean>>({ vi: false, en: false });
+  const packAbortRef = useRef<Partial<Record<VoicePackId, AbortController>>>({});
   const [viSpeechPitch, setViSpeechPitch] = useState<number>(1.0);
   const [voiceTestNotice, setVoiceTestNotice] = useState<string>("");
 
@@ -670,8 +674,8 @@ export default function Home() {
   const [speakingLine, setSpeakingLine] = useState<number | null>(null);
   const speechQueueRunningRef = useRef(false);
   const speechFallbackRef = useRef("");
-  const cloudSpeechPausedUntilRef = useRef(0);
-  const cloudSpeechPauseReasonRef = useRef("");
+  /** After a failure each AI voice provider rests for a while; the other provider is not affected. */
+  const cloudSpeechPauseRef = useRef<Record<"google" | "openai", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } });
   const courseSyncRef = useRef<string | null>(null);
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
   const speechPlayerUnlockedRef = useRef(false);
@@ -701,6 +705,11 @@ export default function Home() {
     // The first-run check runs once, when the saved settings have loaded.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progressLoaded, aiSettingsLoaded, apiKeys]);
+
+  // A newly added key gets a fresh try at once.
+  useEffect(() => {
+    cloudSpeechPauseRef.current = { google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } };
+  }, [apiKeys]);
 
   useEffect(() => {
     if (section !== "dictionary") return;
@@ -1052,8 +1061,14 @@ export default function Home() {
       setDialogueNames(localStorage.getItem(sharedKey("dialogue-names")) !== "0");
       const savedViSource = localStorage.getItem(sharedKey("vi-source"));
       if (savedViSource === "pack" || savedViSource === "device") setViSource(savedViSource);
-      if (viPackFlag()) { viPackReadyRef.current = true; setViPackReady(true); }
-      void viPackInstalled().then((ok) => { viPackReadyRef.current = ok; setViPackReady(ok); });
+      const savedEnSource = localStorage.getItem(sharedKey("en-source"));
+      if (savedEnSource === "pack" || savedEnSource === "device") setEnSource(savedEnSource);
+      const savedEnVoice = localStorage.getItem(sharedKey("en-pack-voice"));
+      if (savedEnVoice && /^(female|male)-[0-3]$/.test(savedEnVoice)) setEnPackVoice(savedEnVoice);
+      for (const id of ["vi", "en"] as const) {
+        if (voicePackFlag(id)) { packReadyRef.current[id] = true; setPackReady((current) => ({ ...current, [id]: true })); }
+        void voicePackInstalled(id).then((ok) => { packReadyRef.current[id] = ok; setPackReady((current) => ({ ...current, [id]: ok })); });
+      }
       const savedViVoice = localStorage.getItem(sharedKey("vi-voice-id"));
       if (savedViVoice) setSelectedViVoiceId(savedViVoice);
 
@@ -1897,7 +1912,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         if (cloud) return cloud;
       } catch {}
     }
-    return viPackReadyRef.current ? synthesizeVietnamese(clean) : null;
+    return packReadyRef.current.vi ? synthesize("vi", clean) : null;
   }
 
   /** Speaks Vietnamese outside the reading queue (tests, dictionary); call it straight from a tap. */
@@ -1914,12 +1929,39 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     await playNativeUtterance(clean, "vi");
   }
 
+  /** Which of the built-in English speakers a voice profile maps to (dialogue casts use the other slots). */
+  async function offlineEnglishSpeaker(profile: VoiceProfile): Promise<number> {
+    const list = profile.gender === "male" ? ["Charon", "Orus", "Iapetus", "Achird"] : ["Kore", "Aoede", "Zephyr", "Leda"];
+    // The reader of names ("Sulafat") gets the fourth woman, so nobody in the conversation shares its voice.
+    const index = profile.googleVoice === "Sulafat" ? 3 : Math.max(0, list.indexOf(profile.googleVoice));
+    return englishSpeaker({ gender: profile.gender === "male" ? "male" : "female", index, child: profile.childlike });
+  }
+
+  /** Audio for one English sentence: the AI voice with a key, else the voice built into the app, else null (the phone's voice). */
+  async function englishClip(text: string, profile: VoiceProfile, main = true): Promise<Blob | null> {
+    if (enSource !== "pack") {
+      try {
+        const cloud = await englishAudio(text, profile);
+        if (cloud) return cloud;
+      } catch (error) {
+        speechFallbackRef.current = error instanceof Error ? error.message : "lỗi không xác định";
+      }
+    }
+    if (enSource !== "device" && packReadyRef.current.en) {
+      const [gender, index] = enPackVoice.split("-");
+      const sid = main ? await englishSpeaker({ gender: gender === "male" ? "male" : "female", index: Number(index) || 0 }) : await offlineEnglishSpeaker(profile);
+      return synthesize("en", text, { sid, speed: Math.min(1.2, Math.max(0.75, profile.speed)) });
+    }
+    return null;
+  }
+
   /** Cloud audio for one English sentence, or null when the device voice should be used. */
   async function englishAudio(text: string, profile = voiceProfile, language: "en" | "vi" = "en"): Promise<Blob | null> {
     const engine = profile.engine;
     if (engine === "device" || !apiKeys[engine].length) return null;
     // After a failure the device voice is used for a while, instead of waiting on every sentence.
-    if (Date.now() < cloudSpeechPausedUntilRef.current) throw new Error(cloudSpeechPauseReasonRef.current || "giọng AI tạm nghỉ");
+    const pause = cloudSpeechPauseRef.current[engine];
+    if (Date.now() < pause.until) throw new Error(pause.reason || "giọng AI tạm nghỉ");
     // v4: earlier Google clips could contain the spoken direction, so they are not reused.
     const cacheKey = `v4${language === "vi" ? "vi" : ""}:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}`;
     try {
@@ -1941,8 +1983,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         (key, model) => synthesizeCloudSpeech(engine, key, model, profile, text, language),
       ));
     } catch (error) {
-      cloudSpeechPausedUntilRef.current = Date.now() + 3 * 60_000;
-      cloudSpeechPauseReasonRef.current = error instanceof Error ? error.message : "lỗi giọng AI";
+      // A daily limit or an unpaid account will not recover soon; a per-minute limit will.
+      const reason = error instanceof Error ? error.message : "lỗi giọng AI";
+      const lasting = /trong ngày|insufficient_quota|chưa có tiền|limit: 0/i.test(reason);
+      cloudSpeechPauseRef.current[engine] = { until: Date.now() + (lasting ? 30 : 1) * 60_000, reason };
       throw error;
     }
     try { await saveCachedSpeech(cacheKey, text, value); } catch {}
@@ -1998,7 +2042,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
   function stopSpeech() {
     speechRunRef.current += 1;
-    cancelVietnameseSynthesis();
+    cancelOfflineSynthesis();
     speechQueueRef.current = [];
     setSpeakingLine(null);
     speechAudioRef.current?.pause();
@@ -2044,10 +2088,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       speechQueueRef.current.push({
         ...segment,
         clip: segment.lang === "en"
-          ? englishAudio(segment.text, profile).catch((error: unknown) => {
-            speechFallbackRef.current = error instanceof Error ? error.message : "lỗi không xác định";
-            return null;
-          })
+          ? englishClip(segment.text, profile)
           : null,
       });
     }
@@ -2059,6 +2100,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     const run = speechRunRef.current;
     const profile = voiceProfile;
     let usedCloud = false;
+    let usedOffline = false;
     let spokeEnglish = false;
     setSpeechBusy(true);
     setSpeechError("");
@@ -2076,7 +2118,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             try {
               setSpeechPlaying(true);
               await playBlob(clip);
-              usedCloud = true;
+              if (isOfflineClip(clip)) usedOffline = true; else usedCloud = true;
               continue;
             } catch (error) {
               speechFallbackRef.current = error instanceof Error ? error.message : "không phát được";
@@ -2099,7 +2141,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         if (spokeEnglish) {
           const reason = speechFallbackRef.current;
           const deviceName = pickDeviceVoice(systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [], profile, profile.engine !== "device").voice?.name;
-          setSpeechNotice(usedCloud && !reason
+          setSpeechNotice(usedOffline && !usedCloud
+            ? "🔊 Vừa phát bằng giọng tiếng Anh trong app."
+            : usedCloud && !reason
             ? `🔊 Vừa phát bằng ${engineLabel(profile)}.`
             : profile.engine === "device"
             ? `🔊 Vừa phát bằng giọng trên máy${deviceName ? `: ${deviceName}` : ""}.`
@@ -2144,10 +2188,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       if (!clean) return;
       speechQueueRef.current.push({
         text: clean, lang: "en", profile, line,
-        clip: englishAudio(clean, profile).catch((error: unknown) => {
-          speechFallbackRef.current = error instanceof Error ? error.message : "lỗi không xác định";
-          return null;
-        }),
+        clip: englishClip(clean, profile, false),
       });
     };
     lines.forEach((line, index) => {
@@ -2264,60 +2305,91 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     );
   }
 
-  async function installViPack() {
-    setViPackError("");
-    setViPackProgress(0);
+  async function installPack(id: VoicePackId) {
+    setPackError((current) => ({ ...current, [id]: "" }));
+    setPackProgress((current) => ({ ...current, [id]: 0 }));
     const controller = new AbortController();
-    viPackAbortRef.current = controller;
+    packAbortRef.current[id] = controller;
     try {
-      await downloadViPack((fraction) => setViPackProgress(fraction), controller.signal);
-      viPackReadyRef.current = true;
-      setViPackReady(true);
-      warmViVoice();
+      await downloadVoicePack(id, (fraction) => setPackProgress((current) => ({ ...current, [id]: fraction })), controller.signal);
+      packReadyRef.current[id] = true;
+      setPackReady((current) => ({ ...current, [id]: true }));
+      warmVoice(id);
     } catch (error) {
-      setViPackError(controller.signal.aborted ? "Đã dừng tải." : error instanceof Error ? error.message : "Không tải được giọng đọc. Kiểm tra mạng rồi thử lại.");
+      setPackError((current) => ({ ...current, [id]: controller.signal.aborted ? "Đã dừng tải." : error instanceof Error ? error.message : "Không tải được giọng đọc. Kiểm tra mạng rồi thử lại." }));
     } finally {
-      setViPackProgress(null);
-      viPackAbortRef.current = null;
+      setPackProgress((current) => ({ ...current, [id]: null }));
+      delete packAbortRef.current[id];
     }
   }
 
-  async function deleteViPack() {
-    await removeViPack();
-    viPackReadyRef.current = false;
-    setViPackReady(false);
+  async function deletePack(id: VoicePackId) {
+    await removeVoicePack(id);
+    packReadyRef.current[id] = false;
+    setPackReady((current) => ({ ...current, [id]: false }));
   }
 
-  function updateViSource(value: "auto" | "pack" | "device") {
-    setViSource(value);
-    try { localStorage.setItem(sharedKey("vi-source"), value); } catch {}
+  function updateSource(id: VoicePackId, value: "auto" | "pack" | "device") {
+    (id === "vi" ? setViSource : setEnSource)(value);
+    try { localStorage.setItem(sharedKey(id === "vi" ? "vi-source" : "en-source"), value); } catch {}
   }
 
-  function renderViPackCard() {
+  function renderPackCard(id: VoicePackId) {
+    const name = id === "vi" ? "tiếng Việt" : "tiếng Anh";
+    const source = id === "vi" ? viSource : enSource;
+    const progress = packProgress[id];
+    const mb = voicePackMB(id, packReady[id === "vi" ? "en" : "vi"]);
     return (
       <div className="vipack">
-        <strong>Giọng tiếng Việt chuẩn trong app</strong>
-        <p>Chạy ngay trong ứng dụng nên nghe giống nhau trên mọi điện thoại, không cần cài thêm gì, không cần API key, dùng được cả khi offline.</p>
-        {viPackReady ? (
-          <div className="vipack-row"><span className="vipack-ok">✓ Đã cài</span><button type="button" className="text-button" onClick={() => { void deleteViPack(); }}>Xóa để lấy lại dung lượng</button></div>
-        ) : viPackProgress !== null ? (
+        <strong>Giọng {name} chuẩn trong app</strong>
+        <p>
+          {id === "vi"
+            ? "Chạy ngay trong ứng dụng nên nghe giống nhau trên mọi điện thoại, không cần cài thêm gì, không cần API key, dùng được cả khi offline."
+            : "Một giọng tiếng Anh Mỹ rõ ràng (nhiều giọng nam/nữ cho bài hội thoại) chạy ngay trong app, thay cho giọng kém của máy. Không cần API key, dùng được offline. Giọng các vùng khác (Anh, Úc, Ấn…) vẫn dùng giọng AI."}
+        </p>
+        {packReady[id] ? (
+          <div className="vipack-row"><span className="vipack-ok">✓ Đã cài</span><button type="button" className="text-button" onClick={() => { void deletePack(id); }}>Xóa để lấy lại dung lượng</button></div>
+        ) : progress !== null ? (
           <div className="vipack-progress">
-            <div className="vipack-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(viPackProgress * 100)}><i style={{ width: `${Math.round(viPackProgress * 100)}%` }} /></div>
-            <small>Đang tải {Math.round(viPackProgress * 100)}% (khoảng {VI_PACK_MB}MB, chỉ tải một lần)</small>
-            <button type="button" className="button button-outline" onClick={() => viPackAbortRef.current?.abort()}>Dừng</button>
+            <div className="vipack-bar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}><i style={{ width: `${Math.round(progress * 100)}%` }} /></div>
+            <small>Đang tải {Math.round(progress * 100)}% (khoảng {mb}MB, chỉ tải một lần)</small>
+            <button type="button" className="button button-outline" onClick={() => packAbortRef.current[id]?.abort()}>Dừng</button>
           </div>
         ) : (
-          <button type="button" className="button button-primary" onClick={() => { void installViPack(); }}>⬇ Tải giọng đọc ({VI_PACK_MB}MB)</button>
+          <button type="button" className="button button-primary" onClick={() => { void installPack(id); }}>⬇ Tải giọng đọc ({mb}MB)</button>
         )}
-        {viPackError && <p className="error-message" role="alert">{viPackError}</p>}
-        <span className="settings-label">Dùng giọng nào để đọc tiếng Việt?</span>
+        {packError[id] && <p className="error-message" role="alert">{packError[id]}</p>}
+        {id === "en" && packReady.en && (
+          <>
+            <span className="settings-label">Nghe thử và chọn giọng (miễn phí, không tốn hạn mức AI)</span>
+            <div className="vipack-voices">
+              {(["female", "male"] as const).flatMap((gender) => [0, 1, 2, 3].map((index) => {
+                const value = `${gender}-${index}`;
+                return (
+                  <button key={value} type="button" className={enPackVoice === value ? "voice-chip active" : "voice-chip"}
+                    onClick={() => {
+                      setEnPackVoice(value);
+                      try { localStorage.setItem(sharedKey("en-pack-voice"), value); } catch {}
+                      stopSpeech();
+                      unlockSpeechPlayer();
+                      void englishSpeaker({ gender, index }).then((sid) => synthesize("en", "Hello! I'm your English teacher. Let's practice speaking together today.", { sid }))
+                        .then((clip) => { if (clip) return playBlob(clip); }).catch(() => {});
+                    }}>
+                    ▶ {gender === "female" ? "Nữ" : "Nam"} {index + 1}
+                  </button>
+                );
+              }))}
+            </div>
+          </>
+        )}
+        <span className="settings-label">Dùng giọng nào để đọc {name}?</span>
         <div className="voice-chips">
-          {([["auto", "Tự động (khuyên dùng)"], ["pack", "Giọng trong app"], ["device", "Giọng của máy"]] as const).map(([id, label]) => (
-            <button key={id} type="button" className={viSource === id ? "voice-chip active" : "voice-chip"} onClick={() => updateViSource(id)}>{label}</button>
+          {([["auto", "Tự động (khuyên dùng)"], ["pack", "Giọng trong app"], ["device", "Giọng của máy"]] as const).map(([value, label]) => (
+            <button key={value} type="button" className={source === value ? "voice-chip active" : "voice-chip"} onClick={() => updateSource(id, value)}>{label}</button>
           ))}
         </div>
         <small className="settings-hint">Tự động: dùng giọng AI nếu bạn đã nhập API key, nếu không thì dùng giọng trong app, cuối cùng mới tới giọng của máy.</small>
-        <small className="settings-hint">Giọng trong app: Piper (rhasspy) huấn luyện từ bộ dữ liệu VAIS-1000, giấy phép CC BY 4.0.</small>
+        <small className="settings-hint">{id === "vi" ? "Giọng trong app: Piper (rhasspy) huấn luyện từ bộ dữ liệu VAIS-1000, giấy phép CC BY 4.0." : "Giọng trong app: Piper (rhasspy) huấn luyện từ bộ dữ liệu LibriTTS-R, giấy phép CC BY 4.0."}</small>
       </div>
     );
   }
@@ -2335,6 +2407,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           <span className="settings-icon" aria-hidden="true">🌍</span>
           <div><h3>Giọng {LANG.viName} để luyện nghe</h3><p>Chọn vùng miền, nam/nữ và giọng cụ thể. Áp dụng cho bài học, câu mẫu và lời thầy/cô AI.</p></div>
         </div>
+
+        {LANG.id === "en" && renderPackCard("en")}
 
         <span className="settings-label">1 · Nguồn giọng</span>
         <div className="voice-engines" role="radiogroup" aria-label="Nguồn giọng">
@@ -2900,7 +2974,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 </div>
               </div>
 
-              {renderViPackCard()}
+              {renderPackCard("vi")}
 
               {/* Voice select */}
               <label className="settings-label" htmlFor="vi-device-voice">Giọng tiếng Việt trên thiết bị</label>
@@ -3708,7 +3782,8 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               <Spot hint="Nhấn để nghe thử">
                 <button type="button" className="button button-primary sg-big" disabled={speechBusy} onClick={() => playPracticePhrase(accent.sample)}>🔊 Nghe thử giọng {LANG.viName}</button>
               </Spot>
-              {renderViPackCard()}
+              {renderPackCard("vi")}
+              {LANG.id === "en" && renderPackCard("en")}
               <button type="button" className="button button-outline" onClick={() => { void playVietnamese("Xin chào bạn! Tôi là gia sư của bạn, chúc bạn học tập thật vui."); }}>🔊 Nghe thử giọng tiếng Việt</button>
               {speechNotice && <p className="settings-hint" role="status">{speechNotice}</p>}
               <p className="sg-note">Giọng tiếng Việt nghe lạ? Trên Windows hãy mở bằng trình duyệt <b>Microsoft Edge</b> (có giọng HoaiMy, NamMinh tự nhiên), hoặc vào Settings → Time &amp; language → Speech → Add voices → Vietnamese.</p>

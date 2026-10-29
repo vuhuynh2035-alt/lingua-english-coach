@@ -340,6 +340,9 @@ function summarize(problems: AiError[], attempts: string[], providerName: string
 /** Turns Google's 429 text (limit, per-day/per-minute, retry delay) into advice. */
 function quotaAdvice(quota: AiError[], providerName: string): string {
   const text = quota.map((p) => p.detail).join(" ");
+  if (/insufficient_quota|exceeded your current quota|billing/i.test(text) && /openai/i.test(providerName)) {
+    return "Tài khoản OpenAI API chưa có tiền hoặc đã hết tiền (insufficient_quota). Gói ChatGPT Plus không dùng được cho API — cần nạp tiền riêng tại platform.openai.com → Billing.";
+  }
   if (/limit:\s*0(?!\d)/i.test(text)) {
     return `Key ${providerName} không có hạn mức miễn phí cho các mô hình này (limit: 0). Hãy tạo key mới trong Google AI Studio, hoặc bật thanh toán cho dự án Google Cloud của key.`;
   }
