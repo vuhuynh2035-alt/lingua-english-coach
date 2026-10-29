@@ -655,8 +655,10 @@ export default function Home() {
   const retryTurnRef = useRef<(() => void) | null>(null);
   const classroomBootRef = useRef(false);
   const speechRunRef = useRef(0);
-  const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null; profile?: VoiceProfile }[]>([]);
+  const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null; profile?: VoiceProfile; line?: number }[]>([]);
   const [dialogueNames, setDialogueNames] = useState(true);
+  /** The conversation line being read aloud, highlighted in the lesson. */
+  const [speakingLine, setSpeakingLine] = useState<number | null>(null);
   const speechQueueRunningRef = useRef(false);
   const speechFallbackRef = useRef("");
   const cloudSpeechPausedUntilRef = useRef(0);
@@ -697,6 +699,11 @@ export default function Home() {
   }, [section]);
 
   useEffect(() => () => { dictRecognitionRef.current?.stop(); }, []);
+
+  useEffect(() => {
+    if (speakingLine === null) return;
+    document.querySelector(`[data-line="${speakingLine}"]`)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [speakingLine]);
 
   const dictSource = dictSide === "target" ? dictText.target : dictText.vi;
   useEffect(() => {
@@ -1951,6 +1958,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   function stopSpeech() {
     speechRunRef.current += 1;
     speechQueueRef.current = [];
+    setSpeakingLine(null);
     speechAudioRef.current?.pause();
     speechAudioRef.current = null;
     if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
@@ -1998,6 +2006,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     try {
       while (speechQueueRef.current.length && speechRunRef.current === run) {
         const item = speechQueueRef.current.shift()!;
+        if (item.line !== undefined) setSpeakingLine(item.line);
         if (item.lang === "en") spokeEnglish = true;
         if (item.clip) {
           setSpeechLoading(true);
@@ -2023,6 +2032,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       }
     } finally {
       speechQueueRunningRef.current = false;
+      if (speechRunRef.current === run) setSpeakingLine(null);
       setSpeechLoading(false);
       setSpeechPlaying(false);
       if (speechRunRef.current === run) {
@@ -2070,11 +2080,11 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     const cast = castDialogue(voiceProfile, voices);
     const people: string[] = [];
     for (const line of lines) if (line.speaker && !people.includes(line.speaker)) people.push(line.speaker);
-    const queue = (text: string, profile: VoiceProfile) => {
+    const queue = (text: string, profile: VoiceProfile, line: number) => {
       const clean = cleanSpeechText(stripReadings(text));
       if (!clean) return;
       speechQueueRef.current.push({
-        text: clean, lang: "en", profile,
+        text: clean, lang: "en", profile, line,
         clip: englishAudio(clean, profile).catch((error: unknown) => {
           speechFallbackRef.current = error instanceof Error ? error.message : "lỗi không xác định";
           return null;
@@ -2085,8 +2095,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       if (only !== undefined && index !== only) return;
       const person = people.indexOf(line.speaker);
       const profile = cast.speakers[(person < 0 ? 0 : person) % cast.speakers.length];
-      if (only === undefined && dialogueNames && line.speaker) queue(line.speaker, cast.narrator);
-      queue(line.text, profile);
+      if (only === undefined && dialogueNames && line.speaker) queue(line.speaker, cast.narrator, index);
+      queue(line.text, profile, index);
     });
     if (!speechQueueRunningRef.current) void runSpeechQueue();
   }
@@ -3886,7 +3896,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         </p>
         <div className="wz-actions">
           <button type="button" className="button button-primary wz-cta" onClick={() => { setChooseId(""); navigateToSection("choose"); }}>
-            {returning ? "Tiếp tục học" : "Bắt đầu học"} <span>→</span>
+            {returning ? "Tiếp tục" : "Bắt đầu"}
           </button>
           <button type="button" className="wz-tile wz-tile-settings wz-tile-side" onClick={() => navigateToSection("settings")}>
             <strong>Cài đặt</strong>
@@ -4143,7 +4153,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                         </div>
                         <div className="lesson-dialogue">
                           {lesson.dialogue.map((line, lineIndex) => (
-                            <div className="dialogue-line" key={lineIndex}>
+                            <div className={`dialogue-line${speakingLine === lineIndex ? " speaking" : ""}`} data-line={lineIndex} key={lineIndex}>
                               <div className="dialogue-main">
                                 {line.speaker && <b className="dialogue-speaker">{line.speaker}</b>}
                                 <span className="dialogue-text">{line.text}</span>
@@ -4155,6 +4165,18 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                           ))}
                         </div>
                       </>
+                    ) : isConversation(lessonSpoken(lesson)) ? (
+                      <div className="lesson-dialogue">
+                        {lessonSpoken(lesson).map((line, lineIndex) => (
+                          <div className={`dialogue-line${speakingLine === lineIndex ? " speaking" : ""}`} data-line={lineIndex} key={lineIndex}>
+                            <div className="dialogue-main">
+                              {line.speaker && <b className="dialogue-speaker">{line.speaker}</b>}
+                              <span className="dialogue-text">{line.text}</span>
+                              <button type="button" className="vocab-mini-btn" onClick={() => speakDialogue(lessonSpoken(lesson), lineIndex)} disabled={speechBusy} aria-label={`Nghe: ${line.text}`}>🔊</button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     ) : (
                       <div className="course-reading">{lesson.reading}</div>
                     )}

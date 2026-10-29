@@ -2528,3 +2528,25 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 28px; opaci
 .course-lesson-mark { flex: 0 0 22px; display: grid; place-items: center; width: 22px; height: 22px; border: 2px solid #c5d3cd; border-radius: 50%; background: #fff; color: #fff; font-size: .75rem; font-weight: 800; line-height: 1; }
 .course-lesson.passed .course-lesson-mark { border-color: #15966d; background: #15966d; }
 .course-lesson.selected .course-lesson-mark { border-color: #1e88e5; }
+
+/* ===== Back tab: even narrower so it takes almost no screen width ===== */
+.floating-back-button,
+html[data-theme] .floating-back-button,
+html[data-theme="blue"] .floating-back-button { width: 16px; height: 84px; padding: 3px 0; gap: 2px; border-radius: 0 7px 7px 0; opacity: .78; }
+.floating-back-button::before { font-size: .8125rem; }
+.floating-back-button span { font-size: .5625rem; font-weight: 700; letter-spacing: .03em; }
+.floating-back-button:hover:not(:disabled), .floating-back-button:focus-visible,
+html[data-theme] .floating-back-button:hover:not(:disabled) { width: 18px; opacity: 1; }
+
+/* ===== The line being read aloud lights up ===== */
+.dialogue-line { border-radius: 12px; padding: 6px 10px; transition: background .2s ease, box-shadow .2s ease; }
+.dialogue-line.speaking { background: #fff1c2; box-shadow: inset 4px 0 0 #ff9d4d, 0 2px 10px #ff9d4d33; }
+.dialogue-line.speaking .dialogue-text { color: #12378a; font-weight: 800; }
+.dialogue-line.speaking .dialogue-speaker { background: #ff9d4d; color: #fff; }
+@media (prefers-reduced-motion: reduce) { .dialogue-line { transition: none; } }
+
+/* ===== Four equal buttons on the welcome page ===== */
+.wz-actions, .wz-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: min(100%, 520px); margin-top: 0; }
+.wz-links { margin-top: -2px; }
+.wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { min-height: 52px; height: 52px; min-width: 0; padding: 0 12px; border-radius: 14px; font-size: 1rem; font-weight: 800; display: grid; place-items: center; width: 100%; }
+.wz-actions .wz-cta { border-bottom: 5px solid #167a56; }
