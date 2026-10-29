@@ -4083,7 +4083,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           ))}
         </div>
         <div className="wz-welcome-art">
-          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={typeof window !== "undefined" && window.innerHeight > 760 ? 156 : 128} entrance />
+          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={typeof window === "undefined" ? 128 : window.innerWidth >= 1000 ? 230 : window.innerWidth >= 600 ? 200 : window.innerHeight > 760 ? 156 : 128} entrance />
         </div>
         </div>
         <div className="wz-intro">

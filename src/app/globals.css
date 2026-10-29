@@ -2675,3 +2675,29 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 .voice-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 6px 0 4px; }
 .voice-mode .voice-engine { text-align: left; }
 .voice-chip.playing { border-color: #e2554b; color: #b42318; background: #fff1ef; }
+
+/* ===== Welcome page, final layout for every screen size =====
+   The language buttons fill the left column and the tutor sits in the right one, lined up
+   with the two columns of buttons below; everything grows on tablets and large screens. */
+.wz-welcome { --wz-w: 520px; --wz-gap: 12px; }
+.wz-hero, .wz-intro, .wz-menu { width: min(100%, var(--wz-w)); }
+.wz-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: var(--wz-gap); margin: 0 auto; padding: 0; justify-content: stretch; }
+.wz-hero .wz-langs { width: auto; display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin: 0; }
+.wz-hero .wz-lang { width: 100%; text-align: left; white-space: nowrap; }
+.wz-hero .wz-welcome-art { justify-self: center; padding: 0; }
+.wz-menu, .wz-menu .wz-actions, .wz-menu .wz-links { gap: var(--wz-gap); }
+@media (min-width: 600px) {
+  .wz-welcome { --wz-w: 680px; --wz-gap: 16px; }
+  .wz-hero .wz-langs { gap: 14px; }
+  .wz-hero .wz-lang { padding: 14px 22px; font-size: 1.125rem; }
+  .wz-welcome h1 { font-size: 2.25rem; }
+  .wz-welcome .wz-lead { font-size: 1.125rem; }
+  .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { height: 68px; min-height: 68px; font-size: 1.25rem; }
+}
+@media (min-width: 1000px) {
+  .wz-welcome { --wz-w: 760px; --wz-gap: 18px; }
+  .wz-hero .wz-lang { padding: 16px 24px; font-size: 1.25rem; }
+  .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { height: 74px; min-height: 74px; }
+}
+.wz-menu .wz-tile strong, .wz-menu .wz-tile-side strong { font-size: inherit; }
+.wz-welcome .install-app-panel { width: min(100%, var(--wz-w)); box-sizing: border-box; }
