@@ -532,6 +532,7 @@ export default function Home() {
   const [dictHits, setDictHits] = useState<DictHit[]>([]);
   const [dictSearching, setDictSearching] = useState(false);
   const [dictAi, setDictAi] = useState("");
+  const [dictMore, setDictMore] = useState(false);
   const [dictAiBusy, setDictAiBusy] = useState(false);
   const firstRunChecked = useRef(false);
   // Tutor Persona
@@ -3627,6 +3628,29 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     const totalMb = need.reduce((sum, id) => sum + PACK_INFO[id].mb, 0);
     const sourceText = dictSide === "target" ? dictText.target : dictText.vi;
     const googleLink = `https://translate.google.com/?sl=${dictLangCode(dictSide)}&tl=${dictLangCode(dictSide === "target" ? "vi" : "target")}&text=${encodeURIComponent(sourceText)}&op=translate`;
+    const visibleHits = dictMore ? dictHits : dictHits.slice(0, 4);
+    // English has no reading to add: when the only result repeats what is already in the box, show nothing extra.
+    const repeatsBox = LANG.id === "en" && dictHits.length === 1 && dictHits[0].head.toLowerCase() === dictText.target.trim().toLowerCase();
+    const details = sourceText.trim() && dictHits.length > 0 && !repeatsBox ? (
+      <ul className="dict-details">
+        {visibleHits.map((hit, index) => (
+          <li key={`${hit.head}-${hit.reading}-${index}`}>
+            <div className="dict-detail-main">
+              <strong lang={LANG.speechLang}>{hit.head}</strong>
+              {hit.alt && <span className="dict-alt" lang={LANG.speechLang}>{hit.alt}</span>}
+              {hit.reading && <span className="dict-reading">{hit.reading}</span>}
+              {hit.hanviet && <span className="dict-hanviet" title="Âm đọc tiếng Việt của chữ (Hán-Việt hoặc Nôm, theo Unicode Unihan)">{hit.hanviet}</span>}
+              <button type="button" className="vocab-mini-btn" aria-label={`Nghe ${hit.head}`} disabled={speechBusy} onClick={() => playPracticePhrase(hit.head)}>🔊</button>
+              <button type="button" className="vocab-mini-btn" aria-label={`Chép ${hit.head} vào khung`} title="Chép vào khung nhập" onClick={() => { setDictSide("target"); setDictText({ target: hit.head, vi: "" }); }}>📋</button>
+            </div>
+            <small className="dict-detail-mean">{hit.vietnamese.length > 0 && <b>{hit.vietnamese.join(" · ")} — </b>}{hit.english}</small>
+          </li>
+        ))}
+        {dictHits.length > 4 && (
+          <li><button type="button" className="text-button" onClick={() => setDictMore((value) => !value)}>{dictMore ? "Thu gọn" : `Xem thêm ${dictHits.length - 4} kết quả`}</button></li>
+        )}
+      </ul>
+    ) : null;
     return (
       <section className="dict-wrap" aria-labelledby="dict-title">
         <div className="page-intro">
@@ -3679,7 +3703,8 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               </span>
             </div>
             <textarea className="dict-input" rows={3} value={dictText.target} lang={LANG.speechLang} placeholder={LANG.id === "en" ? "Nhập từ hoặc câu tiếng Anh…" : `Nhập ${LANG.viName}${LANG.id === "zh" ? " (chữ Hán hoặc pinyin không dấu)" : " (kanji hoặc kana)"}…`}
-              onChange={(event) => { setDictSide("target"); setDictAi(""); setDictText((current) => ({ ...current, target: event.target.value })); }} />
+              onChange={(event) => { setDictSide("target"); setDictAi(""); setDictMore(false); setDictText((current) => ({ ...current, target: event.target.value })); }} />
+            {details}
           </div>
           <div className="dict-arrow" aria-hidden="true">⇅</div>
           <div className="dict-box">
@@ -3691,29 +3716,13 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               </span>
             </div>
             <textarea className="dict-input" rows={3} value={dictText.vi} lang="vi" placeholder="Nhập từ tiếng Việt (có dấu hoặc không dấu)…"
-              onChange={(event) => { setDictSide("vi"); setDictAi(""); setDictText((current) => ({ ...current, vi: event.target.value })); }} />
+              onChange={(event) => { setDictSide("vi"); setDictAi(""); setDictMore(false); setDictText((current) => ({ ...current, vi: event.target.value })); }} />
           </div>
         </div>
 
         {ready && sourceText.trim() && !dictHits.length && !dictSearching && (
           <p className="dict-empty">Không tìm thấy trong từ điển offline. Hãy thử tìm mở rộng online ở bên dưới.</p>
         )}
-        <ul className="dict-results">
-          {dictHits.map((hit, index) => (
-            <li key={`${hit.head}-${hit.reading}-${index}`} className="dict-card">
-              <div className="dict-card-main">
-                <strong className="dict-head" lang={LANG.speechLang}>{hit.head}</strong>
-                {hit.alt && <span className="dict-alt" lang={LANG.speechLang}>{hit.alt}</span>}
-                {hit.reading && <span className="dict-reading">{hit.reading}</span>}
-                {hit.hanviet && <span className="dict-hanviet" title="Âm đọc tiếng Việt của chữ (Hán-Việt hoặc Nôm, theo Unicode Unihan)">{hit.hanviet}</span>}
-                <button type="button" className="vocab-mini-btn" aria-label={`Nghe ${hit.head}`} disabled={speechBusy} onClick={() => playPracticePhrase(hit.head)}>🔊</button>
-                <button type="button" className="vocab-mini-btn" aria-label={`Chép ${hit.head} vào khung`} title="Chép vào khung nhập" onClick={() => { setDictSide("target"); setDictText({ target: hit.head, vi: "" }); }}>📋</button>
-              </div>
-              {hit.vietnamese.length > 0 && <p className="dict-vi">🇻🇳 {hit.vietnamese.join(" · ")}</p>}
-              <p className="dict-en">{hit.english}</p>
-            </li>
-          ))}
-        </ul>
         {ready && LANG.id !== "en" && !dictHits.some((hit) => hit.vietnamese.length) && dictHits.length > 0 && (
           <p className="dict-note">Nghĩa tiếng Việt chưa có sẵn cho từ này, bạn xem nghĩa tiếng Anh ở trên hoặc dùng tìm mở rộng online.</p>
         )}
