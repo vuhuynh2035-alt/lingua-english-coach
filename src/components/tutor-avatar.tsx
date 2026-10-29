@@ -182,12 +182,130 @@ function HumanMouth({ talking, emotion, lip }: { talking: boolean; emotion: Avat
   return <path d={restingMouth(emotion)} fill={filled ? "#7a1f2b" : "none"} stroke={lip} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />;
 }
 
+/** Clothes under the neck: gown / waistcoat, kimono / ninja suit, qipao / hanfu. */
+function Outfit({ id, look, kind }: { id: string; look: AvatarLook; kind: "woman" | "man" }) {
+  const key = `${look}-${kind}`;
+  const body = "M22 240 C22 196 58 176 100 176 C142 176 178 196 178 240Z";
+  const grad = (name: string, a: string, b: string) => (
+    <linearGradient id={`${id}-${name}`} x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor={a} /><stop offset="1" stopColor={b} /></linearGradient>
+  );
+  switch (key) {
+    case "european-woman": // off-shoulder evening gown
+      return (
+        <g>
+          <defs>{grad("gown", "#c2185b", "#5b0b31")}</defs>
+          <path d={body} fill={`url(#${id}-skin)`} />
+          <path d="M22 240 L22 212 Q56 200 80 206 Q100 222 120 206 Q144 200 178 212 L178 240Z" fill={`url(#${id}-gown)`} />
+          <path d="M22 212 Q56 200 80 206 Q100 222 120 206 Q144 200 178 212" fill="none" stroke="#ffd7e6" strokeWidth="2" opacity=".7" />
+          <path d="M60 226 Q100 238 140 226" fill="none" stroke="#ffffff55" strokeWidth="3" strokeLinecap="round" />
+          {[[50, 226], [72, 234], [128, 234], [150, 226], [100, 232]].map(([x, y]) => <circle key={`${x}`} cx={x} cy={y} r="2" fill="#ffe7a6" />)}
+        </g>
+      );
+    case "european-man": // waistcoat over a white shirt, bow tie
+      return (
+        <g>
+          <defs>{grad("vest", "#3b3f4d", "#14161d")}</defs>
+          <path d={body} fill="#f7f8fb" />
+          <path d="M22 240 C22 196 58 176 100 176 L84 200 L98 240Z" fill={`url(#${id}-vest)`} />
+          <path d="M178 240 C178 196 142 176 100 176 L116 200 L102 240Z" fill={`url(#${id}-vest)`} />
+          {[206, 220, 234].map((y) => <circle key={y} cx="100" cy={y} r="2.4" fill="#c9a24b" />)}
+        </g>
+      );
+    case "japanese-woman": // kimono with an obi
+      return (
+        <g>
+          <defs>{grad("kimono", "#e8517e", "#8e1a45")}</defs>
+          <path d="M14 244 C14 200 50 178 100 176 C150 178 186 200 186 244Z" fill={`url(#${id}-kimono)`} />
+          {[[44, 206], [62, 224], [150, 208], [138, 228], [30, 232], [170, 232]].map(([x, y]) => (
+            <g key={`${x}${y}`} fill="#ffe9f0" opacity=".85">{[0, 72, 144, 216, 288].map((a) => <circle key={a} cx={x + 4.5 * Math.cos((a * Math.PI) / 180)} cy={y + 4.5 * Math.sin((a * Math.PI) / 180)} r="2.6" />)}</g>
+          ))}
+          <path d="M14 224 H186 V244 H14Z" fill="#f3b63f" />
+          <path d="M14 230 H186 M14 238 H186" stroke="#c0841a" strokeWidth="1.6" />
+          <path d="M86 218 H114 V244 H86Z" fill="#c0392b" />
+        </g>
+      );
+    case "japanese-man": // ninja suit
+      return (
+        <g>
+          <defs>{grad("ninja", "#3a3d49", "#0e0f14")}</defs>
+          <path d="M150 190 L184 118" stroke="#1a1b20" strokeWidth="9" strokeLinecap="round" />
+          <path d="M180 126 L186 112" stroke="#c0392b" strokeWidth="6" strokeLinecap="round" />
+          <path d={body} fill={`url(#${id}-ninja)`} />
+          <path d="M44 200 L150 242 M156 200 L50 242" stroke="#5a5f6e" strokeWidth="7" opacity=".8" />
+          <path d="M22 226 H178 V240 H22Z" fill="#b3261e" />
+        </g>
+      );
+    case "chinese-woman": // qipao
+      return (
+        <g>
+          <defs>{grad("qipao", "#d92b3a", "#7c0f1d")}</defs>
+          <path d="M26 244 C26 200 60 178 100 176 C140 178 174 200 174 244Z" fill={`url(#${id}-qipao)`} />
+          {[[52, 214], [70, 232], [140, 212], [130, 234], [100, 224]].map(([x, y]) => (
+            <g key={`${x}${y}`} fill="#f7c948" opacity=".9">{[0, 90, 180, 270].map((a) => <circle key={a} cx={x + 4 * Math.cos((a * Math.PI) / 180)} cy={y + 4 * Math.sin((a * Math.PI) / 180)} r="2.4" />)}<circle cx={x} cy={y} r="1.8" fill="#7c0f1d" /></g>
+          ))}
+          <path d="M26 244 C26 200 60 178 100 176 C140 178 174 200 174 244" fill="none" stroke="#f7c948" strokeWidth="3" />
+        </g>
+      );
+    default: // chinese-man: hanfu robe with a sash
+      return (
+        <g>
+          <defs>{grad("hanfu", "#2e8b7a", "#0c3a33")}</defs>
+          <path d="M10 246 C10 200 50 178 100 176 C150 178 190 200 190 246Z" fill={`url(#${id}-hanfu)`} />
+          <path d="M10 246 C10 200 50 178 100 176 C150 178 190 200 190 246" fill="none" stroke="#e7c35a" strokeWidth="3" />
+          <path d="M12 222 H188 V238 H12Z" fill="#8c1d2c" />
+          <path d="M12 226 H188" stroke="#e7c35a" strokeWidth="1.8" />
+          <path d="M96 238 L90 250 M104 238 L110 250" stroke="#8c1d2c" strokeWidth="4" strokeLinecap="round" />
+        </g>
+      );
+  }
+}
+
+/** Collars and jewellery drawn over the neck. */
+function OutfitOver({ id, look, kind }: { id: string; look: AvatarLook; kind: "woman" | "man" }) {
+  const key = `${look}-${kind}`;
+  switch (key) {
+    case "european-woman":
+      return <g>{[0, 1, 2, 3, 4, 5, 6].map((n) => <circle key={n} cx={84 + n * 5.3} cy={186 + 8 * Math.sin((Math.PI * n) / 6)} r="2.8" fill="#fffaf0" stroke="#d8d0c0" strokeWidth=".6" />)}</g>;
+    case "european-man":
+      return (
+        <g>
+          <path d="M100 190 L82 182 L82 198Z" fill="#c8374a" /><path d="M100 190 L118 182 L118 198Z" fill="#c8374a" /><rect x="95" y="185" width="10" height="10" rx="2.5" fill="#a02536" />
+        </g>
+      );
+    case "japanese-woman":
+      return (
+        <g>
+          <path d="M76 168 L106 228 L96 232 L68 176Z" fill="#ffffff" />
+          <path d="M124 168 L98 228 L108 234 L132 176Z" fill="#f7a8c0" stroke="#ffffff" strokeWidth="2.4" />
+        </g>
+      );
+    case "japanese-man":
+      return <path d="M78 176 Q100 196 122 176 L122 186 Q100 206 78 186Z" fill="#14151a" />;
+    case "chinese-woman":
+      return (
+        <g>
+          <path d="M80 160 L80 188 Q100 200 120 188 L120 160Z" fill={`url(#${id}-qipao)`} stroke="#f7c948" strokeWidth="2.4" />
+          <path d="M120 190 Q140 192 156 210" fill="none" stroke="#f7c948" strokeWidth="3" strokeLinecap="round" />
+          {[[124, 191], [138, 197], [150, 205]].map(([x, y]) => <circle key={x} cx={x} cy={y} r="3.2" fill="#f7c948" />)}
+        </g>
+      );
+    default:
+      return (
+        <g>
+          <path d="M76 168 L104 232 L92 236 L70 176Z" fill="#f4f1e6" />
+          <path d="M124 168 L98 232 L108 238 L132 176Z" fill="#1f6f60" stroke="#e7c35a" strokeWidth="2.6" />
+        </g>
+      );
+  }
+}
+
 function Human({ id, kind, look, emotion, talking }: { id: string; kind: "woman" | "man"; look: AvatarLook; emotion: AvatarEmotion; talking: boolean }) {
   const woman = kind === "woman";
   const SKIN = LOOKS[look].skin;
   const asian = look !== "european";
+  const ninja = look === "japanese" && !woman;
   const brows = browParams(emotion);
-  const lip = woman ? "#c2415c" : "#a8504a";
+  const lip = ninja ? "#9aa0ad" : woman ? "#c2415c" : "#a8504a";
   const browColor = woman ? "#3a2113" : "#1e2026";
   const rest = emotion === "thinking" ? 0.25 : emotion === "cheer" ? 0.15 : 0;
   return (
@@ -199,19 +317,17 @@ function Human({ id, kind, look, emotion, talking }: { id: string; kind: "woman"
         <path d="M48 96 C40 40 78 22 100 22 C124 22 160 42 152 100 C158 150 150 178 138 190 L62 190 C50 178 44 150 48 96Z" fill={`url(#${id}-hairW)`} />
       )}
       {woman && look === "chinese" && <circle cx="100" cy="24" r="15" fill={`url(#${id}-hairW)`} />}
-      <path d="M22 240 C22 196 58 176 100 176 C142 176 178 196 178 240Z" fill={`url(#${woman ? `${id}-suitW` : `${id}-suitM`})`} />
-      <path d="M100 176 L76 240 L124 240Z" fill={woman ? "#f5fbfa" : "#f7f8fb"} />
-      {woman
-        ? <path d="M84 178 L100 214 L116 178 Q100 190 84 178Z" fill="#e8f3f1" />
-        : <path d="M94 184 L106 184 L110 236 L100 244 L90 236Z" fill="#c8374a" />}
+      {!woman && look === "chinese" && <circle cx="100" cy="26" r="13" fill={`url(#${id}-hairM)`} />}
+      <Outfit id={id} look={look} kind={kind} />
       <path d="M82 150 L82 182 Q100 196 118 182 L118 150Z" fill={`url(#${id}-skin)`} />
       <path d="M82 164 Q100 178 118 164 L118 182 Q100 196 82 182Z" fill="#00000026" />
+      <OutfitOver id={id} look={look} kind={kind} />
       <g className="av-head">
         <ellipse cx="52" cy="104" rx="7" ry="11" fill={`url(#${id}-skin)`} />
         <ellipse cx="148" cy="104" rx="7" ry="11" fill={`url(#${id}-skin)`} />
-        {woman && (<><circle cx="52" cy="116" r="3" fill="#f6cf6b" /><circle cx="148" cy="116" r="3" fill="#f6cf6b" /></>)}
+        {woman && look !== "japanese" && (<><circle cx="52" cy="116" r="3" fill="#f6cf6b" /><circle cx="148" cy="116" r="3" fill="#f6cf6b" /></>)}
         <ellipse cx="100" cy="100" rx="49" ry="57" fill={`url(#${id}-skin)`} />
-        {woman ? (
+        {!ninja && (woman ? (
           look === "japanese" ? (
             <path d="M50 92 C46 44 82 30 104 32 C130 34 152 52 150 92 C140 78 124 72 100 73 C76 72 60 78 50 92Z" fill={`url(#${id}-hairW)`} />
           ) : look === "chinese" ? (
@@ -219,18 +335,38 @@ function Human({ id, kind, look, emotion, talking }: { id: string; kind: "woman"
           ) : (
             <path d="M50 92 C46 46 82 30 104 34 C130 36 152 56 150 94 C140 70 124 60 104 58 C84 60 62 68 50 92Z" fill={`url(#${id}-hairW)`} />
           )
-        ) : look === "japanese" ? (
-          <path d="M51 92 C44 44 78 28 100 26 C130 28 156 46 149 92 C146 76 138 66 126 62 L116 69 L104 58 L92 69 L78 62 C66 68 56 78 51 92Z" fill={`url(#${id}-hairM)`} />
+        ) : look === "chinese" ? (
+          <path d="M51 90 C44 42 80 30 100 30 C130 30 156 48 149 90 C146 74 136 62 120 58 C104 66 74 62 56 80Z" fill={`url(#${id}-hairM)`} />
         ) : (
           <path d="M51 90 C44 40 80 26 102 28 C130 28 156 48 149 92 C146 72 134 58 118 54 C100 62 70 58 56 78Z" fill={`url(#${id}-hairM)`} />
+        ))}
+        {!ninja && <path d="M70 44 C86 36 108 36 126 46" fill="none" stroke="#ffffff30" strokeWidth="3" strokeLinecap="round" />}
+        {woman && look === "japanese" && (
+          <g transform="translate(66 50)">
+            {[0, 72, 144, 216, 288].map((a) => <circle key={a} cx={7 * Math.cos((a * Math.PI) / 180)} cy={7 * Math.sin((a * Math.PI) / 180)} r="5.2" fill="#ffb7cf" stroke="#e8517e" strokeWidth=".8" />)}
+            <circle r="3" fill="#f7c948" />
+          </g>
         )}
-        <path d="M70 44 C86 36 108 36 126 46" fill="none" stroke="#ffffff30" strokeWidth="3" strokeLinecap="round" />
+        {woman && look === "chinese" && <path d="M112 14 L146 6 M142 4 L148 10" stroke="#f7c948" strokeWidth="3" strokeLinecap="round" />}
+        {!woman && look === "chinese" && <path d="M86 38 H114 V30 H86Z" fill="#e7c35a" stroke="#b8902e" strokeWidth="1.2" />}
         <ellipse cx="68" cy="121" rx="10" ry="6" fill="#ff8aa0" opacity={emotion === "cheer" || emotion === "happy" ? 0.45 : 0.2} />
         <ellipse cx="132" cy="121" rx="10" ry="6" fill="#ff8aa0" opacity={emotion === "cheer" || emotion === "happy" ? 0.45 : 0.2} />
-        <path d="M63 82 Q76 76 90 82" fill="none" stroke={browColor} strokeWidth={woman ? 3 : 4.2} strokeLinecap="round"
-          style={{ transform: `translateY(${brows.ly}px) rotate(${brows.lr}deg)`, transformOrigin: "76px 82px" }} className="av-brow" />
-        <path d="M110 82 Q124 76 137 82" fill="none" stroke={browColor} strokeWidth={woman ? 3 : 4.2} strokeLinecap="round"
-          style={{ transform: `translateY(${brows.ry}px) rotate(${brows.rr}deg)`, transformOrigin: "124px 82px" }} className="av-brow" />
+        {ninja && (
+          <g>
+            <path d="M47 128 L47 84 C40 36 78 20 100 20 C130 20 160 36 153 84 L153 128 L142 118 L142 92 Q100 72 58 92 L58 118Z" fill="#14151a" />
+            <path d="M47 130 L58 112 Q100 106 142 112 L153 130 L150 146 Q100 178 50 146Z" fill="#1d1f27" />
+            <rect x="72" y="56" width="56" height="16" rx="4" fill="#aab0bd" stroke="#6b7180" strokeWidth="1.6" />
+            <path d="M92 64 L100 58 L108 64 L100 70Z" fill="#4b5060" />
+          </g>
+        )}
+        {!ninja && (
+          <>
+            <path d="M63 82 Q76 76 90 82" fill="none" stroke={browColor} strokeWidth={woman ? 3 : 4.2} strokeLinecap="round"
+              style={{ transform: `translateY(${brows.ly}px) rotate(${brows.lr}deg)`, transformOrigin: "76px 82px" }} className="av-brow" />
+            <path d="M110 82 Q124 76 137 82" fill="none" stroke={browColor} strokeWidth={woman ? 3 : 4.2} strokeLinecap="round"
+              style={{ transform: `translateY(${brows.ry}px) rotate(${brows.rr}deg)`, transformOrigin: "124px 82px" }} className="av-brow" />
+          </>
+        )}
         <Eye id={id} name="l" cx={76} cy={98} rx={11} ry={asian ? 7.6 : 9.5} iris={asian ? 5.6 : 6} irisFill={`url(#${id}-iris)`} lid={SKIN[1]} rest={rest} lash={woman ? "#22110a" : undefined} />
         <Eye id={id} name="r" cx={124} cy={98} rx={11} ry={asian ? 7.6 : 9.5} iris={asian ? 5.6 : 6} irisFill={`url(#${id}-iris)`} lid={SKIN[1]} rest={rest} lash={woman ? "#22110a" : undefined} />
         {!woman && look === "european" && (
@@ -240,8 +376,8 @@ function Human({ id, kind, look, emotion, talking }: { id: string; kind: "woman"
             <path d="M94 97 H106" />
           </g>
         )}
-        <path d="M100 104 Q96 118 101 121 Q106 120 104 118" fill="none" stroke="#b9775a" strokeWidth="2" strokeLinecap="round" opacity="0.65" />
-        <ellipse cx="98" cy="108" rx="2.6" ry="5" fill="#fff" opacity="0.28" />
+        {!ninja && <path d="M100 104 Q96 118 101 121 Q106 120 104 118" fill="none" stroke="#b9775a" strokeWidth="2" strokeLinecap="round" opacity="0.65" />}
+        {!ninja && <ellipse cx="98" cy="108" rx="2.6" ry="5" fill="#fff" opacity="0.28" />}
         <HumanMouth talking={talking} emotion={emotion} lip={lip} />
       </g>
     </g>
