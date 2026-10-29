@@ -2550,3 +2550,18 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 18px; opaci
 .wz-links { margin-top: -2px; }
 .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { min-height: 52px; height: 52px; min-width: 0; padding: 0 12px; border-radius: 14px; font-size: 1rem; font-weight: 800; display: grid; place-items: center; width: 100%; }
 .wz-actions .wz-cta { border-bottom: 5px solid #167a56; }
+
+/* ===== Back tab, final look: a slim translucent-blue tab on the left edge, rounded on the right,
+   with "QUAY LẠI" in white capitals reading bottom to top ===== */
+.floating-back-button,
+html[data-theme] .floating-back-button,
+html[data-theme="blue"] .floating-back-button {
+  top: 38%; width: 18px; height: 78px; padding: 0; gap: 0;
+  border: 0; border-radius: 0 12px 12px 0;
+  background: #2a86c8a6; box-shadow: 2px 3px 10px #0b3a6a33;
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+}
+.floating-back-button svg, .floating-back-button::before { display: none; }
+.floating-back-button span { font-size: .5rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; text-shadow: none; }
+.floating-back-button:hover:not(:disabled), .floating-back-button:focus-visible,
+html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; background: #2a86c8d9; }
