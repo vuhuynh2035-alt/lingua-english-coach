@@ -2630,3 +2630,10 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 .settings-group-summary > span:nth-child(2) > strong { grid-column: 2; grid-row: 1; min-width: 0; }
 .settings-group-summary > span:nth-child(2) > small { grid-column: 1 / -1; grid-row: 2; }
 .settings-group-summary > .settings-group-chevron { grid-column: 3; grid-row: 1; }
+
+/* Language buttons always wide enough for "Tiếng Trung", aligned with the logo in the top bar */
+.wz-hero { grid-template-columns: max-content minmax(0, 1fr); justify-content: stretch; padding: 0 4px; gap: 10px; }
+.wz-hero .wz-langs { width: max-content; }
+.wz-hero .wz-lang { padding: 9px 16px; overflow: visible; }
+.wz-hero .wz-welcome-art { justify-self: center; }
+.wz-hero { margin-left: -12px; width: calc(100% + 12px); }
