@@ -3524,7 +3524,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     try {
       for (const id of ids) {
         setDictBusy(`Đang tải ${PACK_INFO[id].label}…`);
-        await downloadPack(id);
+        await downloadPack(id, (done, total) => setDictBusy(`Đang tải ${PACK_INFO[id].label}… ${Math.round((done / total) * 100)}%`));
       }
       await refreshDictPacks();
     } catch (error) {
@@ -3577,7 +3577,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
 
   function renderDictionary() {
     const ready = isReady(LANG.id, dictPacks);
-    const need = packsFor(LANG.id).filter((id) => !dictPacks.includes(id) && !(id === "ja" && dictPacks.includes("ja-full")));
+    const need = packsFor(LANG.id).filter((id) => !dictPacks.includes(id));
     const totalMb = need.reduce((sum, id) => sum + PACK_INFO[id].mb, 0);
     const sourceText = dictSide === "target" ? dictText.target : dictText.vi;
     const googleLink = `https://translate.google.com/?sl=${dictLangCode(dictSide)}&tl=${dictLangCode(dictSide === "target" ? "vi" : "target")}&text=${encodeURIComponent(sourceText)}&op=translate`;
@@ -3692,9 +3692,6 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                 <li key={id}><span>{PACK_INFO[id].label} · ~{PACK_INFO[id].mb} MB</span><button type="button" className="remove-key-button" onClick={() => { void deleteDictionary(id); }}>Xóa</button></li>
               ))}
             </ul>
-            {LANG.id === "ja" && !dictPacks.includes("ja-full") && (
-              <button type="button" className="button button-outline" disabled={!!dictBusy} onClick={() => { void downloadDictionary(["ja-full"]); }}>{dictBusy || `⬇ Tải bản Nhật đầy đủ (~${PACK_INFO["ja-full"].mb} MB)`}</button>
-            )}
             {dictError && <p className="error-message" role="alert">{dictError}</p>}
             <small>Nguồn dữ liệu: CC-CEDICT, JMdict (EDRDG), Wiktionary, Unicode Unihan, theo giấy phép CC BY-SA.</small>
           </details>

@@ -8,8 +8,7 @@ Sources (download them first and pass the folder as the first argument):
 
 Output (compact JSON arrays, loaded into IndexedDB by the app):
   zh.json       [simplified, traditional or "", pinyin with tone marks, "gloss; gloss"]
-  ja.json       common words only: [kanji forms "a|b" or "", readings "x|y", "gloss; gloss", 1]
-  ja-full.json  every JMdict entry, same layout (optional extra download)
+  ja/           common JMdict words, sharded: [kanji forms "a|b" or "", readings "x|y", "gloss; gloss", 1]
   vi.json       [vietnamese word, "english gloss; gloss"]   (bridge: Vietnamese <-> English)
   hanviet.json  {char: "reading/reading"}
 
@@ -32,6 +31,86 @@ def dump(name, data):
     with open(path, "w", encoding="utf-8", newline="\n") as handle:
         json.dump(data, handle, ensure_ascii=False, separators=(",", ":"))
     print(f"{name}: {len(data)} entries, {os.path.getsize(path) / 1e6:.1f} MB")
+
+
+# ---------------------------------------------------------------- shards
+# The big packs are cut into small files so the app only loads what a search needs:
+#   h-XX.json  entries whose headword / reading starts with a character in bucket XX
+#   p-a.json   (Chinese) plain pinyin -> simplified headwords, per first letter
+#   e-a.json   English meaning word -> headwords, per first letter (for Vietnamese -> target searches)
+#   index.json list of the files, read by the downloader
+BUCKETS = 128
+
+
+def bucket(char):
+    return ord(char) % BUCKETS
+
+
+def english_terms(gloss, limit=6):
+    """Same normalisation as englishTerms() in src/lib/dictionary.ts."""
+    terms = []
+    for part in re.split(r"[;,]", gloss):
+        term = re.sub(r"\([^)]*\)", "", part)
+        term = re.sub(r"^\s*(to|a|an|the)\s+", "", term, flags=re.I).strip().lower()
+        if term and len(term) <= 40 and term not in terms:
+            terms.append(term)
+        if len(terms) >= limit:
+            break
+    return terms
+
+
+def write_shards(folder, entries, keys_of, head_of, gloss_of, priority_of=None, pinyin_of=None):
+    base = os.path.join(OUT, folder)
+    os.makedirs(base, exist_ok=True)
+    for old in os.listdir(base):
+        os.remove(os.path.join(base, old))
+    files = []
+
+    def write(name, data):
+        path = os.path.join(base, name)
+        with open(path, "w", encoding="utf-8", newline="\n") as handle:
+            json.dump(data, handle, ensure_ascii=False, separators=(",", ":"))
+        files.append(name)
+
+    heads = {}
+    for entry in entries:
+        for b in {bucket(k[0]) for k in keys_of(entry) if k}:
+            heads.setdefault(b, []).append(entry)
+    for b, items in heads.items():
+        write("h-%02x.json" % b, items)
+
+    english = {}
+    order = sorted(range(len(entries)), key=lambda i: -(priority_of(entries[i]) if priority_of else 0))
+    for i in order:
+        entry = entries[i]
+        for term in english_terms(gloss_of(entry), 2):
+            if len(term) < 2 or len(term) > 24:
+                continue
+            bucket_letter = term[0] if "a" <= term[0] <= "z" else "_"
+            heads_for_term = english.setdefault(bucket_letter, {}).setdefault(term, [])
+            if len(heads_for_term) < 4 and head_of(entry) not in heads_for_term:
+                heads_for_term.append(head_of(entry))
+    for letter, terms in english.items():
+        write("e-%s.json" % ("_" if letter == "_" else letter), terms)
+
+    if pinyin_of:
+        plain = {}
+        for entry in entries:
+            key = pinyin_of(entry)
+            if key:
+                plain.setdefault(key[0], []).append([key, head_of(entry)])
+        for letter, items in plain.items():
+            write("p-%s.json" % letter, items)
+
+    write("index.json", {"version": 1, "files": sorted(files)})
+    total = sum(os.path.getsize(os.path.join(base, name)) for name in files)
+    print(f"{folder}/: {len(files)} files, {total / 1e6:.1f} MB")
+
+
+def plain_pinyin_key(text):
+    import unicodedata
+    folded = unicodedata.normalize("NFD", text.lower())
+    return re.sub(r"[^a-z]", "", "".join(c for c in folded if not unicodedata.combining(c)))
 
 
 # ---------------------------------------------------------------- Chinese
@@ -82,7 +161,10 @@ def build_zh():
             if not parts:
                 continue
             entries.append([simplified, traditional if traditional != simplified else "", pinyin(reading), "; ".join(parts[:4])[:160]])
-    dump("zh.json", entries)
+    if os.path.exists(os.path.join(OUT, "zh.json")):
+        os.remove(os.path.join(OUT, "zh.json"))
+    write_shards("zh", entries, lambda e: [e[0], e[1]], lambda e: e[0], lambda e: e[3],
+                 pinyin_of=lambda e: plain_pinyin_key(e[2]))
 
 
 # ---------------------------------------------------------------- Japanese
@@ -104,9 +186,16 @@ def build_ja():
         if not senses or not readings:
             continue
         entries.append(["|".join(kanji[:3]), "|".join(readings[:3]), "; ".join(senses)[:170], common])
-    # The basic pack holds the common words (JMdict priority marks); the full pack is an optional extra download.
-    dump("ja.json", [e for e in entries if e[3]])
-    dump("ja-full.json", entries)
+    # Only the common words (JMdict priority marks): enough for JLPT N5-N2 and light to load.
+    common = [e for e in entries if e[3]]
+    import shutil
+    for old in ("ja.json", "ja-full.json"):
+        if os.path.exists(os.path.join(OUT, old)):
+            os.remove(os.path.join(OUT, old))
+    shutil.rmtree(os.path.join(OUT, "ja-full"), ignore_errors=True)
+    write_shards("ja", common,
+                 lambda e: [form for form in e[0].split("|") if form] + [reading for reading in e[1].split("|") if reading],
+                 lambda e: (e[0].split("|")[0] or e[1].split("|")[0]), lambda e: e[2])
 
 
 # ---------------------------------------------------------------- Vietnamese <-> English bridge

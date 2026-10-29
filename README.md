@@ -32,6 +32,10 @@ Mỗi ngôn ngữ có **88 bài trong 7 khóa** (880 câu hỏi): giao tiếp h�
 
 Mỗi bài có hội thoại (có cách đọc và bản dịch với tiếng Nhật/Trung), từ vựng, ngữ pháp, mẹo phát âm cho người Việt, nhiệm vụ luyện nói và bài kiểm tra 10 câu (đạt 8/10 để sang bài kế tiếp).
 
+## Từ điển offline
+
+Mục "Từ điển" (trong bước chọn cách học) tra hai chiều giữa ngôn ngữ đang học và tiếng Việt, có loa ở mỗi khung. Dữ liệu tải một lần về máy: CC-CEDICT (Trung), JMdict (Nhật, 30 nghìn từ thông dụng), Wiktionary (cầu nối Việt–Anh) và Unicode Unihan (âm đọc tiếng Việt của chữ Hán), đều theo giấy phép CC BY-SA. Dữ liệu Trung và Nhật được chia thành nhiều mảnh nhỏ theo chữ đầu để chỉ nạp mảnh cần tra. Gõ romaji (Nhật) hoặc pinyin không dấu (Trung) cũng tra được. Từ hiếm: dùng "Tìm mở rộng online" (AI hoặc Google Dịch). Tạo lại dữ liệu: `python scripts/dict/build_dict.py <thư mục nguồn>`.
+
 ## Cấu trúc mã
 
 - `src/app/page.tsx`: màn chọn ngôn ngữ; nạp cấu hình ngôn ngữ rồi mới nạp app học (`learning-app.tsx`), nên mỗi ngôn ngữ chỉ tải phần của mình.
