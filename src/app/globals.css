@@ -2584,3 +2584,6 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 .wz-preview-body { display: grid; gap: 4px; margin-top: 8px; }
 .wz-preview-body > span { color: var(--muted); }
 .wz-preview-body small { color: var(--muted); }
+
+/* Language buttons are only as wide as the longest name ("Tiếng Trung"); the tutor sits beside them */
+.wz-hero { grid-template-columns: max-content max-content; justify-content: center; gap: 28px; }

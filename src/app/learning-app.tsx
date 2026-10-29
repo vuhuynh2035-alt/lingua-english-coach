@@ -3889,7 +3889,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         <span className="eyebrow">TEACHER AI · GIA SƯ {LANG.viName.toUpperCase()} CỦA BẠN</span>
         <h1>Xin chào! Cùng nói {LANG.viName} tự tin hơn nhé.</h1>
         <p className="wz-lead">
-          Mỗi ngày một chút. Học bài bản theo giáo trình, hoặc trò chuyện với {TUTOR_PERSONAS[tutorPersona].name} — người sẽ chủ động dẫn dắt bạn qua từng tình huống phù hợp với trình độ của bạn.
+          Học theo giáo trình hoặc trò chuyện cùng {TUTOR_PERSONAS[tutorPersona].name}.
         </p>
         <div className="wz-actions">
           <button type="button" className="button button-primary wz-cta" onClick={() => { setChooseId(""); navigateToSection("choose"); }}>
