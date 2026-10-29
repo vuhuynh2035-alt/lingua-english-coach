@@ -2728,3 +2728,8 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 @media (min-width: 600px) { .wz-welcome h1.wz-slogan { font-size: 3rem; } }
 @media (min-width: 1000px) { .wz-welcome h1.wz-slogan { font-size: 3.5rem; } }
 @media (max-width: 520px) { .wz-intro .eyebrow { font-size: .65rem; letter-spacing: .04em; } }
+
+/* Tablets and large screens: wider rows (+20%) so the page does not look thin */
+@media (min-width: 600px) {
+  .wz-hero, .wz-menu, .wz-welcome .install-app-panel { width: calc(var(--wz-col, 520px) * 1.2); max-width: calc(100% - 32px); }
+}
