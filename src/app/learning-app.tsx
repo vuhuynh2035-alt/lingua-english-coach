@@ -657,6 +657,7 @@ export default function Home() {
   const speechRunRef = useRef(0);
   const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null; profile?: VoiceProfile; line?: number }[]>([]);
   const [dialogueNames, setDialogueNames] = useState(true);
+  const [viTesting, setViTesting] = useState(false);
   /** The conversation line being read aloud, highlighted in the lesson. */
   const [speakingLine, setSpeakingLine] = useState<number | null>(null);
   const speechQueueRunningRef = useRef(false);
@@ -2314,10 +2315,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <div className="voice-preview">
           <p>“{accent.sample}”</p>
           <div className="cr-connect-actions">
-            <button type="button" className="button button-primary" disabled={speechBusy} onClick={() => { void playPracticePhrase(accent.sample); }}>
-              {speechBusy ? "Đang phát…" : `▶ Nghe thử ${accent.flag} ${accent.name}`}
+            <button type="button" className="button button-primary" onClick={() => { if (speechBusy) { stopSpeech(); setSpeechBusy(false); } else void playPracticePhrase(accent.sample); }}>
+              {speechBusy ? "■ Dừng phát" : `▶ Nghe thử ${accent.flag} ${accent.name}`}
             </button>
-            {speechBusy && <button type="button" className="button button-outline" onClick={() => { stopSpeech(); setSpeechBusy(false); }}>■ Dừng</button>}
             <button type="button" className="button button-outline" onClick={() => { void removeSavedSpeech(); }}>Xóa âm thanh đã lưu</button>
           </div>
           {speechNotice && <p className="settings-hint" role="status">{speechNotice}</p>}
@@ -2723,7 +2723,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <details name="settings-groups" className="settings-group">
           <summary className="settings-group-summary">
             <span className="settings-icon">🎓</span>
-            <span><strong>Gia sư AI đồng hành</strong><small>{TUTOR_PERSONAS[tutorPersona].name} · {TUTOR_PERSONAS[tutorPersona]?.title}</small></span>
+            <span><strong>Gia sư AI & giọng đọc</strong><small>{TUTOR_PERSONAS[tutorPersona].name} · {getAccent(voiceProfile.accent).flag} {getAccent(voiceProfile.accent).name} · {voiceProfile.engine === "device" ? "giọng trên máy" : voiceProfile.engine === "google" ? `Google ${voiceProfile.googleVoice}` : `OpenAI ${voiceProfile.openaiVoice}`}</small></span>
             <span className="settings-group-chevron" aria-hidden="true">⌄</span>
           </summary>
           <div className="settings-group-content">
@@ -2731,7 +2731,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               <div className="settings-section-heading">
                 <span className="settings-icon" aria-hidden="true">🎓</span>
                 <div>
-                  <h3>Chọn nhân vật gia sư 3D</h3>
+                  <h3>Chọn hình ảnh gia sư</h3>
                   <p>Lựa chọn hình tượng gia sư phù hợp với sở thích của bạn. Giọng đọc tự đổi theo nhân vật: thầy → giọng nam, cô → giọng nữ, {LANG.tutors.alex.name} → giọng trẻ em.</p>
                 </div>
               </div>
@@ -2773,6 +2773,110 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 })}
               </div>
             </section>
+
+            {/* 1. VIETNAMESE VOICE SETTINGS */}
+            <section className="panel settings-panel">
+              <div className="settings-section-heading">
+                <span className="settings-icon" aria-hidden="true">🇻🇳</span>
+                <div>
+                  <h3>Giọng đọc Tiếng Việt (Giải thích bài học & chỉ dẫn)</h3>
+                  <p>Chọn giọng đọc trên thiết bị và điều chỉnh tốc độ, cao độ để giọng nghe ấm áp, tự nhiên nhất.</p>
+                </div>
+              </div>
+
+              {/* Voice select */}
+              <label className="settings-label" htmlFor="vi-device-voice">Giọng tiếng Việt trên thiết bị</label>
+              {(() => {
+                const viVoices = systemVoices.filter((v) => v.lang.toLowerCase().startsWith("vi") || v.lang.toLowerCase().includes("vn"));
+                return (
+                  <select
+                    id="vi-device-voice"
+                    className="settings-select"
+                    value={selectedViVoiceId}
+                    onChange={(e) => updateViVoice(e.target.value)}
+                  >
+                    <option value="">Giọng Tiếng Việt mặc định hệ thống</option>
+                    {viVoices.map((v) => (
+                      <option key={v.voiceURI || v.name} value={v.voiceURI || v.name}>
+                        {v.name} ({v.lang})
+                      </option>
+                    ))}
+                  </select>
+                );
+              })()}
+
+              {/* Speed rate */}
+              <div className="font-scale-control" style={{ marginTop: "12px" }}>
+                <label className="settings-label" htmlFor="vi-speech-rate">Tốc độ đọc tiếng Việt</label>
+                <output className="font-scale-value" htmlFor="vi-speech-rate">{viSpeechRate.toFixed(2)}x</output>
+                <input
+                  id="vi-speech-rate"
+                  className="font-scale-slider"
+                  type="range"
+                  min="0.7"
+                  max="1.3"
+                  step="0.05"
+                  value={viSpeechRate}
+                  onChange={(e) => updateViRate(Number(e.target.value))}
+                />
+                <div className="font-scale-endpoints">
+                  <span>0.7x · Chậm rãi</span>
+                  <span>0.95x · Khuyên dùng</span>
+                  <span>1.3x · Nhanh</span>
+                </div>
+              </div>
+
+              {/* Pitch */}
+              <div className="font-scale-control" style={{ marginTop: "12px" }}>
+                <label className="settings-label" htmlFor="vi-speech-pitch">Cao độ giọng (Trầm / Bổng)</label>
+                <output className="font-scale-value" htmlFor="vi-speech-pitch">{viSpeechPitch.toFixed(2)}x</output>
+                <input
+                  id="vi-speech-pitch"
+                  className="font-scale-slider"
+                  type="range"
+                  min="0.8"
+                  max="1.2"
+                  step="0.05"
+                  value={viSpeechPitch}
+                  onChange={(e) => updateViPitch(Number(e.target.value))}
+                />
+                <div className="font-scale-endpoints">
+                  <span>0.8x · Trầm ấm</span>
+                  <span>1.0x · Tiêu chuẩn</span>
+                  <span>1.2x · Trong trẻo</span>
+                </div>
+              </div>
+
+              {/* Test button */}
+              <div style={{ marginTop: "14px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                <button
+                  type="button"
+                  className="button button-outline"
+                  onClick={async () => {
+                    if (viTesting) { stopSpeech(); setViTesting(false); setVoiceTestNotice(""); return; }
+                    setViTesting(true);
+                    setVoiceTestNotice("Đang phát thử giọng tiếng Việt...");
+                    await playNativeUtterance(`Xin chào bạn! Tôi là gia sư ${LANG.viName} của bạn, chúc bạn học tập thật vui và tiến bộ mỗi ngày.`, "vi");
+                    setViTesting(false);
+                    setVoiceTestNotice((current) => (current ? "Đã hoàn tất phát thử giọng tiếng Việt." : ""));
+                  }}
+                >
+                  {viTesting ? "■ Dừng phát" : "▶ Nghe thử giọng tiếng Việt"}
+                </button>
+                {voiceTestNotice && <span style={{ fontSize: "0.85rem", color: "var(--theme-text, #134e4a)" }}>{voiceTestNotice}</span>}
+              </div>
+
+              <div className="speech-device-tip-box" style={{ marginTop: "14px", padding: "10px 14px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "0.84rem", color: "#475569", lineHeight: "1.5" }}>
+                <strong>💡 Mẹo để có giọng đọc tiếng Việt hay nhất:</strong>
+                <ul style={{ margin: "6px 0 0", paddingLeft: "18px" }}>
+                  <li><strong>Trên điện thoại Android:</strong> Vào Cài đặt máy ➔ Trợ năng ➔ Đầu ra chuyển văn bản thành giọng nói (Text-to-speech) ➔ Chọn <em>Speech Services by Google</em> ➔ Bấm biểu tượng Cài đặt ➔ Tải gói dữ liệu tiếng Việt chất lượng cao. Giọng đọc sẽ trở nên rất truyền cảm và tự nhiên.</li>
+                  <li><strong>Trên máy tính:</strong> Trình duyệt Microsoft Edge hỗ trợ sẵn các giọng <em>Microsoft HoaiMy Online (Natural)</em> và <em>Microsoft NamMinh Online (Natural)</em> chất lượng tuyệt hảo.</li>
+                </ul>
+              </div>
+            </section>
+
+            {renderVoiceStudio()}
+            {renderRecordingSettings()}
           </div>
         </details>
         <details name="settings-groups" className="settings-group">
@@ -2864,115 +2968,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             {modelCatalog[aiProvider].map((model) => <option key={model.id} value={model.id}>{model.label}</option>)}
           </select>
         </section>
-          </div>
-        </details>
-        <details name="settings-groups" className="settings-group">
-          <summary className="settings-group-summary">
-            <span className="settings-icon"><IllustrationIcon name="speaker" /></span>
-            <span><strong>Giọng đọc & phát âm</strong><small>{getAccent(voiceProfile.accent).flag} {getAccent(voiceProfile.accent).name} · {voiceProfile.gender === "female" ? "nữ" : "nam"} · {voiceProfile.engine === "device" ? "giọng trên máy" : voiceProfile.engine === "google" ? `Google ${voiceProfile.googleVoice}` : `OpenAI ${voiceProfile.openaiVoice}`}</small></span>
-            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
-          </summary>
-          <div className="settings-group-content">
-            {/* 1. VIETNAMESE VOICE SETTINGS */}
-            <section className="panel settings-panel">
-              <div className="settings-section-heading">
-                <span className="settings-icon" aria-hidden="true">🇻🇳</span>
-                <div>
-                  <h3>Giọng đọc Tiếng Việt (Giải thích bài học & chỉ dẫn)</h3>
-                  <p>Chọn giọng đọc trên thiết bị và điều chỉnh tốc độ, cao độ để giọng nghe ấm áp, tự nhiên nhất.</p>
-                </div>
-              </div>
-
-              {/* Voice select */}
-              <label className="settings-label" htmlFor="vi-device-voice">Giọng tiếng Việt trên thiết bị</label>
-              {(() => {
-                const viVoices = systemVoices.filter((v) => v.lang.toLowerCase().startsWith("vi") || v.lang.toLowerCase().includes("vn"));
-                return (
-                  <select
-                    id="vi-device-voice"
-                    className="settings-select"
-                    value={selectedViVoiceId}
-                    onChange={(e) => updateViVoice(e.target.value)}
-                  >
-                    <option value="">Giọng Tiếng Việt mặc định hệ thống</option>
-                    {viVoices.map((v) => (
-                      <option key={v.voiceURI || v.name} value={v.voiceURI || v.name}>
-                        {v.name} ({v.lang})
-                      </option>
-                    ))}
-                  </select>
-                );
-              })()}
-
-              {/* Speed rate */}
-              <div className="font-scale-control" style={{ marginTop: "12px" }}>
-                <label className="settings-label" htmlFor="vi-speech-rate">Tốc độ đọc tiếng Việt</label>
-                <output className="font-scale-value" htmlFor="vi-speech-rate">{viSpeechRate.toFixed(2)}x</output>
-                <input
-                  id="vi-speech-rate"
-                  className="font-scale-slider"
-                  type="range"
-                  min="0.7"
-                  max="1.3"
-                  step="0.05"
-                  value={viSpeechRate}
-                  onChange={(e) => updateViRate(Number(e.target.value))}
-                />
-                <div className="font-scale-endpoints">
-                  <span>0.7x · Chậm rãi</span>
-                  <span>0.95x · Khuyên dùng</span>
-                  <span>1.3x · Nhanh</span>
-                </div>
-              </div>
-
-              {/* Pitch */}
-              <div className="font-scale-control" style={{ marginTop: "12px" }}>
-                <label className="settings-label" htmlFor="vi-speech-pitch">Cao độ giọng (Trầm / Bổng)</label>
-                <output className="font-scale-value" htmlFor="vi-speech-pitch">{viSpeechPitch.toFixed(2)}x</output>
-                <input
-                  id="vi-speech-pitch"
-                  className="font-scale-slider"
-                  type="range"
-                  min="0.8"
-                  max="1.2"
-                  step="0.05"
-                  value={viSpeechPitch}
-                  onChange={(e) => updateViPitch(Number(e.target.value))}
-                />
-                <div className="font-scale-endpoints">
-                  <span>0.8x · Trầm ấm</span>
-                  <span>1.0x · Tiêu chuẩn</span>
-                  <span>1.2x · Trong trẻo</span>
-                </div>
-              </div>
-
-              {/* Test button */}
-              <div style={{ marginTop: "14px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  className="button button-outline"
-                  onClick={async () => {
-                    setVoiceTestNotice("Đang phát thử giọng tiếng Việt...");
-                    await playNativeUtterance(`Xin chào bạn! Tôi là gia sư ${LANG.viName} của bạn, chúc bạn học tập thật vui và tiến bộ mỗi ngày.`, "vi");
-                    setVoiceTestNotice("Đã hoàn tất phát thử giọng tiếng Việt.");
-                  }}
-                >
-                  ▶ Nghe thử giọng tiếng Việt
-                </button>
-                {voiceTestNotice && <span style={{ fontSize: "0.85rem", color: "var(--theme-text, #134e4a)" }}>{voiceTestNotice}</span>}
-              </div>
-
-              <div className="speech-device-tip-box" style={{ marginTop: "14px", padding: "10px 14px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "0.84rem", color: "#475569", lineHeight: "1.5" }}>
-                <strong>💡 Mẹo để có giọng đọc tiếng Việt hay nhất:</strong>
-                <ul style={{ margin: "6px 0 0", paddingLeft: "18px" }}>
-                  <li><strong>Trên điện thoại Android:</strong> Vào Cài đặt máy ➔ Trợ năng ➔ Đầu ra chuyển văn bản thành giọng nói (Text-to-speech) ➔ Chọn <em>Speech Services by Google</em> ➔ Bấm biểu tượng Cài đặt ➔ Tải gói dữ liệu tiếng Việt chất lượng cao. Giọng đọc sẽ trở nên rất truyền cảm và tự nhiên.</li>
-                  <li><strong>Trên máy tính:</strong> Trình duyệt Microsoft Edge hỗ trợ sẵn các giọng <em>Microsoft HoaiMy Online (Natural)</em> và <em>Microsoft NamMinh Online (Natural)</em> chất lượng tuyệt hảo.</li>
-                </ul>
-              </div>
-            </section>
-
-            {renderVoiceStudio()}
-            {renderRecordingSettings()}
           </div>
         </details>
         <details name="settings-groups" className="settings-group">
@@ -3572,7 +3567,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
 
           {step === 6 && (
             <>
-              <p className="sg-lead">Chọn giọng để nghe {LANG.viName} và nghe thử. Bạn có thể đổi lại bất cứ lúc nào ở Cài đặt → Giọng đọc & phát âm.</p>
+              <p className="sg-lead">Chọn giọng để nghe {LANG.viName} và nghe thử. Bạn có thể đổi lại bất cứ lúc nào ở Cài đặt → Gia sư AI & giọng đọc.</p>
               <span className="settings-label">Nguồn giọng</span>
               <div className="voice-chips">
                 {([["device", "Giọng trên máy (miễn phí)"], ["google", "Giọng AI Google"], ["openai", "Giọng AI OpenAI"]] as const).map(([id, label]) => (
