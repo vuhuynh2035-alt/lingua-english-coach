@@ -2495,3 +2495,18 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 46px; backg
 @keyframes dict-pulse { 0%, 100% { box-shadow: 0 0 0 0 #ef444466; } 50% { box-shadow: 0 0 0 8px #ef444400; } }
 .dict-listening { margin: 0; padding: 8px 12px; border-radius: 10px; background: #fff1f1; color: #9b1c1c; font-weight: 700; }
 @media (prefers-reduced-motion: reduce) { .vocab-mini-btn.listening { animation: none; } }
+
+.lesson-toggle-inline { display: flex; align-items: center; gap: 8px; margin-top: 8px; color: var(--muted); font-size: .9375rem; }
+
+/* ===== Back tab: slim again (as before), still translucent blue with white text ===== */
+.floating-back-button,
+html[data-theme] .floating-back-button,
+html[data-theme="blue"] .floating-back-button {
+  width: 24px; height: 92px; padding: 4px 0; gap: 3px;
+  border-radius: 0 9px 9px 0; background: #2583b88c; box-shadow: 0 2px 8px #0b3a6a2e;
+  opacity: .82; -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+}
+.floating-back-button::before { font-size: 1rem; }
+.floating-back-button span { font-size: .6875rem; font-weight: 700; letter-spacing: .04em; text-shadow: 0 1px 2px #0005; }
+.floating-back-button:hover:not(:disabled), .floating-back-button:focus-visible,
+html[data-theme] .floating-back-button:hover:not(:disabled) { width: 28px; opacity: 1; background: #2583b8c4; }
