@@ -161,7 +161,8 @@ export function voiceDirection(profile: VoiceProfile, language: "en" | "vi" = "e
   return `Speak with ${accent.prompt} accent, ${style.prompt}, ${pace}`;
 }
 
-export const GOOGLE_TTS_MODELS = ["gemini-2.5-flash-preview-tts", "gemini-2.5-flash-tts", "gemini-2.5-pro-preview-tts"];
+// Speech models have their own ids ("-tts"); the chat models ("gemini-3.8-flash") cannot speak.
+export const GOOGLE_TTS_MODELS = ["gemini-3.8-flash-tts", "gemini-3.8-flash-lite-tts", "gemini-2.5-flash-tts", "gemini-2.5-flash-preview-tts"];
 export const OPENAI_TTS_MODELS = ["gpt-4o-mini-tts", "tts-1"];
 
 function pcmToWav(pcm: Uint8Array, sampleRate: number): Blob {
