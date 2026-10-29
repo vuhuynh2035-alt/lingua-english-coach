@@ -2708,3 +2708,10 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 @media (min-height: 760px) { .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { height: 48px; min-height: 48px; } }
 @media (min-width: 600px) { .wz-welcome { --wz-gap: 16px; } .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { height: 54px; min-height: 54px; } }
 @media (min-width: 1000px) { .wz-welcome { --wz-gap: 18px; } .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { height: 59px; min-height: 59px; } }
+
+/* Welcome page: buttons span exactly the greeting's longest line (first letter to last letter);
+   the language buttons are 20% narrower and start at the same left edge */
+.wz-hero, .wz-menu, .wz-welcome .install-app-panel { width: var(--wz-col, min(100%, var(--wz-w))); max-width: 100%; margin-left: auto; margin-right: auto; box-sizing: border-box; }
+.wz-hero, .wz-menu { padding-left: 0; padding-right: 0; }
+.wz-hero .wz-langs { width: 80%; justify-self: start; }
+.wz-hero .wz-welcome-art { justify-self: center; }

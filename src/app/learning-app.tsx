@@ -713,6 +713,28 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progressLoaded, aiSettingsLoaded, apiKeys]);
 
+  // The welcome buttons are exactly as wide as the longest line of the greeting, so they line up with its first and last letters.
+  useEffect(() => {
+    if (section !== "home") return;
+    const root = document.querySelector<HTMLElement>(".wz-welcome");
+    const heading = root?.querySelector("h1");
+    if (!root || !heading) return;
+    const measure = () => {
+      const range = document.createRange();
+      range.selectNodeContents(heading);
+      const rects = [...range.getClientRects()].filter((rect) => rect.width > 1);
+      if (!rects.length) return;
+      const width = Math.max(...rects.map((rect) => rect.right)) - Math.min(...rects.map((rect) => rect.left));
+      root.style.setProperty("--wz-col", `${Math.round(width)}px`);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(heading);
+    void document.fonts?.ready.then(measure);
+    window.addEventListener("resize", measure);
+    return () => { observer.disconnect(); window.removeEventListener("resize", measure); };
+  }, [section]);
+
   // A sample read through the speech queue is over when the queue is.
   useEffect(() => {
     if (!speechBusy && !speechQueueRunningRef.current) setPreviewing((current) => (current?.startsWith("pack:") ? current : null));
