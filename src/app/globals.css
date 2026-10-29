@@ -2466,3 +2466,10 @@ html[data-theme] .floating-back-button { color: #fff; background: #0f172a2e; bor
 .inapp-notice p { margin: 0; font-size: .9375rem; }
 .inapp-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .inapp-actions .button { text-decoration: none; }
+
+/* ===== Dictionary: the details live inside the box of the language being learned ===== */
+.dict-details { display: grid; gap: 8px; margin: 4px 0 0; padding: 10px 0 0; border-top: 1px dashed var(--line); list-style: none; }
+.dict-detail-main { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.dict-detail-main strong { font: 800 1.25rem/1.2 var(--font-display); }
+.dict-detail-mean { display: block; margin-top: 2px; color: var(--muted); }
+.dict-detail-mean b { color: #0d5a3b; }
