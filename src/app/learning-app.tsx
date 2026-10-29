@@ -348,6 +348,9 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
 };
 
 
+/** The built-in voices read a little slower than natural speech, which suits learners; the speed sliders scale from there. */
+const PACK_PACE = 0.88;
+
 const PROFILE_SUGGESTIONS = LANG.suggestions;
 
 function renderFormattedMessage(
@@ -1915,7 +1918,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         if (cloud) return cloud;
       } catch {}
     }
-    return packReadyRef.current.vi ? synthesize("vi", clean) : null;
+    return packReadyRef.current.vi ? synthesize("vi", clean, { speed: viSpeechRate * PACK_PACE }) : null;
   }
 
   /** Speaks Vietnamese outside the reading queue (tests, dictionary); call it straight from a tap. */
@@ -1953,7 +1956,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     if (enSource !== "device" && packReadyRef.current.en) {
       const [gender, index] = enPackVoice.split("-");
       const sid = main ? await englishSpeaker({ gender: gender === "male" ? "male" : "female", index: Number(index) || 0 }) : await offlineEnglishSpeaker(profile);
-      return synthesize("en", text, { sid, speed: Math.min(1.2, Math.max(0.75, profile.speed)) });
+      return synthesize("en", text, { sid, speed: Math.min(1.2, Math.max(0.7, profile.speed)) * PACK_PACE });
     }
     return null;
   }
@@ -2382,7 +2385,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                       try { localStorage.setItem(sharedKey("en-pack-voice"), value); } catch {}
                       stopSpeech();
                       unlockSpeechPlayer();
-                      void englishSpeaker({ gender, index }).then((sid) => synthesize("en", "Hello! I'm your English teacher. Let's practice speaking together today.", { sid }))
+                      void englishSpeaker({ gender, index }).then((sid) => synthesize("en", "Hello! I'm your English teacher. Let's practice speaking together today.", { sid, speed: voiceProfile.speed * PACK_PACE }))
                         .then((clip) => { if (clip) return playBlob(clip); }).catch(() => {});
                     }}>
                     ▶ {gender === "female" ? "Nữ" : "Nam"} {index + 1}
