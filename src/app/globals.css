@@ -2565,3 +2565,12 @@ html[data-theme="blue"] .floating-back-button {
 .floating-back-button span { font-size: .5rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; text-shadow: none; }
 .floating-back-button:hover:not(:disabled), .floating-back-button:focus-visible,
 html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; background: #2a86c8d9; }
+
+/* ===== Welcome page: languages stacked on the left, the tutor on the right, so the four buttons fit on one screen ===== */
+.wz-hero { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; width: min(100%, 520px); }
+.wz-hero .wz-langs { flex-direction: column; flex-wrap: nowrap; align-items: stretch; justify-content: center; gap: 10px; margin: 0; }
+.wz-hero .wz-lang { text-align: left; padding: 11px 14px; }
+.wz-hero .wz-welcome-art { padding: 0 8px 0 0; }
+.wz-welcome { gap: 10px; padding-top: 12px; }
+.wz-welcome .wz-lead { margin: 0; font-size: .9375rem; line-height: 1.45; }
+.wz-welcome h1 { font-size: clamp(1.25rem, 5.4vw, 1.75rem); }

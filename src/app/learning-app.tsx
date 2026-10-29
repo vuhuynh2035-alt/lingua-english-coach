@@ -3868,6 +3868,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     const returning = progress.sessions > 0;
     return (
       <section className="wz-welcome">
+        <div className="wz-hero">
         <div className="wz-langs" role="group" aria-label="Ngôn ngữ đang học">
           {LANGUAGES.map((item) => (
             <button
@@ -3882,7 +3883,8 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           ))}
         </div>
         <div className="wz-welcome-art">
-          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={190} entrance />
+          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={150} entrance />
+        </div>
         </div>
         <span className="eyebrow">TEACHER AI · GIA SƯ {LANG.viName.toUpperCase()} CỦA BẠN</span>
         <h1>Xin chào! Cùng nói {LANG.viName} tự tin hơn nhé.</h1>
