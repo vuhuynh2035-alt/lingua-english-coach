@@ -2701,3 +2701,10 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 }
 .wz-menu .wz-tile strong, .wz-menu .wz-tile-side strong { font-size: inherit; }
 .wz-welcome .install-app-panel { width: min(100%, var(--wz-w)); box-sizing: border-box; }
+
+/* Welcome buttons: 20% lower, wider gaps between them */
+.wz-welcome { --wz-gap: 20px; }
+.wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { height: 42px; min-height: 42px; }
+@media (min-height: 760px) { .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { height: 48px; min-height: 48px; } }
+@media (min-width: 600px) { .wz-welcome { --wz-gap: 26px; } .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { height: 54px; min-height: 54px; } }
+@media (min-width: 1000px) { .wz-welcome { --wz-gap: 30px; } .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { height: 59px; min-height: 59px; } }
