@@ -5,6 +5,7 @@ import { realMouthLevel } from "@/lib/lipsync";
 import { LANG, type MascotKind } from "@/lib/language";
 
 export type AvatarKind = "woman" | "man" | "mascot";
+export type AvatarLook = "european" | "japanese" | "chinese";
 export type AvatarEmotion = "neutral" | "happy" | "cheer" | "thinking" | "surprised";
 /** "sleeping": not connected yet, eyes shut and Zzz. Leaving it makes the tutor wake up with a hop and a few blinks. */
 export type AvatarStatus = "idle" | "thinking" | "speaking" | "listening" | "sleeping";
@@ -13,6 +14,8 @@ type Props = {
   kind: AvatarKind;
   /** Which mascot a "mascot" tutor is; defaults to the one of the language being learned. */
   mascot?: MascotKind;
+  /** Where a human tutor comes from; defaults to the country of the language being learned. */
+  look?: AvatarLook;
   status?: AvatarStatus;
   emotion?: AvatarEmotion;
   size?: number;
@@ -23,9 +26,15 @@ type Props = {
   className?: string;
 };
 
-const SKIN = ["#ffe6d4", "#f6c2a2", "#d9967a"];
+const LOOKS: Record<AvatarLook, { skin: string[]; hairW: string[]; hairM: string[]; iris: string[] }> = {
+  european: { skin: ["#ffe9dc", "#f7c9ae", "#dfa085"], hairW: ["#c58a4e", "#6b3f1e"], hairM: ["#7a5636", "#2d1b0e"], iris: ["#8fc1e3", "#2c5b84"] },
+  japanese: { skin: ["#fff0e0", "#f8d3b0", "#e0a883"], hairW: ["#3a3a46", "#0b0b10"], hairM: ["#3a3a46", "#0b0b10"], iris: ["#7a5230", "#24130a"] },
+  chinese: { skin: ["#ffeccc", "#f3cd9c", "#d6a171"], hairW: ["#34343e", "#08080c"], hairM: ["#34343e", "#08080c"], iris: ["#6b4423", "#1f1008"] },
+};
 
-function Defs({ id }: { id: string }) {
+function Defs({ id, look }: { id: string; look: AvatarLook }) {
+  const palette = LOOKS[look];
+  const SKIN = palette.skin;
   return (
     <defs>
       <radialGradient id={`${id}-skin`} cx="38%" cy="30%" r="80%">
@@ -38,16 +47,16 @@ function Defs({ id }: { id: string }) {
         <stop offset="1" stopColor="#e3e8ee" />
       </radialGradient>
       <radialGradient id={`${id}-iris`} cx="40%" cy="35%" r="70%">
-        <stop offset="0" stopColor="#8a5a34" />
-        <stop offset="1" stopColor="#2e1a0d" />
+        <stop offset="0" stopColor={palette.iris[0]} />
+        <stop offset="1" stopColor={palette.iris[1]} />
       </radialGradient>
       <linearGradient id={`${id}-hairW`} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stopColor="#6b4129" />
-        <stop offset="1" stopColor="#2a160b" />
+        <stop offset="0" stopColor={palette.hairW[0]} />
+        <stop offset="1" stopColor={palette.hairW[1]} />
       </linearGradient>
       <linearGradient id={`${id}-hairM`} x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0" stopColor="#4b4f5a" />
-        <stop offset="1" stopColor="#15171c" />
+        <stop offset="0" stopColor={palette.hairM[0]} />
+        <stop offset="1" stopColor={palette.hairM[1]} />
       </linearGradient>
       <linearGradient id={`${id}-suitW`} x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stopColor="#2cb5a5" />
@@ -173,17 +182,23 @@ function HumanMouth({ talking, emotion, lip }: { talking: boolean; emotion: Avat
   return <path d={restingMouth(emotion)} fill={filled ? "#7a1f2b" : "none"} stroke={lip} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />;
 }
 
-function Human({ id, kind, emotion, talking }: { id: string; kind: "woman" | "man"; emotion: AvatarEmotion; talking: boolean }) {
+function Human({ id, kind, look, emotion, talking }: { id: string; kind: "woman" | "man"; look: AvatarLook; emotion: AvatarEmotion; talking: boolean }) {
   const woman = kind === "woman";
+  const SKIN = LOOKS[look].skin;
+  const asian = look !== "european";
   const brows = browParams(emotion);
   const lip = woman ? "#c2415c" : "#a8504a";
   const browColor = woman ? "#3a2113" : "#1e2026";
   const rest = emotion === "thinking" ? 0.25 : emotion === "cheer" ? 0.15 : 0;
   return (
     <g>
-      {woman && (
+      {woman && look === "japanese" && (
+        <path d="M46 100 C40 44 78 24 100 24 C124 24 162 44 154 100 C156 130 150 144 142 148 L58 148 C50 144 44 130 46 100Z" fill={`url(#${id}-hairW)`} />
+      )}
+      {woman && look !== "japanese" && (
         <path d="M48 96 C40 40 78 22 100 22 C124 22 160 42 152 100 C158 150 150 178 138 190 L62 190 C50 178 44 150 48 96Z" fill={`url(#${id}-hairW)`} />
       )}
+      {woman && look === "chinese" && <circle cx="100" cy="24" r="15" fill={`url(#${id}-hairW)`} />}
       <path d="M22 240 C22 196 58 176 100 176 C142 176 178 196 178 240Z" fill={`url(#${woman ? `${id}-suitW` : `${id}-suitM`})`} />
       <path d="M100 176 L76 240 L124 240Z" fill={woman ? "#f5fbfa" : "#f7f8fb"} />
       {woman
@@ -197,7 +212,15 @@ function Human({ id, kind, emotion, talking }: { id: string; kind: "woman" | "ma
         {woman && (<><circle cx="52" cy="116" r="3" fill="#f6cf6b" /><circle cx="148" cy="116" r="3" fill="#f6cf6b" /></>)}
         <ellipse cx="100" cy="100" rx="49" ry="57" fill={`url(#${id}-skin)`} />
         {woman ? (
-          <path d="M50 92 C46 46 82 30 104 34 C130 36 152 56 150 94 C140 70 124 60 104 58 C84 60 62 68 50 92Z" fill={`url(#${id}-hairW)`} />
+          look === "japanese" ? (
+            <path d="M50 92 C46 44 82 30 104 32 C130 34 152 52 150 92 C140 78 124 72 100 73 C76 72 60 78 50 92Z" fill={`url(#${id}-hairW)`} />
+          ) : look === "chinese" ? (
+            <path d="M50 94 C46 46 82 30 100 30 C120 30 154 46 150 94 C140 72 118 54 100 52 C82 54 60 72 50 94Z" fill={`url(#${id}-hairW)`} />
+          ) : (
+            <path d="M50 92 C46 46 82 30 104 34 C130 36 152 56 150 94 C140 70 124 60 104 58 C84 60 62 68 50 92Z" fill={`url(#${id}-hairW)`} />
+          )
+        ) : look === "japanese" ? (
+          <path d="M51 92 C44 44 78 28 100 26 C130 28 156 46 149 92 C146 76 138 66 126 62 L116 69 L104 58 L92 69 L78 62 C66 68 56 78 51 92Z" fill={`url(#${id}-hairM)`} />
         ) : (
           <path d="M51 90 C44 40 80 26 102 28 C130 28 156 48 149 92 C146 72 134 58 118 54 C100 62 70 58 56 78Z" fill={`url(#${id}-hairM)`} />
         )}
@@ -208,9 +231,9 @@ function Human({ id, kind, emotion, talking }: { id: string; kind: "woman" | "ma
           style={{ transform: `translateY(${brows.ly}px) rotate(${brows.lr}deg)`, transformOrigin: "76px 82px" }} className="av-brow" />
         <path d="M110 82 Q124 76 137 82" fill="none" stroke={browColor} strokeWidth={woman ? 3 : 4.2} strokeLinecap="round"
           style={{ transform: `translateY(${brows.ry}px) rotate(${brows.rr}deg)`, transformOrigin: "124px 82px" }} className="av-brow" />
-        <Eye id={id} name="l" cx={76} cy={98} rx={11} ry={9.5} iris={6} irisFill={`url(#${id}-iris)`} lid={SKIN[1]} rest={rest} lash={woman ? "#22110a" : undefined} />
-        <Eye id={id} name="r" cx={124} cy={98} rx={11} ry={9.5} iris={6} irisFill={`url(#${id}-iris)`} lid={SKIN[1]} rest={rest} lash={woman ? "#22110a" : undefined} />
-        {!woman && (
+        <Eye id={id} name="l" cx={76} cy={98} rx={11} ry={asian ? 7.6 : 9.5} iris={asian ? 5.6 : 6} irisFill={`url(#${id}-iris)`} lid={SKIN[1]} rest={rest} lash={woman ? "#22110a" : undefined} />
+        <Eye id={id} name="r" cx={124} cy={98} rx={11} ry={asian ? 7.6 : 9.5} iris={asian ? 5.6 : 6} irisFill={`url(#${id}-iris)`} lid={SKIN[1]} rest={rest} lash={woman ? "#22110a" : undefined} />
+        {!woman && look === "european" && (
           <g fill="none" stroke="#2b2f3a" strokeWidth="2.2">
             <rect x="58" y="86" width="36" height="25" rx="9" fill="#ffffff14" />
             <rect x="106" y="86" width="36" height="25" rx="9" fill="#ffffff14" />
@@ -459,7 +482,7 @@ const MASCOT_NAMES: Record<MascotKind, string> = { nova: "Nova", owl: "Alex", pa
 /** Calm, natural-looking random numbers between a and b. */
 const between = (a: number, b: number) => a + Math.random() * (b - a);
 
-export function TutorAvatar({ kind, mascot, status = "idle", emotion, size = 120, interactive = true, entrance = false, className = "" }: Props) {
+export function TutorAvatar({ kind, mascot, look: lookProp, status = "idle", emotion, size = 120, interactive = true, entrance = false, className = "" }: Props) {
   const rawId = useId();
   const id = `av${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;
   const stageRef = useRef<HTMLDivElement | null>(null);
@@ -564,6 +587,8 @@ export function TutorAvatar({ kind, mascot, status = "idle", emotion, size = 120
     };
   }, [interactive]);
 
+  // LANG is only read for human tutors: the language chooser shows mascots before any language is loaded.
+  const look: AvatarLook = lookProp ?? (kind === "mascot" ? "european" : LANG.id === "ja" ? "japanese" : LANG.id === "zh" ? "chinese" : "european");
   const mascotKind: MascotKind = kind === "mascot" ? (mascot ?? LANG.mascot.kind) : "nova";
   const label = kind === "woman" ? "Cô giáo AI" : kind === "man" ? "Thầy giáo AI" : `Linh vật ${MASCOT_NAMES[mascotKind]}`;
   return (
@@ -578,12 +603,12 @@ export function TutorAvatar({ kind, mascot, status = "idle", emotion, size = 120
       {status === "listening" && <><i className="av-ring av-ring-1" /><i className="av-ring av-ring-2" /></>}
       <div className="av-float">
         <svg viewBox="0 0 200 250" width={size} height={size * 1.2} className="av-svg">
-          <Defs id={id} />
+          <Defs id={id} look={look} />
           {kind === "mascot"
             ? (mascotKind === "owl" ? <Owl id={id} emotion={resolved} />
               : mascotKind === "panda" ? <Panda id={id} emotion={resolved} talking={talking} />
                 : <Nova id={id} emotion={resolved} talking={talking} />)
-            : <Human id={id} kind={kind} emotion={resolved} talking={talking} />}
+            : <Human id={id} kind={kind} look={look} emotion={resolved} talking={talking} />}
         </svg>
       </div>
       <div className="av-shadow" />
