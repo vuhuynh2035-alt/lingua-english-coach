@@ -1,0 +1,2027 @@
+{
+ "id": "technology",
+ "title": "Tiếng Anh ngành công nghệ",
+ "version": "2.0.0",
+ "framework": "CEFR A1–B2",
+ "overview": "12 bài từ A1 đến B2 cho người làm IT: giới thiệu công việc, mô tả lỗi, họp standup, review code, phỏng vấn kỹ thuật và thuyết trình giải pháp.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
+ "references": [
+  {
+   "title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)",
+   "url": "https://www.coe.int/en/web/common-european-framework-reference-languages",
+   "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "British Council / EAQUALS – Core Inventory for General English",
+   "url": "https://www.teachingenglish.org.uk/article/british-council-eaquals-core-inventory-general-english",
+   "license": "Tham khảo danh mục chức năng, ngữ pháp, chủ đề theo level (không sao chép nội dung)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "technology-a1-1",
+   "level": "A1",
+   "unit": "A1 · Bài 1",
+   "category": "Từ vựng",
+   "title": "Máy tính và công việc IT",
+   "objective": "Gọi tên thiết bị, phần mềm và mô tả công việc IT đơn giản.",
+   "reading": "My name is Khanh. I'm a software developer. I write code every day. I use a laptop with two monitors, a keyboard and a mouse. My favourite programming language is Python. I work in a team of five people. We build mobile apps for small businesses.",
+   "vocabulary": [
+    {
+     "term": "software developer",
+     "definition": "lập trình viên phần mềm",
+     "example": "I'm a software developer."
+    },
+    {
+     "term": "write code",
+     "definition": "viết mã",
+     "example": "I write code every day."
+    },
+    {
+     "term": "monitor",
+     "definition": "màn hình",
+     "example": "I use two monitors."
+    },
+    {
+     "term": "keyboard",
+     "definition": "bàn phím",
+     "example": "My keyboard is wireless."
+    },
+    {
+     "term": "programming language",
+     "definition": "ngôn ngữ lập trình",
+     "example": "Python is a programming language."
+    },
+    {
+     "term": "build",
+     "definition": "xây dựng, phát triển",
+     "example": "We build mobile apps."
+    }
+   ],
+   "grammar": {
+    "title": "Hiện tại đơn mô tả công việc",
+    "explanation": "Dùng hiện tại đơn để nói công việc thường ngày: I write code. He tests apps. Câu hỏi: What do you do? Do you use Python?",
+    "examples": [
+     "She designs websites.",
+     "We use Git every day.",
+     "Does he work on the backend?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc thuật ngữ: Python, Java, SQL",
+    "tip": "Python /ˈpaɪθən/, Java /ˈʤɑːvə/, SQL đọc /ˌes kjuː ˈel/ hoặc /ˈsiːkwəl/. app /æp/ — miệng mở rộng.",
+    "words": [
+     "Python",
+     "Java",
+     "SQL",
+     "app"
+    ]
+   },
+   "speakingTasks": [
+    "Giới thiệu công việc IT của bạn (hoặc công việc mơ ước) trong 4 câu.",
+    "Kể các công cụ bạn dùng hằng ngày."
+   ],
+   "questions": [
+    {
+     "prompt": "What is Khanh's job?",
+     "options": [
+      "Software developer",
+      "Tester",
+      "Designer"
+     ],
+     "answer": 0,
+     "explanation": "'I'm a software developer.'"
+    },
+    {
+     "prompt": "How many monitors does Khanh use?",
+     "options": [
+      "Three",
+      "One",
+      "Two"
+     ],
+     "answer": 2,
+     "explanation": "'two monitors'."
+    },
+    {
+     "prompt": "What does the team build?",
+     "options": [
+      "Mobile apps for small businesses",
+      "Games",
+      "Websites for banks"
+     ],
+     "answer": 0,
+     "explanation": "'We build mobile apps for small businesses.'"
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "He write code.",
+      "He writes code.",
+      "He writing code."
+     ],
+     "answer": 1,
+     "explanation": "Ngôi thứ ba số ít: writes."
+    },
+    {
+     "prompt": "Choose the correct question.",
+     "options": [
+      "Do you uses Python?",
+      "Are you use Python?",
+      "Do you use Python?"
+     ],
+     "answer": 2,
+     "explanation": "Do + S + V nguyên mẫu."
+    },
+    {
+     "prompt": "Complete the sentence: I _____ every day.",
+     "options": [
+      "write code",
+      "software developer",
+      "programming language"
+     ],
+     "answer": 0,
+     "explanation": "“write code” nghĩa là “viết mã”. Câu đầy đủ: I write code every day."
+    },
+    {
+     "prompt": "What does “write code” mean?",
+     "options": [
+      "ngôn ngữ lập trình",
+      "lập trình viên phần mềm",
+      "viết mã"
+     ],
+     "answer": 2,
+     "explanation": "“write code” = viết mã. Ví dụ: I write code every day."
+    },
+    {
+     "prompt": "Complete the sentence: We _____ mobile apps.",
+     "options": [
+      "keyboard",
+      "monitor",
+      "build"
+     ],
+     "answer": 2,
+     "explanation": "“build” nghĩa là “xây dựng, phát triển”. Câu đầy đủ: We build mobile apps."
+    },
+    {
+     "prompt": "What does “monitor” mean?",
+     "options": [
+      "màn hình",
+      "xây dựng, phát triển",
+      "bàn phím"
+     ],
+     "answer": 0,
+     "explanation": "“monitor” = màn hình. Ví dụ: I use two monitors."
+    },
+    {
+     "prompt": "Complete the sentence: Python is a _____.",
+     "options": [
+      "programming language",
+      "software developer",
+      "write code"
+     ],
+     "answer": 0,
+     "explanation": "“programming language” nghĩa là “ngôn ngữ lập trình”. Câu đầy đủ: Python is a programming language."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a1-2",
+   "level": "A1",
+   "unit": "A1 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Báo lỗi máy tính đơn giản",
+   "objective": "Mô tả sự cố máy tính, mạng và xin trợ giúp IT.",
+   "reading": "User: Hi, this is Mai from accounting. My computer doesn't work.\nIT: What's the problem?\nUser: The screen is black, and I can't log in.\nIT: Is the computer on?\nUser: Yes, the light is on.\nIT: OK. Please restart it. If that doesn't work, I can come to your desk.\nUser: Thanks. Also, the Wi-Fi is very slow today.",
+   "vocabulary": [
+    {
+     "term": "doesn't work",
+     "definition": "không hoạt động",
+     "example": "My printer doesn't work."
+    },
+    {
+     "term": "screen",
+     "definition": "màn hình",
+     "example": "The screen is black."
+    },
+    {
+     "term": "log in",
+     "definition": "đăng nhập",
+     "example": "I can't log in."
+    },
+    {
+     "term": "restart",
+     "definition": "khởi động lại",
+     "example": "Please restart your computer."
+    },
+    {
+     "term": "slow",
+     "definition": "chậm",
+     "example": "The Wi-Fi is slow."
+    },
+    {
+     "term": "desk",
+     "definition": "bàn làm việc",
+     "example": "I can come to your desk."
+    }
+   ],
+   "grammar": {
+    "title": "can / can't để nói khả năng",
+    "explanation": "can + V nguyên mẫu: có thể; can't: không thể. Câu hỏi: Can you help me? Dùng mô tả lỗi: I can't open the file.",
+    "examples": [
+     "I can't open my email.",
+     "Can you fix it?",
+     "He can come at two o'clock."
+    ]
+   },
+   "pronunciation": {
+    "focus": "can /kən/ vs can't /kɑːnt/",
+    "tip": "Trong câu, 'can' đọc yếu /kən/, còn 'can't' đọc mạnh và dài /kɑːnt/ hoặc /kænt/. Đây là cách người nghe phân biệt.",
+    "words": [
+     "can",
+     "can't",
+     "restart",
+     "log in"
+    ]
+   },
+   "speakingTasks": [
+    "Gọi IT (thầy/cô) và mô tả một lỗi máy tính của bạn.",
+    "Làm theo hướng dẫn và báo lại kết quả."
+   ],
+   "questions": [
+    {
+     "prompt": "What department is Mai from?",
+     "options": [
+      "IT",
+      "Accounting",
+      "Sales"
+     ],
+     "answer": 1,
+     "explanation": "'Mai from accounting'."
+    },
+    {
+     "prompt": "What is the problem?",
+     "options": [
+      "The mouse is missing.",
+      "The keyboard is broken.",
+      "The screen is black and she can't log in."
+     ],
+     "answer": 2,
+     "explanation": "'The screen is black, and I can't log in.'"
+    },
+    {
+     "prompt": "What does IT ask her to do first?",
+     "options": [
+      "Restart the computer",
+      "Call back later",
+      "Buy a new one"
+     ],
+     "answer": 0,
+     "explanation": "'Please restart it.'"
+    },
+    {
+     "prompt": "What else is wrong?",
+     "options": [
+      "Email is down.",
+      "The printer is broken.",
+      "The Wi-Fi is slow."
+     ],
+     "answer": 2,
+     "explanation": "'the Wi-Fi is very slow today'."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "I not can log in.",
+      "I can't log in.",
+      "I can't to log in."
+     ],
+     "answer": 1,
+     "explanation": "can't + V nguyên mẫu."
+    },
+    {
+     "prompt": "Complete the sentence: Please _____ your computer.",
+     "options": [
+      "desk",
+      "restart",
+      "slow"
+     ],
+     "answer": 1,
+     "explanation": "“restart” nghĩa là “khởi động lại”. Câu đầy đủ: Please restart your computer."
+    },
+    {
+     "prompt": "What does “desk” mean?",
+     "options": [
+      "khởi động lại",
+      "chậm",
+      "bàn làm việc"
+     ],
+     "answer": 2,
+     "explanation": "“desk” = bàn làm việc. Ví dụ: I can come to your desk."
+    },
+    {
+     "prompt": "Complete the sentence: I can come to your _____.",
+     "options": [
+      "desk",
+      "slow",
+      "restart"
+     ],
+     "answer": 0,
+     "explanation": "“desk” nghĩa là “bàn làm việc”. Câu đầy đủ: I can come to your desk."
+    },
+    {
+     "prompt": "What does “doesn't work” mean?",
+     "options": [
+      "khởi động lại",
+      "không hoạt động",
+      "đăng nhập"
+     ],
+     "answer": 1,
+     "explanation": "“doesn't work” = không hoạt động. Ví dụ: My printer doesn't work."
+    },
+    {
+     "prompt": "Complete the sentence: My printer _____.",
+     "options": [
+      "doesn't work",
+      "restart",
+      "log in"
+     ],
+     "answer": 0,
+     "explanation": "“doesn't work” nghĩa là “không hoạt động”. Câu đầy đủ: My printer doesn't work."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a1-3",
+   "level": "A1",
+   "unit": "A1 · Bài 3",
+   "category": "Ngữ pháp",
+   "title": "Hướng dẫn từng bước",
+   "objective": "Đọc và đưa hướng dẫn sử dụng phần mềm bằng câu mệnh lệnh và từ chỉ thứ tự.",
+   "reading": "How to reset your password:\nFirst, open the login page and click \"Forgot password\".\nNext, enter your email address.\nThen, check your inbox and open the email from us.\nAfter that, click the link and type a new password.\nFinally, save your password and log in again.\nDon't share your password with anyone!",
+   "vocabulary": [
+    {
+     "term": "click",
+     "definition": "nhấp chuột",
+     "example": "Click the blue button."
+    },
+    {
+     "term": "enter",
+     "definition": "nhập",
+     "example": "Enter your email address."
+    },
+    {
+     "term": "inbox",
+     "definition": "hộp thư đến",
+     "example": "Check your inbox."
+    },
+    {
+     "term": "link",
+     "definition": "đường dẫn",
+     "example": "Click the link in the email."
+    },
+    {
+     "term": "type",
+     "definition": "gõ",
+     "example": "Type a new password."
+    },
+    {
+     "term": "save",
+     "definition": "lưu",
+     "example": "Save the file before you close it."
+    }
+   ],
+   "grammar": {
+    "title": "Câu mệnh lệnh và từ chỉ trình tự",
+    "explanation": "Câu mệnh lệnh bắt đầu bằng động từ nguyên mẫu (Click…, Open…). Phủ định: Don't + V. Từ trình tự: First, Next, Then, After that, Finally.",
+    "examples": [
+     "First, open the app.",
+     "Then, click Settings.",
+     "Don't close the window."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm /k/ + /l/ trong click",
+    "tip": "click /klɪk/ — cụm /kl/ đầu từ, không chèn nguyên âm thành 'cờ-lích'. Âm /k/ cuối bật nhẹ.",
+    "words": [
+     "click",
+     "link",
+     "inbox",
+     "password"
+    ]
+   },
+   "speakingTasks": [
+    "Hướng dẫn thầy/cô cách cài một ứng dụng trên điện thoại, dùng First/Then/Finally.",
+    "Thầy/cô làm sai một bước — bạn sửa lại."
+   ],
+   "questions": [
+    {
+     "prompt": "What is the first step?",
+     "options": [
+      "Enter your email",
+      "Type a new password",
+      "Open the login page and click 'Forgot password'"
+     ],
+     "answer": 2,
+     "explanation": "'First, open the login page and click Forgot password.'"
+    },
+    {
+     "prompt": "Where do you find the email?",
+     "options": [
+      "In your inbox",
+      "On the desktop",
+      "In the browser history"
+     ],
+     "answer": 0,
+     "explanation": "'check your inbox'."
+    },
+    {
+     "prompt": "What is the last step?",
+     "options": [
+      "Click the link",
+      "Save your password and log in again",
+      "Enter your email"
+     ],
+     "answer": 1,
+     "explanation": "'Finally, save your password and log in again.'"
+    },
+    {
+     "prompt": "Choose the correct negative instruction.",
+     "options": [
+      "Not share your password.",
+      "Don't share your password.",
+      "No share your password."
+     ],
+     "answer": 1,
+     "explanation": "Phủ định mệnh lệnh: Don't + V."
+    },
+    {
+     "prompt": "Which word shows the final step?",
+     "options": [
+      "Finally",
+      "Next",
+      "Then"
+     ],
+     "answer": 0,
+     "explanation": "Finally = cuối cùng."
+    },
+    {
+     "prompt": "Complete the sentence: _____ a new password.",
+     "options": [
+      "enter",
+      "type",
+      "click"
+     ],
+     "answer": 1,
+     "explanation": "“type” nghĩa là “gõ”. Câu đầy đủ: Type a new password."
+    },
+    {
+     "prompt": "What does “link” mean?",
+     "options": [
+      "nhấp chuột",
+      "hộp thư đến",
+      "đường dẫn"
+     ],
+     "answer": 2,
+     "explanation": "“link” = đường dẫn. Ví dụ: Click the link in the email."
+    },
+    {
+     "prompt": "Complete the sentence: Check your _____.",
+     "options": [
+      "enter",
+      "link",
+      "inbox"
+     ],
+     "answer": 2,
+     "explanation": "“inbox” nghĩa là “hộp thư đến”. Câu đầy đủ: Check your inbox."
+    },
+    {
+     "prompt": "What does “type” mean?",
+     "options": [
+      "nhập",
+      "nhấp chuột",
+      "gõ"
+     ],
+     "answer": 2,
+     "explanation": "“type” = gõ. Ví dụ: Type a new password."
+    },
+    {
+     "prompt": "Complete the sentence: _____ the blue button.",
+     "options": [
+      "click",
+      "type",
+      "link"
+     ],
+     "answer": 0,
+     "explanation": "“click” nghĩa là “nhấp chuột”. Câu đầy đủ: Click the blue button."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a2-1",
+   "level": "A2",
+   "unit": "A2 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Họp standup hằng ngày",
+   "objective": "Báo cáo hôm qua làm gì, hôm nay làm gì và đang gặp trở ngại gì.",
+   "reading": "Lead: OK, quick standup. Huy?\nHuy: Yesterday I finished the login page and fixed two bugs. Today I'm going to work on the profile screen. No blockers.\nLead: Great. Thao?\nThao: Yesterday I tested the payment feature. I found a bug with refunds. Today I'll write the test report. I'm blocked because I don't have access to the staging server.\nLead: I'll give you access after the meeting.",
+   "vocabulary": [
+    {
+     "term": "standup",
+     "definition": "họp đứng nhanh hằng ngày",
+     "example": "Our standup is at 9:15."
+    },
+    {
+     "term": "fix a bug",
+     "definition": "sửa lỗi",
+     "example": "I fixed two bugs yesterday."
+    },
+    {
+     "term": "work on",
+     "definition": "làm (một việc)",
+     "example": "Today I'm working on the profile screen."
+    },
+    {
+     "term": "blocker",
+     "definition": "trở ngại, vướng mắc",
+     "example": "No blockers today."
+    },
+    {
+     "term": "access",
+     "definition": "quyền truy cập",
+     "example": "I don't have access to the server."
+    },
+    {
+     "term": "feature",
+     "definition": "tính năng",
+     "example": "We tested the payment feature."
+    }
+   ],
+   "grammar": {
+    "title": "Quá khứ đơn, be going to và will trong báo cáo",
+    "explanation": "Hôm qua: quá khứ đơn (finished, fixed). Kế hoạch hôm nay: going to. Quyết định ngay: will (I'll give you access).",
+    "examples": [
+     "Yesterday I reviewed three pull requests.",
+     "Today I'm going to update the API.",
+     "I'll check it after lunch."
+    ]
+   },
+   "pronunciation": {
+    "focus": "bug /bʌg/ vs bag /bæg/",
+    "tip": "bug miệng mở vừa 'ă', bag miệng mở rộng 'e-a'. Nói nhầm thành 'bag' sẽ gây hiểu lầm.",
+    "words": [
+     "bug",
+     "blocker",
+     "feature",
+     "access"
+    ]
+   },
+   "speakingTasks": [
+    "Báo cáo standup của bạn: hôm qua, hôm nay, trở ngại.",
+    "Thầy/cô hỏi chi tiết về trở ngại — giải thích rõ."
+   ],
+   "questions": [
+    {
+     "prompt": "What did Huy finish yesterday?",
+     "options": [
+      "The payment feature",
+      "The test report",
+      "The login page"
+     ],
+     "answer": 2,
+     "explanation": "'I finished the login page'."
+    },
+    {
+     "prompt": "What is Thao's blocker?",
+     "options": [
+      "No access to the staging server",
+      "Too many meetings",
+      "A broken laptop"
+     ],
+     "answer": 0,
+     "explanation": "'I don't have access to the staging server'."
+    },
+    {
+     "prompt": "What bug did Thao find?",
+     "options": [
+      "A bug with refunds",
+      "A display bug",
+      "A login bug"
+     ],
+     "answer": 0,
+     "explanation": "'a bug with refunds'."
+    },
+    {
+     "prompt": "Choose the correct plan sentence.",
+     "options": [
+      "Today I'm go to test it.",
+      "Today I'm going to test it.",
+      "Today I going to test it."
+     ],
+     "answer": 1,
+     "explanation": "am going to + V."
+    },
+    {
+     "prompt": "“No blockers” means…",
+     "options": [
+      "no tasks",
+      "no problems stopping my work",
+      "no meetings"
+     ],
+     "answer": 1,
+     "explanation": "blocker = trở ngại."
+    },
+    {
+     "prompt": "Complete the sentence: I don't have _____ to the server.",
+     "options": [
+      "blocker",
+      "access",
+      "standup"
+     ],
+     "answer": 1,
+     "explanation": "“access” nghĩa là “quyền truy cập”. Câu đầy đủ: I don't have access to the server."
+    },
+    {
+     "prompt": "What does “work on” mean?",
+     "options": [
+      "làm (một việc)",
+      "sửa lỗi",
+      "họp đứng nhanh hằng ngày"
+     ],
+     "answer": 0,
+     "explanation": "“work on” = làm (một việc). Ví dụ: Today I'm working on the profile screen."
+    },
+    {
+     "prompt": "Complete the sentence: We tested the payment _____.",
+     "options": [
+      "blocker",
+      "standup",
+      "feature"
+     ],
+     "answer": 2,
+     "explanation": "“feature” nghĩa là “tính năng”. Câu đầy đủ: We tested the payment feature."
+    },
+    {
+     "prompt": "What does “standup” mean?",
+     "options": [
+      "họp đứng nhanh hằng ngày",
+      "trở ngại, vướng mắc",
+      "tính năng"
+     ],
+     "answer": 0,
+     "explanation": "“standup” = họp đứng nhanh hằng ngày. Ví dụ: Our standup is at 9:15."
+    },
+    {
+     "prompt": "Complete the sentence: No _____s today.",
+     "options": [
+      "blocker",
+      "access",
+      "standup"
+     ],
+     "answer": 0,
+     "explanation": "“blocker” nghĩa là “trở ngại, vướng mắc”. Câu đầy đủ: No blockers today."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a2-2",
+   "level": "A2",
+   "unit": "A2 · Bài 2",
+   "category": "Từ vựng",
+   "title": "Mô tả lỗi phần mềm (bug report)",
+   "objective": "Viết và nói báo cáo lỗi: các bước tái hiện, kết quả mong đợi và thực tế.",
+   "reading": "Bug title: App crashes when uploading a photo\nSteps to reproduce:\n1. Open the app and go to Profile.\n2. Tap \"Change photo\".\n3. Choose a photo larger than 5 MB.\nExpected result: The photo uploads successfully.\nActual result: The app freezes and then crashes.\nDevice: Android 14, version 2.3.1",
+   "vocabulary": [
+    {
+     "term": "crash",
+     "definition": "bị sập, tự thoát",
+     "example": "The app crashes when I open it."
+    },
+    {
+     "term": "upload",
+     "definition": "tải lên",
+     "example": "I can't upload photos."
+    },
+    {
+     "term": "steps to reproduce",
+     "definition": "các bước tái hiện lỗi",
+     "example": "Please add the steps to reproduce."
+    },
+    {
+     "term": "expected result",
+     "definition": "kết quả mong đợi",
+     "example": "The expected result is a success message."
+    },
+    {
+     "term": "actual result",
+     "definition": "kết quả thực tế",
+     "example": "The actual result is an error."
+    },
+    {
+     "term": "freeze",
+     "definition": "bị treo",
+     "example": "The screen freezes for ten seconds."
+    }
+   ],
+   "grammar": {
+    "title": "when / if trong mô tả điều kiện lỗi",
+    "explanation": "Dùng 'when' cho điều luôn xảy ra (The app crashes when I upload a photo). Dùng 'if' cho điều kiện (If the file is larger than 5 MB, it fails).",
+    "examples": [
+     "It freezes when I scroll quickly.",
+     "If you tap twice, it crashes.",
+     "The error appears when the network is slow."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đuôi -es /ɪz/ trong crashes, freezes",
+    "tip": "crash → crashes /ˈkræʃɪz/, freeze → freezes /ˈfriːzɪz/. Thêm một âm tiết.",
+    "words": [
+     "crashes",
+     "freezes",
+     "uploads",
+     "reproduce"
+    ]
+   },
+   "speakingTasks": [
+    "Mô tả một lỗi phần mềm bạn từng gặp theo cấu trúc: bước, mong đợi, thực tế.",
+    "Thầy/cô là developer — trả lời câu hỏi làm rõ."
+   ],
+   "questions": [
+    {
+     "prompt": "When does the app crash?",
+     "options": [
+      "When logging out",
+      "When uploading a large photo",
+      "When opening Settings"
+     ],
+     "answer": 1,
+     "explanation": "Tiêu đề: 'crashes when uploading a photo', ảnh > 5 MB."
+    },
+    {
+     "prompt": "What is the expected result?",
+     "options": [
+      "The photo uploads successfully",
+      "The app crashes",
+      "An error message"
+     ],
+     "answer": 0,
+     "explanation": "'Expected result: The photo uploads successfully.'"
+    },
+    {
+     "prompt": "Which device is used?",
+     "options": [
+      "Windows laptop",
+      "iPhone",
+      "Android 14"
+     ],
+     "answer": 2,
+     "explanation": "'Device: Android 14'."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "The app crash when I upload.",
+      "The app crashing when I upload.",
+      "The app crashes when I upload."
+     ],
+     "answer": 2,
+     "explanation": "Hiện tại đơn ngôi thứ ba: crashes."
+    },
+    {
+     "prompt": "“Steps to reproduce” tells developers…",
+     "options": [
+      "how to fix the bug",
+      "how to make the bug happen again",
+      "who found the bug"
+     ],
+     "answer": 1,
+     "explanation": "reproduce = tái hiện."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ is a success message.",
+     "options": [
+      "steps to reproduce",
+      "actual result",
+      "expected result"
+     ],
+     "answer": 2,
+     "explanation": "“expected result” nghĩa là “kết quả mong đợi”. Câu đầy đủ: The expected result is a success message."
+    },
+    {
+     "prompt": "What does “steps to reproduce” mean?",
+     "options": [
+      "các bước tái hiện lỗi",
+      "kết quả thực tế",
+      "kết quả mong đợi"
+     ],
+     "answer": 0,
+     "explanation": "“steps to reproduce” = các bước tái hiện lỗi. Ví dụ: Please add the steps to reproduce."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ is an error.",
+     "options": [
+      "expected result",
+      "actual result",
+      "freeze"
+     ],
+     "answer": 1,
+     "explanation": "“actual result” nghĩa là “kết quả thực tế”. Câu đầy đủ: The actual result is an error."
+    },
+    {
+     "prompt": "What does “actual result” mean?",
+     "options": [
+      "kết quả thực tế",
+      "bị treo",
+      "kết quả mong đợi"
+     ],
+     "answer": 0,
+     "explanation": "“actual result” = kết quả thực tế. Ví dụ: The actual result is an error."
+    },
+    {
+     "prompt": "Complete the sentence: The app _____es when I open it.",
+     "options": [
+      "upload",
+      "crash",
+      "freeze"
+     ],
+     "answer": 1,
+     "explanation": "“crash” nghĩa là “bị sập, tự thoát”. Câu đầy đủ: The app crashes when I open it."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a2-3",
+   "level": "A2",
+   "unit": "A2 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Giải thích tính năng cho khách hàng",
+   "objective": "Giải thích tính năng đơn giản cho người không chuyên, dùng so sánh dễ hiểu.",
+   "reading": "Client: What does the new app do?\nDev: It helps your staff book meeting rooms. It's easier than your old system because everything is on the phone.\nClient: Is it safe?\nDev: Yes. All data is encrypted, so other people can't read it.\nClient: Can it work offline?\nDev: Not yet, but we're going to add that feature next month.",
+   "vocabulary": [
+    {
+     "term": "help someone (to) do",
+     "definition": "giúp ai làm gì",
+     "example": "It helps staff book rooms."
+    },
+    {
+     "term": "easier than",
+     "definition": "dễ hơn",
+     "example": "It's easier than the old system."
+    },
+    {
+     "term": "safe",
+     "definition": "an toàn",
+     "example": "Is the app safe?"
+    },
+    {
+     "term": "encrypted",
+     "definition": "được mã hóa",
+     "example": "All data is encrypted."
+    },
+    {
+     "term": "offline",
+     "definition": "không cần mạng",
+     "example": "Can it work offline?"
+    },
+    {
+     "term": "add a feature",
+     "definition": "thêm tính năng",
+     "example": "We'll add that feature next month."
+    }
+   ],
+   "grammar": {
+    "title": "because / so để giải thích lý do và kết quả",
+    "explanation": "because + nguyên nhân (It's easier because it's on the phone). so + kết quả (Data is encrypted, so others can't read it).",
+    "examples": [
+     "It's fast because it uses caching.",
+     "The server was down, so the app stopped.",
+     "We use HTTPS because it's secure."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nói chậm thuật ngữ với khách hàng",
+    "tip": "encrypted /ɪnˈkrɪptɪd/ — đuôi -ed đọc /ɪd/. Nói chậm và giải thích ngay bằng từ đơn giản.",
+    "words": [
+     "encrypted",
+     "offline",
+     "feature",
+     "system"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích một ứng dụng bạn dùng cho người lớn tuổi hiểu.",
+    "Thầy/cô là khách hàng khó tính — trả lời câu hỏi về bảo mật."
+   ],
+   "questions": [
+    {
+     "prompt": "What does the app do?",
+     "options": [
+      "Pays salaries",
+      "Helps staff book meeting rooms",
+      "Sends emails"
+     ],
+     "answer": 1,
+     "explanation": "'It helps your staff book meeting rooms.'"
+    },
+    {
+     "prompt": "Why is it easier than the old system?",
+     "options": [
+      "It's cheaper.",
+      "It has more colours.",
+      "Everything is on the phone."
+     ],
+     "answer": 2,
+     "explanation": "'because everything is on the phone'."
+    },
+    {
+     "prompt": "Why can't other people read the data?",
+     "options": [
+      "It's encrypted.",
+      "It's offline.",
+      "It's deleted."
+     ],
+     "answer": 0,
+     "explanation": "'All data is encrypted'."
+    },
+    {
+     "prompt": "When will offline mode be added?",
+     "options": [
+      "Never",
+      "Next month",
+      "Next week"
+     ],
+     "answer": 1,
+     "explanation": "'next month'."
+    },
+    {
+     "prompt": "Choose the correct linker: The server was down, ___ users couldn't log in.",
+     "options": [
+      "but",
+      "so",
+      "because"
+     ],
+     "answer": 1,
+     "explanation": "Kết quả → so."
+    },
+    {
+     "prompt": "Complete the sentence: Is the app _____?",
+     "options": [
+      "encrypted",
+      "offline",
+      "safe"
+     ],
+     "answer": 2,
+     "explanation": "“safe” nghĩa là “an toàn”. Câu đầy đủ: Is the app safe?"
+    },
+    {
+     "prompt": "What does “offline” mean?",
+     "options": [
+      "được mã hóa",
+      "không cần mạng",
+      "an toàn"
+     ],
+     "answer": 1,
+     "explanation": "“offline” = không cần mạng. Ví dụ: Can it work offline?"
+    },
+    {
+     "prompt": "Complete the sentence: It's _____ the old system.",
+     "options": [
+      "safe",
+      "add a feature",
+      "easier than"
+     ],
+     "answer": 2,
+     "explanation": "“easier than” nghĩa là “dễ hơn”. Câu đầy đủ: It's easier than the old system."
+    },
+    {
+     "prompt": "What does “easier than” mean?",
+     "options": [
+      "thêm tính năng",
+      "an toàn",
+      "dễ hơn"
+     ],
+     "answer": 2,
+     "explanation": "“easier than” = dễ hơn. Ví dụ: It's easier than the old system."
+    },
+    {
+     "prompt": "Complete the sentence: Can it work _____?",
+     "options": [
+      "encrypted",
+      "safe",
+      "offline"
+     ],
+     "answer": 2,
+     "explanation": "“offline” nghĩa là “không cần mạng”. Câu đầy đủ: Can it work offline?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b1-1",
+   "level": "B1",
+   "unit": "B1 · Bài 1",
+   "category": "Ngữ pháp",
+   "title": "Review code và góp ý kỹ thuật",
+   "objective": "Đưa và nhận góp ý code lịch sự, đề xuất cải tiến.",
+   "reading": "Reviewer: Nice work on this pull request. The logic is clear. A couple of suggestions: this function is quite long — it might be easier to test if you split it into smaller ones. Also, could you add a check for empty input? Otherwise it might throw an error.\nAuthor: Good point. I'll refactor it and add the check. Should I write unit tests for the new functions as well?\nReviewer: Yes, that would be great.",
+   "vocabulary": [
+    {
+     "term": "pull request",
+     "definition": "yêu cầu gộp mã",
+     "example": "I opened a pull request this morning."
+    },
+    {
+     "term": "suggestion",
+     "definition": "gợi ý",
+     "example": "I have a couple of suggestions."
+    },
+    {
+     "term": "split",
+     "definition": "tách",
+     "example": "Split the function into smaller ones."
+    },
+    {
+     "term": "throw an error",
+     "definition": "phát sinh lỗi",
+     "example": "Empty input might throw an error."
+    },
+    {
+     "term": "refactor",
+     "definition": "tái cấu trúc mã",
+     "example": "I'll refactor this module."
+    },
+    {
+     "term": "unit test",
+     "definition": "kiểm thử đơn vị",
+     "example": "Please add unit tests."
+    }
+   ],
+   "grammar": {
+    "title": "Góp ý mềm mỏng: might, could, it would be better if",
+    "explanation": "Dùng might/could để giảm áp lực: It might be easier if… Could you…? Dùng 'Otherwise' (nếu không thì) để chỉ rủi ro.",
+    "examples": [
+     "It might be cleaner to use a map here.",
+     "Could you rename this variable?",
+     "Add a null check; otherwise, it may crash."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nối âm trong câu góp ý",
+    "tip": "'a couple of' → /ə ˈkʌpləv/, 'could you' → /ˈkʊʤu/. Nói liền tự nhiên.",
+    "words": [
+     "refactor",
+     "suggestion",
+     "otherwise",
+     "could you"
+    ]
+   },
+   "speakingTasks": [
+    "Góp ý cho một đoạn code (thầy/cô mô tả) bằng 2 gợi ý lịch sự.",
+    "Nhận góp ý từ thầy/cô và phản hồi chuyên nghiệp."
+   ],
+   "questions": [
+    {
+     "prompt": "What does the reviewer like?",
+     "options": [
+      "The clear logic",
+      "The naming",
+      "The tests"
+     ],
+     "answer": 0,
+     "explanation": "'The logic is clear.'"
+    },
+    {
+     "prompt": "Why split the function?",
+     "options": [
+      "To use less memory",
+      "To make it easier to test",
+      "To make it faster"
+     ],
+     "answer": 1,
+     "explanation": "'it might be easier to test'."
+    },
+    {
+     "prompt": "What check should be added?",
+     "options": [
+      "For empty input",
+      "For dates",
+      "For network errors"
+     ],
+     "answer": 0,
+     "explanation": "'add a check for empty input'."
+    },
+    {
+     "prompt": "Which sentence gives feedback politely?",
+     "options": [
+      "Could you rename this variable?",
+      "Rename it.",
+      "This code is bad."
+     ],
+     "answer": 0,
+     "explanation": "Could you…? lịch sự."
+    },
+    {
+     "prompt": "“Otherwise” means…",
+     "options": [
+      "because",
+      "also",
+      "if not"
+     ],
+     "answer": 2,
+     "explanation": "otherwise = nếu không thì."
+    },
+    {
+     "prompt": "Complete the sentence: I opened a _____ this morning.",
+     "options": [
+      "pull request",
+      "unit test",
+      "refactor"
+     ],
+     "answer": 0,
+     "explanation": "“pull request” nghĩa là “yêu cầu gộp mã”. Câu đầy đủ: I opened a pull request this morning."
+    },
+    {
+     "prompt": "What does “refactor” mean?",
+     "options": [
+      "gợi ý",
+      "tách",
+      "tái cấu trúc mã"
+     ],
+     "answer": 2,
+     "explanation": "“refactor” = tái cấu trúc mã. Ví dụ: I'll refactor this module."
+    },
+    {
+     "prompt": "Complete the sentence: Empty input might _____.",
+     "options": [
+      "pull request",
+      "unit test",
+      "throw an error"
+     ],
+     "answer": 2,
+     "explanation": "“throw an error” nghĩa là “phát sinh lỗi”. Câu đầy đủ: Empty input might throw an error."
+    },
+    {
+     "prompt": "What does “split” mean?",
+     "options": [
+      "tái cấu trúc mã",
+      "tách",
+      "gợi ý"
+     ],
+     "answer": 1,
+     "explanation": "“split” = tách. Ví dụ: Split the function into smaller ones."
+    },
+    {
+     "prompt": "Complete the sentence: I have a couple of _____s.",
+     "options": [
+      "refactor",
+      "suggestion",
+      "split"
+     ],
+     "answer": 1,
+     "explanation": "“suggestion” nghĩa là “gợi ý”. Câu đầy đủ: I have a couple of suggestions."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b1-2",
+   "level": "B1",
+   "unit": "B1 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Phỏng vấn kỹ thuật",
+   "objective": "Trình bày dự án, giải thích quyết định kỹ thuật và cách giải quyết vấn đề.",
+   "reading": "Interviewer: Tell me about a challenging project you've worked on.\nCandidate: Last year I worked on an online shop that became very slow during sales. I analysed the database queries and found that some weren't using indexes. After adding indexes and caching popular products, the page load time dropped from six seconds to under one second.\nInterviewer: How did you measure the improvement?\nCandidate: We used monitoring tools to compare response times before and after the change.",
+   "vocabulary": [
+    {
+     "term": "challenging",
+     "definition": "đầy thử thách",
+     "example": "It was a challenging project."
+    },
+    {
+     "term": "analyse",
+     "definition": "phân tích",
+     "example": "I analysed the database queries."
+    },
+    {
+     "term": "index",
+     "definition": "chỉ mục (cơ sở dữ liệu)",
+     "example": "The query wasn't using an index."
+    },
+    {
+     "term": "caching",
+     "definition": "lưu bộ nhớ đệm",
+     "example": "Caching made the site faster."
+    },
+    {
+     "term": "load time",
+     "definition": "thời gian tải",
+     "example": "The load time dropped to one second."
+    },
+    {
+     "term": "measure",
+     "definition": "đo lường",
+     "example": "How did you measure it?"
+    }
+   ],
+   "grammar": {
+    "title": "Kể dự án theo STAR với quá khứ đơn và quá khứ hoàn thành",
+    "explanation": "Situation – Task – Action – Result. Quá khứ hoàn thành (had + V3) cho việc xảy ra trước một mốc quá khứ: The site had become slow before we optimised it.",
+    "examples": [
+     "The team had tried caching before I joined.",
+     "I found that the queries weren't using indexes.",
+     "As a result, load time dropped by 80%."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc số đo: seconds, milliseconds, percent",
+    "tip": "6 seconds /ˈsekəndz/, 200 milliseconds, 80% eighty percent. Nhấn con số kết quả để gây ấn tượng.",
+    "words": [
+     "analyse",
+     "seconds",
+     "improvement",
+     "challenging"
+    ]
+   },
+   "speakingTasks": [
+    "Kể một dự án/khó khăn bạn đã giải quyết theo STAR.",
+    "Thầy/cô hỏi 'Why did you choose that solution?' — giải thích."
+   ],
+   "questions": [
+    {
+     "prompt": "What was the problem?",
+     "options": [
+      "The shop was slow during sales.",
+      "Payments failed.",
+      "The shop crashed daily."
+     ],
+     "answer": 0,
+     "explanation": "'became very slow during sales'."
+    },
+    {
+     "prompt": "What did the candidate find?",
+     "options": [
+      "The code had no tests.",
+      "The server was too small.",
+      "Some queries weren't using indexes."
+     ],
+     "answer": 2,
+     "explanation": "'some weren't using indexes'."
+    },
+    {
+     "prompt": "What was the result?",
+     "options": [
+      "Costs fell",
+      "Sales doubled",
+      "Load time went from 6s to under 1s"
+     ],
+     "answer": 2,
+     "explanation": "'dropped from six seconds to under one second'."
+    },
+    {
+     "prompt": "How was the improvement measured?",
+     "options": [
+      "Guessing",
+      "Monitoring tools",
+      "Customer surveys"
+     ],
+     "answer": 1,
+     "explanation": "'We used monitoring tools'."
+    },
+    {
+     "prompt": "Choose the correct past perfect.",
+     "options": [
+      "The site has became slow.",
+      "The site had became slow.",
+      "The site had become slow."
+     ],
+     "answer": 2,
+     "explanation": "had + V3 (become)."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ dropped to one second.",
+     "options": [
+      "index",
+      "analyse",
+      "load time"
+     ],
+     "answer": 2,
+     "explanation": "“load time” nghĩa là “thời gian tải”. Câu đầy đủ: The load time dropped to one second."
+    },
+    {
+     "prompt": "What does “caching” mean?",
+     "options": [
+      "chỉ mục (cơ sở dữ liệu)",
+      "phân tích",
+      "lưu bộ nhớ đệm"
+     ],
+     "answer": 2,
+     "explanation": "“caching” = lưu bộ nhớ đệm. Ví dụ: Caching made the site faster."
+    },
+    {
+     "prompt": "Complete the sentence: I _____d the database queries.",
+     "options": [
+      "challenging",
+      "analyse",
+      "index"
+     ],
+     "answer": 1,
+     "explanation": "“analyse” nghĩa là “phân tích”. Câu đầy đủ: I analysed the database queries."
+    },
+    {
+     "prompt": "What does “index” mean?",
+     "options": [
+      "lưu bộ nhớ đệm",
+      "chỉ mục (cơ sở dữ liệu)",
+      "phân tích"
+     ],
+     "answer": 1,
+     "explanation": "“index” = chỉ mục (cơ sở dữ liệu). Ví dụ: The query wasn't using an index."
+    },
+    {
+     "prompt": "Complete the sentence: It was a _____ project.",
+     "options": [
+      "analyse",
+      "caching",
+      "challenging"
+     ],
+     "answer": 2,
+     "explanation": "“challenging” nghĩa là “đầy thử thách”. Câu đầy đủ: It was a challenging project."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b1-3",
+   "level": "B1",
+   "unit": "B1 · Bài 3",
+   "category": "Từ vựng",
+   "title": "Bảo mật và dữ liệu",
+   "objective": "Thảo luận rủi ro an ninh mạng và các biện pháp bảo vệ.",
+   "reading": "Last month one of our employees received an email that looked like it came from the bank. It asked her to update her password through a link. Fortunately, she noticed the sender's address was fake and reported it. This was a phishing attack. Since then, we have enabled two-factor authentication for all accounts and run security training every quarter.",
+   "vocabulary": [
+    {
+     "term": "phishing",
+     "definition": "lừa đảo qua email/tin nhắn",
+     "example": "That email was a phishing attack."
+    },
+    {
+     "term": "fake",
+     "definition": "giả mạo",
+     "example": "The sender's address was fake."
+    },
+    {
+     "term": "report",
+     "definition": "báo cáo",
+     "example": "She reported the email to IT."
+    },
+    {
+     "term": "two-factor authentication",
+     "definition": "xác thực hai lớp",
+     "example": "Turn on two-factor authentication."
+    },
+    {
+     "term": "enable",
+     "definition": "bật, kích hoạt",
+     "example": "We enabled automatic updates."
+    },
+    {
+     "term": "security",
+     "definition": "bảo mật, an ninh",
+     "example": "Security training is required."
+    }
+   ],
+   "grammar": {
+    "title": "Câu bị động hiện tại và quá khứ",
+    "explanation": "be + V3: tập trung vào sự việc thay vì người làm. Data is encrypted. The email was sent from a fake address. Thêm 'by' nếu cần nêu tác nhân.",
+    "examples": [
+     "All passwords are stored securely.",
+     "The attack was detected by our system.",
+     "Accounts are locked after five failed attempts."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm /f/ trong phishing",
+    "tip": "phishing đọc /ˈfɪʃɪŋ/ giống 'fishing' — ph = /f/. authentication /ɔːˌθentɪˈkeɪʃən/ nhấn âm 'kei'.",
+    "words": [
+     "phishing",
+     "authentication",
+     "security",
+     "enable"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích cho đồng nghiệp lớn tuổi cách nhận biết email lừa đảo.",
+    "Đề xuất 3 biện pháp bảo mật cho công ty nhỏ."
+   ],
+   "questions": [
+    {
+     "prompt": "What did the email ask the employee to do?",
+     "options": [
+      "Send money",
+      "Update her password through a link",
+      "Call the bank"
+     ],
+     "answer": 1,
+     "explanation": "'asked her to update her password through a link'."
+    },
+    {
+     "prompt": "How did she know it was fake?",
+     "options": [
+      "The logo was wrong",
+      "The sender's address was fake",
+      "It came at night"
+     ],
+     "answer": 1,
+     "explanation": "'the sender's address was fake'."
+    },
+    {
+     "prompt": "What did the company enable?",
+     "options": [
+      "Two-factor authentication",
+      "New email software",
+      "Free Wi-Fi"
+     ],
+     "answer": 0,
+     "explanation": "'enabled two-factor authentication'."
+    },
+    {
+     "prompt": "How often is security training run?",
+     "options": [
+      "Every year",
+      "Every month",
+      "Every quarter"
+     ],
+     "answer": 2,
+     "explanation": "'every quarter'."
+    },
+    {
+     "prompt": "Choose the passive sentence.",
+     "options": [
+      "Our system detected the attack.",
+      "The attack was detected by our system.",
+      "The attack detected our system."
+     ],
+     "answer": 1,
+     "explanation": "Bị động: was detected by."
+    },
+    {
+     "prompt": "Complete the sentence: _____ training is required.",
+     "options": [
+      "report",
+      "phishing",
+      "security"
+     ],
+     "answer": 2,
+     "explanation": "“security” nghĩa là “bảo mật, an ninh”. Câu đầy đủ: Security training is required."
+    },
+    {
+     "prompt": "What does “two-factor authentication” mean?",
+     "options": [
+      "lừa đảo qua email/tin nhắn",
+      "bật, kích hoạt",
+      "xác thực hai lớp"
+     ],
+     "answer": 2,
+     "explanation": "“two-factor authentication” = xác thực hai lớp. Ví dụ: Turn on two-factor authentication."
+    },
+    {
+     "prompt": "Complete the sentence: That email was a _____ attack.",
+     "options": [
+      "enable",
+      "phishing",
+      "security"
+     ],
+     "answer": 1,
+     "explanation": "“phishing” nghĩa là “lừa đảo qua email/tin nhắn”. Câu đầy đủ: That email was a phishing attack."
+    },
+    {
+     "prompt": "What does “phishing” mean?",
+     "options": [
+      "lừa đảo qua email/tin nhắn",
+      "bật, kích hoạt",
+      "bảo mật, an ninh"
+     ],
+     "answer": 0,
+     "explanation": "“phishing” = lừa đảo qua email/tin nhắn. Ví dụ: That email was a phishing attack."
+    },
+    {
+     "prompt": "Complete the sentence: Turn on _____.",
+     "options": [
+      "phishing",
+      "two-factor authentication",
+      "enable"
+     ],
+     "answer": 1,
+     "explanation": "“two-factor authentication” nghĩa là “xác thực hai lớp”. Câu đầy đủ: Turn on two-factor authentication."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b2-1",
+   "level": "B2",
+   "unit": "B2 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Thuyết trình giải pháp kỹ thuật",
+   "objective": "Trình bày kiến trúc, so sánh phương án và bảo vệ đề xuất trước lãnh đạo.",
+   "reading": "We're proposing to migrate our monolithic system to a set of microservices. The main advantage is scalability: each service can be deployed and scaled independently. That said, microservices introduce operational complexity, so we'd need better monitoring and a dedicated DevOps engineer. Given our current growth, we believe the long-term benefits outweigh the short-term costs. We suggest migrating the payment module first, as it's the most critical bottleneck.",
+   "vocabulary": [
+    {
+     "term": "migrate",
+     "definition": "di chuyển, chuyển đổi (hệ thống)",
+     "example": "We plan to migrate to the cloud."
+    },
+    {
+     "term": "scalability",
+     "definition": "khả năng mở rộng",
+     "example": "Scalability is our main concern."
+    },
+    {
+     "term": "deploy",
+     "definition": "triển khai",
+     "example": "Each service can be deployed separately."
+    },
+    {
+     "term": "complexity",
+     "definition": "độ phức tạp",
+     "example": "It adds operational complexity."
+    },
+    {
+     "term": "outweigh",
+     "definition": "vượt trội hơn, lớn hơn",
+     "example": "The benefits outweigh the costs."
+    },
+    {
+     "term": "bottleneck",
+     "definition": "điểm nghẽn",
+     "example": "The database is our bottleneck."
+    }
+   ],
+   "grammar": {
+    "title": "Ngôn ngữ cân nhắc: That said, Given…, outweigh",
+    "explanation": "That said = tuy vậy. Given + danh từ = xét đến. A outweighs B = A lớn hơn B. Giúp lập luận cân bằng, thuyết phục.",
+    "examples": [
+     "That said, the migration will take six months.",
+     "Given our budget, we should start small.",
+     "The risks outweigh the benefits."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm: scalaBIlity, comPLEXity",
+    "tip": "Đuôi -ity luôn nhấn vào âm tiết ngay trước: scala-BI-lity, com-PLEX-ity. deploy nhấn âm sau: de-PLOY.",
+    "words": [
+     "scalability",
+     "complexity",
+     "deploy",
+     "migrate"
+    ]
+   },
+   "speakingTasks": [
+    "Trình bày một đề xuất kỹ thuật (2 phút): vấn đề, giải pháp, rủi ro, kế hoạch.",
+    "Thầy/cô là CTO — phản biện chi phí và rủi ro."
+   ],
+   "questions": [
+    {
+     "prompt": "What is the main advantage of microservices?",
+     "options": [
+      "Scalability",
+      "Lower cost",
+      "Fewer servers"
+     ],
+     "answer": 0,
+     "explanation": "'The main advantage is scalability'."
+    },
+    {
+     "prompt": "What is a disadvantage mentioned?",
+     "options": [
+      "Operational complexity",
+      "Poor security",
+      "Slow development"
+     ],
+     "answer": 0,
+     "explanation": "'introduce operational complexity'."
+    },
+    {
+     "prompt": "Which module should be migrated first?",
+     "options": [
+      "Login",
+      "Reporting",
+      "Payment"
+     ],
+     "answer": 2,
+     "explanation": "'migrating the payment module first'."
+    },
+    {
+     "prompt": "“The benefits outweigh the costs” means…",
+     "options": [
+      "the costs are bigger",
+      "they are equal",
+      "the benefits are bigger"
+     ],
+     "answer": 2,
+     "explanation": "outweigh = vượt trội."
+    },
+    {
+     "prompt": "Which phrase introduces a counterpoint?",
+     "options": [
+      "Given that",
+      "As a result",
+      "That said"
+     ],
+     "answer": 2,
+     "explanation": "That said = tuy vậy."
+    },
+    {
+     "prompt": "Complete the sentence: We plan to _____ to the cloud.",
+     "options": [
+      "migrate",
+      "outweigh",
+      "complexity"
+     ],
+     "answer": 0,
+     "explanation": "“migrate” nghĩa là “di chuyển, chuyển đổi (hệ thống)”. Câu đầy đủ: We plan to migrate to the cloud."
+    },
+    {
+     "prompt": "What does “deploy” mean?",
+     "options": [
+      "độ phức tạp",
+      "di chuyển, chuyển đổi (hệ thống)",
+      "triển khai"
+     ],
+     "answer": 2,
+     "explanation": "“deploy” = triển khai. Ví dụ: Each service can be deployed separately."
+    },
+    {
+     "prompt": "Complete the sentence: The benefits _____ the costs.",
+     "options": [
+      "deploy",
+      "bottleneck",
+      "outweigh"
+     ],
+     "answer": 2,
+     "explanation": "“outweigh” nghĩa là “vượt trội hơn, lớn hơn”. Câu đầy đủ: The benefits outweigh the costs."
+    },
+    {
+     "prompt": "What does “scalability” mean?",
+     "options": [
+      "di chuyển, chuyển đổi (hệ thống)",
+      "điểm nghẽn",
+      "khả năng mở rộng"
+     ],
+     "answer": 2,
+     "explanation": "“scalability” = khả năng mở rộng. Ví dụ: Scalability is our main concern."
+    },
+    {
+     "prompt": "Complete the sentence: It adds operational _____.",
+     "options": [
+      "migrate",
+      "outweigh",
+      "complexity"
+     ],
+     "answer": 2,
+     "explanation": "“complexity” nghĩa là “độ phức tạp”. Câu đầy đủ: It adds operational complexity."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b2-2",
+   "level": "B2",
+   "unit": "B2 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Xử lý sự cố hệ thống (incident)",
+   "objective": "Thông báo sự cố, cập nhật tình hình và viết báo cáo hậu kiểm (post-mortem).",
+   "reading": "Post-mortem summary: On 12 March, users were unable to log in for 47 minutes. The outage was caused by an expired SSL certificate on the authentication server. Although an alert had been configured, it was sent to an inactive mailbox. Once the issue was identified, the certificate was renewed within ten minutes. To prevent a recurrence, certificate renewals will be automated and alerts will be routed to the on-call channel.",
+   "vocabulary": [
+    {
+     "term": "outage",
+     "definition": "sự cố gián đoạn dịch vụ",
+     "example": "The outage lasted 47 minutes."
+    },
+    {
+     "term": "expired",
+     "definition": "hết hạn",
+     "example": "The certificate had expired."
+    },
+    {
+     "term": "alert",
+     "definition": "cảnh báo",
+     "example": "The alert went to the wrong inbox."
+    },
+    {
+     "term": "identify",
+     "definition": "xác định",
+     "example": "We identified the root cause."
+    },
+    {
+     "term": "recurrence",
+     "definition": "sự tái diễn",
+     "example": "We must prevent a recurrence."
+    },
+    {
+     "term": "on-call",
+     "definition": "trực sự cố",
+     "example": "The on-call engineer was notified."
+    }
+   ],
+   "grammar": {
+    "title": "Bị động phức: had been + V3, will be + V3",
+    "explanation": "Báo cáo kỹ thuật dùng bị động để khách quan: was caused by, had been configured (trước đó), will be automated (kế hoạch).",
+    "examples": [
+     "The outage was caused by a configuration error.",
+     "The backup had been tested the week before.",
+     "Renewals will be automated."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc ngày tháng và thời lượng",
+    "tip": "12 March đọc 'the twelfth of March' (Anh) hoặc 'March twelfth' (Mỹ). 47 minutes — nhấn 'forty-SEVen'.",
+    "words": [
+     "outage",
+     "certificate",
+     "recurrence",
+     "authentication"
+    ]
+   },
+   "speakingTasks": [
+    "Thông báo một sự cố cho khách hàng: chuyện gì, ảnh hưởng, khi nào khắc phục.",
+    "Trình bày ngắn một post-mortem cho thầy/cô."
+   ],
+   "questions": [
+    {
+     "prompt": "How long did the outage last?",
+     "options": [
+      "10 minutes",
+      "2 hours",
+      "47 minutes"
+     ],
+     "answer": 2,
+     "explanation": "'for 47 minutes'."
+    },
+    {
+     "prompt": "What caused the outage?",
+     "options": [
+      "A power cut",
+      "A hacker",
+      "An expired SSL certificate"
+     ],
+     "answer": 2,
+     "explanation": "'caused by an expired SSL certificate'."
+    },
+    {
+     "prompt": "Why didn't the alert help?",
+     "options": [
+      "It wasn't configured.",
+      "It went to an inactive mailbox.",
+      "It was too late."
+     ],
+     "answer": 1,
+     "explanation": "'sent to an inactive mailbox'."
+    },
+    {
+     "prompt": "What will be done to prevent it?",
+     "options": [
+      "Hire more staff",
+      "Disable alerts",
+      "Automate certificate renewals"
+     ],
+     "answer": 2,
+     "explanation": "'certificate renewals will be automated'."
+    },
+    {
+     "prompt": "Choose the correct passive.",
+     "options": [
+      "An alert had been configured.",
+      "The alert had configured.",
+      "An alert had be configured."
+     ],
+     "answer": 0,
+     "explanation": "had been + V3."
+    },
+    {
+     "prompt": "Complete the sentence: The certificate had _____.",
+     "options": [
+      "outage",
+      "expired",
+      "identify"
+     ],
+     "answer": 1,
+     "explanation": "“expired” nghĩa là “hết hạn”. Câu đầy đủ: The certificate had expired."
+    },
+    {
+     "prompt": "What does “outage” mean?",
+     "options": [
+      "trực sự cố",
+      "sự cố gián đoạn dịch vụ",
+      "cảnh báo"
+     ],
+     "answer": 1,
+     "explanation": "“outage” = sự cố gián đoạn dịch vụ. Ví dụ: The outage lasted 47 minutes."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ lasted 47 minutes.",
+     "options": [
+      "on-call",
+      "outage",
+      "alert"
+     ],
+     "answer": 1,
+     "explanation": "“outage” nghĩa là “sự cố gián đoạn dịch vụ”. Câu đầy đủ: The outage lasted 47 minutes."
+    },
+    {
+     "prompt": "What does “recurrence” mean?",
+     "options": [
+      "sự cố gián đoạn dịch vụ",
+      "hết hạn",
+      "sự tái diễn"
+     ],
+     "answer": 2,
+     "explanation": "“recurrence” = sự tái diễn. Ví dụ: We must prevent a recurrence."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ engineer was notified.",
+     "options": [
+      "identify",
+      "on-call",
+      "recurrence"
+     ],
+     "answer": 1,
+     "explanation": "“on-call” nghĩa là “trực sự cố”. Câu đầy đủ: The on-call engineer was notified."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b2-3",
+   "level": "B2",
+   "unit": "B2 · Bài 3",
+   "category": "Từ vựng",
+   "title": "AI và xu hướng công nghệ",
+   "objective": "Thảo luận lợi ích, rủi ro của AI và quan điểm về tương lai công nghệ.",
+   "reading": "Artificial intelligence is transforming the way software is built. Code assistants can generate boilerplate in seconds, freeing developers to focus on design and problem-solving. However, critics argue that over-reliance on AI could erode fundamental skills, and that generated code may contain subtle bugs or security flaws. Most experts agree that AI will augment rather than replace developers — provided that teams maintain rigorous review practices.",
+   "vocabulary": [
+    {
+     "term": "transform",
+     "definition": "biến đổi",
+     "example": "AI is transforming many industries."
+    },
+    {
+     "term": "boilerplate",
+     "definition": "mã lặp lại mẫu",
+     "example": "The tool generates boilerplate quickly."
+    },
+    {
+     "term": "over-reliance",
+     "definition": "sự phụ thuộc quá mức",
+     "example": "Over-reliance on AI is risky."
+    },
+    {
+     "term": "erode",
+     "definition": "làm xói mòn",
+     "example": "It could erode basic skills."
+    },
+    {
+     "term": "subtle",
+     "definition": "tinh vi, khó nhận ra",
+     "example": "There was a subtle bug in the code."
+    },
+    {
+     "term": "augment",
+     "definition": "tăng cường, bổ trợ",
+     "example": "AI will augment human work."
+    }
+   ],
+   "grammar": {
+    "title": "rather than, provided that và động từ tường thuật",
+    "explanation": "A rather than B = A thay vì B. provided that = với điều kiện. Động từ tường thuật quan điểm: argue, claim, suggest, agree + that-clause.",
+    "examples": [
+     "AI will support rather than replace engineers.",
+     "Critics argue that AI reduces creativity.",
+     "It's safe provided that someone reviews it."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm /ɜː/ trong erode? Không — /ɪˈrəʊd/",
+    "tip": "erode /ɪˈrəʊd/, subtle /ˈsʌtl/ (chữ b câm), augment /ɔːgˈment/ (động từ).",
+    "words": [
+     "subtle",
+     "erode",
+     "augment",
+     "artificial"
+    ]
+   },
+   "speakingTasks": [
+    "Nêu quan điểm: AI sẽ thay đổi nghề nghiệp của bạn như thế nào?",
+    "Tranh luận với thầy/cô về rủi ro của AI."
+   ],
+   "questions": [
+    {
+     "prompt": "What can code assistants do quickly?",
+     "options": [
+      "Design systems",
+      "Generate boilerplate",
+      "Hire developers"
+     ],
+     "answer": 1,
+     "explanation": "'generate boilerplate in seconds'."
+    },
+    {
+     "prompt": "What do critics worry about?",
+     "options": [
+      "Slow computers",
+      "Over-reliance eroding skills",
+      "High salaries"
+     ],
+     "answer": 1,
+     "explanation": "'over-reliance on AI could erode fundamental skills'."
+    },
+    {
+     "prompt": "What do most experts believe?",
+     "options": [
+      "AI will replace developers.",
+      "AI is useless.",
+      "AI will augment developers."
+     ],
+     "answer": 2,
+     "explanation": "'AI will augment rather than replace developers'."
+    },
+    {
+     "prompt": "Under what condition?",
+     "options": [
+      "Developers work longer",
+      "AI becomes cheaper",
+      "Teams maintain rigorous reviews"
+     ],
+     "answer": 2,
+     "explanation": "'provided that teams maintain rigorous review practices'."
+    },
+    {
+     "prompt": "Which word is silent in “subtle”?",
+     "options": [
+      "s",
+      "t",
+      "b"
+     ],
+     "answer": 2,
+     "explanation": "subtle /ˈsʌtl/ — chữ b câm."
+    },
+    {
+     "prompt": "Complete the sentence: _____ on AI is risky.",
+     "options": [
+      "augment",
+      "transform",
+      "over-reliance"
+     ],
+     "answer": 2,
+     "explanation": "“over-reliance” nghĩa là “sự phụ thuộc quá mức”. Câu đầy đủ: Over-reliance on AI is risky."
+    },
+    {
+     "prompt": "What does “over-reliance” mean?",
+     "options": [
+      "tăng cường, bổ trợ",
+      "sự phụ thuộc quá mức",
+      "biến đổi"
+     ],
+     "answer": 1,
+     "explanation": "“over-reliance” = sự phụ thuộc quá mức. Ví dụ: Over-reliance on AI is risky."
+    },
+    {
+     "prompt": "Complete the sentence: There was a _____ bug in the code.",
+     "options": [
+      "subtle",
+      "boilerplate",
+      "transform"
+     ],
+     "answer": 0,
+     "explanation": "“subtle” nghĩa là “tinh vi, khó nhận ra”. Câu đầy đủ: There was a subtle bug in the code."
+    },
+    {
+     "prompt": "What does “erode” mean?",
+     "options": [
+      "tinh vi, khó nhận ra",
+      "làm xói mòn",
+      "mã lặp lại mẫu"
+     ],
+     "answer": 1,
+     "explanation": "“erode” = làm xói mòn. Ví dụ: It could erode basic skills."
+    },
+    {
+     "prompt": "Complete the sentence: AI is _____ing many industries.",
+     "options": [
+      "augment",
+      "transform",
+      "over-reliance"
+     ],
+     "answer": 1,
+     "explanation": "“transform” nghĩa là “biến đổi”. Câu đầy đủ: AI is transforming many industries."
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
+}

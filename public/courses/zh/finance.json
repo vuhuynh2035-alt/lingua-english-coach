@@ -1,0 +1,2327 @@
+{
+ "id": "finance",
+ "title": "Tiếng Trung ngành tài chính",
+ "version": "1.1.0",
+ "framework": "HSK 1–5",
+ "overview": "12 bài từ HSK 1 đến HSK 5: giao dịch ngân hàng, mở tài khoản, hóa đơn, tiết kiệm và vay, ngân sách, nhắc thanh toán, báo cáo tài chính, đầu tư, kiểm soát chi phí, thuyết trình với nhà đầu tư, đàm phán tín dụng và tuân thủ.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI, phân cấp theo HSK/CEFR",
+ "references": [
+  {
+   "title": "Chinese Proficiency Grading Standards for International Chinese Language Education",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Khung tham chiếu năng lực tiếng Trung theo HSK (chỉ dùng để phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "HSK – Hanyu Shuiping Kaoshi",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Tham khảo cấp độ HSK 1–5 (không sao chép đề thi)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "finance-a1-1",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 1",
+   "category": "Từ vựng",
+   "title": "Tiền tệ và giao dịch ngân hàng cơ bản",
+   "objective": "Rút tiền, gửi tiền và chuyển khoản tại ngân hàng.",
+   "reading": "小明: 你好,我想取钱。\n银行职员: 取款机在那边。您有银行卡吗?\n小明: 有。我还想给朋友转账。\n银行职员: 转账在取款机上也可以办。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "你好,我想取钱。",
+     "phonetic": "Nǐ hǎo, wǒ xiǎng qǔ qián.",
+     "translation": "Xin chào, tôi muốn rút tiền."
+    },
+    {
+     "speaker": "银行职员",
+     "text": "取款机在那边。您有银行卡吗?",
+     "phonetic": "Qǔkuǎnjī zài nàbiān. Nín yǒu yínhángkǎ ma?",
+     "translation": "Máy rút tiền ở đằng kia. Ngài có thẻ ngân hàng không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "有。我还想给朋友转账。",
+     "phonetic": "Yǒu. Wǒ hái xiǎng gěi péngyou zhuǎnzhàng.",
+     "translation": "Có. Tôi còn muốn chuyển khoản cho bạn."
+    },
+    {
+     "speaker": "银行职员",
+     "text": "转账在取款机上也可以办。",
+     "phonetic": "Zhuǎnzhàng zài qǔkuǎnjī shang yě kěyǐ bàn.",
+     "translation": "Chuyển khoản cũng làm được trên máy rút tiền."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "钱",
+     "reading": "qián",
+     "definition": "tiền",
+     "example": "我没有钱了。 (Tôi hết tiền rồi.)"
+    },
+    {
+     "term": "取钱",
+     "reading": "qǔ qián",
+     "definition": "rút tiền",
+     "example": "我去银行取钱。 (Tôi đi ngân hàng rút tiền.)"
+    },
+    {
+     "term": "存钱",
+     "reading": "cún qián",
+     "definition": "gửi tiền",
+     "example": "我每个月存钱。 (Mỗi tháng tôi gửi tiền.)"
+    },
+    {
+     "term": "转账",
+     "reading": "zhuǎnzhàng",
+     "definition": "chuyển khoản",
+     "example": "我给他转账了。 (Tôi đã chuyển khoản cho anh ấy.)"
+    },
+    {
+     "term": "银行",
+     "reading": "yínháng",
+     "definition": "ngân hàng",
+     "example": "银行几点开门?(Ngân hàng mấy giờ mở cửa?)"
+    }
+   ],
+   "grammar": {
+    "title": "想 + V / 给 + người + V",
+    "explanation": "Muốn: 想 + V. Làm cho ai: 给 + người + V (给朋友转账). Có thể làm ở đâu: 在……也可以办.",
+    "examples": [
+     "我想开一个账户。[wǒ xiǎng kāi yí gè zhànghù] (Tôi muốn mở một tài khoản.)",
+     "我给妈妈转了一千块。[wǒ gěi māma zhuǎn le yìqiān kuài] (Tôi chuyển cho mẹ 1.000 tệ.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm q và c",
+    "tip": "取 qǔ (q + ü), 存 cún (c bật hơi). 银行 yínháng: 行 đọc háng (không phải xíng).",
+    "words": [
+     "取钱",
+     "存钱",
+     "转账",
+     "银行"
+    ]
+   },
+   "speakingTasks": [
+    "Nói với nhân viên ngân hàng bạn muốn rút và chuyển tiền.",
+    "Hỏi thầy/cô giờ mở cửa của ngân hàng."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi muốn rút tiền.”",
+     "options": [
+      "我想存钱。",
+      "我想取钱。",
+      "我钱想取。"
+     ],
+     "answer": 1,
+     "explanation": "取钱 = rút tiền."
+    },
+    {
+     "prompt": "「存钱」 nghĩa là:",
+     "options": [
+      "mượn tiền",
+      "rút tiền",
+      "gửi tiền"
+     ],
+     "answer": 2,
+     "explanation": "存 = cất, gửi."
+    },
+    {
+     "prompt": "“Chuyển khoản cho bạn”:",
+     "options": [
+      "转账朋友给",
+      "给朋友转账",
+      "朋友给转账了吗"
+     ],
+     "answer": 1,
+     "explanation": "给 + người + V."
+    },
+    {
+     "prompt": "「银行」 đọc là:",
+     "options": [
+      "yīnháng",
+      "yínháng",
+      "yínxíng"
+     ],
+     "answer": 1,
+     "explanation": "行 trong 银行 đọc háng."
+    },
+    {
+     "prompt": "「转账」 có nghĩa là gì?",
+     "options": [
+      "tiền",
+      "gửi tiền",
+      "chuyển khoản"
+     ],
+     "answer": 2,
+     "explanation": "「转账」 [zhuǎnzhàng] = chuyển khoản."
+    },
+    {
+     "prompt": "「存钱」 đọc là gì?",
+     "options": [
+      "cún qián",
+      "qián",
+      "zhuǎnzhàng"
+     ],
+     "answer": 0,
+     "explanation": "「存钱」 đọc là [cún qián], nghĩa là gửi tiền."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我给他＿＿＿了。  (Tôi đã chuyển khoản cho anh ấy.)",
+     "options": [
+      "转账",
+      "钱",
+      "存钱"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「转账」 (chuyển khoản). Câu đầy đủ: 我给他转账了。"
+    },
+    {
+     "prompt": "「银行」 có nghĩa là gì?",
+     "options": [
+      "rút tiền",
+      "ngân hàng",
+      "chuyển khoản"
+     ],
+     "answer": 1,
+     "explanation": "「银行」 [yínháng] = ngân hàng."
+    },
+    {
+     "prompt": "「银行」 đọc là gì?",
+     "options": [
+      "yínháng",
+      "qǔ qián",
+      "zhuǎnzhàng"
+     ],
+     "answer": 0,
+     "explanation": "「银行」 đọc là [yínháng], nghĩa là ngân hàng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿几点开门?  (Ngân hàng mấy giờ mở cửa?)",
+     "options": [
+      "转账",
+      "取钱",
+      "银行"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「银行」 (ngân hàng). Câu đầy đủ: 银行几点开门?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a1-2",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Mở tài khoản ngân hàng",
+   "objective": "Điền thông tin, trình giấy tờ và chọn loại tài khoản.",
+   "reading": "小明: 你好,我想开个账户。\n银行职员: 请出示您的护照。\n小明: 给您。还需要什么吗?\n银行职员: 请填一下这张表,然后设置密码。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "你好,我想开个账户。",
+     "phonetic": "Nǐ hǎo, wǒ xiǎng kāi gè zhànghù.",
+     "translation": "Xin chào, tôi muốn mở tài khoản."
+    },
+    {
+     "speaker": "银行职员",
+     "text": "请出示您的护照。",
+     "phonetic": "Qǐng chūshì nín de hùzhào.",
+     "translation": "Xin xuất trình hộ chiếu."
+    },
+    {
+     "speaker": "小明",
+     "text": "给您。还需要什么吗?",
+     "phonetic": "Gěi nín. Hái xūyào shénme ma?",
+     "translation": "Đây ạ. Còn cần gì nữa không?"
+    },
+    {
+     "speaker": "银行职员",
+     "text": "请填一下这张表,然后设置密码。",
+     "phonetic": "Qǐng tián yíxià zhè zhāng biǎo, ránhòu shèzhì mìmǎ.",
+     "translation": "Xin điền tờ đơn này, sau đó đặt mật khẩu."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "账户",
+     "reading": "zhànghù",
+     "definition": "tài khoản",
+     "example": "我有两个账户。 (Tôi có hai tài khoản.)"
+    },
+    {
+     "term": "护照",
+     "reading": "hùzhào",
+     "definition": "hộ chiếu",
+     "example": "请带护照。 (Xin mang hộ chiếu.)"
+    },
+    {
+     "term": "填表",
+     "reading": "tián biǎo",
+     "definition": "điền đơn",
+     "example": "请先填表。 (Xin điền đơn trước.)"
+    },
+    {
+     "term": "设置",
+     "reading": "shèzhì",
+     "definition": "cài đặt",
+     "example": "设置一个密码。 (Đặt một mật khẩu.)"
+    },
+    {
+     "term": "需要",
+     "reading": "xūyào",
+     "definition": "cần",
+     "example": "还需要什么?(Còn cần gì nữa?)"
+    }
+   ],
+   "grammar": {
+    "title": "开个账户 / 还需要……吗",
+    "explanation": "Mở tài khoản: 开(一)个账户. Hỏi còn cần gì: 还需要什么吗? Điền đơn: 填 + 表. Lượng từ của tờ đơn: 张.",
+    "examples": [
+     "我想办一张银行卡。[wǒ xiǎng bàn yì zhāng yínhángkǎ] (Tôi muốn làm một thẻ ngân hàng.)",
+     "还需要别的证件吗?[hái xūyào bié de zhèngjiàn ma] (Còn cần giấy tờ khác không?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm zh và h",
+    "tip": "账户 zhànghù: zh cuốn lưỡi, h họng nhẹ. 设置 shèzhì: sh + zh.",
+    "words": [
+     "账户",
+     "护照",
+     "填表",
+     "设置"
+    ]
+   },
+   "speakingTasks": [
+    "Mở tài khoản: nói mục đích, trình giấy tờ, hỏi loại thẻ.",
+    "Hỏi thầy/cô cần mang theo giấy tờ gì."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi muốn mở tài khoản.”",
+     "options": [
+      "我想账户开个。",
+      "开我想账户。",
+      "我想开个账户。"
+     ],
+     "answer": 2,
+     "explanation": "开 + 账户."
+    },
+    {
+     "prompt": "Hỏi “Còn cần gì nữa không?”",
+     "options": [
+      "什么还要需吗?",
+      "还需要什么吗?",
+      "需要还什么?"
+     ],
+     "answer": 1,
+     "explanation": "还需要 + 什么."
+    },
+    {
+     "prompt": "「填表」 nghĩa là:",
+     "options": [
+      "chờ đợi",
+      "điền đơn",
+      "ký tên"
+     ],
+     "answer": 1,
+     "explanation": "填 = điền."
+    },
+    {
+     "prompt": "「账户」 là:",
+     "options": [
+      "tài khoản",
+      "thẻ ATM",
+      "chữ ký"
+     ],
+     "answer": 0,
+     "explanation": "账户 = account."
+    },
+    {
+     "prompt": "「设置」 có nghĩa là gì?",
+     "options": [
+      "cài đặt",
+      "điền đơn",
+      "cần"
+     ],
+     "answer": 0,
+     "explanation": "「设置」 [shèzhì] = cài đặt."
+    },
+    {
+     "prompt": "「护照」 đọc là gì?",
+     "options": [
+      "zhànghù",
+      "hùzhào",
+      "xūyào"
+     ],
+     "answer": 1,
+     "explanation": "「护照」 đọc là [hùzhào], nghĩa là hộ chiếu."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 还＿＿＿什么?  (Còn cần gì nữa?)",
+     "options": [
+      "护照",
+      "设置",
+      "需要"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「需要」 (cần). Câu đầy đủ: 还需要什么?"
+    },
+    {
+     "prompt": "「护照」 có nghĩa là gì?",
+     "options": [
+      "cần",
+      "hộ chiếu",
+      "tài khoản"
+     ],
+     "answer": 1,
+     "explanation": "「护照」 [hùzhào] = hộ chiếu."
+    },
+    {
+     "prompt": "「填表」 đọc là gì?",
+     "options": [
+      "hùzhào",
+      "tián biǎo",
+      "zhànghù"
+     ],
+     "answer": 1,
+     "explanation": "「填表」 đọc là [tián biǎo], nghĩa là điền đơn."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请带＿＿＿。  (Xin mang hộ chiếu.)",
+     "options": [
+      "账户",
+      "需要",
+      "护照"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「护照」 (hộ chiếu). Câu đầy đủ: 请带护照。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a1-3",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Hóa đơn và thanh toán",
+   "objective": "Hỏi số tiền, phương thức và hạn thanh toán.",
+   "reading": "小明: 这个月的电费是多少?\n工作人员: 三百五十块。\n小明: 可以用手机交吗?\n工作人员: 可以。最晚二十五号交。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "这个月的电费是多少?",
+     "phonetic": "Zhège yuè de diànfèi shì duōshao?",
+     "translation": "Tiền điện tháng này là bao nhiêu?"
+    },
+    {
+     "speaker": "工作人员",
+     "text": "三百五十块。",
+     "phonetic": "Sānbǎi wǔshí kuài.",
+     "translation": "350 tệ."
+    },
+    {
+     "speaker": "小明",
+     "text": "可以用手机交吗?",
+     "phonetic": "Kěyǐ yòng shǒujī jiāo ma?",
+     "translation": "Có thể đóng bằng điện thoại không?"
+    },
+    {
+     "speaker": "工作人员",
+     "text": "可以。最晚二十五号交。",
+     "phonetic": "Kěyǐ. Zuì wǎn èrshíwǔ hào jiāo.",
+     "translation": "Được. Muộn nhất là đóng ngày 25."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "电费",
+     "reading": "diànfèi",
+     "definition": "tiền điện",
+     "example": "电费很贵。 (Tiền điện đắt.)"
+    },
+    {
+     "term": "账单",
+     "reading": "zhàngdān",
+     "definition": "hóa đơn",
+     "example": "我收到了账单。 (Tôi đã nhận hóa đơn.)"
+    },
+    {
+     "term": "交",
+     "reading": "jiāo",
+     "definition": "đóng (tiền)",
+     "example": "我去交水费。 (Tôi đi đóng tiền nước.)"
+    },
+    {
+     "term": "最晚",
+     "reading": "zuì wǎn",
+     "definition": "muộn nhất",
+     "example": "最晚明天交。 (Muộn nhất là mai đóng.)"
+    },
+    {
+     "term": "块",
+     "reading": "kuài",
+     "definition": "đồng, tệ (khẩu ngữ)",
+     "example": "十块钱。 (10 tệ.)"
+    }
+   ],
+   "grammar": {
+    "title": "Phí + 是多少 / ngày 号",
+    "explanation": "Các loại phí: 电费, 水费, 房租 (tiền nhà). Ngày: số + 号. Muộn nhất: 最晚. Khẩu ngữ dùng 块 thay 元.",
+    "examples": [
+     "房租每个月五号交。[fángzū měi gè yuè wǔ hào jiāo] (Tiền nhà đóng ngày 5 hàng tháng.)",
+     "水费是多少?[shuǐfèi shì duōshao] (Tiền nước bao nhiêu?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Số tiền",
+    "tip": "三百五十 sānbǎi wǔshí. 块 kuài (4). 账单 zhàngdān.",
+    "words": [
+     "电费",
+     "账单",
+     "最晚",
+     "三百五十"
+    ]
+   },
+   "speakingTasks": [
+    "Hỏi số tiền và hạn thanh toán một hóa đơn.",
+    "Nói cho thầy/cô các khoản phí bạn trả hằng tháng."
+   ],
+   "questions": [
+    {
+     "prompt": "“Hạn muộn nhất ngày 25”:",
+     "options": [
+      "最二十五晚号",
+      "二十五号最晚了点",
+      "最晚二十五号"
+     ],
+     "answer": 2,
+     "explanation": "最晚 + ngày."
+    },
+    {
+     "prompt": "「电费」 là:",
+     "options": [
+      "tiền nhà",
+      "tiền nước",
+      "tiền điện"
+     ],
+     "answer": 2,
+     "explanation": "电 = điện, 费 = phí."
+    },
+    {
+     "prompt": "“Đóng bằng điện thoại được không?”",
+     "options": [
+      "手机可以交用吗?",
+      "可以用手机交吗?",
+      "用交手机吗可以?"
+     ],
+     "answer": 1,
+     "explanation": "用 + công cụ + V."
+    },
+    {
+     "prompt": "「账单」 là:",
+     "options": [
+      "biên lai rút tiền",
+      "hóa đơn",
+      "hợp đồng"
+     ],
+     "answer": 1,
+     "explanation": "账单 = bill."
+    },
+    {
+     "prompt": "「块」 có nghĩa là gì?",
+     "options": [
+      "hóa đơn",
+      "đồng, tệ (khẩu ngữ)",
+      "tiền điện"
+     ],
+     "answer": 1,
+     "explanation": "「块」 [kuài] = đồng, tệ (khẩu ngữ)."
+    },
+    {
+     "prompt": "「账单」 đọc là gì?",
+     "options": [
+      "diànfèi",
+      "zuì wǎn",
+      "zhàngdān"
+     ],
+     "answer": 2,
+     "explanation": "「账单」 đọc là [zhàngdān], nghĩa là hóa đơn."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 十＿＿＿钱。  (10 tệ.)",
+     "options": [
+      "电费",
+      "账单",
+      "块"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「块」 (đồng, tệ (khẩu ngữ)). Câu đầy đủ: 十块钱。"
+    },
+    {
+     "prompt": "「交」 có nghĩa là gì?",
+     "options": [
+      "đóng (tiền)",
+      "tiền điện",
+      "muộn nhất"
+     ],
+     "answer": 0,
+     "explanation": "「交」 [jiāo] = đóng (tiền)."
+    },
+    {
+     "prompt": "「最晚」 đọc là gì?",
+     "options": [
+      "diànfèi",
+      "zhàngdān",
+      "zuì wǎn"
+     ],
+     "answer": 2,
+     "explanation": "「最晚」 đọc là [zuì wǎn], nghĩa là muộn nhất."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我收到了＿＿＿。  (Tôi đã nhận hóa đơn.)",
+     "options": [
+      "账单",
+      "电费",
+      "最晚"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「账单」 (hóa đơn). Câu đầy đủ: 我收到了账单。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a2-1",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Tư vấn sản phẩm tiết kiệm và vay",
+   "objective": "So sánh lãi suất, kỳ hạn và điều kiện vay.",
+   "reading": "小明: 定期存款的利率是多少?\n银行职员: 一年期的是百分之一点五。\n小明: 我还想了解一下车贷。\n银行职员: 需要提供收入证明。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "定期存款的利率是多少?",
+     "phonetic": "Dìngqī cúnkuǎn de lìlǜ shì duōshao?",
+     "translation": "Lãi suất tiền gửi kỳ hạn là bao nhiêu?"
+    },
+    {
+     "speaker": "银行职员",
+     "text": "一年期的是百分之一点五。",
+     "phonetic": "Yì nián qī de shì bǎi fēn zhī yī diǎn wǔ.",
+     "translation": "Kỳ hạn 1 năm là 1,5%."
+    },
+    {
+     "speaker": "小明",
+     "text": "我还想了解一下车贷。",
+     "phonetic": "Wǒ hái xiǎng liǎojiě yíxià chēdài.",
+     "translation": "Tôi còn muốn tìm hiểu về vay mua xe."
+    },
+    {
+     "speaker": "银行职员",
+     "text": "需要提供收入证明。",
+     "phonetic": "Xūyào tígōng shōurù zhèngmíng.",
+     "translation": "Cần cung cấp giấy chứng minh thu nhập."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "存款",
+     "reading": "cúnkuǎn",
+     "definition": "tiền gửi",
+     "example": "我有一些存款。 (Tôi có một ít tiền gửi.)"
+    },
+    {
+     "term": "利率",
+     "reading": "lìlǜ",
+     "definition": "lãi suất",
+     "example": "利率提高了。 (Lãi suất đã tăng.)"
+    },
+    {
+     "term": "贷款",
+     "reading": "dàikuǎn",
+     "definition": "khoản vay",
+     "example": "我想申请贷款。 (Tôi muốn xin vay.)"
+    },
+    {
+     "term": "收入",
+     "reading": "shōurù",
+     "definition": "thu nhập",
+     "example": "他的收入很高。 (Thu nhập của anh ấy cao.)"
+    },
+    {
+     "term": "证明",
+     "reading": "zhèngmíng",
+     "definition": "giấy chứng nhận, chứng minh",
+     "example": "需要工作证明。 (Cần giấy xác nhận công tác.)"
+    }
+   ],
+   "grammar": {
+    "title": "了解一下 / 需要提供",
+    "explanation": "Tìm hiểu: 了解一下 + N. Cần cung cấp: 需要提供 + N. Phần trăm thập phân: 百分之一点五 = 1,5%.",
+    "examples": [
+     "我想了解一下理财产品。[wǒ xiǎng liǎojiě yíxià lǐcái chǎnpǐn] (Tôi muốn tìm hiểu sản phẩm đầu tư.)",
+     "需要提供身份证。[xūyào tígōng shēnfènzhèng] (Cần cung cấp CMND.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm lǜ và cún",
+    "tip": "利率 lìlǜ (ü), 存款 cúnkuǎn (c bật hơi + k bật hơi), 贷款 dàikuǎn.",
+    "words": [
+     "利率",
+     "存款",
+     "贷款",
+     "收入"
+    ]
+   },
+   "speakingTasks": [
+    "Hỏi ngân hàng về lãi suất tiền gửi và thời hạn.",
+    "Thầy/cô là nhân viên tín dụng, hãy hỏi điều kiện vay."
+   ],
+   "questions": [
+    {
+     "prompt": "Hỏi lãi suất:",
+     "options": [
+      "利率是多少?",
+      "利率几点?",
+      "利率在哪儿?"
+     ],
+     "answer": 0,
+     "explanation": "多少 hỏi số lượng."
+    },
+    {
+     "prompt": "“Cần giấy chứng minh thu nhập.”",
+     "options": [
+      "需要提供收入证明。",
+      "提供需要收入。",
+      "收入证明需要不。"
+     ],
+     "answer": 0,
+     "explanation": "需要提供 + N."
+    },
+    {
+     "prompt": "「存款」 nghĩa là:",
+     "options": [
+      "tiền phạt",
+      "tiền gửi",
+      "tiền vay"
+     ],
+     "answer": 1,
+     "explanation": "存款 = deposit."
+    },
+    {
+     "prompt": "1,5% đọc là:",
+     "options": [
+      "百分一五",
+      "百分之一点五",
+      "一点五百分"
+     ],
+     "answer": 1,
+     "explanation": "百分之 + số."
+    },
+    {
+     "prompt": "「贷款」 có nghĩa là gì?",
+     "options": [
+      "khoản vay",
+      "thu nhập",
+      "tiền gửi"
+     ],
+     "answer": 0,
+     "explanation": "「贷款」 [dàikuǎn] = khoản vay."
+    },
+    {
+     "prompt": "「存款」 đọc là gì?",
+     "options": [
+      "dàikuǎn",
+      "zhèngmíng",
+      "cúnkuǎn"
+     ],
+     "answer": 2,
+     "explanation": "「存款」 đọc là [cúnkuǎn], nghĩa là tiền gửi."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿提高了。  (Lãi suất đã tăng.)",
+     "options": [
+      "利率",
+      "贷款",
+      "收入"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「利率」 (lãi suất). Câu đầy đủ: 利率提高了。"
+    },
+    {
+     "prompt": "「存款」 có nghĩa là gì?",
+     "options": [
+      "khoản vay",
+      "giấy chứng nhận, chứng minh",
+      "tiền gửi"
+     ],
+     "answer": 2,
+     "explanation": "「存款」 [cúnkuǎn] = tiền gửi."
+    },
+    {
+     "prompt": "「贷款」 đọc là gì?",
+     "options": [
+      "dàikuǎn",
+      "cúnkuǎn",
+      "shōurù"
+     ],
+     "answer": 0,
+     "explanation": "「贷款」 đọc là [dàikuǎn], nghĩa là khoản vay."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我想申请＿＿＿。  (Tôi muốn xin vay.)",
+     "options": [
+      "存款",
+      "收入",
+      "贷款"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「贷款」 (khoản vay). Câu đầy đủ: 我想申请贷款。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a2-2",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Chi phí và ngân sách cá nhân",
+   "objective": "Lập ngân sách tháng, nói về các khoản chi và tiết kiệm.",
+   "reading": "朋友: 你每个月存多少钱?\n小明: 大概工资的百分之二十。房租和伙食费最多。\n朋友: 你怎么省钱?\n小明: 我尽量自己做饭,很少在外面吃。",
+   "dialogue": [
+    {
+     "speaker": "朋友",
+     "text": "你每个月存多少钱?",
+     "phonetic": "Nǐ měi gè yuè cún duōshao qián?",
+     "translation": "Mỗi tháng bạn tiết kiệm bao nhiêu?"
+    },
+    {
+     "speaker": "小明",
+     "text": "大概工资的百分之二十。房租和伙食费最多。",
+     "phonetic": "Dàgài gōngzī de bǎi fēn zhī èrshí. Fángzū hé huǒshífèi zuì duō.",
+     "translation": "Khoảng 20% lương. Tiền nhà và tiền ăn nhiều nhất."
+    },
+    {
+     "speaker": "朋友",
+     "text": "你怎么省钱?",
+     "phonetic": "Nǐ zěnme shěng qián?",
+     "translation": "Bạn tiết kiệm bằng cách nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我尽量自己做饭,很少在外面吃。",
+     "phonetic": "Wǒ jǐnliàng zìjǐ zuò fàn, hěn shǎo zài wàimiàn chī.",
+     "translation": "Tôi cố gắng tự nấu, rất ít khi ăn ngoài."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "工资",
+     "reading": "gōngzī",
+     "definition": "lương",
+     "example": "工资每月十号发。 (Lương phát ngày 10 hàng tháng.)"
+    },
+    {
+     "term": "房租",
+     "reading": "fángzū",
+     "definition": "tiền thuê nhà",
+     "example": "房租太贵了。 (Tiền nhà đắt quá.)"
+    },
+    {
+     "term": "伙食费",
+     "reading": "huǒshífèi",
+     "definition": "tiền ăn",
+     "example": "伙食费不少。 (Tiền ăn không ít.)"
+    },
+    {
+     "term": "省钱",
+     "reading": "shěng qián",
+     "definition": "tiết kiệm tiền",
+     "example": "我想省钱。 (Tôi muốn tiết kiệm tiền.)"
+    },
+    {
+     "term": "尽量",
+     "reading": "jǐnliàng",
+     "definition": "cố gắng hết mức",
+     "example": "尽量早点来。 (Cố gắng đến sớm.)"
+    }
+   ],
+   "grammar": {
+    "title": "尽量 + V / 最多 / 很少",
+    "explanation": "Cố gắng: 尽量 + V. Nhiều nhất: 最多. Hiếm khi: 很少 + V. Tỷ lệ: ……的百分之…….",
+    "examples": [
+     "我尽量每天记账。[wǒ jǐnliàng měi tiān jìzhàng] (Tôi cố gắng ghi sổ chi tiêu mỗi ngày.)",
+     "交通费最少。[jiāotōngfèi zuì shǎo] (Tiền đi lại ít nhất.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm z và sh",
+    "tip": "工资 gōngzī (z), 省钱 shěng qián (sh). 伙食费 huǒshífèi.",
+    "words": [
+     "工资",
+     "房租",
+     "省钱",
+     "尽量"
+    ]
+   },
+   "speakingTasks": [
+    "Nói ngân sách tháng của bạn: thu nhập, 3 khoản chi, tiết kiệm.",
+    "Chia sẻ 2 mẹo tiết kiệm với thầy/cô."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi cố gắng tự nấu ăn.”",
+     "options": [
+      "我尽量自己做饭。",
+      "我自己尽量饭做。",
+      "尽量我饭做自己。"
+     ],
+     "answer": 0,
+     "explanation": "尽量 + V."
+    },
+    {
+     "prompt": "「省钱」 nghĩa là:",
+     "options": [
+      "tiêu tiền",
+      "tiết kiệm tiền",
+      "vay tiền"
+     ],
+     "answer": 1,
+     "explanation": "省 = tiết kiệm."
+    },
+    {
+     "prompt": "“Rất ít khi ăn ngoài”:",
+     "options": [
+      "很少在外面吃",
+      "在很少外面吃",
+      "外面很少吃在"
+     ],
+     "answer": 0,
+     "explanation": "很少 + V."
+    },
+    {
+     "prompt": "「房租」 là:",
+     "options": [
+      "tiền điện",
+      "tiền thuê nhà",
+      "tiền ăn"
+     ],
+     "answer": 1,
+     "explanation": "房租 = rent."
+    },
+    {
+     "prompt": "「工资」 có nghĩa là gì?",
+     "options": [
+      "tiết kiệm tiền",
+      "lương",
+      "tiền ăn"
+     ],
+     "answer": 1,
+     "explanation": "「工资」 [gōngzī] = lương."
+    },
+    {
+     "prompt": "「尽量」 đọc là gì?",
+     "options": [
+      "gōngzī",
+      "jǐnliàng",
+      "huǒshífèi"
+     ],
+     "answer": 1,
+     "explanation": "「尽量」 đọc là [jǐnliàng], nghĩa là cố gắng hết mức."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿早点来。  (Cố gắng đến sớm.)",
+     "options": [
+      "伙食费",
+      "工资",
+      "尽量"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「尽量」 (cố gắng hết mức). Câu đầy đủ: 尽量早点来。"
+    },
+    {
+     "prompt": "「房租」 có nghĩa là gì?",
+     "options": [
+      "tiền thuê nhà",
+      "cố gắng hết mức",
+      "lương"
+     ],
+     "answer": 0,
+     "explanation": "「房租」 [fángzū] = tiền thuê nhà."
+    },
+    {
+     "prompt": "「伙食费」 đọc là gì?",
+     "options": [
+      "jǐnliàng",
+      "gōngzī",
+      "huǒshífèi"
+     ],
+     "answer": 2,
+     "explanation": "「伙食费」 đọc là [huǒshífèi], nghĩa là tiền ăn."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿太贵了。  (Tiền nhà đắt quá.)",
+     "options": [
+      "房租",
+      "尽量",
+      "工资"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「房租」 (tiền thuê nhà). Câu đầy đủ: 房租太贵了。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-a2-3",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Email nhắc thanh toán lịch sự",
+   "objective": "Viết email nhắc khách hàng thanh toán quá hạn một cách lịch sự.",
+   "reading": "小明: 王经理您好,感谢贵公司一直以来的支持。\n小明: 关于三月份的账单,我们还没有收到付款。\n小明: 麻烦您确认一下,好吗?\n小明: 如果您已经付款,请忽略此邮件。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "王经理您好,感谢贵公司一直以来的支持。",
+     "phonetic": "Wáng jīnglǐ nín hǎo, gǎnxiè guì gōngsī yìzhí yǐlái de zhīchí.",
+     "translation": "Kính gửi giám đốc Vương, cảm ơn quý công ty đã luôn ủng hộ."
+    },
+    {
+     "speaker": "小明",
+     "text": "关于三月份的账单,我们还没有收到付款。",
+     "phonetic": "Guānyú sānyuèfèn de zhàngdān, wǒmen hái méiyǒu shōudào fùkuǎn.",
+     "translation": "Về hóa đơn tháng 3, chúng tôi vẫn chưa nhận được thanh toán."
+    },
+    {
+     "speaker": "小明",
+     "text": "麻烦您确认一下,好吗?",
+     "phonetic": "Máfan nín quèrèn yíxià, hǎo ma?",
+     "translation": "Phiền ngài kiểm tra giúp được không ạ?"
+    },
+    {
+     "speaker": "小明",
+     "text": "如果您已经付款,请忽略此邮件。",
+     "phonetic": "Rúguǒ nín yǐjīng fùkuǎn, qǐng hūlüè cǐ yóujiàn.",
+     "translation": "Nếu ngài đã thanh toán, xin bỏ qua email này."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "付款",
+     "reading": "fùkuǎn",
+     "definition": "thanh toán",
+     "example": "请尽快付款。 (Xin thanh toán sớm.)"
+    },
+    {
+     "term": "确认",
+     "reading": "quèrèn",
+     "definition": "xác nhận",
+     "example": "请确认一下。 (Xin xác nhận.)"
+    },
+    {
+     "term": "麻烦",
+     "reading": "máfan",
+     "definition": "làm phiền",
+     "example": "麻烦您了。 (Làm phiền ngài rồi.)"
+    },
+    {
+     "term": "忽略",
+     "reading": "hūlüè",
+     "definition": "bỏ qua",
+     "example": "请忽略这条消息。 (Xin bỏ qua tin này.)"
+    },
+    {
+     "term": "月份",
+     "reading": "yuèfèn",
+     "definition": "tháng (kỳ)",
+     "example": "四月份的房租。 (Tiền nhà tháng 4.)"
+    }
+   ],
+   "grammar": {
+    "title": "Văn email nhắc nợ",
+    "explanation": "Mở: 感谢贵公司一直以来的支持. Nêu việc: 关于……. Nhờ: 麻烦您……一下,好吗?. Kết: 如果您已经付款,请忽略此邮件 / 谢谢!",
+    "examples": [
+     "麻烦您查一下付款情况。[máfan nín chá yíxià fùkuǎn qíngkuàng] (Phiền ngài kiểm tra tình trạng thanh toán.)",
+     "我们再发一次账单。[wǒmen zài fā yí cì zhàngdān] (Chúng tôi gửi lại hóa đơn một lần nữa.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc văn phong trang trọng",
+    "tip": "Ngắt sau 关于……, 如果……. Âm 确认 quèrèn (q + r), 忽略 hūlüè (ü).",
+    "words": [
+     "付款",
+     "确认",
+     "麻烦",
+     "忽略"
+    ]
+   },
+   "speakingTasks": [
+    "Viết email 4 câu nhắc khách thanh toán hóa đơn tháng trước.",
+    "Nhờ thầy/cô sửa giúp câu nhờ vả cho lịch sự hơn."
+   ],
+   "questions": [
+    {
+     "prompt": "Câu mở đầu email trang trọng:",
+     "options": [
+      "感谢贵公司一直以来的支持。",
+      "喂,你好吗?",
+      "哈哈,好久不见!"
+     ],
+     "answer": 0,
+     "explanation": "Lời cảm ơn mở đầu."
+    },
+    {
+     "prompt": "Nhờ kiểm tra lịch sự:",
+     "options": [
+      "快点儿确认!",
+      "你确认不确认?",
+      "麻烦您确认一下,好吗?"
+     ],
+     "answer": 2,
+     "explanation": "麻烦您 + V + 一下."
+    },
+    {
+     "prompt": "“Nếu đã thanh toán, xin bỏ qua email”:",
+     "options": [
+      "如果您已经付款,请忽略此邮件。",
+      "因为付款,所以忽略。",
+      "付款请忽略如果。"
+     ],
+     "answer": 0,
+     "explanation": "Câu kết lịch sự."
+    },
+    {
+     "prompt": "「付款」 là:",
+     "options": [
+      "lãi suất",
+      "thanh toán",
+      "rút tiền"
+     ],
+     "answer": 1,
+     "explanation": "付款 = payment."
+    },
+    {
+     "prompt": "「确认」 có nghĩa là gì?",
+     "options": [
+      "tháng (kỳ)",
+      "làm phiền",
+      "xác nhận"
+     ],
+     "answer": 2,
+     "explanation": "「确认」 [quèrèn] = xác nhận."
+    },
+    {
+     "prompt": "「付款」 đọc là gì?",
+     "options": [
+      "fùkuǎn",
+      "quèrèn",
+      "yuèfèn"
+     ],
+     "answer": 0,
+     "explanation": "「付款」 đọc là [fùkuǎn], nghĩa là thanh toán."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请＿＿＿这条消息。  (Xin bỏ qua tin này.)",
+     "options": [
+      "麻烦",
+      "忽略",
+      "确认"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「忽略」 (bỏ qua). Câu đầy đủ: 请忽略这条消息。"
+    },
+    {
+     "prompt": "「付款」 có nghĩa là gì?",
+     "options": [
+      "thanh toán",
+      "xác nhận",
+      "tháng (kỳ)"
+     ],
+     "answer": 0,
+     "explanation": "「付款」 [fùkuǎn] = thanh toán."
+    },
+    {
+     "prompt": "「麻烦」 đọc là gì?",
+     "options": [
+      "yuèfèn",
+      "máfan",
+      "quèrèn"
+     ],
+     "answer": 1,
+     "explanation": "「麻烦」 đọc là [máfan], nghĩa là làm phiền."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 四＿＿＿的房租。  (Tiền nhà tháng 4.)",
+     "options": [
+      "付款",
+      "月份",
+      "麻烦"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「月份」 (tháng (kỳ)). Câu đầy đủ: 四月份的房租。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b1-1",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Mô tả báo cáo tài chính",
+   "objective": "Giải thích doanh thu, lợi nhuận, chi phí trong báo cáo.",
+   "reading": "上司: 这个季度的财报怎么样?\n小明: 营业收入同比增长了百分之八,但净利润基本持平。\n上司: 原因是什么?\n小明: 主要是原材料价格上涨造成的。",
+   "dialogue": [
+    {
+     "speaker": "上司",
+     "text": "这个季度的财报怎么样?",
+     "phonetic": "Zhège jìdù de cáibào zěnmeyàng?",
+     "translation": "Báo cáo tài chính quý này thế nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "营业收入同比增长了百分之八,但净利润基本持平。",
+     "phonetic": "Yíngyè shōurù tóngbǐ zēngzhǎng le bǎi fēn zhī bā, dàn jìng lìrùn jīběn chípíng.",
+     "translation": "Doanh thu tăng 8% so với cùng kỳ, nhưng lợi nhuận ròng cơ bản đi ngang."
+    },
+    {
+     "speaker": "上司",
+     "text": "原因是什么?",
+     "phonetic": "Yuányīn shì shénme?",
+     "translation": "Nguyên nhân là gì?"
+    },
+    {
+     "speaker": "小明",
+     "text": "主要是原材料价格上涨造成的。",
+     "phonetic": "Zhǔyào shì yuáncáiliào jiàgé shàngzhǎng zàochéng de.",
+     "translation": "Chủ yếu do giá nguyên vật liệu tăng gây ra."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "财报",
+     "reading": "cáibào",
+     "definition": "báo cáo tài chính",
+     "example": "公司发布了财报。 (Công ty đã công bố báo cáo tài chính.)"
+    },
+    {
+     "term": "同比",
+     "reading": "tóngbǐ",
+     "definition": "so với cùng kỳ",
+     "example": "同比增长百分之十。 (Tăng 10% so với cùng kỳ.)"
+    },
+    {
+     "term": "利润",
+     "reading": "lìrùn",
+     "definition": "lợi nhuận",
+     "example": "利润增加了。 (Lợi nhuận đã tăng.)"
+    },
+    {
+     "term": "持平",
+     "reading": "chípíng",
+     "definition": "đi ngang",
+     "example": "销量基本持平。 (Doanh số cơ bản đi ngang.)"
+    },
+    {
+     "term": "上涨",
+     "reading": "shàngzhǎng",
+     "definition": "tăng (giá)",
+     "example": "物价上涨了。 (Vật giá đã tăng.)"
+    }
+   ],
+   "grammar": {
+    "title": "同比/环比 + 增长 / ……造成的",
+    "explanation": "So với cùng kỳ năm trước: 同比; so với kỳ liền trước: 环比. Do ~ gây ra: 是……造成的. Đối lập kết quả: ……,但…….",
+    "examples": [
+     "这是汇率变化造成的。[zhè shì huìlǜ biànhuà zàochéng de] (Đây là do biến động tỷ giá.)",
+     "环比下降了百分之三。[huánbǐ xiàjiàng le bǎi fēn zhī sān] (Giảm 3% so với kỳ trước.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Thuật ngữ kế toán",
+    "tip": "财报 cáibào (c), 利润 lìrùn (r), 上涨 shàngzhǎng (sh + zh). Đọc rõ số liệu.",
+    "words": [
+     "财报",
+     "同比",
+     "利润",
+     "持平"
+    ]
+   },
+   "speakingTasks": [
+    "Tóm tắt báo cáo tài chính 3 câu: doanh thu, lợi nhuận, nguyên nhân.",
+    "Trả lời câu hỏi của thầy/cô về lý do chi phí tăng."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tăng 8% so với cùng kỳ”:",
+     "options": [
+      "增长同比八百分",
+      "同比增长了百分之八",
+      "同比百分之八了增长"
+     ],
+     "answer": 1,
+     "explanation": "同比 + 增长了 + số."
+    },
+    {
+     "prompt": "「持平」 nghĩa là:",
+     "options": [
+      "đi ngang",
+      "tăng mạnh",
+      "giảm mạnh"
+     ],
+     "answer": 0,
+     "explanation": "持平 = flat."
+    },
+    {
+     "prompt": "Nêu nguyên nhân:",
+     "options": [
+      "原材料价格好极了。",
+      "原材料是的。",
+      "是原材料价格上涨造成的。"
+     ],
+     "answer": 2,
+     "explanation": "是……造成的."
+    },
+    {
+     "prompt": "「利润」 là:",
+     "options": [
+      "lợi nhuận",
+      "doanh thu",
+      "nợ"
+     ],
+     "answer": 0,
+     "explanation": "利润 = profit."
+    },
+    {
+     "prompt": "「同比」 có nghĩa là gì?",
+     "options": [
+      "lợi nhuận",
+      "so với cùng kỳ",
+      "tăng (giá)"
+     ],
+     "answer": 1,
+     "explanation": "「同比」 [tóngbǐ] = so với cùng kỳ."
+    },
+    {
+     "prompt": "「同比」 đọc là gì?",
+     "options": [
+      "lìrùn",
+      "shàngzhǎng",
+      "tóngbǐ"
+     ],
+     "answer": 2,
+     "explanation": "「同比」 đọc là [tóngbǐ], nghĩa là so với cùng kỳ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿增长百分之十。  (Tăng 10% so với cùng kỳ.)",
+     "options": [
+      "利润",
+      "上涨",
+      "同比"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「同比」 (so với cùng kỳ). Câu đầy đủ: 同比增长百分之十。"
+    },
+    {
+     "prompt": "「财报」 có nghĩa là gì?",
+     "options": [
+      "so với cùng kỳ",
+      "báo cáo tài chính",
+      "tăng (giá)"
+     ],
+     "answer": 1,
+     "explanation": "「财报」 [cáibào] = báo cáo tài chính."
+    },
+    {
+     "prompt": "「上涨」 đọc là gì?",
+     "options": [
+      "lìrùn",
+      "tóngbǐ",
+      "shàngzhǎng"
+     ],
+     "answer": 2,
+     "explanation": "「上涨」 đọc là [shàngzhǎng], nghĩa là tăng (giá)."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿增加了。  (Lợi nhuận đã tăng.)",
+     "options": [
+      "利润",
+      "同比",
+      "上涨"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「利润」 (lợi nhuận). Câu đầy đủ: 利润增加了。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b1-2",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Tư vấn đầu tư cơ bản",
+   "objective": "Giải thích rủi ro, lợi nhuận và đa dạng hóa đầu tư.",
+   "reading": "客户: 我想开始投资,应该从哪儿开始?\n小明: 对新手来说,我们一般推荐基金。\n客户: 能保本吗?\n小明: 不能保证。为了降低风险,最好分散投资。",
+   "dialogue": [
+    {
+     "speaker": "客户",
+     "text": "我想开始投资,应该从哪儿开始?",
+     "phonetic": "Wǒ xiǎng kāishǐ tóuzī, yīnggāi cóng nǎr kāishǐ?",
+     "translation": "Tôi muốn bắt đầu đầu tư, nên bắt đầu từ đâu?"
+    },
+    {
+     "speaker": "小明",
+     "text": "对新手来说,我们一般推荐基金。",
+     "phonetic": "Duì xīnshǒu lái shuō, wǒmen yìbān tuījiàn jījīn.",
+     "translation": "Với người mới, chúng tôi thường gợi ý quỹ đầu tư."
+    },
+    {
+     "speaker": "客户",
+     "text": "能保本吗?",
+     "phonetic": "Néng bǎoběn ma?",
+     "translation": "Có bảo toàn vốn không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "不能保证。为了降低风险,最好分散投资。",
+     "phonetic": "Bù néng bǎozhèng. Wèile jiàngdī fēngxiǎn, zuìhǎo fēnsàn tóuzī.",
+     "translation": "Không thể đảm bảo. Để giảm rủi ro, tốt nhất nên đầu tư phân tán."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "投资",
+     "reading": "tóuzī",
+     "definition": "đầu tư",
+     "example": "他投资了股票。 (Anh ấy đầu tư cổ phiếu.)"
+    },
+    {
+     "term": "基金",
+     "reading": "jījīn",
+     "definition": "quỹ đầu tư",
+     "example": "我买了基金。 (Tôi đã mua chứng chỉ quỹ.)"
+    },
+    {
+     "term": "保证",
+     "reading": "bǎozhèng",
+     "definition": "bảo đảm",
+     "example": "收益不能保证。 (Lợi nhuận không được bảo đảm.)"
+    },
+    {
+     "term": "风险",
+     "reading": "fēngxiǎn",
+     "definition": "rủi ro",
+     "example": "风险很高。 (Rủi ro rất cao.)"
+    },
+    {
+     "term": "分散",
+     "reading": "fēnsàn",
+     "definition": "phân tán",
+     "example": "分散风险。 (Phân tán rủi ro.)"
+    }
+   ],
+   "grammar": {
+    "title": "对……来说 / 为了 / 最好",
+    "explanation": "Đối với ai: 对 + N + 来说. Mục đích: 为了 + V, …. Lời khuyên: 最好 + V.",
+    "examples": [
+     "对我来说,安全最重要。[duì wǒ lái shuō, ānquán zuì zhòngyào] (Với tôi, an toàn quan trọng nhất.)",
+     "为了养老,我每月投资。[wèile yǎnglǎo, wǒ měi yuè tóuzī] (Để dưỡng già, tôi đầu tư mỗi tháng.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giải thích rõ ràng rủi ro",
+    "tip": "Nhấn 不能保证 rõ ràng để tránh hiểu lầm. Âm 投资 tóuzī, 风险 fēngxiǎn (f + x).",
+    "words": [
+     "投资",
+     "基金",
+     "风险",
+     "分散"
+    ]
+   },
+   "speakingTasks": [
+    "Tư vấn cho khách mới bắt đầu đầu tư: rủi ro và cách phân tán.",
+    "Giải thích cho thầy/cô vì sao không có sản phẩm “không rủi ro”."
+   ],
+   "questions": [
+    {
+     "prompt": "“Với người mới”:",
+     "options": [
+      "对新手来说",
+      "来说对新手",
+      "新手对说来"
+     ],
+     "answer": 0,
+     "explanation": "对……来说."
+    },
+    {
+     "prompt": "「保本」 nghĩa là:",
+     "options": [
+      "lãi cao",
+      "bảo toàn vốn",
+      "phí thấp"
+     ],
+     "answer": 1,
+     "explanation": "保本 = giữ vốn."
+    },
+    {
+     "prompt": "“Để giảm rủi ro”:",
+     "options": [
+      "因为降低风险了",
+      "为了降低风险",
+      "降低风险为了是"
+     ],
+     "answer": 1,
+     "explanation": "为了 + V."
+    },
+    {
+     "prompt": "「分散投资」 là:",
+     "options": [
+      "đầu tư tập trung",
+      "vay đầu tư",
+      "đầu tư phân tán"
+     ],
+     "answer": 2,
+     "explanation": "分散 = phân tán."
+    },
+    {
+     "prompt": "「风险」 có nghĩa là gì?",
+     "options": [
+      "rủi ro",
+      "quỹ đầu tư",
+      "bảo đảm"
+     ],
+     "answer": 0,
+     "explanation": "「风险」 [fēngxiǎn] = rủi ro."
+    },
+    {
+     "prompt": "「保证」 đọc là gì?",
+     "options": [
+      "bǎozhèng",
+      "fēngxiǎn",
+      "tóuzī"
+     ],
+     "answer": 0,
+     "explanation": "「保证」 đọc là [bǎozhèng], nghĩa là bảo đảm."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 他＿＿＿了股票。  (Anh ấy đầu tư cổ phiếu.)",
+     "options": [
+      "投资",
+      "分散",
+      "风险"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「投资」 (đầu tư). Câu đầy đủ: 他投资了股票。"
+    },
+    {
+     "prompt": "「投资」 có nghĩa là gì?",
+     "options": [
+      "phân tán",
+      "đầu tư",
+      "rủi ro"
+     ],
+     "answer": 1,
+     "explanation": "「投资」 [tóuzī] = đầu tư."
+    },
+    {
+     "prompt": "「风险」 đọc là gì?",
+     "options": [
+      "bǎozhèng",
+      "fēngxiǎn",
+      "jījīn"
+     ],
+     "answer": 1,
+     "explanation": "「风险」 đọc là [fēngxiǎn], nghĩa là rủi ro."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 收益不能＿＿＿。  (Lợi nhuận không được bảo đảm.)",
+     "options": [
+      "投资",
+      "保证",
+      "风险"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「保证」 (bảo đảm). Câu đầy đủ: 收益不能保证。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b1-3",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Kiểm soát chi phí doanh nghiệp",
+   "objective": "Phân tích chi phí và đề xuất cắt giảm hợp lý.",
+   "reading": "经理: 费用已经超出预算了,有什么办法吗?\n小明: 我建议减少出差,多开视频会议。\n经理: 大概能节省多少?\n小明: 预计一年可以节省二十万元左右。",
+   "dialogue": [
+    {
+     "speaker": "经理",
+     "text": "费用已经超出预算了,有什么办法吗?",
+     "phonetic": "Fèiyòng yǐjīng chāochū yùsuàn le, yǒu shénme bànfǎ ma?",
+     "translation": "Chi phí đã vượt ngân sách, có cách nào không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我建议减少出差,多开视频会议。",
+     "phonetic": "Wǒ jiànyì jiǎnshǎo chūchāi, duō kāi shìpín huìyì.",
+     "translation": "Tôi đề nghị giảm công tác, họp video nhiều hơn."
+    },
+    {
+     "speaker": "经理",
+     "text": "大概能节省多少?",
+     "phonetic": "Dàgài néng jiéshěng duōshao?",
+     "translation": "Khoảng tiết kiệm được bao nhiêu?"
+    },
+    {
+     "speaker": "小明",
+     "text": "预计一年可以节省二十万元左右。",
+     "phonetic": "Yùjì yì nián kěyǐ jiéshěng èrshí wàn yuán zuǒyòu.",
+     "translation": "Dự kiến một năm tiết kiệm khoảng 200 nghìn tệ."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "费用",
+     "reading": "fèiyòng",
+     "definition": "chi phí",
+     "example": "费用太高了。 (Chi phí quá cao.)"
+    },
+    {
+     "term": "预算",
+     "reading": "yùsuàn",
+     "definition": "ngân sách",
+     "example": "预算不够。 (Ngân sách không đủ.)"
+    },
+    {
+     "term": "建议",
+     "reading": "jiànyì",
+     "definition": "đề nghị",
+     "example": "我建议早点开始。 (Tôi đề nghị bắt đầu sớm.)"
+    },
+    {
+     "term": "节省",
+     "reading": "jiéshěng",
+     "definition": "tiết kiệm",
+     "example": "节省时间。 (Tiết kiệm thời gian.)"
+    },
+    {
+     "term": "预计",
+     "reading": "yùjì",
+     "definition": "dự kiến",
+     "example": "预计下个月完成。 (Dự kiến tháng sau hoàn thành.)"
+    }
+   ],
+   "grammar": {
+    "title": "建议 + V / 超出 / 预计",
+    "explanation": "Đề xuất: 我建议 + V. Vượt quá: 超出 + N. Dự kiến: 预计 + mệnh đề. Đơn vị lớn: 万 = 10.000 (二十万 = 200.000).",
+    "examples": [
+     "我建议降低库存。[wǒ jiànyì jiàngdī kùcún] (Tôi đề nghị giảm tồn kho.)",
+     "预计成本会下降。[yùjì chéngběn huì xiàjiàng] (Dự kiến chi phí sẽ giảm.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Số lớn",
+    "tip": "二十万 èrshí wàn = 200.000; 一百万 yìbǎi wàn = 1 triệu. 预算 yùsuàn (ü).",
+    "words": [
+     "费用",
+     "预算",
+     "节省",
+     "预计"
+    ]
+   },
+   "speakingTasks": [
+    "Đề xuất 2 biện pháp cắt giảm chi phí cho bộ phận của bạn.",
+    "Trả lời thầy/cô về mức tiết kiệm dự kiến."
+   ],
+   "questions": [
+    {
+     "prompt": "“Chi phí vượt ngân sách.”",
+     "options": [
+      "费用预算超了出吗。",
+      "费用超出预算了。",
+      "预算超出费用的了。"
+     ],
+     "answer": 1,
+     "explanation": "超出 + N."
+    },
+    {
+     "prompt": "Đề xuất “giảm công tác”:",
+     "options": [
+      "我建议减少出差。",
+      "减少我建议出差。",
+      "我必须出差。"
+     ],
+     "answer": 0,
+     "explanation": "建议 + V."
+    },
+    {
+     "prompt": "「节省」 nghĩa là:",
+     "options": [
+      "duy trì",
+      "tăng thêm",
+      "tiết kiệm"
+     ],
+     "answer": 2,
+     "explanation": "节省 = save."
+    },
+    {
+     "prompt": "二十万 bằng:",
+     "options": [
+      "2.000.000",
+      "20.000",
+      "200.000"
+     ],
+     "answer": 2,
+     "explanation": "万 = 10.000."
+    },
+    {
+     "prompt": "「建议」 có nghĩa là gì?",
+     "options": [
+      "chi phí",
+      "đề nghị",
+      "tiết kiệm"
+     ],
+     "answer": 1,
+     "explanation": "「建议」 [jiànyì] = đề nghị."
+    },
+    {
+     "prompt": "「预计」 đọc là gì?",
+     "options": [
+      "yùjì",
+      "yùsuàn",
+      "jiéshěng"
+     ],
+     "answer": 0,
+     "explanation": "「预计」 đọc là [yùjì], nghĩa là dự kiến."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿时间。  (Tiết kiệm thời gian.)",
+     "options": [
+      "节省",
+      "预计",
+      "建议"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「节省」 (tiết kiệm). Câu đầy đủ: 节省时间。"
+    },
+    {
+     "prompt": "「费用」 có nghĩa là gì?",
+     "options": [
+      "đề nghị",
+      "chi phí",
+      "dự kiến"
+     ],
+     "answer": 1,
+     "explanation": "「费用」 [fèiyòng] = chi phí."
+    },
+    {
+     "prompt": "「预算」 đọc là gì?",
+     "options": [
+      "yùsuàn",
+      "jiéshěng",
+      "fèiyòng"
+     ],
+     "answer": 0,
+     "explanation": "「预算」 đọc là [yùsuàn], nghĩa là ngân sách."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿不够。  (Ngân sách không đủ.)",
+     "options": [
+      "预算",
+      "费用",
+      "节省"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「预算」 (ngân sách). Câu đầy đủ: 预算不够。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b2-1",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Thuyết trình kết quả kinh doanh cho nhà đầu tư",
+   "objective": "Trình bày kết quả, chiến lược và trả lời câu hỏi nhà đầu tư.",
+   "reading": "小明: 感谢各位在百忙之中出席今天的会议。\n小明: 本年度,随着核心业务的稳步增长,公司实现了营收和利润双增长。\n投资者: 明年的前景如何?\n小明: 尽管汇率波动存在一定风险,我们仍然力争实现营收增长百分之十。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "感谢各位在百忙之中出席今天的会议。",
+     "phonetic": "Gǎnxiè gèwèi zài bǎimáng zhī zhōng chūxí jīntiān de huìyì.",
+     "translation": "Cảm ơn quý vị đã dành thời gian quý báu tham dự hội nghị hôm nay."
+    },
+    {
+     "speaker": "小明",
+     "text": "本年度,随着核心业务的稳步增长,公司实现了营收和利润双增长。",
+     "phonetic": "Běn niándù, suízhe héxīn yèwù de wěnbù zēngzhǎng, gōngsī shíxiàn le yíngshōu hé lìrùn shuāng zēngzhǎng.",
+     "translation": "Năm nay, cùng với sự tăng trưởng vững chắc của mảng kinh doanh cốt lõi, công ty đã tăng cả doanh thu lẫn lợi nhuận."
+    },
+    {
+     "speaker": "投资者",
+     "text": "明年的前景如何?",
+     "phonetic": "Míngnián de qiánjǐng rúhé?",
+     "translation": "Triển vọng năm tới thế nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "尽管汇率波动存在一定风险,我们仍然力争实现营收增长百分之十。",
+     "phonetic": "Jǐnguǎn huìlǜ bōdòng cúnzài yídìng fēngxiǎn, wǒmen réngrán lìzhēng shíxiàn yíngshōu zēngzhǎng bǎi fēn zhī shí.",
+     "translation": "Dù biến động tỷ giá có rủi ro nhất định, chúng tôi vẫn phấn đấu tăng doanh thu 10%."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "核心",
+     "reading": "héxīn",
+     "definition": "cốt lõi",
+     "example": "核心技术很重要。 (Công nghệ cốt lõi rất quan trọng.)"
+    },
+    {
+     "term": "实现",
+     "reading": "shíxiàn",
+     "definition": "thực hiện được, đạt",
+     "example": "我们实现了目标。 (Chúng tôi đã đạt mục tiêu.)"
+    },
+    {
+     "term": "前景",
+     "reading": "qiánjǐng",
+     "definition": "triển vọng",
+     "example": "市场前景很好。 (Triển vọng thị trường tốt.)"
+    },
+    {
+     "term": "波动",
+     "reading": "bōdòng",
+     "definition": "biến động",
+     "example": "价格波动很大。 (Giá biến động lớn.)"
+    },
+    {
+     "term": "力争",
+     "reading": "lìzhēng",
+     "definition": "phấn đấu",
+     "example": "力争明年盈利。 (Phấn đấu năm sau có lãi.)"
+    }
+   ],
+   "grammar": {
+    "title": "随着 / 尽管……仍然…… / 如何",
+    "explanation": "Cùng với: 随着 + N. Dù… vẫn…: 尽管……,仍然……. Hỏi trang trọng: ……如何? Phấn đấu: 力争 + V.",
+    "examples": [
+     "随着需求扩大,我们增加了产量。[suízhe xūqiú kuòdà, wǒmen zēngjiā le chǎnliàng] (Cùng với nhu cầu mở rộng, chúng tôi tăng sản lượng.)",
+     "尽管有困难,我们仍然继续投资。[jǐnguǎn yǒu kùnnan, wǒmen réngrán jìxù tóuzī] (Dù khó khăn, chúng tôi vẫn tiếp tục đầu tư.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Phong thái trang trọng",
+    "tip": "Câu mở đầu đọc liền mạch, ngắt sau 各位. Âm 核心 héxīn, 实现 shíxiàn (sh + x), 前景 qiánjǐng.",
+    "words": [
+     "核心",
+     "实现",
+     "前景",
+     "力争"
+    ]
+   },
+   "speakingTasks": [
+    "Thuyết trình 1 phút kết quả kinh doanh và mục tiêu năm tới.",
+    "Trả lời câu hỏi khó của nhà đầu tư (thầy/cô) về rủi ro tỷ giá."
+   ],
+   "questions": [
+    {
+     "prompt": "「营收和利润双增长」 nghĩa là:",
+     "options": [
+      "lỗ",
+      "doanh thu và lợi nhuận đều tăng",
+      "doanh thu giảm"
+     ],
+     "answer": 1,
+     "explanation": "双增长 = cùng tăng."
+    },
+    {
+     "prompt": "「尽管……仍然……」 nghĩa là:",
+     "options": [
+      "dù… vẫn…",
+      "nếu… thì…",
+      "vì… nên…"
+     ],
+     "answer": 0,
+     "explanation": "Nhượng bộ."
+    },
+    {
+     "prompt": "「前景」 là:",
+     "options": [
+      "triển vọng",
+      "nguyên nhân",
+      "quá khứ"
+     ],
+     "answer": 0,
+     "explanation": "前景 = outlook."
+    },
+    {
+     "prompt": "Lời cảm ơn mở đầu trang trọng:",
+     "options": [
+      "快点儿开始吧。",
+      "感谢各位在百忙之中出席。",
+      "大家好啊,随便坐。"
+     ],
+     "answer": 1,
+     "explanation": "百忙之中 = giữa lúc bận rộn."
+    },
+    {
+     "prompt": "「波动」 có nghĩa là gì?",
+     "options": [
+      "biến động",
+      "cốt lõi",
+      "thực hiện được, đạt"
+     ],
+     "answer": 0,
+     "explanation": "「波动」 [bōdòng] = biến động."
+    },
+    {
+     "prompt": "「波动」 đọc là gì?",
+     "options": [
+      "héxīn",
+      "bōdòng",
+      "shíxiàn"
+     ],
+     "answer": 1,
+     "explanation": "「波动」 đọc là [bōdòng], nghĩa là biến động."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 价格＿＿＿很大。  (Giá biến động lớn.)",
+     "options": [
+      "实现",
+      "核心",
+      "波动"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「波动」 (biến động). Câu đầy đủ: 价格波动很大。"
+    },
+    {
+     "prompt": "「力争」 có nghĩa là gì?",
+     "options": [
+      "triển vọng",
+      "biến động",
+      "phấn đấu"
+     ],
+     "answer": 2,
+     "explanation": "「力争」 [lìzhēng] = phấn đấu."
+    },
+    {
+     "prompt": "「核心」 đọc là gì?",
+     "options": [
+      "shíxiàn",
+      "héxīn",
+      "qiánjǐng"
+     ],
+     "answer": 1,
+     "explanation": "「核心」 đọc là [héxīn], nghĩa là cốt lõi."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我们＿＿＿了目标。  (Chúng tôi đã đạt mục tiêu.)",
+     "options": [
+      "核心",
+      "波动",
+      "实现"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「实现」 (thực hiện được, đạt). Câu đầy đủ: 我们实现了目标。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b2-2",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Đàm phán điều khoản tín dụng",
+   "objective": "Thương lượng lãi suất, kỳ hạn và tài sản đảm bảo.",
+   "reading": "小明: 关于这笔贷款,利率能不能再考虑一下?\n银行经理: 如果贵公司能追加抵押物,我们可以考虑。\n小明: 那么还款期限能否从五年延长到七年?\n银行经理: 我们内部讨论后,再给您答复。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "关于这笔贷款,利率能不能再考虑一下?",
+     "phonetic": "Guānyú zhè bǐ dàikuǎn, lìlǜ néng bu néng zài kǎolǜ yíxià?",
+     "translation": "Về khoản vay này, lãi suất có thể xem xét lại không ạ?"
+    },
+    {
+     "speaker": "银行经理",
+     "text": "如果贵公司能追加抵押物,我们可以考虑。",
+     "phonetic": "Rúguǒ guì gōngsī néng zhuījiā dǐyāwù, wǒmen kěyǐ kǎolǜ.",
+     "translation": "Nếu quý công ty bổ sung tài sản thế chấp, chúng tôi có thể xem xét."
+    },
+    {
+     "speaker": "小明",
+     "text": "那么还款期限能否从五年延长到七年?",
+     "phonetic": "Nàme huánkuǎn qīxiàn néngfǒu cóng wǔ nián yáncháng dào qī nián?",
+     "translation": "Vậy thời hạn trả nợ có thể kéo dài từ 5 lên 7 năm không?"
+    },
+    {
+     "speaker": "银行经理",
+     "text": "我们内部讨论后,再给您答复。",
+     "phonetic": "Wǒmen nèibù tǎolùn hòu, zài gěi nín dáfù.",
+     "translation": "Sau khi thảo luận nội bộ, chúng tôi sẽ trả lời ngài."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "贷款",
+     "reading": "dàikuǎn",
+     "definition": "khoản vay",
+     "example": "公司申请了贷款。 (Công ty đã xin vay.)"
+    },
+    {
+     "term": "抵押物",
+     "reading": "dǐyāwù",
+     "definition": "tài sản thế chấp",
+     "example": "房子是抵押物。 (Ngôi nhà là tài sản thế chấp.)"
+    },
+    {
+     "term": "还款",
+     "reading": "huánkuǎn",
+     "definition": "trả nợ",
+     "example": "每月还款。 (Trả nợ hàng tháng.)"
+    },
+    {
+     "term": "考虑",
+     "reading": "kǎolǜ",
+     "definition": "xem xét",
+     "example": "我们会认真考虑。 (Chúng tôi sẽ xem xét nghiêm túc.)"
+    },
+    {
+     "term": "答复",
+     "reading": "dáfù",
+     "definition": "trả lời (chính thức)",
+     "example": "请尽快答复。 (Xin sớm trả lời.)"
+    }
+   ],
+   "grammar": {
+    "title": "能不能 / 能否 / 如果……可以…… / ……后,再……",
+    "explanation": "Đề nghị lịch sự: 能不能 / 能否 (trang trọng) + V. Điều kiện: 如果……,我们可以……. Sau khi… rồi mới: ……后,再…….",
+    "examples": [
+     "能否延长付款期限?[néngfǒu yáncháng fùkuǎn qīxiàn] (Có thể gia hạn thời hạn thanh toán không?)",
+     "我和领导商量后,再回复您。[wǒ hé lǐngdǎo shāngliang hòu, zài huífù nín] (Sau khi bàn với lãnh đạo, tôi sẽ trả lời ngài.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nhịp đàm phán",
+    "tip": "Giọng điềm tĩnh, câu hỏi đề nghị hạ nhẹ cuối câu. Âm 抵押 dǐyā, 考虑 kǎolǜ (ü).",
+    "words": [
+     "贷款",
+     "抵押物",
+     "还款",
+     "考虑"
+    ]
+   },
+   "speakingTasks": [
+    "Thương lượng với ngân hàng về lãi suất và thời hạn vay.",
+    "Thầy/cô là ngân hàng, đưa ra điều kiện; bạn phản đề nghị."
+   ],
+   "questions": [
+    {
+     "prompt": "Đề nghị giảm lãi lịch sự:",
+     "options": [
+      "利率能不能再考虑一下?",
+      "利率必须降!",
+      "利率太高了你知道吗?"
+     ],
+     "answer": 0,
+     "explanation": "能不能 + V + 一下."
+    },
+    {
+     "prompt": "「抵押物」 là:",
+     "options": [
+      "tài sản thế chấp",
+      "lãi suất",
+      "phí phạt"
+     ],
+     "answer": 0,
+     "explanation": "抵押 = thế chấp."
+    },
+    {
+     "prompt": "「讨论后,再答复」 nghĩa là:",
+     "options": [
+      "trả lời ngay",
+      "không trả lời",
+      "thảo luận xong rồi mới trả lời"
+     ],
+     "answer": 2,
+     "explanation": "……后,再……"
+    },
+    {
+     "prompt": "「能否」 tương đương:",
+     "options": [
+      "必须",
+      "能不能",
+      "不能"
+     ],
+     "answer": 1,
+     "explanation": "能否 = có thể hay không (trang trọng)."
+    },
+    {
+     "prompt": "「答复」 có nghĩa là gì?",
+     "options": [
+      "trả lời (chính thức)",
+      "khoản vay",
+      "trả nợ"
+     ],
+     "answer": 0,
+     "explanation": "「答复」 [dáfù] = trả lời (chính thức)."
+    },
+    {
+     "prompt": "「考虑」 đọc là gì?",
+     "options": [
+      "huánkuǎn",
+      "dàikuǎn",
+      "kǎolǜ"
+     ],
+     "answer": 2,
+     "explanation": "「考虑」 đọc là [kǎolǜ], nghĩa là xem xét."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 每月＿＿＿。  (Trả nợ hàng tháng.)",
+     "options": [
+      "还款",
+      "答复",
+      "贷款"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「还款」 (trả nợ). Câu đầy đủ: 每月还款。"
+    },
+    {
+     "prompt": "「考虑」 có nghĩa là gì?",
+     "options": [
+      "khoản vay",
+      "trả nợ",
+      "xem xét"
+     ],
+     "answer": 2,
+     "explanation": "「考虑」 [kǎolǜ] = xem xét."
+    },
+    {
+     "prompt": "「抵押物」 đọc là gì?",
+     "options": [
+      "dǐyāwù",
+      "kǎolǜ",
+      "huánkuǎn"
+     ],
+     "answer": 0,
+     "explanation": "「抵押物」 đọc là [dǐyāwù], nghĩa là tài sản thế chấp."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 公司申请了＿＿＿。  (Công ty đã xin vay.)",
+     "options": [
+      "还款",
+      "抵押物",
+      "贷款"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「贷款」 (khoản vay). Câu đầy đủ: 公司申请了贷款。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "finance-b2-3",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 3",
+   "category": "Thảo luận",
+   "title": "Rủi ro, tuân thủ và chống rửa tiền",
+   "objective": "Giải thích quy định tuân thủ, nhận diện giao dịch đáng ngờ.",
+   "reading": "上司: 如果遇到大额现金交易,你会怎么处理?\n小明: 我会核实交易目的和资金来源,发现可疑情况就立即上报。\n上司: 还要注意,不能让客户知道我们在怀疑他。\n小明: 明白,我会严格遵守合规要求。",
+   "dialogue": [
+    {
+     "speaker": "上司",
+     "text": "如果遇到大额现金交易,你会怎么处理?",
+     "phonetic": "Rúguǒ yùdào dà'é xiànjīn jiāoyì, nǐ huì zěnme chǔlǐ?",
+     "translation": "Nếu gặp giao dịch tiền mặt lớn, anh sẽ xử lý thế nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我会核实交易目的和资金来源,发现可疑情况就立即上报。",
+     "phonetic": "Wǒ huì héshí jiāoyì mùdì hé zījīn láiyuán, fāxiàn kěyí qíngkuàng jiù lìjí shàngbào.",
+     "translation": "Tôi sẽ kiểm chứng mục đích giao dịch và nguồn tiền, thấy tình huống đáng ngờ sẽ báo cáo ngay."
+    },
+    {
+     "speaker": "上司",
+     "text": "还要注意,不能让客户知道我们在怀疑他。",
+     "phonetic": "Hái yào zhùyì, bù néng ràng kèhù zhīdào wǒmen zài huáiyí tā.",
+     "translation": "Còn phải chú ý, không được để khách biết chúng ta đang nghi ngờ."
+    },
+    {
+     "speaker": "小明",
+     "text": "明白,我会严格遵守合规要求。",
+     "phonetic": "Míngbai, wǒ huì yángé zūnshǒu héguī yāoqiú.",
+     "translation": "Đã rõ, tôi sẽ tuân thủ nghiêm yêu cầu tuân thủ."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "交易",
+     "reading": "jiāoyì",
+     "definition": "giao dịch",
+     "example": "记录每笔交易。 (Ghi lại mọi giao dịch.)"
+    },
+    {
+     "term": "可疑",
+     "reading": "kěyí",
+     "definition": "đáng ngờ",
+     "example": "发现可疑交易。 (Phát hiện giao dịch đáng ngờ.)"
+    },
+    {
+     "term": "来源",
+     "reading": "láiyuán",
+     "definition": "nguồn gốc",
+     "example": "资金来源不明。 (Nguồn tiền không rõ.)"
+    },
+    {
+     "term": "合规",
+     "reading": "héguī",
+     "definition": "tuân thủ (compliance)",
+     "example": "合规部门很重要。 (Bộ phận tuân thủ rất quan trọng.)"
+    },
+    {
+     "term": "严格",
+     "reading": "yángé",
+     "definition": "nghiêm ngặt",
+     "example": "严格执行规定。 (Thực hiện nghiêm quy định.)"
+    }
+   ],
+   "grammar": {
+    "title": "发现……就立即…… / 让 + người + V / 严格",
+    "explanation": "Hễ phát hiện là làm ngay: 发现……就立即 + V. Sai khiến/để ai: 让 + người + V. Nghiêm: 严格 + V.",
+    "examples": [
+     "发现问题就立即报告。[fāxiàn wèntí jiù lìjí bàogào] (Phát hiện vấn đề là báo cáo ngay.)",
+     "无法核实身份的,拒绝办理。[wúfǎ héshí shēnfèn de, jùjué bànlǐ] (Không xác minh được danh tính thì từ chối xử lý.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Thuật ngữ pháp lý",
+    "tip": "合规 héguī, 严格 yángé, 可疑 kěyí. Giọng nghiêm túc, rõ ràng.",
+    "words": [
+     "交易",
+     "可疑",
+     "合规",
+     "严格"
+    ]
+   },
+   "speakingTasks": [
+    "Mô tả quy trình xử lý một giao dịch tiền mặt lớn đáng ngờ.",
+    "Thảo luận với thầy/cô vì sao tuân thủ quan trọng với ngân hàng."
+   ],
+   "questions": [
+    {
+     "prompt": "「可疑交易」 là:",
+     "options": [
+      "giao dịch online",
+      "giao dịch thường",
+      "giao dịch đáng ngờ"
+     ],
+     "answer": 2,
+     "explanation": "可疑 = suspicious."
+    },
+    {
+     "prompt": "Điều KHÔNG được làm:",
+     "options": [
+      "Để khách biết mình đang nghi ngờ",
+      "Kiểm chứng nguồn tiền",
+      "Báo cáo nội bộ"
+     ],
+     "answer": 0,
+     "explanation": "Không được tiết lộ nghi ngờ."
+    },
+    {
+     "prompt": "“Phát hiện là báo ngay”:",
+     "options": [
+      "发现就立即上报",
+      "上报就发现",
+      "发现了再说吧"
+     ],
+     "answer": 0,
+     "explanation": "发现……就立即……"
+    },
+    {
+     "prompt": "「合规」 là:",
+     "options": [
+      "rửa tiền",
+      "trốn thuế",
+      "tuân thủ quy định"
+     ],
+     "answer": 2,
+     "explanation": "合规 = compliance."
+    },
+    {
+     "prompt": "「严格」 có nghĩa là gì?",
+     "options": [
+      "tuân thủ (compliance)",
+      "nguồn gốc",
+      "nghiêm ngặt"
+     ],
+     "answer": 2,
+     "explanation": "「严格」 [yángé] = nghiêm ngặt."
+    },
+    {
+     "prompt": "「来源」 đọc là gì?",
+     "options": [
+      "jiāoyì",
+      "láiyuán",
+      "yángé"
+     ],
+     "answer": 1,
+     "explanation": "「来源」 đọc là [láiyuán], nghĩa là nguồn gốc."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿执行规定。  (Thực hiện nghiêm quy định.)",
+     "options": [
+      "合规",
+      "严格",
+      "来源"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「严格」 (nghiêm ngặt). Câu đầy đủ: 严格执行规定。"
+    },
+    {
+     "prompt": "「来源」 có nghĩa là gì?",
+     "options": [
+      "nguồn gốc",
+      "nghiêm ngặt",
+      "giao dịch"
+     ],
+     "answer": 0,
+     "explanation": "「来源」 [láiyuán] = nguồn gốc."
+    },
+    {
+     "prompt": "「可疑」 đọc là gì?",
+     "options": [
+      "kěyí",
+      "héguī",
+      "jiāoyì"
+     ],
+     "answer": 0,
+     "explanation": "「可疑」 đọc là [kěyí], nghĩa là đáng ngờ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 发现＿＿＿交易。  (Phát hiện giao dịch đáng ngờ.)",
+     "options": [
+      "交易",
+      "可疑",
+      "合规"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「可疑」 (đáng ngờ). Câu đầy đủ: 发现可疑交易。"
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
+}
