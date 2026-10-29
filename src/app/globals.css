@@ -2510,3 +2510,21 @@ html[data-theme="blue"] .floating-back-button {
 .floating-back-button span { font-size: .6875rem; font-weight: 700; letter-spacing: .04em; text-shadow: 0 1px 2px #0005; }
 .floating-back-button:hover:not(:disabled), .floating-back-button:focus-visible,
 html[data-theme] .floating-back-button:hover:not(:disabled) { width: 28px; opacity: 1; background: #2583b8c4; }
+
+/* ===== Welcome: Start and Settings on one row, plain-text tiles ===== */
+.wz-actions { display: flex; align-items: stretch; justify-content: center; gap: 10px; width: min(100%, 520px); }
+.wz-actions .wz-cta { flex: 1 1 auto; min-width: 0; padding: 0 16px; justify-content: center; }
+.wz-actions .wz-tile-side { flex: 0 0 auto; min-width: 104px; display: grid; place-items: center; padding: 0 16px; border-radius: 14px; text-align: center; }
+.wz-links { grid-template-columns: 1fr 1fr; width: min(100%, 520px); }
+.wz-links .wz-tile { grid-template-columns: 1fr; justify-items: center; text-align: center; min-height: 52px; padding: 10px 12px; }
+.wz-links .wz-tile strong, .wz-tile-side strong { font-size: 1rem; }
+.wz-actions .wz-tile-side { border: 0; border-bottom: 5px solid var(--tile-edge); color: var(--tile-ink); background: var(--tile-bg); box-shadow: 0 6px 14px var(--tile-shadow); font-weight: 800; }
+.wz-actions .wz-tile-side:active { transform: translateY(3px); border-bottom-width: 2px; }
+@media (max-width: 560px) { .wz-links .wz-tile:last-child { grid-column: auto; } }
+.wz-links .wz-tile { width: 100%; }
+
+/* ===== Lesson list: one aligned column of round marks ===== */
+.course-lesson { align-items: center; }
+.course-lesson-mark { flex: 0 0 22px; display: grid; place-items: center; width: 22px; height: 22px; border: 2px solid #c5d3cd; border-radius: 50%; background: #fff; color: #fff; font-size: .75rem; font-weight: 800; line-height: 1; }
+.course-lesson.passed .course-lesson-mark { border-color: #15966d; background: #15966d; }
+.course-lesson.selected .course-lesson-mark { border-color: #1e88e5; }

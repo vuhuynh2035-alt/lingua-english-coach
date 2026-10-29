@@ -678,8 +678,14 @@ export default function Home() {
     if (!progressLoaded || !aiSettingsLoaded || firstRunChecked.current) return;
     firstRunChecked.current = true;
     try {
-      const done = localStorage.getItem(sharedKey("setup-done"));
-      if (!done && apiKeys.google.length === 0 && apiKeys.openai.length === 0) { setSetupStep(setupStartStep()); setSection("setup"); }
+      // The guide opens by itself only once, on the first visit of an app that is not set up yet.
+      const finished = localStorage.getItem(sharedKey("setup-done")) || localStorage.getItem(sharedKey("setup-seen"));
+      const installed = window.matchMedia("(display-mode: standalone)").matches;
+      if (!finished && !installed && apiKeys.google.length === 0 && apiKeys.openai.length === 0) {
+        localStorage.setItem(sharedKey("setup-seen"), "1");
+        setSetupStep(setupStartStep());
+        setSection("setup");
+      }
     } catch {}
     // The first-run check runs once, when the saved settings have loaded.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -3849,6 +3855,10 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
   }
 
   function renderHome() {
+    // The guide link is for the first visit only: gone once the app is installed, a key is saved or the guide was done.
+    let guideSeen = false;
+    try { guideSeen = !!(localStorage.getItem(sharedKey("setup-done")) || localStorage.getItem(sharedKey("setup-seen"))); } catch {}
+    const showGuideLink = progressLoaded && !appInstalled && !apiKey && !guideSeen;
     const persona = TUTOR_PERSONAS[tutorPersona];
     const returning = progress.sessions > 0;
     return (
@@ -3874,29 +3884,30 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         <p className="wz-lead">
           Mỗi ngày một chút. Học bài bản theo giáo trình, hoặc trò chuyện với {TUTOR_PERSONAS[tutorPersona].name} — người sẽ chủ động dẫn dắt bạn qua từng tình huống phù hợp với trình độ của bạn.
         </p>
-        <button type="button" className="button button-primary wz-cta" onClick={() => { setChooseId(""); navigateToSection("choose"); }}>
-          {returning ? "Tiếp tục học" : "Bắt đầu học"} <span>→</span>
-        </button>
+        <div className="wz-actions">
+          <button type="button" className="button button-primary wz-cta" onClick={() => { setChooseId(""); navigateToSection("choose"); }}>
+            {returning ? "Tiếp tục học" : "Bắt đầu học"} <span>→</span>
+          </button>
+          <button type="button" className="wz-tile wz-tile-settings wz-tile-side" onClick={() => navigateToSection("settings")}>
+            <strong>Cài đặt</strong>
+          </button>
+        </div>
         {returning && <small className="wz-last">Lần trước: {profile.title} · Trình độ {levelLabel(progress.level)}</small>}
         <nav className="wz-links" aria-label="Lối tắt">
           <button type="button" className="wz-tile wz-tile-level" onClick={() => { setPlacementAnswers([]); setPlacementResult(""); navigateToSection("placement"); }}>
-            <span className="wz-tile-icon"><IllustrationIcon name="level" /></span>
-            <strong>Kiểm tra trình độ</strong>
+            <strong>Trình độ</strong>
           </button>
           <button type="button" className="wz-tile wz-tile-progress" onClick={() => navigateToSection("progress")}>
-            <span className="wz-tile-icon"><IllustrationIcon name="progress" /></span>
-            <strong>Tiến độ của tôi</strong>
-          </button>
-          <button type="button" className="wz-tile wz-tile-settings" onClick={() => navigateToSection("settings")}>
-            <span className="wz-tile-icon"><IllustrationIcon name="settings" /></span>
-            <strong>Cài đặt</strong>
+            <strong>Tiến độ</strong>
           </button>
         </nav>
         {renderInstallAppPanel()}
-        <div className="wz-bottom">
-          {!apiKey && progressLoaded && <small>Chưa có API key để học với AI? Làm theo hướng dẫn từng bước.</small>}
-          <button type="button" className={apiKey ? "wz-guide-link" : "wz-guide-link attention"} onClick={openSetupGuide}>🧭 Hướng dẫn cài đặt</button>
-        </div>
+        {showGuideLink && (
+          <div className="wz-bottom">
+            <small>Chưa cài đặt xong? Làm theo hướng dẫn từng bước. Sau này vẫn mở lại được trong Cài đặt.</small>
+            <button type="button" className="wz-guide-link attention" onClick={openSetupGuide}>Hướng dẫn cài đặt</button>
+          </div>
+        )}
       </section>
     );
   }
@@ -4059,7 +4070,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                           onClick={() => openCourseLesson(item.id)}
                           title={item.objective}
                         >
-                          <span className="course-lesson-mark" aria-hidden="true">{complete ? "✓" : "○"}</span>
+                          <span className="course-lesson-mark" aria-hidden="true">{complete ? "✓" : ""}</span>
                           <span>
                             {item.title}
                             <small>
@@ -4092,7 +4103,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                     return (
                       <optgroup key={level} label={`${LANG.levelSystem} ${levelLabel(level)}`}>
                         {items.map((item) => (
-                          <option key={item.id} value={item.id}>{completedLessons.includes(item.id) ? "✓ " : "○ "}{item.title}</option>
+                          <option key={item.id} value={item.id}>{item.title}{completedLessons.includes(item.id) ? "  ✓" : ""}</option>
                         ))}
                       </optgroup>
                     );
