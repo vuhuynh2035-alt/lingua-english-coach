@@ -38,6 +38,15 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // The downloaded Vietnamese voice files are served from their own cache, also when offline.
+  if (url.pathname.includes("/tts/vi/")) {
+    event.respondWith((async () => {
+      const cached = await (await caches.open("lingua-tts-v1")).match(url.href);
+      return cached ?? fetch(request);
+    })());
+    return;
+  }
+
   if (url.pathname.includes("/_next/static/")) {
     event.respondWith((async () => {
       const cache = await caches.open(SHELL_CACHE);

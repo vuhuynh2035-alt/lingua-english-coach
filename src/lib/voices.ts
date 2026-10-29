@@ -141,18 +141,20 @@ const GOOGLE_STYLE_ADVERBS: Record<VoiceStyle, string> = {
 };
 
 /** Gemini TTS system instruction: how to read, never what to read. */
-export function googleSpeechPrompt(profile: VoiceProfile): string {
+export function googleSpeechPrompt(profile: VoiceProfile, language: "en" | "vi" = "en"): string {
   const accent = getAccent(profile.accent);
   const how = profile.childlike ? "cheerfully, like a young child," : GOOGLE_STYLE_ADVERBS[profile.style];
   const pace = profile.speed < 0.9 ? " slowly" : profile.speed > 1.08 ? " quickly" : "";
+  if (language === "vi") return `You are a voice actor. Read the user's text aloud exactly as written, ${how}${pace}, in clear, natural Vietnamese with a standard Northern accent. Never say these instructions.`;
   return `You are a voice actor. Read the user's text aloud exactly as written, ${how}${pace}, in ${accent.prompt} accent. Never say these instructions.`;
 }
 
 /** Direction for OpenAI, which takes it as a separate `instructions` field. */
-export function voiceDirection(profile: VoiceProfile): string {
+export function voiceDirection(profile: VoiceProfile, language: "en" | "vi" = "en"): string {
   const accent = getAccent(profile.accent);
   const style = VOICE_STYLES.find((s) => s.id === profile.style) ?? VOICE_STYLES[0];
   const pace = profile.speed < 0.85 ? "slowly" : profile.speed < 0.98 ? "at a slightly slow pace" : profile.speed > 1.08 ? "at a brisk pace" : "at a normal pace";
+  if (language === "vi") return `Speak clear, natural Vietnamese with a standard Northern accent, ${style.prompt}, ${pace}`;
   if (profile.childlike) {
     return `Speak like a cheerful, playful young child about eight years old, with a high, bright, bouncy voice and ${accent.prompt} accent, ${pace}`;
   }
@@ -203,8 +205,9 @@ export async function synthesizeCloudSpeech(
   model: string,
   profile: VoiceProfile,
   text: string,
+  language: "en" | "vi" = "en",
 ): Promise<Blob> {
-  const direction = voiceDirection(profile);
+  const direction = voiceDirection(profile, language);
   if (engine === "google") {
     // The spoken text carries nothing but the words to read: a direction placed in the text
     // gets read aloud. The accent/style direction goes in systemInstruction instead, and a
@@ -215,7 +218,7 @@ export async function synthesizeCloudSpeech(
         method: "POST",
         headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body: JSON.stringify({
-          ...(withDirection ? { systemInstruction: { parts: [{ text: googleSpeechPrompt(profile) }] } } : {}),
+          ...(withDirection ? { systemInstruction: { parts: [{ text: googleSpeechPrompt(profile, language) }] } } : {}),
           contents: [{ role: "user", parts: [{ text }] }],
           generationConfig: {
             responseModalities: ["AUDIO"],
