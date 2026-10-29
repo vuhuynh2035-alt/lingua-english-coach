@@ -52,3 +52,8 @@ npm run build        # xuất bản tĩnh vào out/
 ```
 
 Phát hành lên GitHub Pages: `scripts/publish-pages.ps1 -BasePath /ten-kho` (sao chép `out/` vào `docs/`).
+
+
+## Third-party voice
+
+The built-in Vietnamese voice (`public/tts/vi`) is the Piper `vi_VN-vais1000-medium` model by rhasspy, trained on the VAIS-1000 corpus (CC BY 4.0, https://ieee-dataport.org/documents/vais-1000-vietnamese-speech-synthesis-corpus). It runs with onnxruntime-web (MIT) and the piper-phonemize WebAssembly build from `@diffusionstudio/piper-wasm` (MIT), which bundles espeak-ng (GPL-3.0, https://github.com/espeak-ng/espeak-ng). The app's source is public in this repository.

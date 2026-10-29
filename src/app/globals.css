@@ -2637,3 +2637,20 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 .wz-hero .wz-lang { padding: 9px 16px; overflow: visible; }
 .wz-hero .wz-welcome-art { justify-self: center; }
 .wz-hero { margin-left: -12px; width: calc(100% + 12px); }
+
+/* ===== Built-in Vietnamese voice card ===== */
+.vipack { display: grid; gap: 10px; padding: 14px; margin-bottom: 14px; border: 1px solid var(--line, #d8e6e0); border-radius: 14px; background: var(--paper, #f6fbf8); }
+.vipack > strong { font-size: 1.0625rem; }
+.vipack > p { margin: 0; color: var(--muted); font-size: .9375rem; line-height: 1.45; }
+.vipack-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.vipack-ok { color: #12805a; font-weight: 800; }
+.vipack-progress { display: grid; gap: 6px; }
+.vipack-bar { height: 10px; border-radius: 999px; background: #dfeee7; overflow: hidden; }
+.vipack-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #2fb67f, #15966d); transition: width .2s ease; }
+
+/* Settings panel headings: the icon sits beside the title, the description uses the full width */
+.settings-section-heading { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; column-gap: 10px; row-gap: 4px; }
+.settings-section-heading > .settings-icon { grid-column: 1; grid-row: 1; width: 34px; height: 34px; margin: 0; }
+.settings-section-heading > div { display: contents; }
+.settings-section-heading > div > h3 { grid-column: 2; grid-row: 1; margin: 0; min-width: 0; }
+.settings-section-heading > div > p { grid-column: 1 / -1; grid-row: 2; margin: 0; }
