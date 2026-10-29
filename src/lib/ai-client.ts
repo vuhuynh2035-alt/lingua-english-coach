@@ -32,11 +32,11 @@ export type FailoverOptions = {
 };
 
 /**
- * Used when the key's model list is unknown. The "-latest" aliases follow Google's current
- * Flash models; fixed ids are kept only as a last resort because Google retires them.
+ * Used when the key's model list is unknown: Google's current stable Flash models, newest first
+ * (2.0 was shut down on 1 June 2026 and 2.5 is closed to new users), the alias last.
  */
 export const FALLBACK_MODELS: Record<AiProvider, string[]> = {
-  google: ["gemini-flash-latest", "gemini-flash-lite-latest", "gemini-2.5-flash", "gemini-2.5-flash-lite"],
+  google: ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-flash-latest"],
   openai: ["gpt-4o-mini", "gpt-4.1-mini"],
 };
 
@@ -59,7 +59,7 @@ function modelVersion(id: string): number {
 export function rankGoogleModels(available: string[], kind: "chat" | "tts"): string[] {
   const wanted = available.filter((id) => kind === "tts"
     ? /tts/i.test(id)
-    : isChatModel(id) && /flash/i.test(id) && !/thinking|exp/i.test(id));
+    : isChatModel(id) && /flash/i.test(id) && !/thinking|exp/i.test(id) && !/^gemini-(1\.|2\.0)/.test(id));
   return wanted
     // Previews have small quotas, so stable models come first whatever their version.
     .sort((a, b) => Number(/preview/i.test(a)) - Number(/preview/i.test(b))

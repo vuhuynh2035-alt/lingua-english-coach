@@ -2670,3 +2670,8 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
   .wz-menu { gap: 14px; }
   .wz-actions, .wz-links { gap: 14px; }
 }
+
+/* ===== English voice settings: two sources, tap a voice to hear it, tap again to stop ===== */
+.voice-mode { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 6px 0 4px; }
+.voice-mode .voice-engine { text-align: left; }
+.voice-chip.playing { border-color: #e2554b; color: #b42318; background: #fff1ef; }
