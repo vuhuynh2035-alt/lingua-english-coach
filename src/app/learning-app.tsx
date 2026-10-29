@@ -4087,10 +4087,10 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         </div>
         </div>
         <div className="wz-intro">
-          <span className="eyebrow">TEACHER AI · GIA SƯ {LANG.viName.toUpperCase()} CỦA BẠN</span>
-          <h1>Xin chào! Cùng nói {LANG.viName} tự tin hơn nhé.</h1>
+          <span className="eyebrow">TEACHER AI · GIA SƯ NGOẠI NGỮ CỦA BẠN</span>
+          <h1>Xin chào! Mỗi ngày một chút, bạn sẽ nói tự tin hơn.</h1>
           <p className="wz-lead">
-            Học theo giáo trình hoặc trò chuyện cùng {TUTOR_PERSONAS[tutorPersona].name}.
+            Chọn ngôn ngữ, rồi học theo giáo trình hoặc trò chuyện cùng {TUTOR_PERSONAS[tutorPersona].name}.
           </p>
         </div>
         <div className="wz-menu">
