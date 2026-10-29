@@ -25,6 +25,7 @@ import {
 import type { GrammarQuestion, GrammarTopic } from "@/lib/grammar";
 import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
+import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
 import { LANGUAGES, switchLanguage } from "@/lib/language-meta";
 
 import { IllustrationIcon } from "@/components/illustration-icon";
@@ -81,7 +82,7 @@ import {
   removePersonalMaterial,
 } from "@/lib/personal-library";
 
-type Section = "home" | "choose" | "mode" | "lessons" | "practice" | "progress" | "placement" | "grammar" | "library" | "settings";
+type Section = "home" | "choose" | "mode" | "lessons" | "practice" | "progress" | "placement" | "grammar" | "library" | "settings" | "setup" | "dictionary";
 type CourseLevel = "A1" | "A2" | "B1" | "B2";
 const COURSE_LEVELS: CourseLevel[] = ["A1", "A2", "B1", "B2"];
 type HelpContent = { title: string; description: string; steps: string[] };
@@ -94,6 +95,24 @@ type InstallPromptEvent = Event & {
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 };
 const PAGE_HELP: Record<Section, HelpContent> = {
+  dictionary: {
+    title: "Từ điển",
+    description: "Tra từ hai chiều giữa ngôn ngữ đang học và tiếng Việt, chạy offline sau khi tải dữ liệu về máy.",
+    steps: [
+      "Lần đầu, nhấn “Tải từ điển” để lưu dữ liệu vào máy (một lần).",
+      "Gõ vào khung trên hoặc khung dưới; khung còn lại hiện nghĩa. Nhấn 🔊 để nghe.",
+      "Không thấy từ? Dùng “Tìm mở rộng online” (AI hoặc Google Dịch).",
+    ],
+  },
+  setup: {
+    title: "Hướng dẫn cài đặt",
+    description: "Đi lần lượt từng bước để cài app, lấy và kiểm tra API key, chọn mô hình và giọng đọc.",
+    steps: [
+      "Làm theo bước đang sáng; nút cần bấm sẽ nhấp nháy kèm lời nhắc.",
+      "Nhấn “Tiếp tục” để sang bước sau, “Bước trước” để xem lại.",
+      "Bạn có thể bỏ qua các bước không bắt buộc và quay lại hướng dẫn này bất cứ lúc nào.",
+    ],
+  },
   home: {
     title: "Trang chào mừng",
     description: "Học theo 3 bước đơn giản: chọn bài học, chọn cách học, rồi bắt đầu.",
@@ -485,26 +504,38 @@ function nextKeyLabel(entries: ApiKeyEntry[]): string {
   return `Key ${n}`;
 }
 
-/** Lessons the learner may open: in order inside a level; a level opens once the one before is done or the learner already placed at it. */
-function unlockedLessonIds(course: CoursePackage, completed: string[], learnerLevel: string): Set<string> {
-  const open = new Set<string>();
-  const learnerIndex = Math.max(0, COURSE_LEVELS.findIndex((level) => level === learnerLevel));
-  let previousLevelDone = true;
-  COURSE_LEVELS.forEach((level, levelIndex) => {
-    const lessons = course.lessons.filter((item) => item.level === level);
-    if (!lessons.length) return;
-    let previousDone = previousLevelDone || levelIndex <= learnerIndex;
-    for (const lesson of lessons) {
-      if (previousDone || completed.includes(lesson.id)) open.add(lesson.id);
-      previousDone = completed.includes(lesson.id);
-    }
-    previousLevelDone = lessons.every((item) => completed.includes(item.id));
-  });
-  return open;
+/** Every lesson can be opened in any order; passing the quiz (8/10) only marks it as done. */
+function unlockedLessonIds(course: CoursePackage): Set<string> {
+  return new Set(course.lessons.map((item) => item.id));
+}
+
+const SETUP_STEPS = ["Chào mừng", "Cài vào máy", "Chọn nhà cung cấp AI", "Lấy API key", "Dán và kiểm tra key", "Chọn mô hình AI", "Chọn giọng đọc", "Hoàn tất"] as const;
+
+function detectPlatform(): "ios" | "android" | "desktop" {
+  const agent = navigator.userAgent;
+  if (/iPhone|iPad|iPod/.test(agent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)) return "ios";
+  if (/Android/.test(agent)) return "android";
+  return "desktop";
+}
+
+/** Wraps a control with a pulsing glow and a floating label that tells the user to press or fill it. */
+function Spot({ hint, active = true, children }: { hint: string; active?: boolean; children: React.ReactNode }) {
+  return <div className={active ? "sg-spot" : "sg-nospot"} data-hint={active ? hint : undefined}>{children}</div>;
 }
 
 export default function Home() {
   const [section, setSection] = useState<Section>("home");
+  const [setupStep, setSetupStep] = useState(0);
+  const [dictPacks, setDictPacks] = useState<PackId[]>([]);
+  const [dictBusy, setDictBusy] = useState("");
+  const [dictError, setDictError] = useState("");
+  const [dictText, setDictText] = useState({ target: "", vi: "" });
+  const [dictSide, setDictSide] = useState<"target" | "vi">("target");
+  const [dictHits, setDictHits] = useState<DictHit[]>([]);
+  const [dictSearching, setDictSearching] = useState(false);
+  const [dictAi, setDictAi] = useState("");
+  const [dictAiBusy, setDictAiBusy] = useState(false);
+  const firstRunChecked = useRef(false);
   // Tutor Persona
   const [tutorPersona, setTutorPersona] = useState<TutorPersona>("maya");
 
@@ -637,6 +668,38 @@ export default function Home() {
     placementQuestions.every((_, index) =>
       Number.isInteger(placementAnswers[index]) && placementAnswers[index] >= 0);
   const practiceSessionCounted = useRef(false);
+
+  useEffect(() => {
+    if (!progressLoaded || !aiSettingsLoaded || firstRunChecked.current) return;
+    firstRunChecked.current = true;
+    try {
+      const done = localStorage.getItem(sharedKey("setup-done"));
+      if (!done && apiKeys.google.length === 0 && apiKeys.openai.length === 0) setSection("setup");
+    } catch {}
+  }, [progressLoaded, aiSettingsLoaded, apiKeys]);
+
+  useEffect(() => {
+    if (section !== "dictionary") return;
+    void installedPacks().then(setDictPacks);
+  }, [section]);
+
+  const dictSource = dictSide === "target" ? dictText.target : dictText.vi;
+  useEffect(() => {
+    if (section !== "dictionary" || !isReady(LANG.id, dictPacks)) return;
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      setDictSearching(true);
+      void lookup(LANG.id, dictSide, dictSource).then((result) => {
+        if (cancelled) return;
+        setDictHits(result.hits);
+        setDictText((current) => {
+          const other = dictSide === "target" ? "vi" : "target";
+          return dictSource.trim() && current[other] !== result.summary ? { ...current, [other]: result.summary } : (dictSource.trim() ? current : { ...current, [other]: "" });
+        });
+      }).finally(() => { if (!cancelled) setDictSearching(false); });
+    }, 300);
+    return () => { cancelled = true; window.clearTimeout(timer); };
+  }, [section, dictPacks, dictSide, dictSource]);
 
   function navigateToSection(nextSection: Section) {
     if (nextSection === section) return;
@@ -2322,10 +2385,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     }
   }
 
-  /** First lesson the learner can open but has not passed — "học tiếp bài đang học". */
+  /** The lesson the app suggests: the first one not passed yet, starting at the learner's own level. */
   function nextLessonFor(course: CoursePackage): CourseLesson | undefined {
     const completed = courseProgress[course.id] ?? [];
-    const open = unlockedLessonIds(course, completed, progress.level);
+    const open = unlockedLessonIds(course);
     const pending = course.lessons.filter((item) => open.has(item.id) && !completed.includes(item.id));
     // Start at the learner's own level; easier lessons stay open but are not pushed on them.
     const learnerIndex = Math.max(0, COURSE_LEVELS.findIndex((level) => level === progress.level));
@@ -2457,6 +2520,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           <span className="eyebrow">CÀI ĐẶT CHUNG</span>
           <h2>Cài đặt ứng dụng.</h2>
           <p>Chọn một nhóm để mở các tùy chọn chi tiết.</p>
+          <button type="button" className="button button-outline" onClick={() => { setSetupStep(0); navigateToSection("setup"); }}>🧭 Hướng dẫn cài đặt từng bước</button>
         </div>
         <details name="settings-groups" className="settings-group">
           <summary className="settings-group-summary">
@@ -2902,7 +2966,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       return (
         <section className="cr-connect">
           <div className={`cr-connect-avatar${checking ? " waiting" : ""}`}>
-            <TutorAvatar kind={persona.kind} status={checking ? "thinking" : "idle"} emotion={checking ? undefined : "neutral"} size={150} />
+            <TutorAvatar kind={persona.kind} status={checking ? "thinking" : "sleeping"} emotion={checking ? undefined : "neutral"} size={150} entrance />
           </div>
           <h2>{checking ? `Đang gọi ${TUTOR_PERSONAS[tutorPersona].name} vào lớp…` : "Chưa kết nối được với gia sư AI"}</h2>
           <p className={checking ? "cr-connect-note" : "error-message"} role={checking ? "status" : "alert"}>
@@ -2951,7 +3015,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             </label>
           )}
           <div className="cr-avatar">
-            <TutorAvatar kind={persona.kind} status={avatarStatus} emotion={avatarStatus === "thinking" || avatarStatus === "listening" ? undefined : tutorEmotion} size={240} />
+            <TutorAvatar kind={persona.kind} status={avatarStatus} emotion={avatarStatus === "thinking" || avatarStatus === "listening" ? undefined : tutorEmotion} size={240} entrance />
           </div>
           <div className={`cr-bubble cr-bubble-${avatarStatus}`}>
             <p>{caption || "…"}</p>
@@ -3232,6 +3296,410 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     );
   }
 
+  /** The guided first-run setup: install, AI provider, API key, model, voice. Can be opened again any time. */
+  function renderSetupGuide() {
+    const keyEntries = apiKeys[aiProvider];
+    const last = SETUP_STEPS.length - 1;
+    const platform = typeof navigator === "undefined" ? "desktop" : detectPlatform();
+    const hasKey = keyEntries.length > 0;
+    const providerName = aiProvider === "google" ? "Google Gemini" : "OpenAI / ChatGPT";
+    const keyUrl = aiProvider === "google" ? "https://aistudio.google.com/app/apikey" : "https://platform.openai.com/api-keys";
+    const accent = getAccent(voiceProfile.accent);
+    const cloudReady = voiceProfile.engine === "device" || apiKeys[voiceProfile.engine].length > 0;
+    const finish = () => {
+      try { localStorage.setItem(sharedKey("setup-done"), "1"); } catch {}
+      setSetupStep(0);
+      setSection("home");
+    };
+    const step = setupStep;
+
+    return (
+      <section className="sg-wrap" aria-labelledby="sg-title">
+        <ol className="sg-dots" aria-label="Các bước cài đặt">
+          {SETUP_STEPS.map((label, index) => (
+            <li key={label} className={index === step ? "now" : index < step ? "done" : ""} aria-current={index === step ? "step" : undefined}>
+              <button type="button" onClick={() => setSetupStep(index)} aria-label={`Bước ${index + 1}: ${label}`}>{index < step ? "✓" : index + 1}</button>
+              <span>{label}</span>
+            </li>
+          ))}
+        </ol>
+
+        <div className="sg-card">
+          <div className="sg-mascot" aria-hidden="true">
+            <TutorAvatar kind={TUTOR_PERSONAS[tutorPersona].kind} status={hasKey && connection.status !== "error" ? "idle" : "sleeping"} emotion={hasKey ? "happy" : "neutral"} size={96} interactive={false} />
+          </div>
+          <span className="eyebrow">BƯỚC {step + 1}/{SETUP_STEPS.length}</span>
+          <h2 id="sg-title">{SETUP_STEPS[step]}</h2>
+
+          {step === 0 && (
+            <>
+              <p className="sg-lead">Mình sẽ cùng bạn thiết lập Teacher AI trong khoảng 3 phút. Chỉ cần làm một lần, dùng chung cho cả tiếng Anh, tiếng Nhật và tiếng Trung.</p>
+              <ul className="sg-checklist">
+                <li>Cài ứng dụng vào máy (không bắt buộc)</li>
+                <li>Chọn nhà cung cấp AI và lấy <b>API key</b> (một mật mã riêng của bạn)</li>
+                <li>Dán key vào app và kiểm tra</li>
+                <li>Chọn mô hình AI và kiểm tra kết nối</li>
+                <li>Chọn giọng đọc và nghe thử</li>
+              </ul>
+              <p className="sg-note">Chưa có API key vẫn học được các bài học offline. API key chỉ cần để trò chuyện với thầy/cô AI và dùng giọng AI.</p>
+            </>
+          )}
+
+          {step === 1 && (
+            <>
+              <p className="sg-lead">Cài Teacher AI lên màn hình chính để mở nhanh như một ứng dụng, và học được cả khi không có mạng.</p>
+              {installPrompt ? (
+                <Spot hint="Nhấn nút này">
+                  <button type="button" className="button button-primary sg-big" onClick={() => { void installApp(); }}>📲 Cài ứng dụng vào máy</button>
+                </Spot>
+              ) : (
+                <ul className="sg-platforms">
+                  <li className={platform === "android" ? "mine" : ""}><b>Android / Chrome</b><span>Nhấn dấu <b>⋮</b> (góc trên bên phải) → chọn <b>“Cài đặt ứng dụng”</b> hoặc <b>“Thêm vào màn hình chính”</b>.</span></li>
+                  <li className={platform === "ios" ? "mine" : ""}><b>iPhone / iPad (Safari)</b><span>Nhấn nút <b>Chia sẻ</b> (hình vuông có mũi tên lên) → kéo xuống chọn <b>“Thêm vào MH chính”</b> → <b>Thêm</b>.</span></li>
+                  <li className={platform === "desktop" ? "mine" : ""}><b>Máy tính (Chrome / Edge)</b><span>Nhìn bên phải thanh địa chỉ, nhấn biểu tượng <b>Cài đặt ứng dụng</b> (hình màn hình có mũi tên xuống) → <b>Cài đặt</b>.</span></li>
+                </ul>
+              )}
+              <p className="sg-note">Không cài cũng không sao: bạn có thể bỏ qua bước này.</p>
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              <p className="sg-lead">Chọn nơi cung cấp “bộ não” AI cho thầy/cô. Bạn dùng tài khoản và hạn mức của chính mình.</p>
+              <div className="sg-choices" role="radiogroup" aria-label="Nhà cung cấp AI">
+                <Spot hint="Khuyên dùng" active={aiProvider === "google"}>
+                  <button type="button" role="radio" aria-checked={aiProvider === "google"} className={aiProvider === "google" ? "sg-choice on" : "sg-choice"} onClick={() => { setAiProvider("google"); setApiKeyDraft(""); setApiKeyError(""); setApiKeySaved(false); setModelsError(""); }}>
+                    <strong>Google Gemini</strong>
+                    <small>Có hạn mức miễn phí, đủ để luyện hằng ngày. Dùng tài khoản Gmail.</small>
+                  </button>
+                </Spot>
+                <button type="button" role="radio" aria-checked={aiProvider === "openai"} className={aiProvider === "openai" ? "sg-choice on" : "sg-choice"} onClick={() => { setAiProvider("openai"); setApiKeyDraft(""); setApiKeyError(""); setApiKeySaved(false); setModelsError(""); }}>
+                  <strong>OpenAI / ChatGPT</strong>
+                  <small>Tính phí theo mức dùng, cần nạp tiền vào tài khoản OpenAI.</small>
+                </button>
+              </div>
+            </>
+          )}
+
+          {step === 3 && (
+            <>
+              <p className="sg-lead">Làm lần lượt theo các bước nhỏ này trên trang của {providerName}. Bạn sẽ có một dòng ký tự dài gọi là <b>API key</b>.</p>
+              <Spot hint="1. Mở trang này">
+                <a className="button button-primary sg-big" href={keyUrl} target="_blank" rel="noreferrer">Mở trang tạo API key ↗</a>
+              </Spot>
+              {aiProvider === "google" ? (
+                <ol className="sg-steps">
+                  <li>Đăng nhập bằng tài khoản Google (Gmail) của bạn.</li>
+                  <li>Nhấn nút <b>“Create API key”</b> (Tạo khóa API). Nếu được hỏi chọn dự án, chọn <b>“Create API key in new project”</b>.</li>
+                  <li>Khi khóa hiện ra, nhấn biểu tượng <b>sao chép</b> (hai tờ giấy chồng nhau) cạnh khóa.</li>
+                  <li>Quay lại ứng dụng này (nhấn lại tab Teacher AI) để dán khóa ở bước tiếp theo.</li>
+                </ol>
+              ) : (
+                <ol className="sg-steps">
+                  <li>Đăng nhập (hoặc đăng ký) tài khoản OpenAI và nạp một ít tiền ở mục <b>Billing</b>.</li>
+                  <li>Nhấn <b>“Create new secret key”</b>, đặt tên bất kỳ, nhấn <b>Create</b>.</li>
+                  <li>Nhấn <b>Copy</b> ngay, vì khóa chỉ hiện một lần duy nhất.</li>
+                  <li>Quay lại ứng dụng này để dán khóa ở bước tiếp theo.</li>
+                </ol>
+              )}
+              <p className="sg-note">Không chia sẻ khóa cho người khác. Khóa chỉ được lưu trên thiết bị này.</p>
+            </>
+          )}
+
+          {step === 4 && (
+            <>
+              <p className="sg-lead">Dán khóa vừa sao chép vào ô bên dưới rồi nhấn kiểm tra. App sẽ thử khóa với {providerName} ngay.</p>
+              <form className="sg-form" onSubmit={(event) => { void saveApiKey(event); }}>
+                <Spot hint="2. Dán khóa vào đây (Ctrl+V)" active={!apiKeyDraft && !hasKey}>
+                  <input className="settings-input sg-input" type="password" autoComplete="off" value={apiKeyDraft} aria-label="API key"
+                    onChange={(event) => { setApiKeyDraft(event.target.value); setApiKeyError(""); setApiKeySaved(false); }}
+                    placeholder={aiProvider === "google" ? "Dán Google AI API key" : "Dán OpenAI API key"} />
+                </Spot>
+                <Spot hint="3. Nhấn để kiểm tra" active={!!apiKeyDraft.trim() && !apiKeyBusy}>
+                  <button className="button button-primary sg-big" type="submit" disabled={apiKeyBusy || !apiKeyDraft.trim()}>
+                    {apiKeyBusy ? "Đang kiểm tra key…" : "✔ Kiểm tra và lưu key"}
+                  </button>
+                </Spot>
+              </form>
+              {apiKeyError && <p className="error-message" role="alert">{apiKeyError}</p>}
+              {(apiKeySaved || hasKey) && <p className="api-key-success" role="status">✅ Key hợp lệ và đã được lưu ({keyEntries.length} key). Nhấn “Tiếp tục”.</p>}
+            </>
+          )}
+
+          {step === 5 && (
+            <>
+              <p className="sg-lead">Mô hình AI là “phiên bản bộ não” sẽ trò chuyện với bạn. Nếu không chắc, cứ giữ mô hình mặc định.</p>
+              <Spot hint="Nhấn để tải danh sách" active={hasKey && !modelCatalog[aiProvider].length}>
+                <button type="button" className="button button-outline sg-big" onClick={() => { void loadModels(); }} disabled={modelsBusy || !hasKey}>
+                  {modelsBusy ? "Đang tải mô hình…" : "↻ Tải danh sách mô hình"}
+                </button>
+              </Spot>
+              {modelsError && <p className="error-message" role="alert">{modelsError}</p>}
+              <label className="settings-label" htmlFor="sg-model">Mô hình hội thoại</label>
+              <select id="sg-model" className="settings-select" value={activeModel} onChange={(event) => setSelectedModels((current) => ({ ...current, [aiProvider]: event.target.value }))}>
+                {!modelCatalog[aiProvider].some((model) => model.id === activeModel) && <option value={activeModel}>{activeModel} · mặc định</option>}
+                {modelCatalog[aiProvider].map((model) => <option key={model.id} value={model.id}>{model.label}</option>)}
+              </select>
+              <Spot hint="Kiểm tra AI có trả lời không" active={hasKey && connection.status !== "ok"}>
+                <button type="button" className="button button-primary sg-big" onClick={() => { void testAiConnection(); }} disabled={connection.status === "checking" || !hasKey}>
+                  {connection.status === "checking" ? "Đang kiểm tra…" : "⚡ Kiểm tra kết nối AI"}
+                </button>
+              </Spot>
+              {connection.message && <p className={connection.status === "error" ? "error-message" : "api-key-success"} role="status">{connection.message}</p>}
+              {connection.status === "error" && connection.details && connection.details.length > 0 && (
+                <details className="cr-connect-details"><summary>Chi tiết từng lần thử ({connection.details.length})</summary><ul>{connection.details.map((line, index) => <li key={index}>{line}</li>)}</ul></details>
+              )}
+            </>
+          )}
+
+          {step === 6 && (
+            <>
+              <p className="sg-lead">Chọn giọng để nghe {LANG.viName} và nghe thử. Bạn có thể đổi lại bất cứ lúc nào ở Cài đặt → Giọng đọc & phát âm.</p>
+              <span className="settings-label">Nguồn giọng</span>
+              <div className="voice-chips">
+                {([["device", "Giọng trên máy (miễn phí)"], ["google", "Giọng AI Google"], ["openai", "Giọng AI OpenAI"]] as const).map(([id, label]) => (
+                  <button key={id} type="button" className={voiceProfile.engine === id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ engine: id })}>{label}</button>
+                ))}
+              </div>
+              {!cloudReady && <p className="error-message">Chưa có API key cho nguồn này, app sẽ tạm dùng giọng trên máy.</p>}
+              <span className="settings-label">Vùng miền</span>
+              <div className="voice-chips">
+                {ACCENTS.map((item) => (
+                  <button key={item.id} type="button" className={voiceProfile.accent === item.id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ accent: item.id })}>{item.flag} {item.name}</button>
+                ))}
+              </div>
+              <span className="settings-label">Giọng nữ / nam</span>
+              <div className="voice-chips">
+                {([["female", "👩 Nữ"], ["male", "👨 Nam"]] as const).map(([id, label]) => (
+                  <button key={id} type="button" className={!voiceProfile.childlike && voiceProfile.gender === id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ gender: id, childlike: false })}>{label}</button>
+                ))}
+              </div>
+              <Spot hint="Nhấn để nghe thử">
+                <button type="button" className="button button-primary sg-big" disabled={speechBusy} onClick={() => playPracticePhrase(accent.sample)}>🔊 Nghe thử giọng {LANG.viName}</button>
+              </Spot>
+              <button type="button" className="button button-outline" onClick={() => { void playNativeUtterance("Xin chào bạn! Tôi là gia sư của bạn, chúc bạn học tập thật vui.", "vi"); }}>🔊 Nghe thử giọng tiếng Việt</button>
+              {speechNotice && <p className="settings-hint" role="status">{speechNotice}</p>}
+              <p className="sg-note">Giọng tiếng Việt nghe lạ? Trên Windows hãy mở bằng trình duyệt <b>Microsoft Edge</b> (có giọng HoaiMy, NamMinh tự nhiên), hoặc vào Settings → Time &amp; language → Speech → Add voices → Vietnamese.</p>
+            </>
+          )}
+
+          {step === last && (
+            <>
+              <p className="sg-lead">Hoàn tất! Đây là tình trạng thiết lập của bạn:</p>
+              <ul className="sg-status">
+                <li className={hasKey ? "ok" : "todo"}>{hasKey ? "✅" : "⬜"} API key {providerName}{hasKey ? ` (${keyEntries.length} key)` : ": chưa có, vẫn học được bài offline"}</li>
+                <li className={connection.status === "ok" ? "ok" : "todo"}>{connection.status === "ok" ? "✅" : "⬜"} Kết nối AI{connection.status === "ok" ? " hoạt động" : ": chưa kiểm tra"}</li>
+                <li className="ok">✅ Mô hình: {activeModel}</li>
+                <li className="ok">✅ Giọng: {accent.flag} {accent.name} · {voiceProfile.engine === "device" ? "trên máy" : voiceProfile.engine === "google" ? "AI Google" : "AI OpenAI"}</li>
+              </ul>
+              <p className="sg-note">Có thể mở lại hướng dẫn này bất cứ lúc nào ở trang chào hoặc trong Cài đặt → “Hướng dẫn cài đặt”.</p>
+              <Spot hint="Sẵn sàng!">
+                <button type="button" className="button button-primary sg-big" onClick={finish}>🚀 Bắt đầu học</button>
+              </Spot>
+            </>
+          )}
+
+          <div className="sg-nav">
+            <button type="button" className="button button-outline" onClick={() => setSetupStep((value) => Math.max(0, value - 1))} disabled={step === 0}>← Bước trước</button>
+            {step < last && (
+              <>
+                {(step === 1 || step === 6 || step === 3) && <button type="button" className="text-button" onClick={() => setSetupStep((value) => Math.min(last, value + 1))}>Bỏ qua</button>}
+                <button type="button" className="button button-primary" onClick={() => setSetupStep((value) => Math.min(last, value + 1))} disabled={step === 4 && !hasKey}>Tiếp tục →</button>
+              </>
+            )}
+          </div>
+          {step < last && <button type="button" className="text-button sg-later" onClick={finish}>Để sau, vào học luôn</button>}
+        </div>
+      </section>
+    );
+  }
+
+  // ---------------------------------------------------------------- dictionary
+  async function refreshDictPacks() {
+    setDictPacks(await installedPacks());
+  }
+
+  async function downloadDictionary(ids: PackId[]) {
+    setDictError("");
+    try {
+      for (const id of ids) {
+        setDictBusy(`Đang tải ${PACK_INFO[id].label}…`);
+        await downloadPack(id, (done, total) => setDictBusy(`Đang tải ${PACK_INFO[id].label}… ${Math.round((done / total) * 100)}%`));
+      }
+      await refreshDictPacks();
+    } catch (error) {
+      setDictError(error instanceof Error ? error.message : "Không tải được từ điển. Hãy kiểm tra kết nối mạng rồi thử lại.");
+    } finally {
+      setDictBusy("");
+    }
+  }
+
+  async function deleteDictionary(id: PackId) {
+    try { await removePack(id); } catch {}
+    await refreshDictPacks();
+  }
+
+  function dictLangCode(side: "target" | "vi"): string {
+    return side === "vi" ? "vi" : LANG.id === "zh" ? "zh-CN" : LANG.id;
+  }
+
+  /** Online fallback: the browser's own translator when it has one, otherwise the AI of the learner's key. */
+  async function searchDictionaryOnline() {
+    const side = dictSide;
+    const text = (side === "target" ? dictText.target : dictText.vi).trim();
+    if (!text) return;
+    setDictAiBusy(true);
+    setDictAi("");
+    try {
+      const translator = (window as unknown as { Translator?: { availability(o: { sourceLanguage: string; targetLanguage: string }): Promise<string>; create(o: { sourceLanguage: string; targetLanguage: string }): Promise<{ translate(t: string): Promise<string> }> } }).Translator;
+      if (translator) {
+        try {
+          const options = { sourceLanguage: side === "target" ? LANG.id : "vi", targetLanguage: side === "target" ? "vi" : LANG.id };
+          if ((await translator.availability(options)) !== "unavailable") {
+            const result = await (await translator.create(options)).translate(text);
+            if (result.trim()) { setDictAi(`${result}\n\n(Dịch bằng bộ dịch của trình duyệt.)`); return; }
+          }
+        } catch {}
+      }
+      if (!apiKey) {
+        setDictAi("Chưa có API key để tìm mở rộng bằng AI. Mở “Hướng dẫn cài đặt” để thêm key (một lần), hoặc dùng nút Google Dịch bên dưới.");
+        return;
+      }
+      const system = `You are a precise bilingual dictionary between ${LANG.nameEn} and Vietnamese for a Vietnamese learner. The user sends a word, phrase or sentence. If it is ${LANG.nameEn}: give the Vietnamese meaning(s)${LANG.phoneticName ? `, its ${LANG.phoneticName}` : ""}${LANG.id === "en" ? "" : ", and for each kanji/hanzi its Sino-Vietnamese (Hán-Việt) reading when useful"}, and one short example sentence with Vietnamese translation. If it is Vietnamese: give the best ${LANG.nameEn} equivalent(s)${LANG.phoneticName ? ` with ${LANG.phoneticName}` : ""} and one short example. Answer compactly in Vietnamese, plain text, no markdown asterisks.`;
+      const reply = await withAvailableApiKey((key, model) => streamChat(aiProvider, key, model, system, [{ role: "user", content: text }], () => {}, 500));
+      setDictAi(cleanSpeechText(reply).length ? reply.replace(/\*+/g, "") : "AI chưa trả lời được. Hãy thử lại.");
+    } catch (error) {
+      setDictAi(friendlyError(error, "Không tìm được trực tuyến lúc này."));
+    } finally {
+      setDictAiBusy(false);
+    }
+  }
+
+  function renderDictionary() {
+    const ready = isReady(LANG.id, dictPacks);
+    const need = packsFor(LANG.id).filter((id) => !dictPacks.includes(id));
+    const totalMb = need.reduce((sum, id) => sum + PACK_INFO[id].mb, 0);
+    const sourceText = dictSide === "target" ? dictText.target : dictText.vi;
+    const googleLink = `https://translate.google.com/?sl=${dictLangCode(dictSide)}&tl=${dictLangCode(dictSide === "target" ? "vi" : "target")}&text=${encodeURIComponent(sourceText)}&op=translate`;
+    return (
+      <section className="dict-wrap" aria-labelledby="dict-title">
+        <div className="page-intro">
+          <span className="eyebrow">TỪ ĐIỂN</span>
+          <h2 id="dict-title">Từ điển {LANG.viName} ↔ Tiếng Việt</h2>
+          <p>Gõ vào khung nào cũng được, khung còn lại sẽ hiện nghĩa. Nhấn 🔊 để nghe phát âm từng khung.</p>
+        </div>
+
+        {LANG.id !== "en" && (
+          <details className="dict-typing">
+            <summary>⌨ Chưa có bàn phím {LANG.viName}? Cách nhập chữ</summary>
+            <ul>
+              {LANG.id === "ja" ? (
+                <>
+                  <li><b>Không cần cài gì:</b> gõ chữ Latinh (romaji), ví dụ <b>reizouko</b>, app tự tra từ <b>れいぞうこ</b> (冷蔵庫).</li>
+                  <li><b>Muốn gõ thẳng chữ Nhật:</b> Android (Gboard): Cài đặt → Hệ thống → Bàn phím → Gboard → Ngôn ngữ → Thêm bàn phím → Tiếng Nhật. iPhone: Cài đặt → Cài đặt chung → Bàn phím → Bàn phím → Thêm bàn phím mới → Tiếng Nhật (Romaji hoặc Kana). Windows: Cài đặt → Thời gian &amp; ngôn ngữ → Ngôn ngữ → Thêm Nhật Bản.</li>
+                  <li><b>Chữ lạ chưa biết đọc:</b> dùng bàn phím <b>viết tay</b> (Gboard có “Nhật – viết tay”), hoặc gõ nghĩa tiếng Việt vào khung dưới để app gợi ý chữ rồi nhấn 📋 chép.</li>
+                </>
+              ) : (
+                <>
+                  <li><b>Không cần cài gì:</b> gõ <b>pinyin</b> không dấu, ví dụ <b>ya suo ji</b> hoặc <b>yasuoji</b>, app tìm ra 压缩机.</li>
+                  <li><b>Muốn gõ thẳng chữ Hán:</b> Android (Gboard): Cài đặt → Hệ thống → Bàn phím → Gboard → Ngôn ngữ → Thêm bàn phím → Trung Quốc (Pinyin). iPhone: Cài đặt → Cài đặt chung → Bàn phím → Thêm bàn phím mới → Tiếng Trung giản thể (Pinyin). Windows: Thêm ngôn ngữ Trung Quốc (giản thể).</li>
+                  <li><b>Chữ lạ chưa biết đọc:</b> dùng bàn phím <b>viết tay</b> (Gboard có “Trung – viết tay”), hoặc gõ nghĩa tiếng Việt vào khung dưới để app gợi ý chữ rồi nhấn 📋 chép.</li>
+                </>
+              )}
+            </ul>
+          </details>
+        )}
+        {!ready && (
+          <div className="dict-download">
+            <strong>Tải từ điển về máy để dùng offline</strong>
+            <p>Gồm: {need.map((id) => PACK_INFO[id].label).join(", ")}. Dung lượng khoảng {totalMb.toFixed(1)} MB, chỉ tải một lần.</p>
+            <Spot hint="Nhấn để tải">
+              <button type="button" className="button button-primary sg-big" disabled={!!dictBusy} onClick={() => { void downloadDictionary(need); }}>
+                {dictBusy || `⬇ Tải từ điển (${totalMb.toFixed(1)} MB)`}
+              </button>
+            </Spot>
+            {dictError && <p className="error-message" role="alert">{dictError}</p>}
+            <small>Chưa tải vẫn dùng được nút tìm mở rộng online bên dưới.</small>
+          </div>
+        )}
+
+        <div className="dict-boxes">
+          <div className="dict-box">
+            <div className="dict-box-head">
+              <strong><span aria-hidden="true">{LANG.flag}</span> {LANG.nameNative}</strong>
+              <span className="dict-tools">
+                <button type="button" className="vocab-mini-btn" aria-label="Nghe phát âm" disabled={!dictText.target.trim() || speechBusy} onClick={() => playPracticePhrase(dictText.target)}>🔊</button>
+                <button type="button" className="vocab-mini-btn" aria-label="Xóa" disabled={!dictText.target} onClick={() => { setDictText({ target: "", vi: "" }); setDictHits([]); setDictAi(""); }}>✕</button>
+              </span>
+            </div>
+            <textarea className="dict-input" rows={3} value={dictText.target} lang={LANG.speechLang} placeholder={LANG.id === "en" ? "Nhập từ hoặc câu tiếng Anh…" : `Nhập ${LANG.viName}${LANG.id === "zh" ? " (chữ Hán hoặc pinyin không dấu)" : " (kanji hoặc kana)"}…`}
+              onChange={(event) => { setDictSide("target"); setDictAi(""); setDictText((current) => ({ ...current, target: event.target.value })); }} />
+          </div>
+          <div className="dict-arrow" aria-hidden="true">⇅</div>
+          <div className="dict-box">
+            <div className="dict-box-head">
+              <strong><span aria-hidden="true">🇻🇳</span> Tiếng Việt</strong>
+              <span className="dict-tools">
+                <button type="button" className="vocab-mini-btn" aria-label="Nghe tiếng Việt" disabled={!dictText.vi.trim()} onClick={() => { void playNativeUtterance(dictText.vi, "vi"); }}>🔊</button>
+                <button type="button" className="vocab-mini-btn" aria-label="Xóa" disabled={!dictText.vi} onClick={() => { setDictText({ target: "", vi: "" }); setDictHits([]); setDictAi(""); }}>✕</button>
+              </span>
+            </div>
+            <textarea className="dict-input" rows={3} value={dictText.vi} lang="vi" placeholder="Nhập từ tiếng Việt (có dấu hoặc không dấu)…"
+              onChange={(event) => { setDictSide("vi"); setDictAi(""); setDictText((current) => ({ ...current, vi: event.target.value })); }} />
+          </div>
+        </div>
+
+        {ready && sourceText.trim() && !dictHits.length && !dictSearching && (
+          <p className="dict-empty">Không tìm thấy trong từ điển offline. Hãy thử tìm mở rộng online ở bên dưới.</p>
+        )}
+        <ul className="dict-results">
+          {dictHits.map((hit, index) => (
+            <li key={`${hit.head}-${hit.reading}-${index}`} className="dict-card">
+              <div className="dict-card-main">
+                <strong className="dict-head" lang={LANG.speechLang}>{hit.head}</strong>
+                {hit.alt && <span className="dict-alt" lang={LANG.speechLang}>{hit.alt}</span>}
+                {hit.reading && <span className="dict-reading">{hit.reading}</span>}
+                {hit.hanviet && <span className="dict-hanviet" title="Âm đọc tiếng Việt của chữ (Hán-Việt hoặc Nôm, theo Unicode Unihan)">{hit.hanviet}</span>}
+                <button type="button" className="vocab-mini-btn" aria-label={`Nghe ${hit.head}`} disabled={speechBusy} onClick={() => playPracticePhrase(hit.head)}>🔊</button>
+                <button type="button" className="vocab-mini-btn" aria-label={`Chép ${hit.head} vào khung`} title="Chép vào khung nhập" onClick={() => { setDictSide("target"); setDictText({ target: hit.head, vi: "" }); }}>📋</button>
+              </div>
+              {hit.vietnamese.length > 0 && <p className="dict-vi">🇻🇳 {hit.vietnamese.join(" · ")}</p>}
+              <p className="dict-en">{hit.english}</p>
+            </li>
+          ))}
+        </ul>
+        {ready && LANG.id !== "en" && !dictHits.some((hit) => hit.vietnamese.length) && dictHits.length > 0 && (
+          <p className="dict-note">Nghĩa tiếng Việt chưa có sẵn cho từ này, bạn xem nghĩa tiếng Anh ở trên hoặc dùng tìm mở rộng online.</p>
+        )}
+
+        <div className="dict-online">
+          <strong>Không tìm được? Tìm mở rộng online</strong>
+          <div className="dict-online-actions">
+            <button type="button" className="button button-primary" disabled={!sourceText.trim() || dictAiBusy} onClick={() => { void searchDictionaryOnline(); }}>
+              {dictAiBusy ? "Đang tìm…" : "🔎 Tìm bằng AI / bộ dịch trình duyệt"}
+            </button>
+            <a className={`button button-outline${sourceText.trim() ? "" : " disabled"}`} href={sourceText.trim() ? googleLink : undefined} target="_blank" rel="noreferrer">🌐 Mở bằng Google Dịch ↗</a>
+          </div>
+          {dictAi && <pre className="dict-ai" role="status">{dictAi}</pre>}
+          <small>Trên Android, nút Google Dịch thường mở thẳng ứng dụng Google Dịch nếu máy đã cài. Dữ liệu offline của ứng dụng đó không dùng chung được với web app.</small>
+        </div>
+
+        {dictPacks.length > 0 && (
+          <details className="dict-manage">
+            <summary>Quản lý dữ liệu từ điển trên máy</summary>
+            <ul>
+              {dictPacks.map((id) => (
+                <li key={id}><span>{PACK_INFO[id].label} · ~{PACK_INFO[id].mb} MB</span><button type="button" className="remove-key-button" onClick={() => { void deleteDictionary(id); }}>Xóa</button></li>
+              ))}
+            </ul>
+            {dictError && <p className="error-message" role="alert">{dictError}</p>}
+            <small>Nguồn dữ liệu: CC-CEDICT, JMdict (EDRDG), Wiktionary, Unicode Unihan, theo giấy phép CC BY-SA.</small>
+          </details>
+        )}
+      </section>
+    );
+  }
+
   function renderHome() {
     const persona = TUTOR_PERSONAS[tutorPersona];
     const returning = progress.sessions > 0;
@@ -3251,29 +3719,36 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           ))}
         </div>
         <div className="wz-welcome-art">
-          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={190} />
+          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={190} entrance />
         </div>
         <span className="eyebrow">TEACHER AI · GIA SƯ {LANG.viName.toUpperCase()} CỦA BẠN</span>
         <h1>Xin chào! Cùng nói {LANG.viName} tự tin hơn nhé.</h1>
         <p className="wz-lead">
           Mỗi ngày một chút. Học bài bản theo giáo trình, hoặc trò chuyện với {TUTOR_PERSONAS[tutorPersona].name} — người sẽ chủ động dẫn dắt bạn qua từng tình huống phù hợp với trình độ của bạn.
         </p>
-        <ol className="wz-steps" aria-label="3 bước học">
-          <li><b>1</b> Chọn bài học</li>
-          <li><b>2</b> Chọn cách học</li>
-          <li><b>3</b> Bắt đầu</li>
-        </ol>
         <button type="button" className="button button-primary wz-cta" onClick={() => { setChooseId(""); navigateToSection("choose"); }}>
           {returning ? "Tiếp tục học" : "Bắt đầu học"} <span>→</span>
         </button>
         {returning && <small className="wz-last">Lần trước: {profile.title} · Trình độ {levelLabel(progress.level)}</small>}
         {!apiKey && progressLoaded && (
-          <p className="wz-hint">Để học với AI, bạn cần thêm API key (1 lần) trong <button type="button" className="text-button" onClick={() => navigateToSection("settings")}>Cài đặt</button>.</p>
+          <p className="wz-hint">Để học với AI, bạn cần thêm API key (1 lần). <button type="button" className="button button-primary wz-setup-btn" onClick={() => { setSetupStep(0); navigateToSection("setup"); }}>🧭 Mở hướng dẫn cài đặt</button></p>
         )}
         <nav className="wz-links" aria-label="Lối tắt">
-          <button type="button" onClick={() => { setPlacementAnswers([]); setPlacementResult(""); navigateToSection("placement"); }}>Kiểm tra trình độ</button>
-          <button type="button" onClick={() => navigateToSection("progress")}>Tiến độ của tôi</button>
-          <button type="button" onClick={() => navigateToSection("settings")}>Cài đặt</button>
+          <button type="button" className="wz-tile wz-tile-level" onClick={() => { setPlacementAnswers([]); setPlacementResult(""); navigateToSection("placement"); }}>
+            <span className="wz-tile-icon"><IllustrationIcon name="level" /></span>
+            <strong>Kiểm tra trình độ</strong>
+            <small>{placementQuestions.length} câu hỏi ngắn</small>
+          </button>
+          <button type="button" className="wz-tile wz-tile-progress" onClick={() => navigateToSection("progress")}>
+            <span className="wz-tile-icon"><IllustrationIcon name="progress" /></span>
+            <strong>Tiến độ của tôi</strong>
+            <small>Thời gian, chuỗi ngày</small>
+          </button>
+          <button type="button" className="wz-tile wz-tile-settings" onClick={() => navigateToSection("settings")}>
+            <span className="wz-tile-icon"><IllustrationIcon name="settings" /></span>
+            <strong>Cài đặt</strong>
+            <small>API key, giọng đọc</small>
+          </button>
         </nav>
         {renderInstallAppPanel()}
       </section>
@@ -3328,7 +3803,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <button type="button" className="wz-mode" onClick={() => navigateToSection("lessons")}>
             <span className="wz-mode-icon"><IllustrationIcon name="courses" /></span>
             <strong>Bài học (Offline)</strong>
-            <span>Học lần lượt từng bài theo lộ trình: hội thoại, từ vựng, ngữ pháp, phát âm và bài kiểm tra 10 câu.</span>
+            <span>Hội thoại, từ vựng, ngữ pháp, phát âm và bài kiểm tra 10 câu. Chọn bất kỳ bài nào, hoặc để app chọn theo trình độ.</span>
             <em className="ok">{course
               ? `${(courseProgress[course.id] ?? []).length}/${course.lessons.length} bài đã đạt`
               : "Tự tải về khi bắt đầu"}</em>
@@ -3338,6 +3813,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             <strong>Học với AI (Online)</strong>
             <span>Thầy/cô AI dạy đúng bài bạn đang học, ra tình huống, sửa lỗi ngữ pháp, từ vựng và phát âm.</span>
             <em className={apiKey ? "ok" : "warn"}>{apiKey ? "Sẵn sàng" : "Cần thêm API key"}</em>
+          </button>
+          <button type="button" className="wz-mode wz-mode-dict" onClick={() => navigateToSection("dictionary")}>
+            <span className="wz-mode-icon"><IllustrationIcon name="books" /></span>
+            <strong>Từ điển</strong>
+            <span>Tra từ hai chiều {LANG.viName} ↔ tiếng Việt, có loa phát âm. Dữ liệu tải về chạy offline.</span>
+            <em className={isReady(LANG.id, dictPacks) ? "ok" : "warn"}>{isReady(LANG.id, dictPacks) ? "Đã có trên máy" : "Tải một lần để dùng offline"}</em>
           </button>
         </div>
       </section>
@@ -3387,9 +3868,11 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       const lesson = course.lessons.find((item) => item.id === selectedLessonId) ?? course.lessons[0];
       const completedLessons = courseProgress[course.id] ?? [];
       const lessonScores = courseLessonScores[course.id] ?? {};
-      const unlocked = unlockedLessonIds(course, completedLessons, progress.level);
+      const unlocked = unlockedLessonIds(course);
       const lessonIndex = course.lessons.findIndex((item) => item.id === lesson.id);
       const nextLesson = course.lessons[lessonIndex + 1];
+      const prevLesson = lessonIndex > 0 ? course.lessons[lessonIndex - 1] : undefined;
+      const suggestedLesson = nextLessonFor(course);
       const answeredAll = lesson.questions.every((_, index) => Number.isInteger(courseAnswers[index]));
       const correctCount = lesson.questions.reduce(
         (total, question, index) => total + (courseAnswers[index] === question.answer ? 1 : 0),
@@ -3407,7 +3890,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             <div className="lesson-course-bar" aria-hidden="true"><i style={{ width: `${(doneCount / course.lessons.length) * 100}%` }} /></div>
           </div>
           <div className="course-curriculum-layout">
-            <section className="panel course-lesson-list">
+            <section className="panel course-lesson-list" id="course-lesson-list">
               {COURSE_LEVELS.map((level) => {
                 const levelLessons = course.lessons.filter((item) => item.level === level);
                 if (!levelLessons.length) return null;
@@ -3429,14 +3912,15 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                           className={`course-lesson${item.id === lesson.id ? " selected" : ""}${complete ? " passed" : ""}`}
                           disabled={!open}
                           onClick={() => openCourseLesson(item.id)}
-                          title={open ? item.objective : "Hoàn thành bài trước để mở bài này"}
+                          title={item.objective}
                         >
-                          <span className="course-lesson-mark" aria-hidden="true">{complete ? "✓" : open ? "○" : "🔒"}</span>
+                          <span className="course-lesson-mark" aria-hidden="true">{complete ? "✓" : item.id === suggestedLesson?.id ? "★" : "○"}</span>
                           <span>
                             {item.title}
                             <small>
                               {item.category ?? item.unit}
                               {lessonScores[item.id] !== undefined && ` · cao nhất ${Math.round(lessonScores[item.id] / 10)}/10`}
+                              {item.id === suggestedLesson?.id && !complete && " · gợi ý cho bạn"}
                             </small>
                           </span>
                         </button>
@@ -3445,7 +3929,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                   </div>
                 );
               })}
-              <p className="course-progress-note">Đạt từ 8/10 câu để tick hoàn thành và mở bài kế tiếp. Hoàn thành mọi bài của một level sẽ nâng trình độ của bạn.</p>
+              <p className="course-progress-note">Bạn có thể học bất kỳ bài nào. Đạt từ 8/10 câu để bài được đánh dấu ✓ đã đạt (★ là bài app gợi ý theo trình độ). Hoàn thành mọi bài của một level sẽ nâng trình độ của bạn.</p>
               <div className="course-references">
                 <strong>Khung tham chiếu</strong>
                 {course.references.map((reference) => (
@@ -3455,6 +3939,28 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               </div>
             </section>
             <section className="panel course-lesson-panel">
+              <div className="lesson-picker">
+                <label htmlFor="lesson-pick">Chọn bài học ({doneCount}/{course.lessons.length} bài đã đạt ✓)</label>
+                <select id="lesson-pick" className="settings-select" value={lesson.id} onChange={(event) => openCourseLesson(event.target.value)}>
+                  {COURSE_LEVELS.map((level) => {
+                    const items = course.lessons.filter((item) => item.level === level);
+                    if (!items.length) return null;
+                    return (
+                      <optgroup key={level} label={`${LANG.levelSystem} ${levelLabel(level)}`}>
+                        {items.map((item) => (
+                          <option key={item.id} value={item.id}>{completedLessons.includes(item.id) ? "✓ " : item.id === suggestedLesson?.id ? "★ " : "○ "}{item.title}</option>
+                        ))}
+                      </optgroup>
+                    );
+                  })}
+                </select>
+                <div className="lesson-picker-actions">
+                  <button type="button" className="button button-outline" disabled={!prevLesson} onClick={() => prevLesson && openCourseLesson(prevLesson.id)}>← Bài trước</button>
+                  <button type="button" className="button button-outline" disabled={!nextLesson} onClick={() => nextLesson && openCourseLesson(nextLesson.id)}>Bài kế →</button>
+                  <button type="button" className="button button-primary" disabled={!suggestedLesson || suggestedLesson.id === lesson.id} onClick={() => suggestedLesson && openCourseLesson(suggestedLesson.id)}>🎯 App chọn giúp theo trình độ</button>
+                  <button type="button" className="button button-outline" onClick={() => document.getElementById("course-lesson-list")?.scrollIntoView({ behavior: "smooth" })}>📋 Xem cả {course.lessons.length} bài</button>
+                </div>
+              </div>
               <div className="lesson-head">
                 <span className="level-chip">{levelLabel(lesson.level)}</span>
                 {lesson.category && <span className="lesson-category">{lesson.category}</span>}
@@ -3776,6 +4282,8 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     grammar: "Ngữ pháp",
     library: "Tài liệu cá nhân",
     settings: "Cài đặt",
+    setup: "Hướng dẫn cài đặt",
+    dictionary: "Từ điển",
   };
   const helpContent: HelpContent = section === "grammar" && grammarTopicId
     ? {
@@ -3876,6 +4384,8 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           {section === "grammar" && renderGrammar()}
           {section === "library" && renderPersonalLibrary()}
           {section === "settings" && renderSettings()}
+          {section === "setup" && renderSetupGuide()}
+          {section === "dictionary" && renderDictionary()}
         </div>
         <footer className="site-footer">Dành cho khoảnh khắc bạn nghĩ: “Mình làm được!” <span>✦</span> <span className="site-version">v{APP_VERSION}</span></footer>
       </section>

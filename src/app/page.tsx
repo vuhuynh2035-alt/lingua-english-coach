@@ -66,7 +66,7 @@ export default function Page() {
         <div className="lc-grid">
           {LANGUAGES.map((item) => (
             <button key={item.id} type="button" className="lc-card" style={{ "--lc": item.color } as React.CSSProperties} onClick={() => void start(item.id)}>
-              <TutorAvatar kind="mascot" mascot={item.mascot} size={92} interactive={false} />
+              <TutorAvatar kind="mascot" mascot={item.mascot} size={92} interactive={false} entrance />
               <strong><span aria-hidden="true">{item.flag}</span> {item.nameVi}</strong>
               <span className="lc-native">{item.nameNative}</span>
               <small>{item.tagline}</small>

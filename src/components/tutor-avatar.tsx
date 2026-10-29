@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { realMouthLevel } from "@/lib/lipsync";
 import { LANG, type MascotKind } from "@/lib/language";
 
 export type AvatarKind = "woman" | "man" | "mascot";
 export type AvatarEmotion = "neutral" | "happy" | "cheer" | "thinking" | "surprised";
-export type AvatarStatus = "idle" | "thinking" | "speaking" | "listening";
+/** "sleeping": not connected yet, eyes shut and Zzz. Leaving it makes the tutor wake up with a hop and a few blinks. */
+export type AvatarStatus = "idle" | "thinking" | "speaking" | "listening" | "sleeping";
 
 type Props = {
   kind: AvatarKind;
@@ -17,6 +18,8 @@ type Props = {
   size?: number;
   /** Eyes and head follow the pointer. Turn off for small icons. */
   interactive?: boolean;
+  /** The tutor jumps into view when it appears. */
+  entrance?: boolean;
   className?: string;
 };
 
@@ -456,15 +459,29 @@ const MASCOT_NAMES: Record<MascotKind, string> = { nova: "Nova", owl: "Alex", pa
 /** Calm, natural-looking random numbers between a and b. */
 const between = (a: number, b: number) => a + Math.random() * (b - a);
 
-export function TutorAvatar({ kind, mascot, status = "idle", emotion, size = 120, interactive = true, className = "" }: Props) {
+export function TutorAvatar({ kind, mascot, status = "idle", emotion, size = 120, interactive = true, entrance = false, className = "" }: Props) {
   const rawId = useId();
   const id = `av${rawId.replace(/[^a-zA-Z0-9]/g, "")}`;
   const stageRef = useRef<HTMLDivElement | null>(null);
   const statusRef = useRef(status);
   statusRef.current = status;
+  const previousStatus = useRef<AvatarStatus>(status);
+  const wakeStart = useRef(0);
+  const [waking, setWaking] = useState(false);
+
+  // Leaving "sleeping": hop, blink a few times and show sparkles for a moment.
+  useEffect(() => {
+    const was = previousStatus.current;
+    previousStatus.current = status;
+    if (was !== "sleeping" || status === "sleeping") return;
+    wakeStart.current = performance.now();
+    setWaking(true);
+    const timer = window.setTimeout(() => setWaking(false), 1800);
+    return () => window.clearTimeout(timer);
+  }, [status]);
 
   const talking = status === "speaking";
-  const resolved: AvatarEmotion = emotion
+  const resolved: AvatarEmotion = status === "sleeping" ? "neutral" : emotion
     ?? (status === "thinking" ? "thinking" : status === "speaking" ? "happy" : status === "listening" ? "surprised" : "happy");
 
   // One animation loop drives the mouth, blinks, eye movement and pointer-follow through
@@ -515,6 +532,9 @@ export function TutorAvatar({ kind, mascot, status = "idle", emotion, size = 120
         nextBlink = now + (Math.random() < 0.18 ? 260 : between(2200, 5500));
       }
       lid = now < blinkUntil ? 1 : Math.max(0, lid - 0.25);
+      const sinceWake = now - wakeStart.current;
+      if (statusRef.current === "sleeping") lid = 1;
+      else if (sinceWake >= 0 && sinceWake < 1500) lid = Math.floor(sinceWake / 260) % 2 === 0 ? 1 : 0;
 
       // Eyes: follow the pointer for a while, otherwise glance around.
       const box = stage.getBoundingClientRect();
@@ -549,7 +569,7 @@ export function TutorAvatar({ kind, mascot, status = "idle", emotion, size = 120
   return (
     <div
       ref={stageRef}
-      className={`av-stage av-${kind} av-status-${status} av-emo-${resolved} ${className}`.trim()}
+      className={`av-stage av-${kind} av-status-${status} av-emo-${resolved}${entrance ? " av-enter" : ""}${waking ? " av-waking" : ""} ${className}`.trim()}
       style={{ width: size, height: size * 1.2 }}
       role="img"
       aria-label={label}
@@ -568,6 +588,8 @@ export function TutorAvatar({ kind, mascot, status = "idle", emotion, size = 120
       </div>
       <div className="av-shadow" />
       {status === "thinking" && <div className="av-think"><i /><i /><i /></div>}
+      {status === "sleeping" && <div className="av-zzz" aria-hidden="true"><i>z</i><i>Z</i><i>Z</i></div>}
+      {waking && <div className="av-sparks" aria-hidden="true"><i>✦</i><i>✦</i><i>✦</i><i>✦</i></div>}
     </div>
   );
 }

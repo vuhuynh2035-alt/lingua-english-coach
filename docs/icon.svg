@@ -1,47 +1,70 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#34d399"/>
-      <stop offset="1" stop-color="#0f766e"/>
+      <stop offset="0" stop-color="#14b890"/>
+      <stop offset="1" stop-color="#1e40af"/>
     </linearGradient>
-    <linearGradient id="ink" gradientUnits="userSpaceOnUse" x1="110" y1="180" x2="370" y2="320">
-      <stop offset="0" stop-color="#0f9f77"/>
-      <stop offset="1" stop-color="#134e4a"/>
+    <radialGradient id="sea" cx="38%" cy="32%" r="80%">
+      <stop offset="0" stop-color="#bae6fd"/>
+      <stop offset=".55" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#1d4ed8"/>
+    </radialGradient>
+    <linearGradient id="land" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#86efac"/>
+      <stop offset="1" stop-color="#16a34a"/>
     </linearGradient>
-    <linearGradient id="star" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fff3b0"/>
-      <stop offset="1" stop-color="#fbbf24"/>
-    </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#2a0710" flood-opacity="0.35"/>
+    <clipPath id="ball"><circle cx="256" cy="256" r="80"/></clipPath>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="6" stdDeviation="7" flood-color="#06223f" flood-opacity=".35"/>
     </filter>
   </defs>
 
   <rect width="512" height="512" fill="url(#bg)"/>
-  <circle cx="420" cy="92" r="150" fill="#ffffff" opacity="0.10"/>
-  <circle cx="70" cy="470" r="130" fill="#ffffff" opacity="0.07"/>
+  <circle cx="430" cy="70" r="150" fill="#ffffff" opacity=".09"/>
+  <circle cx="60" cy="470" r="130" fill="#ffffff" opacity=".07"/>
 
-  <g stroke="#d1fae5" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.9">
-    <path d="M378 150 L378 104 L420 104"/>
-    <path d="M412 196 L452 196"/>
+  <!-- orbit and the lines that tie each language to the globe -->
+  <circle cx="256" cy="256" r="152" fill="none" stroke="#ffffff" stroke-width="4" stroke-dasharray="3 12" stroke-linecap="round" opacity=".55"/>
+  <g stroke="#ffffff" stroke-width="5" stroke-linecap="round" opacity=".5">
+    <path d="M256 154V176"/><path d="M358 256H336"/><path d="M256 358V336"/><path d="M154 256H176"/>
   </g>
-  <g fill="#d1fae5">
-    <circle cx="420" cy="104" r="13"/>
-    <circle cx="452" cy="196" r="13"/>
+
+  <!-- the globe -->
+  <g filter="url(#shadow)"><circle cx="256" cy="256" r="80" fill="url(#sea)"/></g>
+  <g clip-path="url(#ball)">
+    <path d="M232 196q20-14 40-4q10 20-6 34q16 14 6 40q-14 22-30 20q-10-24-20-34q-18-20 10-56z" fill="url(#land)"/>
+    <path d="M290 206q30-10 40 10q-4 22-30 22q-14-8-10-32z" fill="url(#land)"/>
+    <path d="M190 204q18-12 24 4q-4 26-18 30q-14-12-6-34z" fill="url(#land)"/>
+    <path d="M240 300q16-6 26 6q-4 14-22 14q-8-8-4-20z" fill="url(#land)"/>
+    <g fill="none" stroke="#ffffff" stroke-width="2.5" opacity=".4">
+      <ellipse cx="256" cy="256" rx="38" ry="80"/><ellipse cx="256" cy="256" rx="80" ry="30"/>
+      <path d="M256 176V336"/><path d="M176 256H336"/>
+    </g>
+    <ellipse cx="226" cy="214" rx="34" ry="20" fill="#ffffff" opacity=".22" transform="rotate(-28 226 214)"/>
   </g>
+  <circle cx="256" cy="256" r="80" fill="none" stroke="#ffffff" stroke-width="4" opacity=".7"/>
+
+  <!-- AI sparkle on the globe -->
+  <path d="M322 196c3 14 8 19 22 22c-14 3-19 8-22 22c-3-14-8-19-22-22c14-3 19-8 22-22z" fill="#fde68a" stroke="#ffffff" stroke-width="3" stroke-linejoin="round"/>
 
   <g filter="url(#shadow)">
-    <path d="M118 128 H366 a52 52 0 0 1 52 52 V310 a52 52 0 0 1 -52 52 H222 L150 420 L162 362 H118 a52 52 0 0 1 -52 -52 V180 a52 52 0 0 1 52 -52 Z" fill="#ffffff"/>
+    <circle cx="256" cy="104" r="50" fill="#ffffff"/>
+    <circle cx="256" cy="104" r="50" fill="none" stroke="#2563eb" stroke-width="5" opacity=".9"/>
   </g>
-
-    <text x="214" y="292" font-size="82" font-weight="800" text-anchor="middle" fill="url(#ink)"
-      font-family="Segoe UI, Yu Gothic UI, Microsoft YaHei UI, Arial, sans-serif">A あ 中</text>
-  <path d="M392 196 C398 236 410 248 450 254 C410 260 398 272 392 312 C386 272 374 260 334 254 C374 248 386 236 392 196 Z" fill="url(#star)" stroke="#ffffff" stroke-width="8" stroke-linejoin="round"/>
+  <text x="256" y="126" font-size="62" font-weight="800" text-anchor="middle" fill="#2563eb" font-family="Segoe UI, Noto Sans JP, Yu Gothic UI, Microsoft YaHei UI, Arial, sans-serif">A</text>
   <g filter="url(#shadow)">
-    <rect x="352" y="370" width="118" height="70" rx="35" fill="url(#star)" stroke="#ffffff" stroke-width="6"/>
+    <circle cx="408" cy="256" r="50" fill="#ffffff"/>
+    <circle cx="408" cy="256" r="50" fill="none" stroke="#be185d" stroke-width="5" opacity=".9"/>
   </g>
-  <g fill="#0b3b5c" fill-rule="evenodd">
-    <path d="M374 425 L394 383 H410 L430 425 H414 L410 416 H394 L390 425 Z M398 405 H406 L402 395 Z"/>
-    <rect x="437" y="383" width="15" height="42" rx="2"/>
+  <text x="408" y="277" font-size="58" font-weight="800" text-anchor="middle" fill="#be185d" font-family="Segoe UI, Noto Sans JP, Yu Gothic UI, Microsoft YaHei UI, Arial, sans-serif">あ</text>
+  <g filter="url(#shadow)">
+    <circle cx="256" cy="408" r="50" fill="#ffffff"/>
+    <circle cx="256" cy="408" r="50" fill="none" stroke="#da251d" stroke-width="5" opacity=".9"/>
   </g>
+  <text x="256" y="420" font-size="33" font-weight="800" text-anchor="middle" fill="#da251d" font-family="Segoe UI, Noto Sans JP, Yu Gothic UI, Microsoft YaHei UI, Arial, sans-serif">Việt</text>
+  <g filter="url(#shadow)">
+    <circle cx="104" cy="256" r="50" fill="#ffffff"/>
+    <circle cx="104" cy="256" r="50" fill="none" stroke="#b45309" stroke-width="5" opacity=".9"/>
+  </g>
+  <text x="104" y="277" font-size="58" font-weight="800" text-anchor="middle" fill="#b45309" font-family="Segoe UI, Noto Sans JP, Yu Gothic UI, Microsoft YaHei UI, Arial, sans-serif">中</text>
 </svg>
