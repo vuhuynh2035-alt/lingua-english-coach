@@ -2473,3 +2473,25 @@ html[data-theme] .floating-back-button { color: #fff; background: #0f172a2e; bor
 .dict-detail-main strong { font: 800 1.25rem/1.2 var(--font-display); }
 .dict-detail-mean { display: block; margin-top: 2px; color: var(--muted); }
 .dict-detail-mean b { color: #0d5a3b; }
+
+/* ===== Back tab on the left edge: translucent blue, white "Quay lại" (overrides the older thin version) ===== */
+.floating-back-button,
+html[data-theme] .floating-back-button,
+html[data-theme="blue"] .floating-back-button {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  width: 40px; height: 132px; padding: 6px 0;
+  border: 1px solid #ffffffa6; border-left: 0; border-radius: 0 14px 14px 0;
+  color: #fff; background: #1e88e5b3; box-shadow: 0 3px 12px #0b3a6a40; opacity: 1;
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+}
+.floating-back-button::before { content: "‹"; font-size: 1.5rem; font-weight: 800; line-height: 1; color: #fff; text-shadow: 0 1px 3px #0005; transform: none; }
+.floating-back-button span { display: block; color: #fff; font-size: .9375rem; font-weight: 800; letter-spacing: .05em; text-shadow: 0 1px 2px #0004; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+.floating-back-button:hover:not(:disabled), .floating-back-button:focus-visible,
+html[data-theme] .floating-back-button:hover:not(:disabled) { width: 46px; background: #1e88e5e6; opacity: 1; transform: translateY(-50%); }
+.floating-back-button:disabled { opacity: .45; }
+
+/* ===== Dictionary voice input ===== */
+.vocab-mini-btn.listening { background: #fee2e2; border-color: #ef4444; animation: dict-pulse 1.1s ease-in-out infinite; }
+@keyframes dict-pulse { 0%, 100% { box-shadow: 0 0 0 0 #ef444466; } 50% { box-shadow: 0 0 0 8px #ef444400; } }
+.dict-listening { margin: 0; padding: 8px 12px; border-radius: 10px; background: #fff1f1; color: #9b1c1c; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .vocab-mini-btn.listening { animation: none; } }

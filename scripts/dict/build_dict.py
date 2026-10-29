@@ -9,6 +9,7 @@ Sources (download them first and pass the folder as the first argument):
 Output (compact JSON arrays, loaded into IndexedDB by the app):
   zh.json       [simplified, traditional or "", pinyin with tone marks, "gloss; gloss"]
   ja/           common JMdict words, sharded: [kanji forms "a|b" or "", readings "x|y", "gloss; gloss", 1]
+  envi/         English word -> Vietnamese meanings (en_vi.jsonl, kaikki.org viwiktionary), and Vietnamese -> English index
   vi.json       [vietnamese word, "english gloss; gloss"]   (bridge: Vietnamese <-> English)
   hanviet.json  {char: "reading/reading"}
 
@@ -229,6 +230,94 @@ def build_vi():
     dump("vi.json", entries)
 
 
+# ---------------------------------------------------------------- English <-> Vietnamese (Vietnamese Wiktionary)
+def vi_fold(text):
+    import unicodedata
+    text = text.lower().replace("đ", "d")
+    return "".join(c for c in unicodedata.normalize("NFD", text) if not unicodedata.combining(c))
+
+
+def clean_gloss(text):
+    text = re.sub(r"\s+", " ", text).strip().rstrip(".;, ")
+    return text
+
+
+FORM_OF = re.compile(r"^(?:Động từ chia|Quá khứ|Phân từ|Dạng|Số nhiều|Ngôi thứ|So sánh)[^.]*?\bcủa\s+([A-Za-z' -]+?)\.?$")
+
+
+def build_envi():
+    """English headwords with Vietnamese meanings, plus a Vietnamese -> English index of short meanings."""
+    words = {}
+    redirects = {}
+    weight = {}  # words with many senses are the common ones: they go first in the reverse index
+    with open(os.path.join(SRC, "en_vi.jsonl"), encoding="utf-8") as handle:
+        for line in handle:
+            data = json.loads(line)
+            word = data.get("word", "")
+            if not word or len(word) > 40 or data.get("pos") in ("name",):
+                continue
+            glosses = words.setdefault(word.lower(), [])
+            weight[word.lower()] = weight.get(word.lower(), 0) + len(data.get("senses", []))
+            for sense in data.get("senses", [])[:3]:
+                for gloss in sense.get("glosses", [])[:1]:
+                    gloss = clean_gloss(gloss)
+                    form_of = FORM_OF.match(gloss)
+                    if form_of:
+                        redirects.setdefault(word.lower(), form_of.group(1).strip().lower())
+                        continue
+                    if gloss and not gloss.lower().startswith(("xem ", "see ")) and len(gloss) <= 110 and gloss not in glosses:
+                        glosses.append(gloss)
+    for word, base in redirects.items():
+        words.setdefault(word, [])
+    words = {w: g for w, g in words.items() if g or w in redirects}
+
+    base = os.path.join(OUT, "envi")
+    os.makedirs(base, exist_ok=True)
+    for old in os.listdir(base):
+        os.remove(os.path.join(base, old))
+    files = []
+
+    def write(name, data):
+        with open(os.path.join(base, name), "w", encoding="utf-8", newline="\n") as handle:
+            json.dump(data, handle, ensure_ascii=False, separators=(",", ":"))
+        files.append(name)
+
+    forward = {}
+    for word, glosses in words.items():
+        letter = word[0] if "a" <= word[0] <= "z" else "_"
+        text = "; ".join(glosses[:3])[:200]
+        if word in redirects and redirects[word] in words:
+            text = "→" + redirects[word] + ("|" + text if text else "")
+        forward.setdefault(letter, {})[word] = text
+    for letter, table in forward.items():
+        write("e-%s.json" % letter, table)
+
+    reverse = {}
+    primary = {}  # (key, word) -> True when that Vietnamese phrase is the first meaning of the word
+    for word, glosses in words.items():
+        for gloss_index, gloss in enumerate(glosses):
+            for part in re.split(r"[;,]", gloss):
+                part = clean_gloss(re.sub(r"\([^)]*\)", "", part))
+                if 2 <= len(part) <= 28:
+                    # one entry under the exact spelling (with accents) and one without, so a typed accent wins
+                    for key in {part.lower(), vi_fold(part)}:
+                        folded = vi_fold(key)
+                        letter = folded[0] if "a" <= folded[0] <= "z" else "_"
+                        bucket = reverse.setdefault(letter, {}).setdefault(key, [])
+                        if word not in bucket:
+                            bucket.append(word)
+                        if gloss_index == 0:
+                            primary[(key, word)] = True
+    for letter, table in reverse.items():
+        for key, candidates in table.items():
+            candidates.sort(key=lambda w: (not primary.get((key, w)), -weight.get(w, 0)))
+            del candidates[6:]
+        write("q-%s.json" % letter, table)
+    write("index.json", {"version": 1, "files": sorted(files)})
+    total = sum(os.path.getsize(os.path.join(base, name)) for name in files)
+    print(f"envi/: {len(files)} files, {total / 1e6:.1f} MB, {len(words)} English words")
+
+
 # ---------------------------------------------------------------- Sino-Vietnamese readings
 def build_hanviet():
     result = {}
@@ -246,3 +335,4 @@ if __name__ == "__main__":
     build_ja()
     build_vi()
     build_hanviet()
+    build_envi()
