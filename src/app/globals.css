@@ -2549,7 +2549,7 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 18px; opaci
 .wz-actions, .wz-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: min(100%, 520px); margin-top: 0; }
 .wz-links { margin-top: -2px; }
 .wz-actions .wz-cta, .wz-actions .wz-tile-side, .wz-links .wz-tile { min-height: 52px; height: 52px; min-width: 0; padding: 0 12px; border-radius: 14px; font-size: 1rem; font-weight: 800; display: grid; place-items: center; width: 100%; }
-.wz-actions .wz-cta { border-bottom: 5px solid #167a56; }
+.wz-actions .wz-cta { border-bottom: 0; }
 
 /* ===== Back tab, final look: a slim translucent-blue tab on the left edge, rounded on the right,
    with "QUAY LẠI" in white capitals reading bottom to top ===== */
