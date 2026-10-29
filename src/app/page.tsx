@@ -1,10 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useState, type ComponentType } from "react";
+import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
 import { TutorAvatar } from "@/components/tutor-avatar";
 import { loadLanguage, type LangId } from "@/lib/language";
 import { LANGUAGES, rememberLanguage, savedLanguage } from "@/lib/language-meta";
+import { captureInstallPrompt } from "@/lib/install-prompt";
 import packageJson from "../../package.json";
+
+// Chrome sends its "install" offer once, early: catch it before the learning app is even loaded.
+captureInstallPrompt();
 
 type Phase = "boot" | "choose" | "loading" | "ready" | "error";
 
@@ -56,6 +61,7 @@ export default function Page() {
           <strong>Teacher AI</strong>
           <small>v{packageJson.version}</small>
         </div>
+        <InAppBrowserNotice />
         <span className="eyebrow">CHÀO MỪNG</span>
         <h1>Bạn muốn học ngoại ngữ nào?</h1>
         <p className="lc-lead">

@@ -25,6 +25,8 @@ import {
 import type { GrammarQuestion, GrammarTopic } from "@/lib/grammar";
 import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
+import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
+import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
 import { LANGUAGES, switchLanguage } from "@/lib/language-meta";
 
@@ -90,10 +92,6 @@ type ApiKeyEntry = { id: string; label: string; value: string };
 type ProviderRecord<T> = Record<AiProvider, T>;
 type AppTheme = "mint" | "blue" | "burgundy";
 type VersionCheckStatus = "checking" | "latest" | "update-available" | "error";
-type InstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
-};
 const PAGE_HELP: Record<Section, HelpContent> = {
   dictionary: {
     title: "Từ điển",
@@ -546,7 +544,7 @@ export default function Home() {
   const [viSpeechPitch, setViSpeechPitch] = useState<number>(1.0);
   const [voiceTestNotice, setVoiceTestNotice] = useState<string>("");
 
-  const [fontScale, setFontScale] = useState(125);
+  const [fontScale, setFontScale] = useState(100);
   const [fontScaleLoaded, setFontScaleLoaded] = useState(false);
   const [fontScaleError, setFontScaleError] = useState("");
   const [appTheme, setAppTheme] = useState<AppTheme>("mint");
@@ -557,6 +555,7 @@ export default function Home() {
   const [versionCheckError, setVersionCheckError] = useState("");
   const [versionCheckAttempt, setVersionCheckAttempt] = useState(0);
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
+  const [iosHint, setIosHint] = useState(false);
   const [appInstalled, setAppInstalled] = useState(false);
   const [installError, setInstallError] = useState("");
   const [showHelp, setShowHelp] = useState(false);
@@ -674,8 +673,10 @@ export default function Home() {
     firstRunChecked.current = true;
     try {
       const done = localStorage.getItem(sharedKey("setup-done"));
-      if (!done && apiKeys.google.length === 0 && apiKeys.openai.length === 0) setSection("setup");
+      if (!done && apiKeys.google.length === 0 && apiKeys.openai.length === 0) { setSetupStep(setupStartStep()); setSection("setup"); }
     } catch {}
+    // The first-run check runs once, when the saved settings have loaded.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progressLoaded, aiSettingsLoaded, apiKeys]);
 
   useEffect(() => {
@@ -700,6 +701,32 @@ export default function Home() {
     }, 300);
     return () => { cancelled = true; window.clearTimeout(timer); };
   }, [section, dictPacks, dictSide, dictSource]);
+
+  /** Which setup steps are already done on this device, so the guide skips them. */
+  function setupDoneFlags(): boolean[] {
+    let standalone = false;
+    let voiceSaved = false;
+    try {
+      standalone = window.matchMedia("(display-mode: standalone)").matches || (navigator as Navigator & { standalone?: boolean }).standalone === true;
+      voiceSaved = localStorage.getItem(VOICE_PROFILE_STORAGE) !== null;
+    } catch {}
+    const keyHere = apiKeys[aiProvider].length > 0;
+    const anyKey = apiKeys.google.length + apiKeys.openai.length > 0;
+    return [false, standalone, anyKey, keyHere, keyHere, keyHere && (connection.status === "ok" || modelCatalog[aiProvider].length > 0), voiceSaved, false];
+  }
+
+  /** The first step that still needs doing; the welcome step only when nothing has been done yet. */
+  function setupStartStep(): number {
+    const done = setupDoneFlags();
+    if (!done.some(Boolean)) return 0;
+    const first = done.findIndex((flag, index) => index > 0 && index < SETUP_STEPS.length - 1 && !flag);
+    return first === -1 ? SETUP_STEPS.length - 1 : first;
+  }
+
+  function openSetupGuide() {
+    setSetupStep(setupStartStep());
+    navigateToSection("setup");
+  }
 
   function navigateToSection(nextSection: Section) {
     if (nextSection === section) return;
@@ -729,8 +756,10 @@ export default function Home() {
 
   useEffect(() => {
     try {
+      // Only a size the learner picked is kept; an old automatic default falls back to 100%.
       const savedScale = Number(localStorage.getItem(FONT_SCALE_STORAGE));
-      if (Number.isFinite(savedScale) && savedScale >= 100 && savedScale <= 200) {
+      const chosen = localStorage.getItem(sharedKey("font-scale-chosen")) === "1";
+      if (chosen && Number.isFinite(savedScale) && savedScale >= 100 && savedScale <= 200) {
         setFontScale(savedScale);
       }
     } catch {
@@ -953,20 +982,19 @@ export default function Home() {
   }, [versionCheckAttempt]);
 
   useEffect(() => {
-    const onBeforeInstallPrompt = (event: Event) => {
-      event.preventDefault();
-      setInstallPrompt(event as InstallPromptEvent);
-    };
+    // The prompt was caught when the page opened (before this screen existed); pick it up here.
+    const syncPrompt = () => setInstallPrompt(capturedInstallPrompt());
     const onAppInstalled = () => {
       setAppInstalled(true);
       setInstallPrompt(null);
       setInstallError("");
     };
     setAppInstalled(window.matchMedia("(display-mode: standalone)").matches);
-    window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+    syncPrompt();
+    window.addEventListener("lingua-install-ready", syncPrompt);
     window.addEventListener("appinstalled", onAppInstalled);
     return () => {
-      window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt);
+      window.removeEventListener("lingua-install-ready", syncPrompt);
       window.removeEventListener("appinstalled", onAppInstalled);
     };
   }, []);
@@ -1470,6 +1498,11 @@ RULES:
       try { localStorage.setItem(langKey("lesson-view"), JSON.stringify(next)); } catch {}
       return next;
     });
+  }
+
+  function chooseFontScale(value: number) {
+    try { localStorage.setItem(sharedKey("font-scale-chosen"), "1"); } catch {}
+    setFontScale(value);
   }
 
   function updateRecordingPrefs(patch: Partial<RecordingPrefs>) {
@@ -2520,7 +2553,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           <span className="eyebrow">CÀI ĐẶT CHUNG</span>
           <h2>Cài đặt ứng dụng.</h2>
           <p>Chọn một nhóm để mở các tùy chọn chi tiết.</p>
-          <button type="button" className="button button-outline" onClick={() => { setSetupStep(0); navigateToSection("setup"); }}>🧭 Hướng dẫn cài đặt từng bước</button>
+          <button type="button" className="button button-outline" onClick={openSetupGuide}>🧭 Hướng dẫn cài đặt từng bước</button>
         </div>
         <details name="settings-groups" className="settings-group">
           <summary className="settings-group-summary">
@@ -2556,7 +2589,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               step="5"
               value={fontScale}
               aria-valuetext={`${fontScale}%`}
-              onChange={(event) => setFontScale(Number(event.target.value))}
+              onChange={(event) => chooseFontScale(Number(event.target.value))}
             />
             <div className="font-scale-endpoints"><span>100% · Tiêu chuẩn</span><span>140% · Gợi ý</span><span>180% · Rất lớn</span></div>
           </div>
@@ -2566,13 +2599,13 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             <small style={{ display: "block", color: "var(--theme-text, #315b49)", opacity: 0.85 }}>Cỡ chữ này được áp dụng đồng bộ ngay cho toàn bộ bài học, hội thoại cùng gia sư và giao diện.</small>
           </div>
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "10px" }}>
-            <button type="button" className="button button-outline" onClick={() => setFontScale(100)} disabled={fontScale === 100}>
+            <button type="button" className="button button-outline" onClick={() => chooseFontScale(100)} disabled={fontScale === 100}>
               Cỡ chuẩn (100%)
             </button>
-            <button type="button" className="button button-outline" onClick={() => setFontScale(130)} disabled={fontScale === 130}>
+            <button type="button" className="button button-outline" onClick={() => chooseFontScale(130)} disabled={fontScale === 130}>
               Cỡ to dễ đọc (130%)
             </button>
-            <button type="button" className="button button-outline" onClick={() => setFontScale(160)} disabled={fontScale === 160}>
+            <button type="button" className="button button-outline" onClick={() => chooseFontScale(160)} disabled={fontScale === 160}>
               Cỡ rất lớn (160%)
             </button>
           </div>
@@ -3131,6 +3164,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       if (choice.outcome === "accepted") {
         setAppInstalled(true);
         setInstallPrompt(null);
+        clearInstallPrompt();
       }
     } catch (error) {
       setInstallError(error instanceof Error ? error.message : "Không thể mở hộp thoại cài đặt ứng dụng.");
@@ -3148,6 +3182,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           {installError && <p className="error-message" role="alert">{installError}</p>}
         </div>
         {installPrompt && <button type="button" className="button button-primary" onClick={() => { void installApp(); }}>Cài ứng dụng</button>}
+        {!installPrompt && typeof navigator !== "undefined" && detectPlatform() === "ios" && <button type="button" className="button button-primary" onClick={() => setIosHint(true)}>Chỉ tôi cách cài</button>}
       </section>
     );
   }
@@ -3312,24 +3347,32 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       setSection("home");
     };
     const step = setupStep;
+    const done = setupDoneFlags();
+    const goNext = (from: number) => {
+      for (let index = from + 1; index < last; index++) if (!done[index]) { setSetupStep(index); return; }
+      setSetupStep(last);
+    };
+    const goPrev = (from: number) => {
+      for (let index = from - 1; index > 0; index--) if (!done[index]) { setSetupStep(index); return; }
+      setSetupStep(0);
+    };
 
     return (
       <section className="sg-wrap" aria-labelledby="sg-title">
-        <ol className="sg-dots" aria-label="Các bước cài đặt">
-          {SETUP_STEPS.map((label, index) => (
-            <li key={label} className={index === step ? "now" : index < step ? "done" : ""} aria-current={index === step ? "step" : undefined}>
-              <button type="button" onClick={() => setSetupStep(index)} aria-label={`Bước ${index + 1}: ${label}`}>{index < step ? "✓" : index + 1}</button>
-              <span>{label}</span>
-            </li>
-          ))}
-        </ol>
-
         <div className="sg-card">
-          <div className="sg-mascot" aria-hidden="true">
-            <TutorAvatar kind={TUTOR_PERSONAS[tutorPersona].kind} status={hasKey && connection.status !== "error" ? "idle" : "sleeping"} emotion={hasKey ? "happy" : "neutral"} size={96} interactive={false} />
+          <div className="sg-bar" role="progressbar" aria-valuemin={1} aria-valuemax={SETUP_STEPS.length} aria-valuenow={step + 1} aria-label={`Bước ${step + 1} trên ${SETUP_STEPS.length}`}>
+            <i style={{ width: `${((step + 1) / SETUP_STEPS.length) * 100}%` }} />
           </div>
-          <span className="eyebrow">BƯỚC {step + 1}/{SETUP_STEPS.length}</span>
-          <h2 id="sg-title">{SETUP_STEPS[step]}</h2>
+          <div className="sg-head">
+            <div className="sg-mascot" aria-hidden="true">
+              <TutorAvatar kind={TUTOR_PERSONAS[tutorPersona].kind} status={hasKey && connection.status !== "error" ? "idle" : "sleeping"} emotion={hasKey ? "happy" : "neutral"} size={64} interactive={false} />
+            </div>
+            <div>
+              <span className="eyebrow">BƯỚC {step + 1}/{SETUP_STEPS.length}</span>
+              <h2 id="sg-title">{SETUP_STEPS[step]}</h2>
+            </div>
+          </div>
+          {done[step] && <p className="sg-done">✅ Bước này bạn đã làm xong trước đó, có thể bỏ qua.</p>}
 
           {step === 0 && (
             <>
@@ -3353,13 +3396,20 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                   <button type="button" className="button button-primary sg-big" onClick={() => { void installApp(); }}>📲 Cài ứng dụng vào máy</button>
                 </Spot>
               ) : (
+                <>
+                {platform === "ios" && (
+                  <Spot hint="Nhấn để được chỉ cách cài">
+                    <button type="button" className="button button-primary sg-big" onClick={() => setIosHint(true)}>📲 Chỉ tôi cách cài trên iPhone / iPad</button>
+                  </Spot>
+                )}
                 <ul className="sg-platforms">
                   <li className={platform === "android" ? "mine" : ""}><b>Android / Chrome</b><span>Nhấn dấu <b>⋮</b> (góc trên bên phải) → chọn <b>“Cài đặt ứng dụng”</b> hoặc <b>“Thêm vào màn hình chính”</b>.</span></li>
                   <li className={platform === "ios" ? "mine" : ""}><b>iPhone / iPad (Safari)</b><span>Nhấn nút <b>Chia sẻ</b> (hình vuông có mũi tên lên) → kéo xuống chọn <b>“Thêm vào MH chính”</b> → <b>Thêm</b>.</span></li>
                   <li className={platform === "desktop" ? "mine" : ""}><b>Máy tính (Chrome / Edge)</b><span>Nhìn bên phải thanh địa chỉ, nhấn biểu tượng <b>Cài đặt ứng dụng</b> (hình màn hình có mũi tên xuống) → <b>Cài đặt</b>.</span></li>
                 </ul>
+                </>
               )}
-              <p className="sg-note">Không cài cũng không sao: bạn có thể bỏ qua bước này.</p>
+              <p className="sg-note">{platform === "ios" ? "iPhone và iPad không cho phép trang web tự cài, nên app chỉ cho bạn đúng nút cần nhấn. " : platform === "android" && !installPrompt ? "Nếu chưa thấy nút cài tự động, hãy dùng Chrome và mở lại trang này, hoặc làm theo hướng dẫn trên. " : ""}Không cài cũng không sao: bạn có thể bỏ qua bước này.</p>
             </>
           )}
 
@@ -3500,13 +3550,9 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           )}
 
           <div className="sg-nav">
-            <button type="button" className="button button-outline" onClick={() => setSetupStep((value) => Math.max(0, value - 1))} disabled={step === 0}>← Bước trước</button>
-            {step < last && (
-              <>
-                {(step === 1 || step === 6 || step === 3) && <button type="button" className="text-button" onClick={() => setSetupStep((value) => Math.min(last, value + 1))}>Bỏ qua</button>}
-                <button type="button" className="button button-primary" onClick={() => setSetupStep((value) => Math.min(last, value + 1))} disabled={step === 4 && !hasKey}>Tiếp tục →</button>
-              </>
-            )}
+            <button type="button" className="button button-outline" onClick={() => goPrev(step)} disabled={step === 0}>← Trước</button>
+            {step < last && <button type="button" className="button button-outline sg-skip" onClick={() => goNext(step)}>Bỏ qua ⏭</button>}
+            {step < last && <button type="button" className="button button-primary" onClick={() => goNext(step)} disabled={step === 4 && !hasKey}>Tiếp tục →</button>}
           </div>
           {step < last && <button type="button" className="text-button sg-later" onClick={finish}>Để sau, vào học luôn</button>}
         </div>
@@ -3730,27 +3776,25 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           {returning ? "Tiếp tục học" : "Bắt đầu học"} <span>→</span>
         </button>
         {returning && <small className="wz-last">Lần trước: {profile.title} · Trình độ {levelLabel(progress.level)}</small>}
-        {!apiKey && progressLoaded && (
-          <p className="wz-hint">Để học với AI, bạn cần thêm API key (1 lần). <button type="button" className="button button-primary wz-setup-btn" onClick={() => { setSetupStep(0); navigateToSection("setup"); }}>🧭 Mở hướng dẫn cài đặt</button></p>
-        )}
         <nav className="wz-links" aria-label="Lối tắt">
           <button type="button" className="wz-tile wz-tile-level" onClick={() => { setPlacementAnswers([]); setPlacementResult(""); navigateToSection("placement"); }}>
             <span className="wz-tile-icon"><IllustrationIcon name="level" /></span>
             <strong>Kiểm tra trình độ</strong>
-            <small>{placementQuestions.length} câu hỏi ngắn</small>
           </button>
           <button type="button" className="wz-tile wz-tile-progress" onClick={() => navigateToSection("progress")}>
             <span className="wz-tile-icon"><IllustrationIcon name="progress" /></span>
             <strong>Tiến độ của tôi</strong>
-            <small>Thời gian, chuỗi ngày</small>
           </button>
           <button type="button" className="wz-tile wz-tile-settings" onClick={() => navigateToSection("settings")}>
             <span className="wz-tile-icon"><IllustrationIcon name="settings" /></span>
             <strong>Cài đặt</strong>
-            <small>API key, giọng đọc</small>
           </button>
         </nav>
         {renderInstallAppPanel()}
+        <div className="wz-bottom">
+          {!apiKey && progressLoaded && <small>Chưa có API key để học với AI? Làm theo hướng dẫn từng bước.</small>}
+          <button type="button" className={apiKey ? "wz-guide-link" : "wz-guide-link attention"} onClick={openSetupGuide}>🧭 Hướng dẫn cài đặt</button>
+        </div>
       </section>
     );
   }
@@ -4316,6 +4360,20 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <span>Quay lại</span>
         </button>
       )}
+      {iosHint && (
+        <div className={`ios-hint ${typeof window !== "undefined" && window.innerWidth >= 700 ? "ipad" : "iphone"}`} role="dialog" aria-label="Cách thêm vào màn hình chính trên iPhone và iPad" onClick={() => setIosHint(false)}>
+          <div className="ios-hint-card">
+            <strong>Thêm Teacher AI vào màn hình chính</strong>
+            <ol>
+              <li>Nhấn nút <b>Chia sẻ</b> <span className="ios-share" aria-hidden="true">⬆︎</span> của Safari (mũi tên chỉ ngay bên dưới).</li>
+              <li>Kéo danh sách lên và chọn <b>“Thêm vào MH chính”</b>.</li>
+              <li>Nhấn <b>Thêm</b> ở góc trên bên phải.</li>
+            </ol>
+            <small>Phải mở bằng <b>Safari</b>. Chạm bất kỳ đâu để đóng.</small>
+          </div>
+          <div className="ios-arrow" aria-hidden="true">👇</div>
+        </div>
+      )}
       {showHelp && (
         <div className="help-dialog-backdrop" onClick={() => setShowHelp(false)}>
           <section
@@ -4361,6 +4419,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           </div>
         </header>
         <div className={`content-wrap wz-page wz-page-${section}`}>
+          <InAppBrowserNotice />
           {versionCheckStatus === "update-available" && (
             <aside className="update-available-banner" role="alert">
               <span>Đã có phiên bản mới v{latestVersion}. Tải lại ứng dụng để cập nhật.</span>
