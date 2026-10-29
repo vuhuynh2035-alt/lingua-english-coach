@@ -3936,9 +3936,11 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
         </select>
         <p className="wz-note">Mặc định là bài bạn đang học lần trước. Mở danh sách để chọn bài khác.</p>
         <div className={`wz-preview ${chosenProfile?.color ?? "green"}`}>
-          <span className="wz-preview-icon"><IllustrationIcon name={chosenProfile?.icon ?? "grammar"} /></span>
-          <div>
+          <div className="wz-preview-head">
+            <span className="wz-preview-icon"><IllustrationIcon name={chosenProfile?.icon ?? "grammar"} /></span>
             <strong>{chosenProfile?.title ?? `Ngữ pháp ${LANG.viName}`}</strong>
+          </div>
+          <div className="wz-preview-body">
             <span>{chosenProfile?.subtitle ?? "Học cấu trúc câu và làm bài tập theo trình độ"}</span>
             {chosenProfile && <small>Tình huống: {chosenProfile.scene}</small>}
           </div>
@@ -4535,11 +4537,6 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       <section className="main-content">
         <header className="topbar wz-topbar">
           <div className="wz-topbar-left">
-            {canGoBack && (
-              <button type="button" className="wz-back" onClick={goBack} aria-label="Quay lại trang trước">
-                <IllustrationIcon name="back" /> <span>Quay lại</span>
-              </button>
-            )}
             <a className="wz-brand" href="#" onClick={(event) => { event.preventDefault(); navigateToSection("home"); }}>
               {/* Plain img: with a static export and basePath, next/image would not add the prefix. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}

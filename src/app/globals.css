@@ -2574,3 +2574,13 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 .wz-welcome { gap: 10px; padding-top: 12px; }
 .wz-welcome .wz-lead { margin: 0; font-size: .9375rem; line-height: 1.45; }
 .wz-welcome h1 { font-size: clamp(1.25rem, 5.4vw, 1.75rem); }
+
+/* ===== Small screens: the lesson icon sits beside its title instead of taking a whole column ===== */
+.wz-preview { display: block; padding: 14px 16px; }
+.wz-preview > .wz-preview-head { display: flex; align-items: center; gap: 10px; }
+.wz-preview-head .wz-preview-icon { flex: 0 0 34px; width: 34px; height: 34px; border-radius: 10px; min-width: 0; padding: 0; display: grid; place-items: center; }
+.wz-preview-head .wz-preview-icon .illustration-icon { width: 28px; height: 28px; }
+.wz-preview-head strong { min-width: 0; font-size: 1.0625rem; }
+.wz-preview-body { display: grid; gap: 4px; margin-top: 8px; }
+.wz-preview-body > span { color: var(--muted); }
+.wz-preview-body small { color: var(--muted); }
