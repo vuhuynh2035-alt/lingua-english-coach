@@ -1990,7 +1990,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     const pause = cloudSpeechPauseRef.current[engine];
     if (Date.now() < pause.until) throw new Error(pause.reason || "giọng AI tạm nghỉ");
     // v4: earlier Google clips could contain the spoken direction, so they are not reused.
-    const cacheKey = `v4${language === "vi" ? "vi" : ""}:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}`;
+    const cacheKey = `v4${language === "vi" ? "vi" : ""}:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}${engine === "google" && ttsModelPref === "lite" ? ":lite" : ""}`;
     try {
       const cached = await getCachedSpeech(cacheKey, text);
       if (cached) return cached;
