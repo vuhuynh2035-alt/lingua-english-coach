@@ -2606,3 +2606,27 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 .wz-hero { width: 100%; max-width: 100%; box-sizing: border-box; padding: 0 8px; grid-template-columns: minmax(0, max-content) minmax(0, 132px); gap: 14px; }
 .wz-hero .wz-lang { white-space: nowrap; font-size: .875rem; padding: 9px 12px; }
 .wz-hero .wz-welcome-art { padding: 0; min-width: 0; }
+
+/* ===== Icons sit right beside the title and never take a column of their own ===== */
+.course-catalog-card { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; column-gap: 10px; row-gap: 6px; padding: 14px; }
+.course-catalog-card > .profile-icon { grid-column: 1; grid-row: 1; width: 34px; height: 34px; margin: 0; border-radius: 10px; }
+.course-catalog-card .profile-icon .illustration-icon { width: 24px; height: 24px; }
+.course-catalog-card .course-catalog-copy { display: contents; }
+.course-catalog-card .course-catalog-copy > strong { grid-column: 2; grid-row: 1; min-width: 0; }
+.course-catalog-card .course-catalog-copy > span, .course-catalog-card .course-catalog-copy > small { grid-column: 1 / -1; }
+.course-catalog-card > .button, .course-catalog-card > .course-catalog-actions { grid-column: 1 / -1; width: 100%; }
+.course-catalog-card .course-catalog-actions { display: grid; gap: 6px; justify-items: stretch; }
+.course-catalog-card .course-catalog-actions .button { width: 100%; justify-content: center; }
+
+.wz-mode { display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; column-gap: 10px; row-gap: 6px; text-align: left; }
+.wz-mode > .wz-mode-icon { grid-column: 1; grid-row: 1; width: 34px; height: 34px; margin: 0; display: grid; place-items: center; }
+.wz-mode > .wz-mode-icon .illustration-icon { width: 26px; height: 26px; }
+.wz-mode > strong { grid-column: 2; grid-row: 1; min-width: 0; }
+.wz-mode > span:not(.wz-mode-icon), .wz-mode > em { grid-column: 1 / -1; justify-self: start; }
+
+.settings-group-summary { display: grid; grid-template-columns: 34px minmax(0, 1fr) 16px; align-items: center; column-gap: 10px; row-gap: 4px; }
+.settings-group-summary > .settings-icon { grid-column: 1; grid-row: 1; width: 34px; height: 34px; margin: 0; }
+.settings-group-summary > span:nth-child(2) { display: contents; }
+.settings-group-summary > span:nth-child(2) > strong { grid-column: 2; grid-row: 1; min-width: 0; }
+.settings-group-summary > span:nth-child(2) > small { grid-column: 1 / -1; grid-row: 2; }
+.settings-group-summary > .settings-group-chevron { grid-column: 3; grid-row: 1; }
