@@ -3201,7 +3201,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             {profile.words.map((word) => <button key={word} className={phraseInUse === word ? "phrase-chip-active" : ""} onClick={() => setTargetPronunciationPhrase(word)}><span className="phrase-word"><strong>{word}</strong><small>{phraseMeanings[word]}</small></span><span>↗</span></button>)}
           </div>
           <button className="button button-primary full-button" onClick={startPronunciationRecording} disabled={recording || pronunciationBusy}>
-            {pronunciationBusy ? "Đang nghe và đánh giá…" : <><IllustrationIcon name="microphone" /> Bắt đầu ghi âm</>}
+            {pronunciationBusy ? "Đang nghe và đánh giá…" : <><span aria-hidden="true">🎤</span> Bắt đầu ghi âm</>}
           </button>
           {recording && <button className="button button-recording full-button" onClick={stopPronunciationRecording}><IllustrationIcon name="stop" /> Dừng ghi âm</button>}
           {pronunciation && (
@@ -3883,7 +3883,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           ))}
         </div>
         <div className="wz-welcome-art">
-          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={150} entrance />
+          <TutorAvatar kind={persona.kind} status="idle" emotion="happy" size={128} entrance />
         </div>
         </div>
         <span className="eyebrow">TEACHER AI · GIA SƯ {LANG.viName.toUpperCase()} CỦA BẠN</span>

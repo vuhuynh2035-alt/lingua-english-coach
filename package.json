@@ -1,6 +1,6 @@
 {
   "name": "teacher-ai",
-  "version": "2.5.10",
+  "version": "2.5.11",
   "private": true,
   "scripts": {
     "predev": "node scripts/write-version.mjs",
