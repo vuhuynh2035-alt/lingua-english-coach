@@ -563,6 +563,12 @@ export default function Home() {
   /** API key of Google Cloud Text-to-Speech (a separate Google service, much higher limits than Gemini voices). */
   const [cloudTtsKey, setCloudTtsKey] = useState("");
   const [cloudTtsDraft, setCloudTtsDraft] = useState("");
+  /** An optional second Cloud TTS key (another billing account has its own free quota). */
+  const [cloudTtsKey2, setCloudTtsKey2] = useState("");
+  const [cloudTtsDraft2, setCloudTtsDraft2] = useState("");
+  /** The app stops using Cloud TTS for a key once this many characters were sent in a month. */
+  const [cloudTtsLimit, setCloudTtsLimit] = useState(900_000);
+  const [cloudTtsUsage, setCloudTtsUsage] = useState<{ month: string; counts: Record<string, number> }>({ month: "", counts: {} });
   /** The AI voice service picked in the voice settings ("Giọng AI" goes back to it after "Giọng trên máy"). */
   const [aiVoiceEngine, setAiVoiceEngine] = useState<"google" | "openai" | "gcloud">("google");
   /** Speech models the Google key really has, shown in the voice settings (null: not checked yet). */
@@ -706,6 +712,7 @@ export default function Home() {
   const cloudSlotsRef = useRef({ busy: 0, waiting: [] as (() => void)[] });
   /** When the last Google speech requests started, per key and model: each pair allows about 10 a minute. */
   const cloudStartsRef = useRef<Record<string, number[]>>({});
+  const cloudTtsUsageRef = useRef<{ month: string; counts: Record<string, number> }>({ month: "", counts: {} });
   /** Google speech requests sent today per key and model, and the ones Google already closed for the day. */
   const ttsDayRef = useRef<{ day: string; counts: Record<string, number>; full: Record<string, boolean> } | null>(null);
   const cloudSpeechPauseRef = useRef<Record<"google" | "openai" | "gcloud", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" }, gcloud: { until: 0, reason: "" } });
@@ -1128,6 +1135,15 @@ export default function Home() {
       const savedCloudTts = localStorage.getItem(sharedKey("gcloud-tts-key")) ?? "";
       setCloudTtsKey(savedCloudTts);
       setCloudTtsDraft(savedCloudTts);
+      const savedCloudTts2 = localStorage.getItem(sharedKey("gcloud-tts-key2")) ?? "";
+      setCloudTtsKey2(savedCloudTts2);
+      setCloudTtsDraft2(savedCloudTts2);
+      const savedLimit = Number(localStorage.getItem(sharedKey("gcloud-tts-limit")));
+      if (savedLimit >= 10_000) setCloudTtsLimit(savedLimit);
+      try {
+        const usage = JSON.parse(localStorage.getItem(sharedKey("gcloud-tts-usage")) ?? "null") as { month?: string; counts?: Record<string, number> } | null;
+        if (usage?.month && usage.counts) { setCloudTtsUsage({ month: usage.month, counts: usage.counts }); cloudTtsUsageRef.current = { month: usage.month, counts: usage.counts }; }
+      } catch {}
       const savedAiVoice = localStorage.getItem(sharedKey("ai-voice-engine"));
       if (savedAiVoice === "google" || savedAiVoice === "openai" || savedAiVoice === "gcloud") setAiVoiceEngine(savedAiVoice);
       const savedEnVoice = localStorage.getItem(sharedKey("en-pack-voice"));
@@ -1996,9 +2012,29 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     });
   }
 
+  /** Google bills Cloud TTS by the month, counted on Pacific time. */
+  function cloudTtsMonth(): string {
+    return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit" }).format(new Date()).slice(0, 7);
+  }
+
+  function cloudTtsUsed(key: string): number {
+    return cloudTtsUsage.month === cloudTtsMonth() ? cloudTtsUsage.counts[key.slice(-12)] ?? 0 : 0;
+  }
+
+  function addCloudTtsUsage(key: string, characters: number) {
+    const month = cloudTtsMonth();
+    const base = cloudTtsUsageRef.current.month === month ? cloudTtsUsageRef.current : { month, counts: {} as Record<string, number> };
+    const next = { month, counts: { ...base.counts, [key.slice(-12)]: (base.counts[key.slice(-12)] ?? 0) + characters } };
+    cloudTtsUsageRef.current = next;
+    setCloudTtsUsage(next);
+    try { localStorage.setItem(sharedKey("gcloud-tts-usage"), JSON.stringify(next)); } catch {}
+  }
+
   /** Keys for an AI voice engine: Gemini and OpenAI share the AI settings, Cloud TTS has its own key. */
   function voiceKeys(engine: VoiceProfile["engine"]): ApiKeyEntry[] {
-    if (engine === "gcloud") return cloudTtsKey ? [{ id: "gcloud", label: "Google Cloud TTS", value: cloudTtsKey }] : [];
+    if (engine === "gcloud") {
+      return [cloudTtsKey, cloudTtsKey2].filter(Boolean).map((value, index) => ({ id: `gcloud${index + 1}`, label: `Google Cloud TTS ${index + 1}`, value }));
+    }
     return engine === "device" ? [] : apiKeys[engine];
   }
 
@@ -2150,14 +2186,22 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     slots.busy += 1;
     let value: Blob;
     try {
-      // Cloud TTS has one key and generous limits: one request, tried twice on a busy server.
+      // Cloud TTS: the first key with room left this month (characters are counted on the device);
+      // when every key is used up the app stops calling it until the month changes.
       if (engine === "gcloud") {
-        const key = voiceKeys("gcloud")[0].value;
-        try { value = await synthesizeCloudSpeech("gcloud", key, "cloud", profile, text, language); }
+        const month = cloudTtsMonth();
+        const usageNow = cloudTtsUsageRef.current.month === month ? cloudTtsUsageRef.current.counts : {};
+        const key = voiceKeys("gcloud").find((entry) => (usageNow[entry.value.slice(-12)] ?? 0) + text.length <= cloudTtsLimit);
+        if (!key) {
+          const used = Math.max(...voiceKeys("gcloud").map((entry) => usageNow[entry.value.slice(-12)] ?? 0));
+          throw new AiError("quota", `Google Cloud TTS đã dùng ${used.toLocaleString("vi-VN")} ký tự, chạm giới hạn ${cloudTtsLimit.toLocaleString("vi-VN")} ký tự trong tháng này (trong tháng; sang tháng mới app tự dùng lại).`);
+        }
+        try { value = await synthesizeCloudSpeech("gcloud", key.value, "cloud", profile, text, language); }
         catch (error) {
           if (!(error instanceof AiError) || error.kind !== "busy") throw error;
-          value = await synthesizeCloudSpeech("gcloud", key, "cloud", profile, text, language);
+          value = await synthesizeCloudSpeech("gcloud", key.value, "cloud", profile, text, language);
         }
+        addCloudTtsUsage(key.value, text.length);
       } else ({ value } = await runWithFailover(
         {
           provider: engine,
@@ -2185,7 +2229,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       const reason = error instanceof Error ? error.message : "lỗi giọng AI";
       const kind = error instanceof AiError ? error.kind : "";
       if (kind === "quota" || kind === "auth") {
-        const lasting = kind === "auth" || /trong ngày|insufficient_quota|chưa có tiền|limit: 0/i.test(reason);
+        const lasting = kind === "auth" || /trong ngày|trong tháng|insufficient_quota|chưa có tiền|limit: 0/i.test(reason);
         const retry = /sau khoảng (\d+) giây/.exec(reason);
         const ms = lasting ? 30 * 60_000 : Math.min(60_000, Math.max(10_000, (retry ? Number(retry[1]) : 20) * 1000));
         cloudSpeechPauseRef.current[engine] = { until: Date.now() + ms, reason };
@@ -2452,6 +2496,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   /** The long advice text of a quota error, cut to one line for the notice under the voice. */
   function shortReason(reason: string): string {
     if (!reason) return "không rõ lý do";
+    if (/trong tháng/.test(reason)) return "Google Cloud TTS đã chạm giới hạn ký tự của tháng, sang tháng mới app tự dùng lại";
     if (/trong ngày/.test(reason)) return "hôm nay đã dùng hết lượt của giọng AI, đặt lại khoảng 14–15 giờ giờ Việt Nam";
     if (/theo phút|giới hạn tốc độ/.test(reason)) return "đang dùng quá nhanh, thử lại sau ít phút";
     return reason.length > 140 ? `${reason.slice(0, 137)}…` : reason;
@@ -2702,6 +2747,24 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                     onClick={() => { setCloudTtsKey(cloudTtsDraft); try { localStorage.setItem(sharedKey("gcloud-tts-key"), cloudTtsDraft); } catch {} cloudSpeechPauseRef.current.gcloud = { until: 0, reason: "" }; }}>Lưu</button>
                 </div>
                 <small className="settings-hint">Cách tạo: mở <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" target="_blank" rel="noreferrer">Cloud Text-to-Speech API</a>, chọn dự án đã gắn thanh toán (ví dụ English-Vietnam) → Enable; rồi vào <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer">Credentials</a> → Create credentials → API key, dán vào đây. Key Gemini cũ cũng dùng được nếu bạn bật API này cho đúng dự án của nó.</small>
+                {cloudTtsKey && <small className="settings-hint">Tháng này đã đọc {cloudTtsUsed(cloudTtsKey).toLocaleString("vi-VN")} / {cloudTtsLimit.toLocaleString("vi-VN")} ký tự.</small>}
+                <label className="settings-label" htmlFor="gcloud-key2">Key thứ hai (không bắt buộc) — dự phòng khi key trên đã đạt giới hạn</label>
+                <div className="gcloud-key-row">
+                  <input id="gcloud-key2" className="settings-input" type="password" autoComplete="off" placeholder="AIza…" value={cloudTtsDraft2} onChange={(event) => setCloudTtsDraft2(event.target.value.trim())} />
+                  <button type="button" className="button button-primary" disabled={cloudTtsDraft2 === cloudTtsKey2}
+                    onClick={() => { setCloudTtsKey2(cloudTtsDraft2); try { localStorage.setItem(sharedKey("gcloud-tts-key2"), cloudTtsDraft2); } catch {} }}>Lưu</button>
+                </div>
+                {cloudTtsKey2 && <small className="settings-hint">Key thứ hai: đã đọc {cloudTtsUsed(cloudTtsKey2).toLocaleString("vi-VN")} / {cloudTtsLimit.toLocaleString("vi-VN")} ký tự tháng này. Hai key cùng một tài khoản thanh toán dùng chung phần miễn phí, nên key thứ hai chỉ có ích khi thuộc tài khoản thanh toán khác.</small>}
+                <label className="settings-label" htmlFor="gcloud-limit">Tự ngắt khi đã đọc quá (ký tự mỗi tháng, cho mỗi key)</label>
+                <div className="voice-chips">
+                  {[500_000, 900_000, 5_000_000].map((value) => (
+                    <button key={value} id={value === 900_000 ? "gcloud-limit" : undefined} type="button" className={cloudTtsLimit === value ? "voice-chip active" : "voice-chip"}
+                      onClick={() => { setCloudTtsLimit(value); try { localStorage.setItem(sharedKey("gcloud-tts-limit"), String(value)); } catch {} }}>
+                      {value === 900_000 ? "900 nghìn (trong phần miễn phí)" : value === 500_000 ? "500 nghìn" : "5 triệu (chấp nhận trả phí)"}
+                    </button>
+                  ))}
+                </div>
+                <small className="settings-hint">Chirp 3 HD miễn phí 1 triệu ký tự mỗi tháng. Mặc định app tự ngừng ở 900 nghìn để không bị tính tiền; chạm mức này thì app đọc bằng giọng tiếng Anh trong app cho tới tháng sau. Chỉ chọn 5 triệu nếu bạn chịu trả tiền cho phần vượt (khoảng 30 USD mỗi triệu ký tự).</small>
               </div>
             )}
             {!voiceKeys(voiceProfile.engine).length && voiceProfile.engine !== "gcloud" && <p className="voice-warning">Chưa có API key {engineName(voiceProfile.engine)}. {voiceProfile.engine === "openai" ? "Vào Nhà cung cấp & mô hình AI, chọn OpenAI, thêm key, rồi có thể chọn lại Google cho gia sư; giọng OpenAI vẫn được dùng." : "Thêm key ở mục Nhà cung cấp & mô hình AI."} Trong lúc chờ, app đọc bằng giọng trên máy.</p>}
