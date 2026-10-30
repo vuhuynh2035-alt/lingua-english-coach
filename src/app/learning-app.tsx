@@ -556,6 +556,8 @@ export default function Home() {
   const [googleTtsModels, setGoogleTtsModels] = useState<string[] | null>(null);
   /** The voice sample button that is playing (tap it again to stop). */
   const [previewing, setPreviewing] = useState<string | null>(null);
+  /** The speaker button whose text is being read; tapping it again stops the reading. */
+  const [playingKey, setPlayingKey] = useState<string | null>(null);
   /** The built-in English voice the learner picked by ear, e.g. "female-0". */
   const [enPackVoice, setEnPackVoice] = useState("female-0");
   const [packReady, setPackReady] = useState<Record<VoicePackId, boolean>>({ vi: false, en: false });
@@ -738,6 +740,8 @@ export default function Home() {
     window.addEventListener("resize", measure);
     return () => { observer.disconnect(); window.removeEventListener("resize", measure); };
   }, [section]);
+
+  useEffect(() => { if (!speechBusy) setPlayingKey(null); }, [speechBusy]);
 
   // A sample read through the speech queue is over when the queue is.
   useEffect(() => {
@@ -2317,6 +2321,20 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     return end - from >= 24 ? end : from;
   }
 
+  /** Tap to read, tap the same button again to stop; another button switches to its text. */
+  function toggleSpeech(key: string, start: () => unknown) {
+    if (playingKey === key && speechBusy) {
+      stopSpeech();
+      setSpeechBusy(false);
+      setPlayingKey(null);
+      return;
+    }
+    start();
+    setPlayingKey(key);
+  }
+
+  const speakerIcon = (key: string, icon: React.ReactNode = "🔊") => (playingKey === key && speechBusy ? "■" : icon);
+
   function playPracticePhrase(text: string) {
     return speak(text, true);
   }
@@ -3391,7 +3409,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                     </div>
                     {message.role === "assistant" && message.content && (
                       <div className="message-action-bar">
-                        <button type="button" className="speak-button" onClick={() => void playSpeech(message.content)} disabled={speechBusy} aria-label="Nghe lại câu trả lời">
+                        <button type="button" className="speak-button" onClick={() => toggleSpeech(`msg:${message.content.slice(0, 60)}`, () => void playSpeech(message.content))} aria-label="Nghe lại câu trả lời">
                           <IllustrationIcon name="speaker" /> Nghe
                         </button>
                         {extractedPhrases.length > 0 && (
@@ -3431,7 +3449,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             <span className="eyebrow">CÂU ĐANG LUYỆN NÓI</span>
             <strong>“{phraseInUse}”</strong>
             <span className="phrase-translation">{customMeanings[phraseInUse] || phraseMeanings[phraseInUse] || "Tự do luyện phát âm cùng AI"}</span>
-            <button className="speak-button" onClick={() => void playPracticePhrase(phraseInUse)} disabled={speechBusy}>
+            <button className="speak-button" onClick={() => toggleSpeech(`phrase:${phraseInUse}`, () => void playPracticePhrase(phraseInUse))}>
               <IllustrationIcon name="speaker" /> Nghe mẫu phát âm
             </button>
             <div className="pronunciation-custom-input">
@@ -3585,7 +3603,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             <p className="grammar-overview">{topic.overview}</p>
             <div className="grammar-example-list">
               <strong>Examples</strong>
-              {topic.examples.map((example) => <p key={example}><span>“{example}”</span><button className="speak-button" aria-label={`Nghe câu: ${example}`} onClick={() => void playSpeech(example)} disabled={speechBusy}><IllustrationIcon name="speaker" /> Nghe</button></p>)}
+              {topic.examples.map((example) => <p key={example}><span>“{example}”</span><button className="speak-button" aria-label={`Nghe câu: ${example}`} onClick={() => toggleSpeech(`ex:${example}`, () => void playSpeech(example))}>{playingKey === `ex:${example}` && speechBusy ? "■ Dừng" : <><IllustrationIcon name="speaker" /> Nghe</>}</button></p>)}
             </div>
             <div style={{ marginTop: "14px" }}>
               <button
@@ -3995,7 +4013,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               {hit.alt && <span className="dict-alt" lang={LANG.speechLang}>{hit.alt}</span>}
               {hit.reading && <span className="dict-reading">{hit.reading}</span>}
               {hit.hanviet && <span className="dict-hanviet" title="Âm đọc tiếng Việt của chữ (Hán-Việt hoặc Nôm, theo Unicode Unihan)">{hit.hanviet}</span>}
-              <button type="button" className="vocab-mini-btn" aria-label={`Nghe ${hit.head}`} disabled={speechBusy} onClick={() => playPracticePhrase(hit.head)}>🔊</button>
+              <button type="button" className="vocab-mini-btn" aria-label={`Nghe ${hit.head}`} onClick={() => toggleSpeech(`dict:${hit.head}`, () => playPracticePhrase(hit.head))}>{speakerIcon(`dict:${hit.head}`)}</button>
               <button type="button" className="vocab-mini-btn" aria-label={`Chép ${hit.head} vào khung`} title="Chép vào khung nhập" onClick={() => { setDictSide("target"); setDictText({ target: hit.head, vi: "" }); }}>📋</button>
             </div>
             <small className="dict-detail-mean">{hit.vietnamese.length > 0 && <b>{hit.vietnamese.join(" · ")} — </b>}{hit.english}</small>
@@ -4415,7 +4433,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                               <div className="dialogue-main">
                                 {line.speaker && <b className="dialogue-speaker">{line.speaker}</b>}
                                 <span className="dialogue-text">{line.text}</span>
-                                <button type="button" className="vocab-mini-btn" onClick={() => { const spoken = lessonSpoken(lesson); if (isConversation(spoken)) speakDialogue(spoken, lineIndex); else void playPracticePhrase(line.text); }} disabled={speechBusy} aria-label={`Nghe: ${line.text}`}>🔊</button>
+                                <button type="button" className="vocab-mini-btn" onClick={() => toggleSpeech(`line:${lineIndex}`, () => { const spoken = lessonSpoken(lesson); if (isConversation(spoken)) speakDialogue(spoken, lineIndex); else void playPracticePhrase(line.text); })} aria-label={`Nghe: ${line.text}`}>{speakerIcon(`line:${lineIndex}`)}</button>
                               </div>
                               {lessonView.phonetic && line.phonetic && <small className="dialogue-phonetic">{line.phonetic}</small>}
                               {lessonView.translation && line.translation && <small className="dialogue-translation">{line.translation}</small>}
@@ -4430,7 +4448,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                             <div className="dialogue-main">
                               {line.speaker && <b className="dialogue-speaker">{line.speaker}</b>}
                               <span className="dialogue-text">{line.text}</span>
-                              <button type="button" className="vocab-mini-btn" onClick={() => speakDialogue(lessonSpoken(lesson), lineIndex)} disabled={speechBusy} aria-label={`Nghe: ${line.text}`}>🔊</button>
+                              <button type="button" className="vocab-mini-btn" onClick={() => toggleSpeech(`line:${lineIndex}`, () => speakDialogue(lessonSpoken(lesson), lineIndex))} aria-label={`Nghe: ${line.text}`}>{speakerIcon(`line:${lineIndex}`)}</button>
                             </div>
                           </div>
                         ))}
@@ -4443,8 +4461,8 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                       const conversation = isConversation(spoken);
                       return (
                         <>
-                          <button type="button" className="button button-outline" onClick={() => { if (conversation) speakDialogue(spoken); else void playPracticePhrase(lesson.dialogue?.length ? lesson.dialogue.map((line) => line.text).join("\n") : lesson.reading); }} disabled={speechBusy}>
-                            <IllustrationIcon name="speaker" /> Nghe cả bài{conversation ? " (mỗi nhân vật một giọng)" : ""}
+                          <button type="button" className="button button-outline" onClick={() => toggleSpeech("lesson", () => { if (conversation) speakDialogue(spoken); else void playPracticePhrase(lesson.dialogue?.length ? lesson.dialogue.map((line) => line.text).join("\n") : lesson.reading); })}>
+                            {playingKey === "lesson" && speechBusy ? "■ Dừng" : <><IllustrationIcon name="speaker" /> Nghe cả bài{conversation ? " (mỗi nhân vật một giọng)" : ""}</>}
                           </button>
                           {conversation && (
                             <label className="lesson-toggle-inline"><input type="checkbox" checked={dialogueNames} onChange={(event) => updateDialogueNames(event.target.checked)} /> Đọc cả tên nhân vật (bằng giọng thứ ba)</label>
@@ -4468,9 +4486,9 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                             })()}
                           </div>
                           <span className="vocab-action-btns">
-                            <button type="button" className="vocab-mini-btn" onClick={() => void playPracticePhrase(item.term)} disabled={speechBusy} aria-label={`Nghe từ: ${item.term}`}>🔊</button>
+                            <button type="button" className="vocab-mini-btn" onClick={() => toggleSpeech(`term:${item.term}`, () => void playPracticePhrase(item.term))} aria-label={`Nghe từ: ${item.term}`}>{speakerIcon(`term:${item.term}`)}</button>
                             {item.example && (
-                              <button type="button" className="vocab-mini-btn" onClick={() => void playPracticePhrase(splitExample(item.example ?? "").target)} disabled={speechBusy} aria-label={`Nghe câu ví dụ: ${item.term}`}>🔊 câu</button>
+                              <button type="button" className="vocab-mini-btn" onClick={() => toggleSpeech(`termex:${item.term}`, () => void playPracticePhrase(splitExample(item.example ?? "").target))} aria-label={`Nghe câu ví dụ: ${item.term}`}>{speakerIcon(`termex:${item.term}`, "🔊 câu")}</button>
                             )}
                           </span>
                         </div>
@@ -4488,7 +4506,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                           return (
                             <li key={example}>
                               <span>{parts.target}{parts.meaning && <small> — {parts.meaning}</small>}</span>
-                              <button type="button" className="vocab-mini-btn" onClick={() => void playPracticePhrase(parts.target)} disabled={speechBusy} aria-label={`Nghe: ${parts.target}`}>🔊</button>
+                              <button type="button" className="vocab-mini-btn" onClick={() => toggleSpeech(`part:${parts.target}`, () => void playPracticePhrase(parts.target))} aria-label={`Nghe: ${parts.target}`}>{speakerIcon(`part:${parts.target}`)}</button>
                             </li>
                           );
                         })}
@@ -4502,7 +4520,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                       <p>{lesson.pronunciation.tip}</p>
                       <div className="lesson-pron-words">
                         {lesson.pronunciation.words.map((word) => (
-                          <button type="button" key={word} onClick={() => void playPracticePhrase(word)} disabled={speechBusy}>🔊 {word}</button>
+                          <button type="button" key={word} onClick={() => toggleSpeech(`word:${word}`, () => void playPracticePhrase(word))}>{speakerIcon(`word:${word}`)} {word}</button>
                         ))}
                       </div>
                     </section>
