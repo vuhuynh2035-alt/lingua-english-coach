@@ -34,7 +34,7 @@ export type Profile = {
   words: string[];
 };
 
-export type PlacementQuestion = { question: string; options: string[]; answer: number; explanation: string };
+export type PlacementQuestion = { level: "A1" | "A2" | "B1" | "B2"; question: string; options: string[]; answer: number; explanation: string };
 export type TutorText = { name: string; title: string; tagline: string; description: string; greeting: string };
 
 export type LangConfig = {
