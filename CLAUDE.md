@@ -26,5 +26,7 @@
 ## Kiến trúc cần nhớ
 - `src/app/page.tsx`: trang chọn ngôn ngữ; `src/app/learning-app.tsx`: toàn bộ ứng dụng; ngôn ngữ nạp lúc chạy từ `src/lib/languages/{en,ja,zh}.ts`.
 - Tiến độ/lịch sử tách theo ngôn ngữ (`langKey`), cài đặt chung dùng `sharedKey`.
-- Giọng đọc: giọng AI (Google/OpenAI) → giọng tải về trong app (Piper, `public/tts/vi`, chạy trong Web Worker) → giọng của máy.
+- Giọng đọc: giọng AI (Gemini / Google Cloud TTS / OpenAI, chọn tay hoặc Tự động theo `src/lib/usage.ts`) → giọng tải về trong app (Piper; tệp tải từ Hugging Face + jsDelivr, chỉ `public/tts/vi/worker.js` nằm trong app) → giọng của máy.
+- Chi phí AI: `src/lib/usage.ts` đếm lượt/ký tự/tiền theo key, trần USD, đơn giá, mô hình được phép.
+- `npm run build` tự chạy `scripts/optimize-css.mjs` (PurgeCSS + csso) sau khi build; kiểm tra giao diện bằng so ảnh trước/sau nếu đổi danh sách safelist.
 - Từ điển offline chia mảnh trong IndexedDB (`src/lib/dictionary.ts`, `public/dict`).

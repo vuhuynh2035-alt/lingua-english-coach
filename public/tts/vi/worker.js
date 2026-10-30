@@ -1,9 +1,24 @@
 /* Voices that run on the phone itself: the espeak-ng phonemizer plus Piper VITS models in ONNX Runtime Web.
    "vi": vais1000 (CC BY 4.0, VAIS-1000 corpus); "en": libritts_r (CC BY 4.0, LibriTTS-R, many speakers).
    Nothing needs the network once the files are cached, and every device sounds the same. */
-importScripts("ort.min.js", "piper_phonemize.js");
-
-const BASE = self.location.href.replace(/[^/]*$/, "");
+/* The files are downloaded once by the app (lib/offline-tts.ts) from where they are published and
+   kept in the cache "lingua-tts-v1"; here they are read from that cache, so the voice works offline.
+   Files saved by older app versions under this folder are still used. Keep SOURCES in step with the app. */
+const LEGACY = self.location.href.replace(/[^/]*$/, "");
+const HF = "https://huggingface.co/rhasspy/piper-voices/resolve/b4e358ffcb232591bf73a540e70f7de528e4174a/";
+const PIPER_WASM = "https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0.0/build/";
+const ORT = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/";
+const SOURCES = {
+  "vi_VN-vais1000-medium.onnx": HF + "vi/vi_VN/vais1000/medium/vi_VN-vais1000-medium.onnx",
+  "vi_VN-vais1000-medium.onnx.json": HF + "vi/vi_VN/vais1000/medium/vi_VN-vais1000-medium.onnx.json",
+  "en_US-libritts_r-medium.onnx": HF + "en/en_US/libritts_r/medium/en_US-libritts_r-medium.onnx",
+  "en_US-libritts_r-medium.onnx.json": HF + "en/en_US/libritts_r/medium/en_US-libritts_r-medium.onnx.json",
+  "piper_phonemize.data": PIPER_WASM + "piper_phonemize.data",
+  "piper_phonemize.wasm": PIPER_WASM + "piper_phonemize.wasm",
+  "piper_phonemize.js": PIPER_WASM + "piper_phonemize.js",
+  "ort-wasm-simd.wasm": ORT + "ort-wasm-simd.wasm",
+  "ort.min.js": ORT + "ort.min.js",
+};
 const MODELS = { vi: "vi_VN-vais1000-medium.onnx", en: "en_US-libritts_r-medium.onnx" };
 let phonemizer = null;
 let phonemizerLoading = null;
@@ -12,15 +27,38 @@ let chain = Promise.resolve();
 let cancelBefore = 0;
 const lines = [];
 
+/** A file's bytes: from the cache (new or old address), else from the network. */
+async function bytes(name) {
+  for (const url of [SOURCES[name], LEGACY + name]) {
+    try {
+      const hit = await caches.match(url);
+      if (hit) return await hit.arrayBuffer();
+    } catch (error) { /* no cache in this browser */ }
+  }
+  const response = await fetch(SOURCES[name] || LEGACY + name);
+  if (!response.ok) throw new Error(`HTTP ${response.status} ${name}`);
+  return response.arrayBuffer();
+}
+
+async function blobUrl(name, type) {
+  return URL.createObjectURL(new Blob([await bytes(name)], { type }));
+}
+
 function loadPhonemizer() {
   if (!phonemizerLoading) {
-    ort.env.wasm.numThreads = 1;
-    ort.env.wasm.wasmPaths = BASE;
-    phonemizerLoading = createPiperPhonemize({
-      print: (line) => { try { lines.push(JSON.parse(line).phoneme_ids); } catch (error) { /* not a phoneme line */ } },
-      printErr: () => {},
-      locateFile: (file) => BASE + file,
-    }).then((module) => { phonemizer = module; });
+    phonemizerLoading = (async () => {
+      importScripts(await blobUrl("ort.min.js", "text/javascript"), await blobUrl("piper_phonemize.js", "text/javascript"));
+      ort.env.wasm.numThreads = 1;
+      ort.env.wasm.wasmPaths = { "ort-wasm-simd.wasm": await blobUrl("ort-wasm-simd.wasm", "application/wasm") };
+      const [wasm, data] = await Promise.all([bytes("piper_phonemize.wasm"), bytes("piper_phonemize.data")]);
+      phonemizer = await createPiperPhonemize({
+        print: (line) => { try { lines.push(JSON.parse(line).phoneme_ids); } catch (error) { /* not a phoneme line */ } },
+        printErr: () => {},
+        wasmBinary: wasm,
+        getPreloadedPackage: () => data,
+        locateFile: (file) => file,
+      });
+    })();
     phonemizerLoading.catch(() => { phonemizerLoading = null; });
   }
   return phonemizerLoading;
@@ -29,8 +67,8 @@ function loadPhonemizer() {
 async function loadVoice(voice) {
   if (current && current.voice === voice) return current;
   if (current) { try { await current.session.release(); } catch (error) { /* already gone */ } current = null; }
-  const config = await (await fetch(BASE + MODELS[voice] + ".json")).json();
-  const model = await (await fetch(BASE + MODELS[voice])).arrayBuffer();
+  const config = JSON.parse(new TextDecoder().decode(await bytes(MODELS[voice] + ".json")));
+  const model = await bytes(MODELS[voice]);
   const session = await ort.InferenceSession.create(model, { executionProviders: ["wasm"] });
   current = { voice, config, session };
   return current;
