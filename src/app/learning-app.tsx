@@ -699,8 +699,8 @@ export default function Home() {
   const viFallbackRef = useRef("");
   /** Cloud speech requests in flight; more than two at once trips Google's per-minute limit. */
   const cloudSlotsRef = useRef({ busy: 0, waiting: [] as (() => void)[] });
-  /** When the last Google speech requests started, to stay under its limit of 10 requests a minute. */
-  const cloudStartsRef = useRef<number[]>([]);
+  /** When the last Google speech requests started, per key and model: each pair allows about 10 a minute. */
+  const cloudStartsRef = useRef<Record<string, number[]>>({});
   const cloudSpeechPauseRef = useRef<Record<"google" | "openai", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } });
   const courseSyncRef = useRef<string | null>(null);
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
@@ -2058,9 +2058,30 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
   /** Speech models in the order to try: the learner's choice of Flash or Flash-Lite first. */
   function ttsModelOrder(models: string[]): string[] {
-    const lite = models.filter((id) => /lite/i.test(id));
-    const full = models.filter((id) => !/lite/i.test(id));
-    return ttsModelPref === "lite" ? [...lite, ...full] : [...full, ...lite];
+    // The newest models first (their choice of Flash or Flash-Lite decides the order), older ones only as a last resort.
+    const newest = models.filter((id) => /gemini-3\.8/.test(id));
+    const older = models.filter((id) => !/gemini-3\.8/.test(id));
+    const lite = newest.filter((id) => /lite/i.test(id));
+    const full = newest.filter((id) => !/lite/i.test(id));
+    return [...(ttsModelPref === "lite" ? [...lite, ...full] : [...full, ...lite]), ...older];
+  }
+
+  /**
+   * Google allows about 10 speech requests a minute for each model of a key (paid Tier 1). One more
+   * is refused here without calling Google, so the failover moves on to the next model or key,
+   * and the learner only waits when every one of them is used up.
+   */
+  function reserveGoogleSpeech(key: string, model: string) {
+    const now = Date.now();
+    const bucket = `${key.slice(-12)}|${model}`;
+    const list = (cloudStartsRef.current[bucket] ?? []).filter((time) => now - time < 60_000);
+    cloudStartsRef.current[bucket] = list;
+    if (list.length >= 8) {
+      const error = new AiError("quota", "Đang chờ lượt giọng AI", 429);
+      error.detail = `retry in ${Math.max(1, Math.ceil((list[0] + 60_000 - now) / 1000))}s`;
+      throw error;
+    }
+    list.push(now);
   }
 
   /** Cloud audio for one English sentence, or null when the device voice should be used. */
@@ -2076,20 +2097,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     } catch {}
     const pause = cloudSpeechPauseRef.current[engine];
     if (Date.now() < pause.until) throw new Error(pause.reason || "giọng AI tạm nghỉ");
-    // Google lets a paid (Tier 1) key send about 10 speech requests a minute. Staying under it avoids
-    // errors; when the wait would be long, this sentence is read by another voice instead.
-    if (engine === "google") {
-      const starts = cloudStartsRef.current;
-      for (;;) {
-        const now = Date.now();
-        while (starts.length && now - starts[0] > 60_000) starts.shift();
-        if (starts.length < 8) break;
-        const wait = starts[0] + 60_000 - now;
-        if (wait > 20_000) throw new Error("giọng AI đang chờ lượt (Google cho khoảng 10 câu mỗi phút)");
-        await new Promise((resolve) => setTimeout(resolve, wait + 50));
-      }
-      starts.push(Date.now());
-    }
     const slots = cloudSlotsRef.current;
     while (slots.busy >= 2) await new Promise<void>((resolve) => slots.waiting.push(resolve));
     slots.busy += 1;
@@ -2101,11 +2108,14 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           keys: apiKeys[engine],
           preferredKeyId: activeKeyIds[engine],
           models: engine === "google"
-            ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])]).slice(0, 3)
+            ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])].filter((id) => !/gemini-3\.1/.test(id))).slice(0, 4)
             : OPENAI_TTS_MODELS,
           deadlineMs: 35_000,
         },
-        (key, model) => synthesizeCloudSpeech(engine, key, model, profile, text, language),
+        (key, model) => {
+          if (engine === "google") reserveGoogleSpeech(key, model);
+          return synthesizeCloudSpeech(engine, key, model, profile, text, language);
+        },
       ));
     } catch (error) {
       // Only a used-up quota or a refused key makes the AI voice rest; a slow network or a busy
