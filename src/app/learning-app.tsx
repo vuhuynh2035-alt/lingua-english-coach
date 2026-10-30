@@ -682,6 +682,10 @@ export default function Home() {
   /** After a failure each AI voice provider rests for a while; the other provider is not affected. */
   /** The voice settings of the reading in progress (a preview can use a voice not saved yet). */
   const lastSpeechProfileRef = useRef<VoiceProfile | null>(null);
+  /** Why the last Vietnamese sentence could not use the AI voice (shown under the test button). */
+  const viFallbackRef = useRef("");
+  /** Cloud speech requests in flight; more than two at once trips Google's per-minute limit. */
+  const cloudSlotsRef = useRef({ busy: 0, waiting: [] as (() => void)[] });
   const cloudSpeechPauseRef = useRef<Record<"google" | "openai", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } });
   const courseSyncRef = useRef<string | null>(null);
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
@@ -1946,28 +1950,40 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   async function vietnameseClip(text: string): Promise<Blob | null> {
     const clean = cleanSpeechText(text);
     if (!clean || viSource === "device") return null;
-    const profile = voiceProfile;
-    if (viSource === "auto" && profile.engine !== "device" && apiKeys[profile.engine].length) {
+    // Vietnamese uses the AI provider chosen in the AI settings, even when English is set to the device voice.
+    const engine = voiceProfile.engine !== "device" ? voiceProfile.engine : aiProvider;
+    if (viSource === "auto" && apiKeys[engine].length) {
       try {
-        const cloud = await englishAudio(clean, { ...profile, childlike: false }, "vi");
+        const cloud = await englishAudio(clean, { ...voiceProfile, engine, childlike: false }, "vi");
         if (cloud) return cloud;
-      } catch {}
+      } catch (error) {
+        viFallbackRef.current = error instanceof Error ? error.message : "lỗi không xác định";
+      }
     }
     return packReadyRef.current.vi ? synthesize("vi", clean, { speed: viSpeechRate * PACK_PACE }) : null;
   }
 
   /** Speaks Vietnamese outside the reading queue (tests, dictionary); call it straight from a tap. */
-  async function playVietnamese(text: string): Promise<void> {
+  async function playVietnamese(text: string, fresh = false): Promise<string> {
     unlockSpeechPlayer();
     const run = speechRunRef.current;
     const clean = cleanSpeechText(text);
-    if (!clean) return;
+    if (!clean) return "";
+    if (fresh) cloudSpeechPauseRef.current = { google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } };
+    viFallbackRef.current = "";
     const clip = await vietnameseClip(clean);
-    if (speechRunRef.current !== run) return;
+    if (speechRunRef.current !== run) return "";
+    const why = viFallbackRef.current;
     if (clip) {
-      try { await playBlob(clip); return; } catch {}
+      try {
+        await playBlob(clip);
+        return isOfflineClip(clip)
+          ? `🔊 Vừa phát bằng giọng tiếng Việt trong app${why ? ` (giọng AI chưa dùng được: ${why})` : ""}.`
+          : "🔊 Vừa phát bằng giọng AI.";
+      } catch {}
     }
     await playNativeUtterance(clean, "vi");
+    return `🔊 Vừa phát bằng giọng của máy${why ? ` (giọng AI chưa dùng được: ${why})` : ""}.`;
   }
 
   /** Which of the built-in English speakers a voice profile maps to (dialogue casts use the other slots). */
@@ -2008,15 +2024,18 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   async function englishAudio(text: string, profile = voiceProfile, language: "en" | "vi" = "en"): Promise<Blob | null> {
     const engine = profile.engine;
     if (engine === "device" || !apiKeys[engine].length) return null;
-    // After a failure the device voice is used for a while, instead of waiting on every sentence.
-    const pause = cloudSpeechPauseRef.current[engine];
-    if (Date.now() < pause.until) throw new Error(pause.reason || "giọng AI tạm nghỉ");
     // v4: earlier Google clips could contain the spoken direction, so they are not reused.
     const cacheKey = `v4${language === "vi" ? "vi" : ""}:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}${engine === "google" && ttsModelPref === "lite" ? ":lite" : ""}`;
+    // A sentence made before is always played from the device, even while the AI voice rests.
     try {
       const cached = await getCachedSpeech(cacheKey, text);
       if (cached) return cached;
     } catch {}
+    const pause = cloudSpeechPauseRef.current[engine];
+    if (Date.now() < pause.until) throw new Error(pause.reason || "giọng AI tạm nghỉ");
+    const slots = cloudSlotsRef.current;
+    while (slots.busy >= 2) await new Promise<void>((resolve) => slots.waiting.push(resolve));
+    slots.busy += 1;
     let value: Blob;
     try {
       ({ value } = await runWithFailover(
@@ -2027,16 +2046,26 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           models: engine === "google"
             ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])]).slice(0, 3)
             : OPENAI_TTS_MODELS,
-          deadlineMs: 20_000,
+          deadlineMs: 35_000,
         },
         (key, model) => synthesizeCloudSpeech(engine, key, model, profile, text, language),
       ));
     } catch (error) {
-      // A daily limit or an unpaid account will not recover soon; a per-minute limit will.
+      // Only a used-up quota or a refused key makes the AI voice rest; a slow network or a busy
+      // server is tried again with the next sentence. A daily limit or an unpaid account lasts,
+      // a per-minute limit is over after the delay Google gives (or 20 seconds).
       const reason = error instanceof Error ? error.message : "lỗi giọng AI";
-      const lasting = /trong ngày|insufficient_quota|chưa có tiền|limit: 0/i.test(reason);
-      cloudSpeechPauseRef.current[engine] = { until: Date.now() + (lasting ? 30 : 1) * 60_000, reason };
+      const kind = error instanceof AiError ? error.kind : "";
+      if (kind === "quota" || kind === "auth") {
+        const lasting = kind === "auth" || /trong ngày|insufficient_quota|chưa có tiền|limit: 0/i.test(reason);
+        const retry = /sau khoảng (\d+) giây/.exec(reason);
+        const ms = lasting ? 30 * 60_000 : Math.min(60_000, Math.max(10_000, (retry ? Number(retry[1]) : 20) * 1000));
+        cloudSpeechPauseRef.current[engine] = { until: Date.now() + ms, reason };
+      }
       throw error;
+    } finally {
+      slots.busy -= 1;
+      slots.waiting.shift()?.();
     }
     try { await saveCachedSpeech(cacheKey, text, value); } catch {}
     return value;
@@ -3086,9 +3115,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                     if (viTesting) { stopSpeech(); setViTesting(false); setVoiceTestNotice(""); return; }
                     setViTesting(true);
                     setVoiceTestNotice("Đang phát thử giọng tiếng Việt...");
-                    await playVietnamese(`Xin chào bạn! Tôi là gia sư ${LANG.viName} của bạn, chúc bạn học tập thật vui và tiến bộ mỗi ngày.`);
+                    const used = await playVietnamese(`Xin chào bạn! Tôi là gia sư ${LANG.viName} của bạn, chúc bạn học tập thật vui và tiến bộ mỗi ngày.`, true);
                     setViTesting(false);
-                    setVoiceTestNotice((current) => (current ? "Đã hoàn tất phát thử giọng tiếng Việt." : ""));
+                    setVoiceTestNotice((current) => (current ? used : ""));
                   }}
                 >
                   {viTesting ? "■ Dừng phát" : "▶ Nghe thử giọng tiếng Việt"}
