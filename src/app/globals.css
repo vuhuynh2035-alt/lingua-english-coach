@@ -2786,3 +2786,50 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
 .gcloud-key { display: grid; gap: 6px; margin-top: 4px; }
 .gcloud-key-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
 .gcloud-key-row .settings-input { width: 100%; box-sizing: border-box; }
+
+/* ===== Voices per service, costs and limits ===== */
+.voice-service-block { display: grid; gap: 6px; margin-top: 10px; }
+.voice-pickers { display: grid; gap: 8px; }
+.voice-picker { display: grid; grid-template-columns: 110px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.voice-picker label { font-weight: 700; font-size: .875rem; }
+.voice-picker .settings-select { width: 100%; min-width: 0; }
+.voice-picker .voice-chip { min-width: 44px; justify-content: center; }
+@media (max-width: 480px) { .voice-picker { grid-template-columns: minmax(0, 1fr) auto; } .voice-picker label { grid-column: 1 / -1; } }
+.usage-settings { display: grid; gap: 12px; }
+.usage-card { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--line, #d8e6e0); border-radius: 14px; background: #fff; }
+.usage-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.usage-head strong { font-size: 1.0625rem; }
+.usage-toggle { display: flex; align-items: center; gap: 6px; font-size: .875rem; color: var(--muted); }
+.usage-cap { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: .9375rem; }
+.usage-cap .settings-input { width: 90px; }
+.usage-key { display: grid; gap: 4px; padding: 8px 10px; border-radius: 10px; background: var(--paper, #f6fbf8); }
+.usage-key-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; font-weight: 700; font-size: .875rem; }
+.usage-key-head .settings-select { width: auto; }
+.usage-rows { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: .8125rem; }
+.usage-rows li { display: grid; grid-template-columns: minmax(0, 1.4fr) auto; gap: 2px 8px; }
+.usage-rows li span:last-child { grid-column: 1 / -1; color: #12805a; }
+.usage-rows li.blocked span:last-child { color: #b42318; }
+.usage-prices summary { cursor: pointer; font-weight: 700; font-size: .875rem; }
+.usage-price { display: grid; grid-template-columns: minmax(0, 1fr) 100px auto; align-items: center; gap: 6px; margin-top: 6px; font-size: .875rem; }
+.usage-price small { color: var(--muted); }
+.voice-service-badge { position: fixed; right: 12px; bottom: 14px; z-index: 60; padding: 6px 12px; border-radius: 999px; background: #0f5f4acc; color: #fff; font-size: .8125rem; font-weight: 700; box-shadow: 0 4px 14px #0003; pointer-events: none; }
+
+/* ===== "Chi phí AI": ring gauges per key (green = free, red = paid) ===== */
+.gauge-overview { display: grid; gap: 12px; }
+.gauge-service { display: grid; gap: 8px; padding: 12px; border: 1px solid var(--line, #d8e6e0); border-radius: 14px; background: #fff; }
+.gauge-service-head strong { font-size: 1.0625rem; }
+.gauge-key { display: grid; gap: 6px; padding-top: 6px; border-top: 1px dashed #dfe8e4; }
+.gauge-key-name { font-weight: 700; color: var(--muted); }
+.gauge-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+.gauge { display: grid; grid-template-columns: 58px minmax(0, 1fr); align-items: center; gap: 10px; }
+.gauge-ring { position: relative; width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; }
+.gauge-ring::before { content: ""; position: absolute; inset: 7px; border-radius: 50%; background: #fff; }
+.gauge-ring span { position: relative; font-weight: 800; font-size: .8125rem; color: #17433a; }
+.gauge-text { display: grid; gap: 1px; min-width: 0; }
+.gauge-text strong { font-size: .875rem; }
+.gauge-text small { color: var(--muted); font-size: .75rem; line-height: 1.35; }
+.gauge-text .gauge-note { color: #9b6b00; }
+.gauge-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: middle; }
+.gauge-dot.free { background: #2fb67f; }
+.gauge-dot.paid { background: #e2554b; }
+.usage-config-title { margin: 6px 0 0; font-size: 1rem; }

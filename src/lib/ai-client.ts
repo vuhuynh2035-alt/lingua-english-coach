@@ -354,6 +354,8 @@ function quotaAdvice(quota: AiError[], providerName: string): string {
 
 function summaryError(problems: AiError[], providerName: string): AiError {
   if (!problems.length) return new AiError("other", "Không thể kết nối AI.");
+  // Every key was stopped by the app's own counters (limit or money cap): their message says why and when.
+  if (problems.every((p) => p.detail === "local usage limit")) return new AiError("quota", problems[0].message);
   const kinds = new Set(problems.map((p) => p.kind));
   if (kinds.size === 1 && kinds.has("auth")) {
     return new AiError("auth", `${providerName} từ chối tất cả API key đã lưu. Hãy kiểm tra hoặc tạo key mới trong Cài đặt.`);

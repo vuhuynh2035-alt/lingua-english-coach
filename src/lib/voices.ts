@@ -15,7 +15,7 @@ export type { Accent };
 /** Regional voices of the language being learned (defined in language.ts). */
 export const ACCENTS: Accent[] = LANG.accents;
 
-export type NamedVoice = { id: string; gender: VoiceGender; character: string };
+export type NamedVoice = { id: string; gender: VoiceGender; character: string; label?: string };
 
 /** Gemini prebuilt TTS voices. */
 export const GOOGLE_VOICES: NamedVoice[] = [
