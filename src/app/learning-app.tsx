@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import packageJson from "../../package.json";
 import { getAudioData } from "@/lib/gemini";
+import { playThroughContext, stopContextPlayback } from "@/lib/lipsync";
 import {
   cleanSpeechText,
   extractPracticePhrases,
@@ -2096,8 +2097,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   function unlockSpeechPlayer() {
     // Also inside the tap: lip sync measures the AI voice through Web Audio.
     attachLipSync(speechPlayer());
-    if (speechPlayerUnlockedRef.current) return;
+    // Some phones forget the permission, so every tap renews it while nothing is playing.
     const player = speechPlayer();
+    if (speechPlayerUnlockedRef.current && !player.paused) return;
     player.src = SILENT_WAV;
     player.play().then(() => { speechPlayerUnlockedRef.current = true; }).catch(() => {});
   }
@@ -2123,16 +2125,22 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       resumeLipSync();
       player.play().catch((error: unknown) => {
         player.onpause = null;
-        done();
-        reject(new Error(error instanceof DOMException && error.name === "NotAllowedError"
-          ? "trình duyệt chặn tự phát âm thanh"
-          : "trình duyệt không phát được âm thanh"));
+        player.onended = null;
+        player.onerror = null;
+        if (speechObjectUrlRef.current === objectUrl) speechObjectUrlRef.current = null;
+        URL.revokeObjectURL(objectUrl);
+        const blocked = error instanceof DOMException && error.name === "NotAllowedError";
+        // The phone refused <audio> because the tap was a while ago: play through Web Audio instead.
+        playThroughContext(blob).then(resolve, () => reject(new Error(blocked
+          ? "trình duyệt chặn tự phát âm thanh — hãy chạm vào màn hình rồi nhấn 🔊 Nghe lại"
+          : "trình duyệt không phát được âm thanh")));
       });
     });
   }
 
   function stopSpeech() {
     speechRunRef.current += 1;
+    stopContextPlayback();
     cancelOfflineSynthesis();
     speechQueueRef.current = [];
     setSpeakingLine(null);
@@ -3416,9 +3424,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             <p>{caption || "…"}</p>
             {waitNote}
             {avatarStatus === "speaking" && <span className="cr-wave" aria-hidden="true"><i /><i /><i /><i /></span>}
+            {speechNotice.startsWith("⚠️") && <small className="cr-voice-note" role="status">{speechNotice}</small>}
           </div>
           <div className="cr-stage-actions">
-            <button type="button" className="cr-round" disabled={speechBusy || !lastTeacherMessage} onClick={() => lastTeacherMessage && void playSpeech(lastTeacherMessage.content)} title="Nghe lại">🔊 Nghe lại</button>
+            <button type="button" className="cr-round" disabled={!speechBusy && !lastTeacherMessage}
+              onClick={() => { if (speechBusy) { stopSpeech(); setSpeechBusy(false); } else if (lastTeacherMessage) void playSpeech(lastTeacherMessage.content); }}
+              title={speechBusy ? "Dừng đọc" : "Nghe lại"}>{speechBusy ? "■ Dừng" : "🔊 Nghe lại"}</button>
             <button type="button" className="cr-round" disabled={chatBusy} onClick={() => { void sendMessage(undefined, "Thầy/cô ra tình huống mới cho em luyện nhé."); }} title="Tình huống mới">🎬 Tình huống mới</button>
             <button type="button" className="cr-round" disabled={chatBusy} onClick={() => { void startLesson(); }} title="Xóa hội thoại và học lại bài từ đầu">🗑 Xóa & học lại</button>
           </div>
