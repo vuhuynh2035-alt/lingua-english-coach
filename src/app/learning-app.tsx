@@ -699,6 +699,8 @@ export default function Home() {
   const viFallbackRef = useRef("");
   /** Cloud speech requests in flight; more than two at once trips Google's per-minute limit. */
   const cloudSlotsRef = useRef({ busy: 0, waiting: [] as (() => void)[] });
+  /** When the last Google speech requests started, to stay under its limit of 10 requests a minute. */
+  const cloudStartsRef = useRef<number[]>([]);
   const cloudSpeechPauseRef = useRef<Record<"google" | "openai", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } });
   const courseSyncRef = useRef<string | null>(null);
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
@@ -2074,6 +2076,20 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     } catch {}
     const pause = cloudSpeechPauseRef.current[engine];
     if (Date.now() < pause.until) throw new Error(pause.reason || "giọng AI tạm nghỉ");
+    // Google lets a paid (Tier 1) key send about 10 speech requests a minute. Staying under it avoids
+    // errors; when the wait would be long, this sentence is read by another voice instead.
+    if (engine === "google") {
+      const starts = cloudStartsRef.current;
+      for (;;) {
+        const now = Date.now();
+        while (starts.length && now - starts[0] > 60_000) starts.shift();
+        if (starts.length < 8) break;
+        const wait = starts[0] + 60_000 - now;
+        if (wait > 20_000) throw new Error("giọng AI đang chờ lượt (Google cho khoảng 10 câu mỗi phút)");
+        await new Promise((resolve) => setTimeout(resolve, wait + 50));
+      }
+      starts.push(Date.now());
+    }
     const slots = cloudSlotsRef.current;
     while (slots.busy >= 2) await new Promise<void>((resolve) => slots.waiting.push(resolve));
     slots.busy += 1;
