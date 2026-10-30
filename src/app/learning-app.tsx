@@ -672,7 +672,7 @@ export default function Home() {
   const retryTurnRef = useRef<(() => void) | null>(null);
   const classroomBootRef = useRef(false);
   const speechRunRef = useRef(0);
-  const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null; profile?: VoiceProfile; line?: number }[]>([]);
+  const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null; load?: () => Promise<Blob | null>; profile?: VoiceProfile; line?: number }[]>([]);
   const [dialogueNames, setDialogueNames] = useState(true);
   const [viTesting, setViTesting] = useState(false);
   /** The conversation line being read aloud, highlighted in the lesson. */
@@ -2159,15 +2159,14 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       if (!segment.text.trim()) continue;
       if (segment.lang === "vi") {
         for (const sentence of vietnameseSentences(segment.text)) {
-          speechQueueRef.current.push({ text: sentence, lang: "vi", clip: vietnameseClip(sentence) });
+          speechQueueRef.current.push({ text: sentence, lang: "vi", clip: null, load: () => vietnameseClip(sentence) });
         }
         continue;
       }
       speechQueueRef.current.push({
         ...segment,
-        clip: segment.lang === "en"
-          ? englishClip(segment.text, profile)
-          : null,
+        clip: null,
+        load: segment.lang === "en" ? () => englishClip(segment.text, profile) : undefined,
       });
     }
     if (!speechQueueRunningRef.current) void runSpeechQueue();
@@ -2184,6 +2183,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     try {
       while (speechQueueRef.current.length && speechRunRef.current === run) {
         const item = speechQueueRef.current.shift()!;
+        // Voices are made when their turn comes, plus the next sentence so there is no long gap.
+        for (const next of [item, speechQueueRef.current[0]]) {
+          if (next && !next.clip && next.load) { next.clip = next.load(); next.load = undefined; }
+        }
         if (item.line !== undefined) setSpeakingLine(item.line);
         if (item.lang === "en") spokeEnglish = true;
         if (item.clip) {
@@ -2280,7 +2283,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       if (!clean) return;
       speechQueueRef.current.push({
         text: clean, lang: "en", profile, line,
-        clip: englishClip(clean, profile, false),
+        clip: null,
+        load: () => englishClip(clean, profile, false),
       });
     };
     lines.forEach((line, index) => {
