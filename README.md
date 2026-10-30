@@ -24,7 +24,7 @@ Dữ liệu của tiếng Anh dùng các tên khóa cũ (`lingua-…`), nên ng�
 
 ## Nội dung
 
-Mỗi ngôn ngữ có **88 bài trong 7 khóa** (880 câu hỏi): giao tiếp hằng ngày (16), du lịch, công sở, công nghệ, y khoa, tài chính và kỹ thuật điện lạnh công nghiệp (mỗi khóa 12), cùng bài ngữ pháp và bài kiểm tra trình độ.
+Mỗi ngôn ngữ có **88 bài trong 7 khóa** (880 câu hỏi): giao tiếp hằng ngày (16), du lịch, công sở, công nghệ, y khoa, tài chính và kỹ thuật điện lạnh công nghiệp (mỗi khóa 12), cùng bài ngữ pháp và bài kiểm tra trình độ. Tiếng Anh có thêm 3 khóa (36 bài): nails, spa & chăm sóc da, may mặc — tạo bằng `scripts/curriculum/en/new_courses.py`.
 
 - Tiếng Anh: CEFR A1–B2, gia sư Ms. Maya / Mr. David / linh vật Nova.
 - Tiếng Nhật: JLPT N5–N2, romaji, gia sư Sakura-sensei / Kenji-sensei / linh vật Alex (cú).

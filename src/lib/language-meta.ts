@@ -13,7 +13,7 @@ export type LanguageMeta = {
 };
 
 export const LANGUAGES: LanguageMeta[] = [
-  { id: "en", flag: "🇬🇧", nameVi: "Tiếng Anh", nameNative: "English", tagline: "CEFR A1–B2 · giao tiếp, công sở, du lịch, IT, y khoa, tài chính, kỹ thuật lạnh", mascot: "nova", mascotName: "Nova", color: "#15966d" },
+  { id: "en", flag: "🇬🇧", nameVi: "Tiếng Anh", nameNative: "English", tagline: "CEFR A1–B2 · giao tiếp, công sở, du lịch, IT, y khoa, tài chính, kỹ thuật lạnh, nails, spa, may mặc", mascot: "nova", mascotName: "Nova", color: "#15966d" },
   { id: "ja", flag: "🇯🇵", nameVi: "Tiếng Nhật", nameNative: "日本語", tagline: "JLPT N5–N2 · romaji, kính ngữ, tiếng Nhật công sở", mascot: "owl", mascotName: "Alex", color: "#e11d48" },
   { id: "zh", flag: "🇨🇳", nameVi: "Tiếng Trung", nameNative: "中文", tagline: "HSK 1–5 · pinyin, thanh điệu, tiếng Trung công sở", mascot: "panda", mascotName: "Panda", color: "#dc2626" },
 ];
