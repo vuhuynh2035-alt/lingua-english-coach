@@ -3069,7 +3069,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <span>USD</span>
               </div>
               {!keys.length && <small className="settings-hint">Chưa có key cho dịch vụ này.</small>}
-              <small className="settings-hint key-advice">ℹ️ {keyAdvice(service)} Mỗi dịch vụ tối đa {MAX_KEYS} key; key nào chung dự án / tài khoản thanh toán / tổ chức thì chọn cùng chữ ở ô bên cạnh key để app đếm chung.</small>
+              <small className="settings-hint key-advice">ℹ️ {keyAdvice(service)} Mỗi dịch vụ tối đa {MAX_KEYS} key; thêm key cùng dự án / tài khoản thanh toán / tổ chức không tăng thêm hạn mức.</small>
               {keys.map((entry, index) => {
                 const report = keyReport(usageSettings, service, entry.value,
                   service === "gemini" ? [...googleModels.map((model) => ({ model, kind: "speech" as const })), { model: activeModel, kind: "chat" as const }]
@@ -3079,17 +3079,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   <div className="usage-key" key={entry.id}>
                     <div className="usage-key-head">
                       <span>{entry.label || `Key ${index + 1}`} · …{entry.value.slice(-4)}</span>
-                      <label className="usage-group">
-                        <span>{service === "gemini" ? "Dự án" : service === "gcloud" ? "Tài khoản thanh toán" : "Tổ chức"}</span>
-                        <select className="settings-select" value={usageSettings.groups[keyTag(entry.value)] ?? "ABC"[index]}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            // Every key of the service gets its group written down, so "same letter" really means shared.
-                            updateUsageSettings((current) => ({ ...current, groups: { ...current.groups, ...Object.fromEntries(keys.map((other, otherIndex) => [keyTag(other.value), other.value === entry.value ? value : current.groups[keyTag(other.value)] ?? "ABC"[otherIndex]])) } }));
-                          }}>
-                          {["A", "B", "C"].map((letter) => <option key={letter} value={letter}>{letter}</option>)}
-                        </select>
-                      </label>
                       {service === "gemini" && (
                         <select className="settings-select" value={report.tier} onChange={(event) => { const tier = event.target.value as KeyTier; updateUsageSettings((current) => ({ ...current, tiers: { ...current.tiers, [keyTag(entry.value)]: tier } })); }}>
                           <option value="paid">Trả phí (Tier 1)</option>
