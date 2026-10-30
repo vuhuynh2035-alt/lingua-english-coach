@@ -27,7 +27,7 @@ import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
 import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
 import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeaker, isOfflineClip, packFlag as voicePackFlag, packInstalled as voicePackInstalled, packMB as voicePackMB, removePack as removeVoicePack, synthesize, warmVoice, type PackId as VoicePackId } from "@/lib/offline-tts";
-import { check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, type Candidate, type KeyTier, type ServiceId, type UsageSettings } from "@/lib/usage";
+import { isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, type Candidate, type KeyTier, type ServiceId, type UsageSettings } from "@/lib/usage";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
@@ -1362,8 +1362,11 @@ export default function Home() {
     operation: (key: string, model: string) => Promise<T>,
     onStatus?: (message: string) => void,
   ): Promise<T> {
-    const models = await chatModelCandidates();
     const service: ServiceId = aiProvider === "google" ? "gemini" : "openai";
+    const candidatesAll = await chatModelCandidates();
+    // Only the models the learner allows (the first one stays if none is ticked).
+    const allowedModels = candidatesAll.filter((model) => modelAllowed(usageSettings, service, "chat", model));
+    const models = allowedModels.length ? allowedModels : candidatesAll.slice(0, 1);
     // The tutor's prompt and the recent conversation: about 3,000 tokens a turn.
     const inTokens = 3000;
     const result = await runWithFailover(
@@ -2197,18 +2200,25 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       } catch {}
     }
     const googleModels = services.includes("gemini")
-      ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])].filter((id) => !/gemini-3\.1/.test(id))).slice(0, 3)
+      ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS, "gemini-2.5-flash-tts"])].filter((id) => !/gemini-3\.1/.test(id)))
       : [];
     const candidates: Candidate[] = services.flatMap((service) => serviceKeys(service).flatMap((entry) =>
-      (service === "gemini" ? googleModels : service === "openai" ? [OPENAI_TTS_MODELS[0]] : ["chirp3-hd"]).map((model) => ({ service, key: entry.value, model }))));
+      (service === "gemini" ? googleModels : service === "openai" ? OPENAI_TTS_MODELS : [modelAllowed(usageSettings, "gcloud", "speech", "standard") ? "chirp3-hd" : "chirp3-hd-only"]).map((model) => ({ service, key: entry.value, model }))));
     const slots = cloudSlotsRef.current;
     while (slots.busy >= 2) await new Promise<void>((resolve) => slots.waiting.push(resolve));
     slots.busy += 1;
     const tried = new Set<string>();
     let reason = "";
+    let waited = 0;
     try {
-      for (let attempt = 0; attempt < 6; attempt++) {
-        const { order, refusals } = planSpeech(usageSettings, candidates.filter((item) => !tried.has(`${item.key}|${item.model}`)), text.length);
+      for (let attempt = 0; attempt < 8; attempt++) {
+        const { order, refusals, waitMs } = planSpeech(usageSettings, candidates.filter((item) => !tried.has(`${item.key}|${item.model}`)), text.length);
+        // A free voice back within seconds beats paying for this sentence.
+        if (waitMs && waited + waitMs <= 10_000) {
+          await new Promise((resolve) => setTimeout(resolve, waitMs + 50));
+          waited += waitMs;
+          continue;
+        }
         if (!order.length) {
           const soonest = refusals.filter((item) => item.resetIn).sort((a, b) => (a.resetIn ?? 0) - (b.resetIn ?? 0))[0];
           if (!reason && soonest?.reason) reason = `${soonest.reason}; dùng lại sau khoảng ${inWords(soonest.resetIn ?? 0)}`;
@@ -2847,17 +2857,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         </label>
         {speechNotice && <p className="settings-hint" role="status">{speechNotice}</p>}
 
-        {aiMode && shownServices.includes("gemini") && (
-          <>
-            <span className="settings-label">Mô hình giọng AI của Google (Gemini)</span>
-            <div className="voice-chips">
-              {([["flash", "Flash TTS (hay hơn)"], ["lite", "Flash-Lite TTS (rẻ hơn ~1/3)"]] as const).map(([id, label]) => (
-                <button key={id} type="button" className={ttsModelPref === id ? "voice-chip active" : "voice-chip"}
-                  onClick={() => { setTtsModelPref(id); try { localStorage.setItem(sharedKey("tts-model"), id); } catch {} }}>{label}</button>
-              ))}
-            </div>
-          </>
-        )}
       </section>
     );
   }
@@ -2888,6 +2887,32 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       saveUsageSettings(next);
       return next;
     });
+  }
+
+  function setModelAllowed(service: ServiceId, kind: "chat" | "speech", model: string, value: boolean) {
+    updateUsageSettings((current) => ({ ...current, allowed: { ...current.allowed, [`${service}|${kind}|${model}`]: value } }));
+  }
+
+  /** Tick boxes: which models the app may use (and switch between) for a service. */
+  function renderModelChecks(service: ServiceId, kind: "chat" | "speech") {
+    const list = kind === "speech"
+      ? SPEECH_MODELS[service]
+      : (() => {
+          const provider = service === "gemini" ? "google" : "openai";
+          const loaded = modelCatalog[provider].map((model) => ({ id: model.id, label: model.label, note: "" }));
+          const current = selectedModels[provider] || DEFAULT_MODELS[provider];
+          return loaded.length ? loaded : [{ id: current, label: current, note: "nhấn “Tải danh sách mô hình” ở mục Nhà cung cấp AI để thấy đủ" }];
+        })();
+    return (
+      <div className="model-checks">
+        {list.map((model) => (
+          <label key={model.id} className="model-check">
+            <input type="checkbox" checked={modelAllowed(usageSettings, service, kind, model.id)} onChange={(event) => setModelAllowed(service, kind, model.id, event.target.checked)} />
+            <span>{model.label}{model.note && <small> — {model.note}</small>}</span>
+          </label>
+        ))}
+      </div>
+    );
   }
 
   /** A ring gauge: the green part was free, the red part was paid; `free` and `paid` are shares of the whole. */
@@ -2923,7 +2948,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       <section className="panel settings-panel usage-settings">
         <div className="settings-section-heading">
           <span className="settings-icon" aria-hidden="true">💰</span>
-          <div><h3>Chi phí AI</h3><p>App tự đếm lượt, ký tự và tiền (ước tính theo đơn giá bên dưới) cho từng key; dừng ở 95% mọi giới hạn và không vượt trần bạn đặt. Trần 0 USD nghĩa là chỉ dùng phần miễn phí. Hạn mức tự mở lại đúng lúc nhà cung cấp đặt lại (mỗi phút, mỗi ngày lúc 14–15 giờ giờ Việt Nam, đầu mỗi tháng).</p></div>
+          <div><h3>Chi phí AI</h3><p>App tự đếm lượt, ký tự và tiền (ước tính theo đơn giá) cho từng key, dừng ở 95% mọi giới hạn và không vượt trần bạn đặt (trần 0 USD = chỉ dùng phần miễn phí). Ở chế độ Tự động, app chọn theo thứ tự: ① miễn phí phục hồi nhanh (theo phút/ngày) → ② miễn phí phục hồi chậm (theo tháng) → ③ tính phí giá thấp → ④ tính phí giá cao, chỉ trong các mô hình bạn tick. Hạn mức tự mở lại đúng lúc nhà cung cấp đặt lại.</p></div>
         </div>
         <div className="gauge-overview">
           {(["gemini", "gcloud", "openai"] as const).filter((service) => serviceKeys(service).length > 0).map((service) => {
@@ -2948,7 +2973,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                           const total = freeChars + paidChars;
                           const used = report.monthChars;
                           return gauge(Math.min(used, freeChars) / total, Math.max(0, used - freeChars) / total, "Ký tự tháng này", `${used.toLocaleString("vi-VN")} / ${Math.round(freeChars).toLocaleString("vi-VN")} miễn phí${paidChars ? ` + ${Math.round(paidChars).toLocaleString("vi-VN")} trả phí` : ""}`, report.rows[0] && !report.rows[0].ok ? `⏸ ${report.rows[0].reason}` : "Về 0% đầu tháng sau");
-                        })() : report.rows.filter((row) => row.perDay).map((row) => {
+                        })() : report.rows.filter((row) => row.perDay && modelAllowed(usageSettings, service, row.kind, row.model)).map((row) => {
                           const share = row.today / (row.perDay ?? 1);
                           return <div key={`${row.kind}${row.model}`}>{gauge(free ? share : 0, free ? 0 : share, `${row.kind === "chat" ? "Trò chuyện" : "Đọc"} · ${row.model.replace("gemini-", "")}`, `${row.today}/${row.perDay} lượt hôm nay`, row.ok ? "Về 0% lúc 14–15 giờ (giờ VN)" : `⏸ ${row.reason}${row.resetIn ? ` — mở lại sau ${inWords(row.resetIn)}` : ""}`)}</div>;
                         })}
@@ -3000,13 +3025,20 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                         <li key={`${row.kind}${row.model}`} className={row.ok ? "" : "blocked"}>
                           <span>{row.kind === "chat" ? "Trò chuyện" : "Đọc"} · {row.model}</span>
                           <span>{row.perDay ? `${row.today}/${row.perDay} hôm nay` : `${row.today} hôm nay`}</span>
-                          <span>{row.ok ? "✓ sẵn sàng" : `⏸ ${row.reason}${row.resetIn ? ` — mở lại sau ${inWords(row.resetIn)}` : ""}`}</span>
+                          <span>{!modelAllowed(usageSettings, service, row.kind, row.model) ? "— không dùng (đã bỏ tick)" : row.ok ? "✓ sẵn sàng" : `⏸ ${row.reason}${row.resetIn ? ` — mở lại sau ${inWords(row.resetIn)}` : ""}`}</span>
                         </li>
                       ))}
                     </ul>
                   </div>
                 );
               })}
+              <details className="usage-prices">
+                <summary>Mô hình được phép dùng</summary>
+                <small className="settings-hint">Chỉ những mô hình được tick mới được app chọn và tự chuyển qua lại. Bỏ tick mô hình rẻ nhưng bạn thấy chưa đạt chất lượng.</small>
+                <span className="settings-label">Đọc</span>
+                {renderModelChecks(service, "speech")}
+                {service !== "gcloud" && (<><span className="settings-label">Trò chuyện</span>{renderModelChecks(service, "chat")}</>)}
+              </details>
               <details className="usage-prices">
                 <summary>Đơn giá (sửa khi nhà cung cấp đổi giá)</summary>
                 {service === "gemini" && [price("gemini", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("gemini", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("gemini", "ttsFlash", "Đọc – Flash TTS", "USD / 1 triệu token âm thanh"), price("gemini", "ttsLite", "Đọc – Flash-Lite TTS", "USD / 1 triệu token âm thanh")]}
@@ -3680,6 +3712,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             {!modelCatalog[aiProvider].some((model) => model.id === activeModel) && <option value={activeModel}>{activeModel} · mặc định</option>}
             {modelCatalog[aiProvider].map((model) => <option key={model.id} value={model.id}>{model.label}</option>)}
           </select>
+          <span className="settings-label">Mô hình được phép tự chuyển sang khi mô hình trên hết lượt</span>
+          {renderModelChecks(aiProvider === "google" ? "gemini" : "openai", "chat")}
         </section>
           </div>
         </details>
