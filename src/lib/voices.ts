@@ -7,7 +7,8 @@ import { LANG, type Accent } from "@/lib/language";
  * a gender and a named voice. Cloud engines take the accent and style as a spoken
  * direction, so every voice can speak every accent.
  */
-export type VoiceEngine = "google" | "openai" | "device";
+/** "gcloud": Google Cloud Text-to-Speech, a separate Google service with much higher limits than Gemini voices. */
+export type VoiceEngine = "google" | "openai" | "gcloud" | "device";
 export type VoiceGender = "female" | "male";
 
 export type { Accent };
@@ -102,7 +103,7 @@ export function parseVoiceProfile(raw: unknown): VoiceProfile {
   const pick = <T extends string>(v: unknown, allowed: readonly T[], fallback: T): T =>
     typeof v === "string" && (allowed as readonly string[]).includes(v) ? v as T : fallback;
   return {
-    engine: pick(value.engine, ["google", "openai", "device"] as const, DEFAULT_VOICE_PROFILE.engine),
+    engine: pick(value.engine, ["google", "openai", "gcloud", "device"] as const, DEFAULT_VOICE_PROFILE.engine),
     accent: pick(value.accent, ACCENTS.map((a) => a.id), DEFAULT_VOICE_PROFILE.accent),
     gender: pick(value.gender, ["female", "male"] as const, DEFAULT_VOICE_PROFILE.gender),
     googleVoice: pick(value.googleVoice, GOOGLE_VOICES.map((v) => v.id), DEFAULT_VOICE_PROFILE.googleVoice),
@@ -216,15 +217,78 @@ function rememberModelWithoutDirection(model: string) {
   try { localStorage.setItem(NO_DIRECTION_KEY, JSON.stringify([...new Set([...modelsWithoutDirection(), model])])); } catch {}
 }
 
+// ---------------------------------------------------------------- Google Cloud Text-to-Speech
+// Chirp 3 HD voices carry the same names as the Gemini voices ("en-US-Chirp3-HD-Kore"). A locale
+// without them is remembered and gets Google's default voice of the right gender instead.
+const NO_CHIRP_KEY = "lingua-gcloud-no-chirp";
+
+function localesWithoutChirp(): string[] {
+  try { return JSON.parse(localStorage.getItem(NO_CHIRP_KEY) ?? "[]") as string[]; } catch { return []; }
+}
+
+/** "en-us" → "en-US"; Chinese uses Cloud TTS's own codes. */
+function cloudLocale(locale: string): string {
+  const [language, region] = locale.split("-");
+  const code = region ? `${language.toLowerCase()}-${region.toUpperCase()}` : language.toLowerCase();
+  return code.replace(/^zh-(CN|SG)$/, "cmn-CN").replace(/^zh-TW$/, "cmn-TW").replace(/^zh-HK$/, "yue-HK");
+}
+
+async function cloudTtsError(response: Response): Promise<AiError> {
+  let detail = "";
+  try { detail = ((await response.json()) as { error?: { message?: string } })?.error?.message ?? ""; } catch {}
+  if (/has not been used|is disabled|SERVICE_DISABLED/i.test(detail)) {
+    return new AiError("auth", "Chưa bật Cloud Text-to-Speech API cho dự án của key này. Vào console.cloud.google.com → API Library → Cloud Text-to-Speech API → Enable.", response.status);
+  }
+  if (/billing/i.test(detail)) return new AiError("auth", "Dự án của key Cloud TTS chưa gắn tài khoản thanh toán.", response.status);
+  if (response.status === 400 && /api key not valid|API_KEY_INVALID/i.test(detail)) return new AiError("auth", "Key Google Cloud TTS không hợp lệ.", 400);
+  if (response.status === 401 || response.status === 403) return new AiError("auth", `Google Cloud TTS từ chối key (HTTP ${response.status})${detail ? `: ${detail}` : ""}.`, response.status);
+  if (response.status === 429) return new AiError("quota", "Google Cloud TTS đang giới hạn tốc độ (HTTP 429).", 429);
+  if (response.status >= 500) return new AiError("busy", `Google Cloud TTS đang bận (HTTP ${response.status}).`, response.status);
+  return new AiError("other", `Google Cloud TTS không đọc được (HTTP ${response.status})${detail ? `: ${detail}` : ""}`, response.status);
+}
+
+async function synthesizeGoogleCloud(key: string, profile: VoiceProfile, text: string, language: "en" | "vi"): Promise<Blob> {
+  const locale = cloudLocale(language === "vi" ? "vi-VN" : getAccent(profile.accent).locales[0] ?? "en-US");
+  const gender = profile.gender === "male" ? "MALE" : "FEMALE";
+  // The named voice must match the tutor's gender (a male tutor never reads with "Kore").
+  const named = GOOGLE_VOICES.find((voice) => voice.id === profile.googleVoice && voice.gender === profile.gender)
+    ?? GOOGLE_VOICES.find((voice) => voice.gender === profile.gender) ?? GOOGLE_VOICES[0];
+  const send = (chirp: boolean) => fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${encodeURIComponent(key)}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      input: { text },
+      voice: chirp ? { languageCode: locale, name: `${locale}-Chirp3-HD-${named.id}` } : { languageCode: locale, ssmlGender: gender },
+      // Chirp 3 HD takes no speaking rate; the other voices follow the speed slider.
+      audioConfig: chirp ? { audioEncoding: "MP3" } : { audioEncoding: "MP3", speakingRate: Math.min(2, Math.max(0.5, profile.speed)) },
+    }),
+    signal: AbortSignal.timeout(18_000),
+  });
+  const chirp = !localesWithoutChirp().includes(`${locale}|${named.id}`);
+  let response = await send(chirp);
+  if (response.status === 400 && chirp) {
+    const second = await send(false);
+    if (second.ok) {
+      try { localStorage.setItem(NO_CHIRP_KEY, JSON.stringify([...new Set([...localesWithoutChirp(), `${locale}|${named.id}`])])); } catch {}
+    }
+    response = second;
+  }
+  if (!response.ok) throw await cloudTtsError(response);
+  const body = await response.json() as { audioContent?: string };
+  if (!body.audioContent) throw new AiError("busy", "Google Cloud TTS chưa trả về âm thanh.");
+  return new Blob([Uint8Array.from(atob(body.audioContent), (c) => c.charCodeAt(0))], { type: "audio/mpeg" });
+}
+
 /** One cloud TTS request for one model; failover over keys/models is done by the caller. */
 export async function synthesizeCloudSpeech(
-  engine: "google" | "openai",
+  engine: "google" | "openai" | "gcloud",
   key: string,
   model: string,
   profile: VoiceProfile,
   text: string,
   language: "en" | "vi" = "en",
 ): Promise<Blob> {
+  if (engine === "gcloud") return synthesizeGoogleCloud(key, profile, text, language);
   const direction = voiceDirection(profile, language);
   if (engine === "google") {
     // The spoken text carries nothing but the words to read: a direction placed in the text
