@@ -27,6 +27,7 @@ import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
 import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
 import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeaker, isOfflineClip, packFlag as voicePackFlag, packInstalled as voicePackInstalled, packMB as voicePackMB, removePack as removeVoicePack, synthesize, warmVoice, type PackId as VoicePackId } from "@/lib/offline-tts";
+import { check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, type Candidate, type KeyTier, type ServiceId, type UsageSettings } from "@/lib/usage";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
@@ -43,6 +44,7 @@ import {
   GOOGLE_VOICES,
   OPENAI_TTS_MODELS,
   OPENAI_VOICES,
+  type NamedVoice,
   VoiceProfile,
   cloudVoiceId,
   getAccent,
@@ -355,6 +357,23 @@ const TUTOR_PERSONAS: Record<TutorPersona, {
 /** The built-in voices read a little slower than natural speech, which suits learners; the speed sliders scale from there. */
 const PACK_PACE = 0.88;
 
+/** Each voice service has its own voices for a woman, a man and a child tutor. */
+type VoiceService = "gemini" | "gcloud" | "openai" | "pack";
+type VoiceSlot = "female" | "male" | "child";
+const DEFAULT_SERVICE_VOICES: Record<VoiceService, Record<VoiceSlot, string>> = {
+  gemini: { female: "Kore", male: "Charon", child: "Leda" },
+  gcloud: { female: "Kore", male: "Charon", child: "Leda" },
+  openai: { female: "coral", male: "echo", child: "nova" },
+  pack: { female: "female-0", male: "male-0", child: "child" },
+};
+/** The built-in English speakers (LibriTTS-R voices picked by pitch and clarity). */
+const PACK_VOICES: NamedVoice[] = [
+  ...[0, 1, 2, 3].map((index) => ({ id: `female-${index}`, gender: "female" as const, character: "giọng trong app", label: `Nữ ${index + 1}` })),
+  ...[0, 1, 2, 3].map((index) => ({ id: `male-${index}`, gender: "male" as const, character: "giọng trong app", label: `Nam ${index + 1}` })),
+  { id: "child", gender: "female", character: "giọng trong app", label: "Trẻ em" },
+];
+const voiceSlot = (profile: { childlike: boolean; gender: string }): VoiceSlot => (profile.childlike ? "child" : profile.gender === "male" ? "male" : "female");
+
 const PROFILE_SUGGESTIONS = LANG.suggestions;
 
 function renderFormattedMessage(
@@ -566,19 +585,21 @@ export default function Home() {
   /** An optional second Cloud TTS key (another billing account has its own free quota). */
   const [cloudTtsKey2, setCloudTtsKey2] = useState("");
   const [cloudTtsDraft2, setCloudTtsDraft2] = useState("");
-  /** The app stops using Cloud TTS for a key once this many characters were sent in a month. */
-  const [cloudTtsLimit, setCloudTtsLimit] = useState(900_000);
-  const [cloudTtsUsage, setCloudTtsUsage] = useState<{ month: string; counts: Record<string, number> }>({ month: "", counts: {} });
+  /** Costs, caps and limits of the AI services (see lib/usage.ts); `usageTick` re-renders the counters. */
+  const [usageSettings, setUsageSettings] = useState<UsageSettings>(() => (typeof window === "undefined" ? DEFAULT_USAGE : loadUsageSettings()));
+  const [usageTick, setUsageTick] = useState(0);
+  /** Voices of each service for a woman, a man and a child tutor. */
+  const [serviceVoices, setServiceVoices] = useState<Record<VoiceService, Record<VoiceSlot, string>>>(DEFAULT_SERVICE_VOICES);
+  const lastVoiceLabelRef = useRef("");
+  /** Which service is speaking now (shown on screen while it plays). */
+  const [voiceServiceLabel, setVoiceServiceLabel] = useState("");
   /** The AI voice service picked in the voice settings ("Giọng AI" goes back to it after "Giọng trên máy"). */
   const [aiVoiceEngine, setAiVoiceEngine] = useState<"google" | "openai" | "gcloud">("google");
-  /** Speech models the Google key really has, shown in the voice settings (null: not checked yet). */
-  const [googleTtsModels, setGoogleTtsModels] = useState<string[] | null>(null);
   /** The voice sample button that is playing (tap it again to stop). */
   const [previewing, setPreviewing] = useState<string | null>(null);
   /** The speaker button whose text is being read; tapping it again stops the reading. */
   const [playingKey, setPlayingKey] = useState<string | null>(null);
   /** The built-in English voice the learner picked by ear, e.g. "female-0". */
-  const [enPackVoice, setEnPackVoice] = useState("female-0");
   const [packReady, setPackReady] = useState<Record<VoicePackId, boolean>>({ vi: false, en: false });
   const [packProgress, setPackProgress] = useState<Record<VoicePackId, number | null>>({ vi: null, en: null });
   const [packError, setPackError] = useState<Record<VoicePackId, string>>({ vi: "", en: "" });
@@ -711,10 +732,6 @@ export default function Home() {
   /** Cloud speech requests in flight; more than two at once trips Google's per-minute limit. */
   const cloudSlotsRef = useRef({ busy: 0, waiting: [] as (() => void)[] });
   /** When the last Google speech requests started, per key and model: each pair allows about 10 a minute. */
-  const cloudStartsRef = useRef<Record<string, number[]>>({});
-  const cloudTtsUsageRef = useRef<{ month: string; counts: Record<string, number> }>({ month: "", counts: {} });
-  /** Google speech requests sent today per key and model, and the ones Google already closed for the day. */
-  const ttsDayRef = useRef<{ day: string; counts: Record<string, number>; full: Record<string, boolean> } | null>(null);
   const cloudSpeechPauseRef = useRef<Record<"google" | "openai" | "gcloud", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" }, gcloud: { until: 0, reason: "" } });
   const courseSyncRef = useRef<string | null>(null);
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
@@ -769,6 +786,13 @@ export default function Home() {
   }, [section]);
 
   useEffect(() => { if (!speechBusy) setPlayingKey(null); }, [speechBusy]);
+
+  // The cost gauges follow the providers' resets (minute, day, month) while the settings are open.
+  useEffect(() => {
+    if (section !== "settings") return;
+    const timer = window.setInterval(() => setUsageTick((count) => count + 1), 30_000);
+    return () => window.clearInterval(timer);
+  }, [section]);
 
   // A sample read through the speech queue is over when the queue is.
   useEffect(() => {
@@ -1138,16 +1162,12 @@ export default function Home() {
       const savedCloudTts2 = localStorage.getItem(sharedKey("gcloud-tts-key2")) ?? "";
       setCloudTtsKey2(savedCloudTts2);
       setCloudTtsDraft2(savedCloudTts2);
-      const savedLimit = Number(localStorage.getItem(sharedKey("gcloud-tts-limit")));
-      if (savedLimit >= 10_000) setCloudTtsLimit(savedLimit);
       try {
-        const usage = JSON.parse(localStorage.getItem(sharedKey("gcloud-tts-usage")) ?? "null") as { month?: string; counts?: Record<string, number> } | null;
-        if (usage?.month && usage.counts) { setCloudTtsUsage({ month: usage.month, counts: usage.counts }); cloudTtsUsageRef.current = { month: usage.month, counts: usage.counts }; }
+        const voices = JSON.parse(localStorage.getItem(sharedKey("service-voices")) ?? "null") as Partial<Record<VoiceService, Partial<Record<VoiceSlot, string>>>> | null;
+        if (voices) setServiceVoices((current) => Object.fromEntries((Object.keys(current) as VoiceService[]).map((service) => [service, { ...current[service], ...voices[service] }])) as Record<VoiceService, Record<VoiceSlot, string>>);
       } catch {}
       const savedAiVoice = localStorage.getItem(sharedKey("ai-voice-engine"));
       if (savedAiVoice === "google" || savedAiVoice === "openai" || savedAiVoice === "gcloud") setAiVoiceEngine(savedAiVoice);
-      const savedEnVoice = localStorage.getItem(sharedKey("en-pack-voice"));
-      if (savedEnVoice && /^(female|male)-[0-3]$/.test(savedEnVoice)) setEnPackVoice(savedEnVoice);
       for (const id of ["vi", "en"] as const) {
         if (voicePackFlag(id)) { packReadyRef.current[id] = true; setPackReady((current) => ({ ...current, [id]: true })); }
         void voicePackInstalled(id).then((ok) => { packReadyRef.current[id] = ok; setPackReady((current) => ({ ...current, [id]: ok })); });
@@ -1343,6 +1363,9 @@ export default function Home() {
     onStatus?: (message: string) => void,
   ): Promise<T> {
     const models = await chatModelCandidates();
+    const service: ServiceId = aiProvider === "google" ? "gemini" : "openai";
+    // The tutor's prompt and the recent conversation: about 3,000 tokens a turn.
+    const inTokens = 3000;
     const result = await runWithFailover(
       {
         provider: aiProvider,
@@ -1351,7 +1374,27 @@ export default function Home() {
         models,
         onStatus,
       },
-      operation,
+      async (key, model) => {
+        // Counted on the device first: a key at its limit or over the money cap is skipped (the next key is tried).
+        const state = checkUsage(usageSettings, service, key, model, "chat", { inTokens, outTokens: 700 });
+        if (!state.ok) {
+          const refusal = new AiError("quota", `${state.reason}${state.resetIn ? `; dùng lại sau khoảng ${inWords(state.resetIn)}` : ""}. Muốn dùng tiếp ngay, hãy nâng trần trong Cài đặt → Chi phí AI.`, 429);
+          refusal.detail = "local usage limit";
+          throw refusal;
+        }
+        reserveUsage(key, model, "chat");
+        try {
+          const value = await operation(key, model);
+          recordUsage(usageSettings, service, key, model, "chat", { inTokens, outTokens: typeof value === "string" ? Math.ceil(value.length / 4) : 300 });
+          setUsageTick((count) => count + 1);
+          return value;
+        } catch (error) {
+          if (error instanceof AiError && error.kind === "quota" && error.detail !== "local usage limit") {
+            refuseUsage(key, model, "chat", /per[ _-]?day|RPD/i.test(error.detail) ? "day" : "minute");
+          }
+          throw error;
+        }
+      },
     );
     rememberWorkingConnection(result.keyId, result.model);
     // The first choice failed: Google may have retired it, so refresh the list quietly.
@@ -1979,7 +2022,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       let finished = false;
       let cancelling = false;
       const done = () => { if (finished) return; finished = true; clearTimeout(watchdog); clearTimeout(limit); resolve(); };
-      utterance.onstart = () => { started = true; };
+      utterance.onstart = () => { started = true; setVoiceServiceLabel("Giọng của máy"); };
       utterance.onboundary = (event) => { started = true; if (event.name === "word") pulseMouth(); };
       utterance.onend = done;
       utterance.onerror = () => { if (!cancelling) done(); };
@@ -2010,24 +2053,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       } catch {}
       return next;
     });
-  }
-
-  /** Google bills Cloud TTS by the month, counted on Pacific time. */
-  function cloudTtsMonth(): string {
-    return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit" }).format(new Date()).slice(0, 7);
-  }
-
-  function cloudTtsUsed(key: string): number {
-    return cloudTtsUsage.month === cloudTtsMonth() ? cloudTtsUsage.counts[key.slice(-12)] ?? 0 : 0;
-  }
-
-  function addCloudTtsUsage(key: string, characters: number) {
-    const month = cloudTtsMonth();
-    const base = cloudTtsUsageRef.current.month === month ? cloudTtsUsageRef.current : { month, counts: {} as Record<string, number> };
-    const next = { month, counts: { ...base.counts, [key.slice(-12)]: (base.counts[key.slice(-12)] ?? 0) + characters } };
-    cloudTtsUsageRef.current = next;
-    setCloudTtsUsage(next);
-    try { localStorage.setItem(sharedKey("gcloud-tts-usage"), JSON.stringify(next)); } catch {}
   }
 
   /** Keys for an AI voice engine: Gemini and OpenAI share the AI settings, Cloud TTS has its own key. */
@@ -2087,19 +2112,25 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   /** Audio for one English sentence: the AI voice with a key, else the voice built into the app, else null (the phone's voice). */
-  async function englishClip(text: string, profile: VoiceProfile, main = true): Promise<Blob | null> {
+  /** A built-in English speaker from its setting: "female-2", "male-0" or "child". */
+  function packSpeaker(value: string): Promise<number> {
+    if (value === "child") return englishSpeaker({ gender: "female", index: 0, child: true });
+    const [gender, index] = value.split("-");
+    return englishSpeaker({ gender: gender === "male" ? "male" : "female", index: Number(index) || 0 });
+  }
+
+  async function englishClip(text: string, profile: VoiceProfile & { only?: ServiceId }, main = true): Promise<Blob | null> {
     if (enSource !== "pack") {
       try {
-        const cloud = await englishAudio(text, profile);
+        const cloud = await englishAudio(text, profile, "en", main);
         if (cloud) return cloud;
       } catch (error) {
         speechFallbackRef.current = error instanceof Error ? error.message : "lỗi không xác định";
       }
     }
     if (enSource !== "device" && packReadyRef.current.en) {
-      const packGender = profile.gender === "male" ? "male" : "female";
-      const [gender, index] = (enPackVoice.startsWith(packGender) ? enPackVoice : `${packGender}-0`).split("-");
-      const sid = main ? await englishSpeaker({ gender: gender === "male" ? "male" : "female", index: Number(index) || 0 }) : await offlineEnglishSpeaker(profile);
+      const sid = main ? await packSpeaker(serviceVoices.pack[voiceSlot(profile)]) : await offlineEnglishSpeaker(profile);
+      setVoiceServiceLabel("Giọng tiếng Anh trong app");
       return synthesize("en", text, { sid, speed: Math.min(1.2, Math.max(0.7, profile.speed)) * PACK_PACE });
     }
     return null;
@@ -2115,132 +2146,97 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     return [...(ttsModelPref === "lite" ? [...lite, ...full] : [...full, ...lite]), ...older];
   }
 
-  /**
-   * Google allows each speech model of a key about 10 requests a minute and 100 a day (paid Tier 1).
-   * The app counts its own requests (the daily count is kept on the device until Google's day
-   * ends at midnight Pacific time) and never sends one that Google would refuse: a full model is
-   * skipped locally, so the failover moves on to the next model or key without a wasted call.
-   */
-  function googleSpeechDay() {
-    const day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(new Date());
-    const current = ttsDayRef.current;
-    if (current?.day === day) return current;
-    let stored: { day: string; counts: Record<string, number>; full: Record<string, boolean> } | null = null;
-    try { stored = JSON.parse(localStorage.getItem(sharedKey("tts-day")) ?? "null"); } catch {}
-    ttsDayRef.current = stored?.day === day ? stored : { day, counts: {}, full: {} };
-    return ttsDayRef.current;
+  /** A voice profile that may be limited to one service (a sample played in the voice settings). */
+  type SpeechProfile = VoiceProfile & { only?: ServiceId };
+
+  /** The voice a service uses for this tutor (a woman, a man or a child), as picked in the voice settings. */
+  function serviceProfile(service: ServiceId, base: SpeechProfile, main: boolean): VoiceProfile {
+    const engine = service === "gemini" ? ("google" as const) : service;
+    if (!main || base.only) return { ...base, engine };
+    const picked = serviceVoices[service][voiceSlot(base)];
+    return service === "openai" ? { ...base, engine, openaiVoice: picked } : { ...base, engine, googleVoice: picked };
   }
 
-  function saveGoogleSpeechDay() {
-    try { localStorage.setItem(sharedKey("tts-day"), JSON.stringify(ttsDayRef.current)); } catch {}
+  function serviceKeys(service: ServiceId): ApiKeyEntry[] {
+    return service === "gcloud" ? voiceKeys("gcloud") : apiKeys[service === "gemini" ? "google" : "openai"];
   }
 
-  function reserveGoogleSpeech(key: string, model: string) {
-    const now = Date.now();
-    const bucket = `${key.slice(-12)}|${model}`;
-    const day = googleSpeechDay();
-    if (day.full[bucket] || (day.counts[bucket] ?? 0) >= 95) {
-      const error = new AiError("quota", "Mô hình đọc này đã dùng hết lượt hôm nay", 429);
-      error.detail = "GenerateRequestsPerDayPerProjectPerModel (counted on the device)";
-      throw error;
-    }
-    const list = (cloudStartsRef.current[bucket] ?? []).filter((time) => now - time < 60_000);
-    cloudStartsRef.current[bucket] = list;
-    if (list.length >= 8) {
-      const error = new AiError("quota", "Đang chờ lượt giọng AI", 429);
-      error.detail = `retry in ${Math.max(1, Math.ceil((list[0] + 60_000 - now) / 1000))}s`;
-      throw error;
-    }
-    list.push(now);
-    day.counts[bucket] = (day.counts[bucket] ?? 0) + 1;
-    saveGoogleSpeechDay();
+  /** Services the AI voice may use now: every ticked one in Auto mode, else the one picked. */
+  function speechServices(profile: SpeechProfile): ServiceId[] {
+    const list: ServiceId[] = profile.only ? [profile.only]
+      : usageSettings.mode === "auto" ? (["gcloud", "gemini", "openai"] as const).filter((service) => usageSettings.enabled[service])
+      : profile.engine === "device" ? [] : [profile.engine === "google" ? "gemini" : profile.engine];
+    return list.filter((service) => serviceKeys(service).length > 0);
   }
 
-  /** Google refused a speech request: a daily limit closes that model for the day, a minute limit for a minute. */
-  function noteGoogleSpeechRefusal(key: string, model: string, error: AiError) {
-    const bucket = `${key.slice(-12)}|${model}`;
-    if (/per[ _-]?day|RPD|limit:\s*0(?!\d)/i.test(`${error.detail} ${error.message}`)) {
-      googleSpeechDay().full[bucket] = true;
-      saveGoogleSpeechDay();
-    } else {
-      const now = Date.now();
-      cloudStartsRef.current[bucket] = Array.from({ length: 8 }, () => now);
-    }
-  }
-
-  /** Cloud audio for one English sentence, or null when the device voice should be used. */
-  async function englishAudio(text: string, profile = voiceProfile, language: "en" | "vi" = "en"): Promise<Blob | null> {
-    const engine = profile.engine;
-    if (engine === "device" || !voiceKeys(engine).length) return null;
+  function speechCacheKey(profile: VoiceProfile, language: "en" | "vi"): string {
     // v4: earlier Google clips could contain the spoken direction, so they are not reused.
-    const cacheKey = `v4${language === "vi" ? "vi" : ""}:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}${engine === "google" && ttsModelPref === "lite" ? ":lite" : ""}`;
-    // A sentence made before is always played from the device, even while the AI voice rests.
-    try {
-      const cached = await getCachedSpeech(cacheKey, text);
-      if (cached) return cached;
-    } catch {}
-    const pause = cloudSpeechPauseRef.current[engine];
-    if (Date.now() < pause.until) throw new Error(pause.reason || "giọng AI tạm nghỉ");
+    return `v4${language === "vi" ? "vi" : ""}:${profile.engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}${profile.engine === "google" && ttsModelPref === "lite" ? ":lite" : ""}`;
+  }
+
+  function showVoiceService(service: ServiceId, profile: VoiceProfile) {
+    lastVoiceLabelRef.current = `${SERVICE_NAMES[service]} · ${service === "openai" ? profile.openaiVoice : profile.googleVoice}`;
+    setVoiceServiceLabel(`${SERVICE_NAMES[service]} · ${service === "openai" ? profile.openaiVoice : profile.googleVoice}`);
+  }
+
+  /**
+   * AI audio for one sentence, or null when no AI voice is set up. Every possible (service, key, model)
+   * is checked against the counters (minute, day, free pool, money cap) and tried cheapest first;
+   * a refusal closes that one as the provider says and the next one is tried. When none is left the
+   * error says why and when it comes back, and the caller reads with the voice in the app.
+   */
+  async function englishAudio(text: string, profile: SpeechProfile = voiceProfile, language: "en" | "vi" = "en", main = true): Promise<Blob | null> {
+    const services = speechServices(profile);
+    if (!services.length) return null;
+    // A sentence made before is played from the device and costs nothing.
+    for (const service of services) {
+      const voiced = serviceProfile(service, profile, main);
+      try {
+        const cached = await getCachedSpeech(speechCacheKey(voiced, language), text);
+        if (cached) { showVoiceService(service, voiced); return cached; }
+      } catch {}
+    }
+    const googleModels = services.includes("gemini")
+      ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])].filter((id) => !/gemini-3\.1/.test(id))).slice(0, 3)
+      : [];
+    const candidates: Candidate[] = services.flatMap((service) => serviceKeys(service).flatMap((entry) =>
+      (service === "gemini" ? googleModels : service === "openai" ? [OPENAI_TTS_MODELS[0]] : ["chirp3-hd"]).map((model) => ({ service, key: entry.value, model }))));
     const slots = cloudSlotsRef.current;
     while (slots.busy >= 2) await new Promise<void>((resolve) => slots.waiting.push(resolve));
     slots.busy += 1;
-    let value: Blob;
+    const tried = new Set<string>();
+    let reason = "";
     try {
-      // Cloud TTS: the first key with room left this month (characters are counted on the device);
-      // when every key is used up the app stops calling it until the month changes.
-      if (engine === "gcloud") {
-        const month = cloudTtsMonth();
-        const usageNow = cloudTtsUsageRef.current.month === month ? cloudTtsUsageRef.current.counts : {};
-        const key = voiceKeys("gcloud").find((entry) => (usageNow[entry.value.slice(-12)] ?? 0) + text.length <= cloudTtsLimit);
-        if (!key) {
-          const used = Math.max(...voiceKeys("gcloud").map((entry) => usageNow[entry.value.slice(-12)] ?? 0));
-          throw new AiError("quota", `Google Cloud TTS đã dùng ${used.toLocaleString("vi-VN")} ký tự, chạm giới hạn ${cloudTtsLimit.toLocaleString("vi-VN")} ký tự trong tháng này (trong tháng; sang tháng mới app tự dùng lại).`);
+      for (let attempt = 0; attempt < 6; attempt++) {
+        const { order, refusals } = planSpeech(usageSettings, candidates.filter((item) => !tried.has(`${item.key}|${item.model}`)), text.length);
+        if (!order.length) {
+          const soonest = refusals.filter((item) => item.resetIn).sort((a, b) => (a.resetIn ?? 0) - (b.resetIn ?? 0))[0];
+          if (!reason && soonest?.reason) reason = `${soonest.reason}; dùng lại sau khoảng ${inWords(soonest.resetIn ?? 0)}`;
+          break;
         }
-        try { value = await synthesizeCloudSpeech("gcloud", key.value, "cloud", profile, text, language); }
-        catch (error) {
-          if (!(error instanceof AiError) || error.kind !== "busy") throw error;
-          value = await synthesizeCloudSpeech("gcloud", key.value, "cloud", profile, text, language);
+        const choice = order[0];
+        tried.add(`${choice.key}|${choice.model}`);
+        const voiced = serviceProfile(choice.service, profile, main);
+        reserveUsage(choice.key, choice.model, "speech");
+        try {
+          const value = await synthesizeCloudSpeech(choice.service === "gemini" ? "google" : choice.service, choice.key, choice.model, voiced, text, language);
+          recordUsage(usageSettings, choice.service, choice.key, choice.model, "speech", { chars: text.length });
+          setUsageTick((count) => count + 1);
+          showVoiceService(choice.service, voiced);
+          try { await saveCachedSpeech(speechCacheKey(voiced, language), text, value); } catch {}
+          return value;
+        } catch (error) {
+          const failure = error instanceof AiError ? error : null;
+          if (failure?.kind === "quota") refuseUsage(choice.key, choice.model, "speech", /per[ _-]?day|RPD|limit:\s*0(?!\d)/i.test(`${failure.detail} ${failure.message}`) ? "day" : "minute");
+          else if (failure?.kind === "auth") refuseUsage(choice.key, choice.model, "speech", "key", failure.message);
+          reason = `${SERVICE_NAMES[choice.service]}: ${error instanceof Error ? error.message : "lỗi không xác định"}`;
         }
-        addCloudTtsUsage(key.value, text.length);
-      } else ({ value } = await runWithFailover(
-        {
-          provider: engine,
-          keys: apiKeys[engine],
-          preferredKeyId: activeKeyIds[engine],
-          models: engine === "google"
-            ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])].filter((id) => !/gemini-3\.1/.test(id))).slice(0, 4)
-            : OPENAI_TTS_MODELS,
-          deadlineMs: 35_000,
-        },
-        async (key, model) => {
-          if (engine === "google") reserveGoogleSpeech(key, model);
-          try {
-            return await synthesizeCloudSpeech(engine, key, model, profile, text, language);
-          } catch (error) {
-            if (engine === "google" && error instanceof AiError && error.kind === "quota") noteGoogleSpeechRefusal(key, model, error);
-            throw error;
-          }
-        },
-      ));
-    } catch (error) {
-      // Only a used-up quota or a refused key makes the AI voice rest; a slow network or a busy
-      // server is tried again with the next sentence. A daily limit or an unpaid account lasts,
-      // a per-minute limit is over after the delay Google gives (or 20 seconds).
-      const reason = error instanceof Error ? error.message : "lỗi giọng AI";
-      const kind = error instanceof AiError ? error.kind : "";
-      if (kind === "quota" || kind === "auth") {
-        const lasting = kind === "auth" || /trong ngày|trong tháng|insufficient_quota|chưa có tiền|limit: 0/i.test(reason);
-        const retry = /sau khoảng (\d+) giây/.exec(reason);
-        const ms = lasting ? 30 * 60_000 : Math.min(60_000, Math.max(10_000, (retry ? Number(retry[1]) : 20) * 1000));
-        cloudSpeechPauseRef.current[engine] = { until: Date.now() + ms, reason };
       }
-      throw error;
     } finally {
       slots.busy -= 1;
       slots.waiting.shift()?.();
     }
-    try { await saveCachedSpeech(cacheKey, text, value); } catch {}
-    return value;
+    throw new Error(reason || "không còn dịch vụ giọng AI nào dùng được lúc này");
   }
 
   /**
@@ -2335,7 +2331,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     return merged;
   }
 
-  function enqueueSpeech(text: string, englishOnly = false, profile = voiceProfile) {
+  function enqueueSpeech(text: string, englishOnly = false, profile: VoiceProfile & { only?: ServiceId } = voiceProfile) {
     lastSpeechProfileRef.current = profile;
     const segments = englishOnly
       ? text.split(/\n+/).map((line) => ({ text: cleanSpeechText(stripReadings(line)), lang: "en" as const })).filter((item) => item.text)
@@ -2405,17 +2401,19 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         setSpeechBusy(false);
         if (spokeEnglish) {
           const profile = lastSpeechProfileRef.current ?? voiceProfile;
+          // In Auto mode the service that really spoke (or was tried last) is named, not the one picked by hand.
+          const label = usageSettings.mode === "auto" ? (lastVoiceLabelRef.current || "Giọng AI") : engineLabel(profile);
           const reason = speechFallbackRef.current;
           const deviceName = pickDeviceVoice(systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [], profile, profile.engine !== "device").voice?.name;
           setSpeechNotice(usedOffline && !usedCloud
             ? profile.engine === "device" || enSource === "pack"
               ? "🔊 Vừa phát bằng giọng tiếng Anh trong app."
-              : `⚠️ ${engineLabel(profile)} chưa dùng được (${shortReason(reason)}), nên vừa phát tạm bằng giọng tiếng Anh trong app.`
+              : `⚠️ ${label} chưa dùng được (${shortReason(reason)}), nên vừa phát tạm bằng giọng tiếng Anh trong app.`
             : usedCloud && !reason
-            ? `🔊 Vừa phát bằng ${engineLabel(profile)}.`
+            ? `🔊 Vừa phát bằng ${label}.`
             : profile.engine === "device"
             ? `🔊 Vừa phát bằng giọng trên máy${deviceName ? `: ${deviceName}` : ""}.`
-            : `⚠️ ${engineLabel(profile)} chưa dùng được (${shortReason(reason)}), nên vừa phát bằng giọng trên máy${deviceName ? ` (${deviceName})` : ""}.`);
+            : `⚠️ ${label} chưa dùng được (${shortReason(reason)}), nên vừa phát bằng giọng trên máy${deviceName ? ` (${deviceName})` : ""}.`);
         }
       } else if (speechQueueRef.current.length) {
         // A new run queued text while this one was stopping.
@@ -2439,7 +2437,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   /** Plays the sample sentence in `profile` (a voice just picked), giving the AI voice a fresh try even if it was resting. */
-  function previewVoice(profile = voiceProfile) {
+  function previewVoice(profile: VoiceProfile & { only?: ServiceId } = voiceProfile) {
     stopSpeech();
     unlockSpeechPlayer();
     if (profile.engine !== "device") cloudSpeechPauseRef.current[profile.engine] = { until: 0, reason: "" };
@@ -2496,10 +2494,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   /** The long advice text of a quota error, cut to one line for the notice under the voice. */
   function shortReason(reason: string): string {
     if (!reason) return "không rõ lý do";
-    if (/trong tháng/.test(reason)) return "Google Cloud TTS đã chạm giới hạn ký tự của tháng, sang tháng mới app tự dùng lại";
     if (/trong ngày/.test(reason)) return "hôm nay đã dùng hết lượt của giọng AI, đặt lại khoảng 14–15 giờ giờ Việt Nam";
     if (/theo phút|giới hạn tốc độ/.test(reason)) return "đang dùng quá nhanh, thử lại sau ít phút";
-    return reason.length > 140 ? `${reason.slice(0, 137)}…` : reason;
+    return reason.length > 220 ? `${reason.slice(0, 217)}…` : reason;
   }
 
   /** End of the last complete sentence after `from`, or `from` when none is long enough yet. */
@@ -2693,30 +2690,86 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   /** Plays the sample sentence with one of the built-in English speakers. */
   async function playPackSample(value: string) {
     unlockSpeechPlayer();
-    const [gender, index] = value.split("-");
-    const sid = await englishSpeaker({ gender: gender === "male" ? "male" : "female", index: Number(index) || 0 });
-    const clip = await synthesize("en", getAccent(voiceProfile.accent).sample, { sid, speed: voiceProfile.speed * PACK_PACE });
+    const clip = await synthesize("en", getAccent(voiceProfile.accent).sample, { sid: await packSpeaker(value), speed: voiceProfile.speed * PACK_PACE });
+    setVoiceServiceLabel("Giọng tiếng Anh trong app");
     if (clip) await playBlob(clip).catch(() => {});
   }
 
+  function updateServiceVoice(service: VoiceService, slot: VoiceSlot, value: string) {
+    setServiceVoices((current) => {
+      const next = { ...current, [service]: { ...current[service], [slot]: value } };
+      try { localStorage.setItem(sharedKey("service-voices"), JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
+
+  /** Plays one voice of one service: tap ▶ to hear it, tap ■ to stop. */
+  function previewServiceVoice(service: VoiceService, slot: VoiceSlot, value: string) {
+    togglePreview(`voice:${service}:${slot}`, () => {
+      if (service === "pack") return playPackSample(value);
+      const profile: VoiceProfile & { only?: ServiceId } = {
+        ...voiceProfile, gender: slot === "male" ? "male" : "female", childlike: slot === "child", only: service,
+        engine: service === "gemini" ? "google" : service,
+        ...(service === "openai" ? { openaiVoice: value } : { googleVoice: value }),
+      };
+      previewVoice(profile);
+    });
+  }
+
+  /** Three drop-down lists (woman, man, child) with the voices this service really has. */
+  function renderVoicePickers(service: VoiceService) {
+    const list: NamedVoice[] = service === "openai" ? OPENAI_VOICES : service === "pack" ? PACK_VOICES : GOOGLE_VOICES;
+    const slots: [VoiceSlot, string][] = [["female", "Giọng nữ"], ["male", "Giọng nam"], ["child", "Giọng trẻ em (linh vật)"]];
+    return (
+      <div className="voice-pickers">
+        {slots.map(([slot, label]) => {
+          const options = slot === "child" ? list : list.filter((voice) => voice.gender === slot && voice.id !== "child");
+          const value = serviceVoices[service][slot];
+          const key = `voice:${service}:${slot}`;
+          return (
+            <div className="voice-picker" key={slot}>
+              <label htmlFor={`${service}-${slot}`}>{label}</label>
+              <select id={`${service}-${slot}`} className="settings-select" value={value}
+                onChange={(event) => { updateServiceVoice(service, slot, event.target.value); stopSpeech(); setPreviewing(null); previewServiceVoice(service, slot, event.target.value); }}>
+                {options.map((voice) => <option key={voice.id} value={voice.id}>{voice.label ?? voice.id} — {voice.character}</option>)}
+              </select>
+              <button type="button" className={`voice-chip${previewing === key ? " playing" : ""}`} aria-label={`Nghe ${label}`} onClick={() => previewServiceVoice(service, slot, value)}>{previewing === key ? "■" : "▶"}</button>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  function setVoiceService(choice: "auto" | ServiceId) {
+    stopSpeech();
+    updateUsageSettings((current) => ({ ...current, mode: choice === "auto" ? "auto" : "manual" }));
+    if (choice !== "auto") {
+      const engine = choice === "gemini" ? "google" : choice;
+      setAiVoiceEngine(engine);
+      try { localStorage.setItem(sharedKey("ai-voice-engine"), engine); } catch {}
+      updateVoiceProfile({ engine });
+    }
+  }
+
   function renderVoiceStudio() {
-    const aiEngine = voiceProfile.engine !== "device" ? voiceProfile.engine : aiVoiceEngine;
     const aiMode = voiceProfile.engine !== "device";
+    const auto = usageSettings.mode === "auto";
+    const manualService: ServiceId = voiceProfile.engine === "openai" ? "openai" : voiceProfile.engine === "gcloud" ? "gcloud" : "gemini";
+    const shownServices: ServiceId[] = auto ? (["gemini", "gcloud", "openai"] as const).filter((service) => usageSettings.enabled[service] && serviceKeys(service).length > 0) : [manualService];
     const groups = [...new Set(ACCENTS.map((item) => item.group))];
-    const packGender = voiceProfile.gender === "male" ? "male" : "female";
-    const packVoice = enPackVoice.startsWith(packGender) ? enPackVoice : `${packGender}-0`;
     const playing = (key: string) => previewing === key;
     return (
       <section className="panel settings-panel voice-studio">
         <div className="settings-section-heading">
           <span className="settings-icon" aria-hidden="true">🌍</span>
-          <div><h3>Giọng {LANG.viName}</h3><p>Giọng nam, nữ hay trẻ em đi theo gia sư bạn chọn ở trên. Nhấn một giọng để nghe, nhấn lần nữa để dừng.</p></div>
+          <div><h3>Giọng {LANG.viName}</h3><p>Giọng nữ, nam hay trẻ em đi theo gia sư bạn chọn ở trên. Mỗi dịch vụ có bộ giọng riêng chọn sẵn bên dưới.</p></div>
         </div>
 
         <div className="voice-mode" role="radiogroup" aria-label="Nguồn giọng">
           <button type="button" role="radio" aria-checked={aiMode} className={aiMode ? "voice-engine active" : "voice-engine"}
             onClick={() => { stopSpeech(); updateVoiceProfile({ engine: aiVoiceEngine }); }}>
-            <strong>Giọng AI</strong><small>{engineName(aiEngine)} · tự nhiên, đủ vùng miền · cần mạng và API key</small>
+            <strong>Giọng AI</strong><small>{auto ? "Tự động chọn dịch vụ" : engineName(voiceProfile.engine !== "device" ? voiceProfile.engine : aiVoiceEngine)} · cần mạng và API key</small>
           </button>
           <button type="button" role="radio" aria-checked={!aiMode} className={!aiMode ? "voice-engine active" : "voice-engine"}
             onClick={() => { stopSpeech(); updateVoiceProfile({ engine: "device" }); }}>
@@ -2728,46 +2781,21 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           <>
             <span className="settings-label">Dịch vụ giọng AI</span>
             <div className="voice-chips">
-              {([["google", "Gemini"], ["gcloud", "Google Cloud TTS"], ["openai", "OpenAI"]] as const).map(([id, label]) => (
-                <button key={id} type="button" className={voiceProfile.engine === id ? "voice-chip active" : "voice-chip"}
-                  onClick={() => { stopSpeech(); setAiVoiceEngine(id); try { localStorage.setItem(sharedKey("ai-voice-engine"), id); } catch {} updateVoiceProfile({ engine: id }); }}>{label}</button>
+              {([["auto", "Tự động"], ["gemini", "Gemini"], ["gcloud", "Google Cloud TTS"], ["openai", "OpenAI"]] as const).map(([id, label]) => (
+                <button key={id} type="button" className={(id === "auto" ? auto : !auto && manualService === id) ? "voice-chip active" : "voice-chip"} onClick={() => setVoiceService(id)}>{label}</button>
               ))}
             </div>
             <small className="settings-hint">
-              {voiceProfile.engine === "google" ? "Giọng Gemini: tự nhiên nhất nhưng Google chỉ cho khoảng 10 câu/phút và 100 câu/ngày mỗi mô hình."
-                : voiceProfile.engine === "gcloud" ? "Google Cloud Text-to-Speech: dịch vụ đọc riêng của Google, giới hạn rộng hơn nhiều; giọng Chirp 3 HD miễn phí 1 triệu ký tự mỗi tháng, sau đó khoảng 30 USD cho 1 triệu ký tự."
-                : "Giọng OpenAI: không giới hạn kiểu 100 câu/ngày, tính tiền theo lượng đọc (cần nạp tiền trước ở platform.openai.com)."}
+              {auto ? "Tự động: app dùng phần miễn phí trước (ưu tiên phần đặt lại hằng ngày), rồi tới nơi rẻ nhất trong các dịch vụ được tick ở mục Chi phí AI, không vượt trần bạn đặt. Hết mọi hạn mức thì đọc bằng giọng trên máy."
+                : manualService === "gemini" ? "Giọng Gemini: tự nhiên nhất nhưng Google chỉ cho khoảng 10 câu/phút và 100 câu/ngày mỗi mô hình."
+                : manualService === "gcloud" ? "Google Cloud Text-to-Speech: giới hạn rộng; giọng Chirp 3 HD miễn phí 1 triệu ký tự mỗi tháng."
+                : "Giọng OpenAI: tính tiền theo lượng đọc (cần nạp tiền trước ở platform.openai.com)."}
+              {" "}Đến hạn mức hoặc trần chi phí thì app tự ngừng dịch vụ đó và báo cho bạn.
             </small>
-            {voiceProfile.engine === "gcloud" && (
-              <div className="gcloud-key">
-                <label className="settings-label" htmlFor="gcloud-key">API key Google Cloud TTS</label>
-                <div className="gcloud-key-row">
-                  <input id="gcloud-key" className="settings-input" type="password" autoComplete="off" placeholder="AIza…" value={cloudTtsDraft} onChange={(event) => setCloudTtsDraft(event.target.value.trim())} />
-                  <button type="button" className="button button-primary" disabled={cloudTtsDraft === cloudTtsKey}
-                    onClick={() => { setCloudTtsKey(cloudTtsDraft); try { localStorage.setItem(sharedKey("gcloud-tts-key"), cloudTtsDraft); } catch {} cloudSpeechPauseRef.current.gcloud = { until: 0, reason: "" }; }}>Lưu</button>
-                </div>
-                <small className="settings-hint">Cách tạo: mở <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" target="_blank" rel="noreferrer">Cloud Text-to-Speech API</a>, chọn dự án đã gắn thanh toán (ví dụ English-Vietnam) → Enable; rồi vào <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer">Credentials</a> → Create credentials → API key, dán vào đây. Key Gemini cũ cũng dùng được nếu bạn bật API này cho đúng dự án của nó.</small>
-                {cloudTtsKey && <small className="settings-hint">Tháng này đã đọc {cloudTtsUsed(cloudTtsKey).toLocaleString("vi-VN")} / {cloudTtsLimit.toLocaleString("vi-VN")} ký tự.</small>}
-                <label className="settings-label" htmlFor="gcloud-key2">Key thứ hai (không bắt buộc) — dự phòng khi key trên đã đạt giới hạn</label>
-                <div className="gcloud-key-row">
-                  <input id="gcloud-key2" className="settings-input" type="password" autoComplete="off" placeholder="AIza…" value={cloudTtsDraft2} onChange={(event) => setCloudTtsDraft2(event.target.value.trim())} />
-                  <button type="button" className="button button-primary" disabled={cloudTtsDraft2 === cloudTtsKey2}
-                    onClick={() => { setCloudTtsKey2(cloudTtsDraft2); try { localStorage.setItem(sharedKey("gcloud-tts-key2"), cloudTtsDraft2); } catch {} }}>Lưu</button>
-                </div>
-                {cloudTtsKey2 && <small className="settings-hint">Key thứ hai: đã đọc {cloudTtsUsed(cloudTtsKey2).toLocaleString("vi-VN")} / {cloudTtsLimit.toLocaleString("vi-VN")} ký tự tháng này. Hai key cùng một tài khoản thanh toán dùng chung phần miễn phí, nên key thứ hai chỉ có ích khi thuộc tài khoản thanh toán khác.</small>}
-                <label className="settings-label" htmlFor="gcloud-limit">Tự ngắt khi đã đọc quá (ký tự mỗi tháng, cho mỗi key)</label>
-                <div className="voice-chips">
-                  {[500_000, 900_000, 5_000_000].map((value) => (
-                    <button key={value} id={value === 900_000 ? "gcloud-limit" : undefined} type="button" className={cloudTtsLimit === value ? "voice-chip active" : "voice-chip"}
-                      onClick={() => { setCloudTtsLimit(value); try { localStorage.setItem(sharedKey("gcloud-tts-limit"), String(value)); } catch {} }}>
-                      {value === 900_000 ? "900 nghìn (trong phần miễn phí)" : value === 500_000 ? "500 nghìn" : "5 triệu (chấp nhận trả phí)"}
-                    </button>
-                  ))}
-                </div>
-                <small className="settings-hint">Chirp 3 HD miễn phí 1 triệu ký tự mỗi tháng. Mặc định app tự ngừng ở 900 nghìn để không bị tính tiền; chạm mức này thì app đọc bằng giọng tiếng Anh trong app cho tới tháng sau. Chỉ chọn 5 triệu nếu bạn chịu trả tiền cho phần vượt (khoảng 30 USD mỗi triệu ký tự).</small>
-              </div>
-            )}
-            {!voiceKeys(voiceProfile.engine).length && voiceProfile.engine !== "gcloud" && <p className="voice-warning">Chưa có API key {engineName(voiceProfile.engine)}. {voiceProfile.engine === "openai" ? "Vào Nhà cung cấp & mô hình AI, chọn OpenAI, thêm key, rồi có thể chọn lại Google cho gia sư; giọng OpenAI vẫn được dùng." : "Thêm key ở mục Nhà cung cấp & mô hình AI."} Trong lúc chờ, app đọc bằng giọng trên máy.</p>}
+            {(auto || manualService === "gcloud") && renderCloudTtsKeys()}
+            {!auto && !serviceKeys(manualService).length && manualService !== "gcloud" && <p className="voice-warning">Chưa có API key {SERVICE_NAMES[manualService]}. {manualService === "openai" ? "Vào Nhà cung cấp & mô hình AI, chọn OpenAI, thêm key, rồi có thể chọn lại Google cho gia sư; giọng OpenAI vẫn được dùng." : "Thêm key ở mục Nhà cung cấp & mô hình AI."} Trong lúc chờ, app đọc bằng giọng trên máy.</p>}
+            {auto && !shownServices.length && <p className="voice-warning">Chưa có dịch vụ nào vừa được tick vừa có key. Mở Chi phí AI để chọn.</p>}
+
             <span className="settings-label">Vùng miền</span>
             {groups.map((group) => (
               <div className="voice-accent-group" key={group}>
@@ -2789,31 +2817,22 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 </div>
               </div>
             ))}
+
+            {shownServices.map((service) => (
+              <div key={service} className="voice-service-block">
+                <span className="settings-label">Giọng của {SERVICE_NAMES[service]}</span>
+                {renderVoicePickers(service)}
+              </div>
+            ))}
           </>
         ) : (
           <>
             {renderPackCard("en")}
             {packReady.en ? (
-              <>
-                <span className="settings-label">Chọn giọng {packGender === "male" ? "nam" : "nữ"}</span>
-                <div className="vipack-voices">
-                  {[0, 1, 2, 3].map((index) => {
-                    const value = `${packGender}-${index}`;
-                    const key = `pack:${value}`;
-                    return (
-                      <button key={value} type="button"
-                        className={`voice-chip${packVoice === value ? " active" : ""}${playing(key) ? " playing" : ""}`}
-                        onClick={() => togglePreview(key, () => {
-                          setEnPackVoice(value);
-                          try { localStorage.setItem(sharedKey("en-pack-voice"), value); } catch {}
-                          return playPackSample(value);
-                        })}>
-                        {playing(key) ? "■" : "▶"} {packGender === "male" ? "Nam" : "Nữ"} {index + 1}
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
+              <div className="voice-service-block">
+                <span className="settings-label">Giọng tiếng Anh trong app</span>
+                {renderVoicePickers("pack")}
+              </div>
             ) : (
               <button type="button" className={`voice-chip${playing("device") ? " playing" : ""}`} onClick={() => togglePreview("device", () => previewVoice())}>
                 {playing("device") ? "■ Dừng" : "▶ Nghe giọng sẵn có của máy"}
@@ -2828,22 +2847,175 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         </label>
         {speechNotice && <p className="settings-hint" role="status">{speechNotice}</p>}
 
-        {aiMode && voiceProfile.engine === "google" && (
+        {aiMode && shownServices.includes("gemini") && (
           <>
-            <span className="settings-label">Mô hình giọng AI của Google</span>
+            <span className="settings-label">Mô hình giọng AI của Google (Gemini)</span>
             <div className="voice-chips">
               {([["flash", "Flash TTS (hay hơn)"], ["lite", "Flash-Lite TTS (rẻ hơn ~1/3)"]] as const).map(([id, label]) => (
                 <button key={id} type="button" className={ttsModelPref === id ? "voice-chip active" : "voice-chip"}
                   onClick={() => { setTtsModelPref(id); try { localStorage.setItem(sharedKey("tts-model"), id); } catch {} }}>{label}</button>
               ))}
             </div>
-            {apiKeys.google.length > 0 && (
-              googleTtsModels === null
-                ? <button type="button" className="text-button" onClick={() => { void googleModelIds().then((ids) => setGoogleTtsModels(ids.filter((id) => /tts/i.test(id)))); }}>Kiểm tra key có mô hình đọc nào</button>
-                : <small className="settings-hint">{googleTtsModels.length ? `Mô hình đọc key của bạn dùng được: ${ttsModelOrder(googleTtsModels).join(", ")}.` : "Danh sách của key không có mô hình đọc nào — app sẽ thử gemini-3.8-flash-tts trực tiếp."}</small>
-            )}
           </>
         )}
+      </section>
+    );
+  }
+
+  function renderCloudTtsKeys() {
+    return (
+      <div className="gcloud-key">
+        <label className="settings-label" htmlFor="gcloud-key">API key Google Cloud TTS</label>
+        <div className="gcloud-key-row">
+          <input id="gcloud-key" className="settings-input" type="password" autoComplete="off" placeholder="AIza…" value={cloudTtsDraft} onChange={(event) => setCloudTtsDraft(event.target.value.trim())} />
+          <button type="button" className="button button-primary" disabled={cloudTtsDraft === cloudTtsKey}
+            onClick={() => { setCloudTtsKey(cloudTtsDraft); try { localStorage.setItem(sharedKey("gcloud-tts-key"), cloudTtsDraft); } catch {} }}>Lưu</button>
+        </div>
+        <label className="settings-label" htmlFor="gcloud-key2">Key thứ hai (không bắt buộc, nên thuộc tài khoản thanh toán khác)</label>
+        <div className="gcloud-key-row">
+          <input id="gcloud-key2" className="settings-input" type="password" autoComplete="off" placeholder="AIza…" value={cloudTtsDraft2} onChange={(event) => setCloudTtsDraft2(event.target.value.trim())} />
+          <button type="button" className="button button-primary" disabled={cloudTtsDraft2 === cloudTtsKey2}
+            onClick={() => { setCloudTtsKey2(cloudTtsDraft2); try { localStorage.setItem(sharedKey("gcloud-tts-key2"), cloudTtsDraft2); } catch {} }}>Lưu</button>
+        </div>
+        <small className="settings-hint">Cách tạo: mở <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" target="_blank" rel="noreferrer">Cloud Text-to-Speech API</a>, chọn dự án đã gắn thanh toán → Enable; rồi <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer">Credentials</a> → Create credentials → API key. Số ký tự đã dùng xem ở Chi phí AI.</small>
+      </div>
+    );
+  }
+
+  function updateUsageSettings(change: (current: UsageSettings) => UsageSettings) {
+    setUsageSettings((current) => {
+      const next = change(current);
+      saveUsageSettings(next);
+      return next;
+    });
+  }
+
+  /** A ring gauge: the green part was free, the red part was paid; `free` and `paid` are shares of the whole. */
+  function gauge(free: number, paid: number, title: string, detail: string, note?: string) {
+    const green = Math.max(0, Math.min(100, Math.round(free * 100)));
+    const red = Math.max(0, Math.min(100 - green, Math.round(paid * 100)));
+    return (
+      <div className="gauge">
+        <div className="gauge-ring" style={{ background: `conic-gradient(#2fb67f 0 ${green}%, #e2554b ${green}% ${green + red}%, #e3ebe7 ${green + red}% 100%)` }} role="img" aria-label={`${title}: ${green + red}%`}>
+          <span>{green + red}%</span>
+        </div>
+        <div className="gauge-text"><strong>{title}</strong><small>{detail}</small>{note && <small className="gauge-note">{note}</small>}</div>
+      </div>
+    );
+  }
+
+  /** Costs, caps, unit prices and the state of every key, per service. */
+  function renderUsageSettings() {
+    void usageTick;
+    const price = (service: ServiceId, field: string, label: string, unit: string) => {
+      const prices = usageSettings.prices[service] as Record<string, number>;
+      return (
+        <label className="usage-price" key={field}>
+          <span>{label}</span>
+          <input type="number" min="0" step="0.01" className="settings-input" value={prices[field]}
+            onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, prices: { ...current.prices, [service]: { ...current.prices[service], [field]: value } } })); }} />
+          <small>{unit}</small>
+        </label>
+      );
+    };
+    const googleModels = ttsModelOrder([...GOOGLE_TTS_MODELS]);
+    return (
+      <section className="panel settings-panel usage-settings">
+        <div className="settings-section-heading">
+          <span className="settings-icon" aria-hidden="true">💰</span>
+          <div><h3>Chi phí AI</h3><p>App tự đếm lượt, ký tự và tiền (ước tính theo đơn giá bên dưới) cho từng key; dừng ở 95% mọi giới hạn và không vượt trần bạn đặt. Trần 0 USD nghĩa là chỉ dùng phần miễn phí. Hạn mức tự mở lại đúng lúc nhà cung cấp đặt lại (mỗi phút, mỗi ngày lúc 14–15 giờ giờ Việt Nam, đầu mỗi tháng).</p></div>
+        </div>
+        <div className="gauge-overview">
+          {(["gemini", "gcloud", "openai"] as const).filter((service) => serviceKeys(service).length > 0).map((service) => {
+            const cap = usageSettings.caps[service];
+            const spent = spentThisMonth(service);
+            return (
+              <div className="gauge-service" key={service}>
+                <div className="gauge-service-head"><strong>{SERVICE_NAMES[service]}</strong>{!usageSettings.enabled[service] && <small> · không dùng khi Tự động</small>}</div>
+                {gauge(0, cap > 0 ? spent / cap : 0, "Tiền tháng này", cap > 0 ? `${spent.toFixed(3)} / ${cap} USD` : "Trần 0 USD: chỉ dùng phần miễn phí", "Về 0% đầu tháng sau")}
+                {serviceKeys(service).map((entry, index) => {
+                  const report = keyReport(usageSettings, service, entry.value, service === "gemini"
+                    ? [...ttsModelOrder([...GOOGLE_TTS_MODELS]).map((model) => ({ model, kind: "speech" as const })), { model: activeModel, kind: "chat" as const }]
+                    : service === "openai" ? [{ model: OPENAI_TTS_MODELS[0], kind: "speech" as const }] : [{ model: "chirp3-hd", kind: "speech" as const }]);
+                  const free = report.tier === "free";
+                  return (
+                    <div className="gauge-key" key={entry.id}>
+                      <small className="gauge-key-name">{entry.label || `Key ${index + 1}`} · …{entry.value.slice(-4)}{service === "gemini" ? (free ? " · miễn phí" : " · trả phí") : ""}</small>
+                      <div className="gauge-row">
+                        {service === "gcloud" ? (() => {
+                          const freeChars = usageSettings.prices.gcloud.freeChars * 0.95;
+                          const paidChars = usageSettings.caps.gcloud > 0 ? usageSettings.caps.gcloud / usageSettings.prices.gcloud.perMillionChars * 1e6 : 0;
+                          const total = freeChars + paidChars;
+                          const used = report.monthChars;
+                          return gauge(Math.min(used, freeChars) / total, Math.max(0, used - freeChars) / total, "Ký tự tháng này", `${used.toLocaleString("vi-VN")} / ${Math.round(freeChars).toLocaleString("vi-VN")} miễn phí${paidChars ? ` + ${Math.round(paidChars).toLocaleString("vi-VN")} trả phí` : ""}`, report.rows[0] && !report.rows[0].ok ? `⏸ ${report.rows[0].reason}` : "Về 0% đầu tháng sau");
+                        })() : report.rows.filter((row) => row.perDay).map((row) => {
+                          const share = row.today / (row.perDay ?? 1);
+                          return <div key={`${row.kind}${row.model}`}>{gauge(free ? share : 0, free ? 0 : share, `${row.kind === "chat" ? "Trò chuyện" : "Đọc"} · ${row.model.replace("gemini-", "")}`, `${row.today}/${row.perDay} lượt hôm nay`, row.ok ? "Về 0% lúc 14–15 giờ (giờ VN)" : `⏸ ${row.reason}${row.resetIn ? ` — mở lại sau ${inWords(row.resetIn)}` : ""}`)}</div>;
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+          <small className="settings-hint"><span className="gauge-dot free" /> miễn phí · <span className="gauge-dot paid" /> tính phí. Đồng hồ tự về 0% khi nhà cung cấp đặt lại hạn mức.</small>
+        </div>
+        <h4 className="usage-config-title">Cài đặt trần chi phí và đơn giá</h4>
+        {(["gemini", "gcloud", "openai"] as const).map((service) => {
+          const keys = serviceKeys(service);
+          const spent = spentThisMonth(service);
+          return (
+            <div className="usage-card" key={service}>
+              <div className="usage-head">
+                <strong>{SERVICE_NAMES[service]}</strong>
+                <label className="usage-toggle"><input type="checkbox" checked={usageSettings.enabled[service]} onChange={(event) => updateUsageSettings((current) => ({ ...current, enabled: { ...current.enabled, [service]: event.target.checked } }))} /> Cho phép dùng khi Tự động</label>
+              </div>
+              <div className="usage-cap">
+                <span>Tháng này đã dùng khoảng <b>{spent.toFixed(spent < 1 ? 4 : 2)} USD</b> — trần</span>
+                <input type="number" min="0" step="0.5" className="settings-input" value={usageSettings.caps[service]}
+                  onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: value } })); }} />
+                <span>USD</span>
+              </div>
+              {!keys.length && <small className="settings-hint">Chưa có key cho dịch vụ này.</small>}
+              {keys.map((entry, index) => {
+                const report = keyReport(usageSettings, service, entry.value,
+                  service === "gemini" ? [...googleModels.map((model) => ({ model, kind: "speech" as const })), { model: activeModel, kind: "chat" as const }]
+                  : service === "openai" ? [{ model: OPENAI_TTS_MODELS[0], kind: "speech" as const }, { model: selectedModels.openai || "gpt-4o-mini", kind: "chat" as const }]
+                  : [{ model: "chirp3-hd", kind: "speech" as const }]);
+                return (
+                  <div className="usage-key" key={entry.id}>
+                    <div className="usage-key-head">
+                      <span>{entry.label || `Key ${index + 1}`} · …{entry.value.slice(-4)}</span>
+                      {service === "gemini" && (
+                        <select className="settings-select" value={report.tier} onChange={(event) => { const tier = event.target.value as KeyTier; updateUsageSettings((current) => ({ ...current, tiers: { ...current.tiers, [keyTag(entry.value)]: tier } })); }}>
+                          <option value="paid">Trả phí (Tier 1)</option>
+                          <option value="free">Miễn phí (Free tier)</option>
+                        </select>
+                      )}
+                    </div>
+                    {service === "gcloud" && <small className="settings-hint">Ký tự tháng này: {report.monthChars.toLocaleString("vi-VN")} / {Math.floor(usageSettings.prices.gcloud.freeChars * 0.95).toLocaleString("vi-VN")} miễn phí</small>}
+                    <ul className="usage-rows">
+                      {report.rows.map((row) => (
+                        <li key={`${row.kind}${row.model}`} className={row.ok ? "" : "blocked"}>
+                          <span>{row.kind === "chat" ? "Trò chuyện" : "Đọc"} · {row.model}</span>
+                          <span>{row.perDay ? `${row.today}/${row.perDay} hôm nay` : `${row.today} hôm nay`}</span>
+                          <span>{row.ok ? "✓ sẵn sàng" : `⏸ ${row.reason}${row.resetIn ? ` — mở lại sau ${inWords(row.resetIn)}` : ""}`}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+              <details className="usage-prices">
+                <summary>Đơn giá (sửa khi nhà cung cấp đổi giá)</summary>
+                {service === "gemini" && [price("gemini", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("gemini", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("gemini", "ttsFlash", "Đọc – Flash TTS", "USD / 1 triệu token âm thanh"), price("gemini", "ttsLite", "Đọc – Flash-Lite TTS", "USD / 1 triệu token âm thanh")]}
+                {service === "openai" && [price("openai", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("openai", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("openai", "ttsPerMinute", "Đọc", "USD / phút")]}
+                {service === "gcloud" && [price("gcloud", "perMillionChars", "Đọc – Chirp 3 HD", "USD / 1 triệu ký tự"), price("gcloud", "freeChars", "Miễn phí mỗi tháng", "ký tự / key")]}
+              </details>
+            </div>
+          );
+        })}
       </section>
     );
   }
@@ -3408,6 +3580,16 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
             {renderVoiceStudio()}
             {renderRecordingSettings()}
+          </div>
+        </details>
+        <details name="settings-groups" className="settings-group">
+          <summary className="settings-group-summary">
+            <span className="settings-icon" aria-hidden="true">💰</span>
+            <span><strong>Chi phí AI</strong><small>{usageSettings.mode === "auto" ? "Giọng AI: Tự động" : "Giọng AI: chọn tay"} · Gemini {spentThisMonth("gemini").toFixed(2)} / {usageSettings.caps.gemini} USD tháng này</small></span>
+            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div className="settings-group-content">
+            {renderUsageSettings()}
           </div>
         </details>
         <details name="settings-groups" className="settings-group">
@@ -5097,6 +5279,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
   return (
     <main className="app-shell wizard-shell">
       <WaitIndicator active={learnerIsWaiting} label={waitLabel} onCancel={waitingForFirstWords ? cancelTutorTurn : undefined} />
+      {speechPlaying && voiceServiceLabel && <div className="voice-service-badge" role="status">🔊 {voiceServiceLabel}</div>}
       {canGoBack && (
         <button className="floating-back-button" type="button" onClick={goBack} aria-label="Quay lại trang trước" title="Quay lại trang trước">
           <IllustrationIcon name="back" />
