@@ -2833,3 +2833,9 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
 .gauge-dot.free { background: #2fb67f; }
 .gauge-dot.paid { background: #e2554b; }
 .usage-config-title { margin: 6px 0 0; font-size: 1rem; }
+
+/* Tick boxes: models the app may use */
+.model-checks { display: grid; gap: 4px; }
+.model-check { display: flex; align-items: flex-start; gap: 8px; font-size: .875rem; }
+.model-check input { margin-top: 3px; }
+.model-check small { color: var(--muted); }

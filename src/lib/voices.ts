@@ -247,7 +247,7 @@ async function cloudTtsError(response: Response): Promise<AiError> {
   return new AiError("other", `Google Cloud TTS không đọc được (HTTP ${response.status})${detail ? `: ${detail}` : ""}`, response.status);
 }
 
-async function synthesizeGoogleCloud(key: string, profile: VoiceProfile, text: string, language: "en" | "vi"): Promise<Blob> {
+async function synthesizeGoogleCloud(key: string, model: string, profile: VoiceProfile, text: string, language: "en" | "vi"): Promise<Blob> {
   const locale = cloudLocale(language === "vi" ? "vi-VN" : getAccent(profile.accent).locales[0] ?? "en-US");
   const gender = profile.gender === "male" ? "MALE" : "FEMALE";
   // The named voice must match the tutor's gender (a male tutor never reads with "Kore").
@@ -265,8 +265,10 @@ async function synthesizeGoogleCloud(key: string, profile: VoiceProfile, text: s
     signal: AbortSignal.timeout(18_000),
   });
   const chirp = !localesWithoutChirp().includes(`${locale}|${named.id}`);
+  // "chirp3-hd-only": the learner did not allow Google's ordinary voices.
+  if (!chirp && model === "chirp3-hd-only") throw new AiError("model", "Vùng này không có giọng Chirp 3 HD và bạn chưa cho phép giọng thường.");
   let response = await send(chirp);
-  if (response.status === 400 && chirp) {
+  if (response.status === 400 && chirp && model !== "chirp3-hd-only") {
     const second = await send(false);
     if (second.ok) {
       try { localStorage.setItem(NO_CHIRP_KEY, JSON.stringify([...new Set([...localesWithoutChirp(), `${locale}|${named.id}`])])); } catch {}
@@ -288,7 +290,7 @@ export async function synthesizeCloudSpeech(
   text: string,
   language: "en" | "vi" = "en",
 ): Promise<Blob> {
-  if (engine === "gcloud") return synthesizeGoogleCloud(key, profile, text, language);
+  if (engine === "gcloud") return synthesizeGoogleCloud(key, model, profile, text, language);
   const direction = voiceDirection(profile, language);
   if (engine === "google") {
     // The spoken text carries nothing but the words to read: a direction placed in the text

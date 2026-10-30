@@ -28,7 +28,37 @@ export type UsageSettings = {
   prices: Prices;
   /** Gemini key tier, by the key's last characters. */
   tiers: Record<string, KeyTier>;
+  /** Models the learner allows ("service|kind|model" → true/false); unset ones follow `allowedByDefault`. */
+  allowed: Record<string, boolean>;
 };
+
+/** Speech models of each service, as shown in the settings (cheapest last within a service is not assumed). */
+export const SPEECH_MODELS: Record<ServiceId, { id: string; label: string; note: string }[]> = {
+  gemini: [
+    { id: "gemini-3.8-flash-tts", label: "3.8 Flash TTS", note: "tự nhiên nhất" },
+    { id: "gemini-3.8-flash-lite-tts", label: "3.8 Flash-Lite TTS", note: "rẻ hơn khoảng 1/3" },
+    { id: "gemini-2.5-flash-tts", label: "2.5 Flash TTS", note: "đời cũ" },
+  ],
+  openai: [
+    { id: "gpt-4o-mini-tts", label: "gpt-4o-mini-tts", note: "tự nhiên, theo chỉ dẫn giọng" },
+    { id: "tts-1", label: "tts-1", note: "đời cũ" },
+  ],
+  gcloud: [
+    { id: "chirp3-hd", label: "Chirp 3 HD", note: "tự nhiên; vùng nào không có thì dùng giọng thường nếu được phép bên dưới" },
+    { id: "standard", label: "Giọng thường của Google", note: "chỉ dùng khi vùng đó không có Chirp 3 HD" },
+  ],
+};
+
+function allowedByDefault(service: ServiceId, kind: UsageKind, model: string): boolean {
+  if (kind === "chat") return true;
+  if (service === "gemini") return /gemini-3\.8/.test(model);
+  if (service === "openai") return model === "gpt-4o-mini-tts";
+  return true;
+}
+
+export function isAllowed(settings: UsageSettings, service: ServiceId, kind: UsageKind, model: string): boolean {
+  return settings.allowed[`${service}|${kind}|${model}`] ?? allowedByDefault(service, kind, model);
+}
 
 /** Prices as published in October 2026 (USD per 1M tokens, per minute, or per 1M characters). */
 export const DEFAULT_PRICES: Prices = {
@@ -43,6 +73,7 @@ export const DEFAULT_SETTINGS: UsageSettings = {
   caps: { gemini: 5, openai: 0, gcloud: 0 },
   prices: DEFAULT_PRICES,
   tiers: {},
+  allowed: {},
 };
 
 export const SERVICE_NAMES: Record<ServiceId, string> = { gemini: "Gemini", openai: "OpenAI", gcloud: "Google Cloud TTS" };
@@ -71,6 +102,7 @@ export function loadSettings(): UsageSettings {
         gcloud: { ...DEFAULT_PRICES.gcloud, ...stored.prices?.gcloud },
       },
       tiers: { ...stored.tiers },
+      allowed: { ...stored.allowed },
     };
   } catch {
     return structuredClone(DEFAULT_SETTINGS);
@@ -186,16 +218,16 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   const entry = keyLedger(tag);
   const { rpm, rpd } = limitsFor(service, tier, kind);
   const bucket = `${kind}:${model}`;
+  const cost = estimateCost(settings, service, tier, kind, model, amount, tag);
   if (entry.closed[bucket] || (entry.dayCount[bucket] ?? 0) >= safe(rpd)) {
-    return { ok: false, cost: 0, reason: `${name} (${model}) đã dùng hết lượt hôm nay`, resetIn: untilPacificMidnight(), renews: "day" };
+    return { ok: false, cost, reason: `${name} (${model}) đã dùng hết lượt hôm nay`, resetIn: untilPacificMidnight(), renews: "day" };
   }
   const now = Date.now();
   const recent = (minute[`${tag}|${bucket}`] ?? []).filter((time) => now - time < 60_000);
   minute[`${tag}|${bucket}`] = recent;
   if (recent.length >= safe(rpm)) {
-    return { ok: false, cost: 0, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
+    return { ok: false, cost, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
   }
-  const cost = estimateCost(settings, service, tier, kind, model, amount, tag);
   const spent = load().spent[service];
   if (cost > 0 && spent + cost > settings.caps[service] + 1e-9) {
     return {
@@ -270,20 +302,36 @@ export function inWords(ms: number): string {
   return `${Math.round(hours / 24)} ngày`;
 }
 
-// ---------------------------------------------------------------- the planner (Auto mode, speech)
+// ---------------------------------------------------------------- the planner (speech)
 export type Candidate = { service: ServiceId; key: string; model: string };
 
+/** How long the planner waits for a free voice that is only held up by its per-minute limit, instead of paying. */
+const WAIT_FOR_FREE_MS = 8_000;
+
 /**
- * Order in which to try speech candidates: allowed ones first; free before paid; among free ones,
- * capacity that renews soon (a free Gemini key, daily) before Cloud TTS's monthly pool; among paid
- * ones, the cheapest; ties keep the given order (the learner's preference).
+ * Order in which to try speech candidates (only models the learner allows), in four tiers:
+ *   1. free capacity that renews soon (a free Gemini key: per minute / per day),
+ *   2. free capacity that renews slowly (Cloud TTS's monthly free characters),
+ *   3. paid, cheapest unit price first,
+ *   4. (same tier and price) the order the keys were added.
+ * Anything over a limit or the money cap is left out. When the best choice would cost money but a
+ * free one comes back within a few seconds (a per-minute limit), `waitMs` says to wait for it.
  */
 export function planSpeech(settings: UsageSettings, candidates: Candidate[], chars: number) {
-  const rank = { day: 0, minute: 0, month: 1, never: 2 } as const;
-  const scored = candidates.map((candidate, index) => ({ candidate, index, state: check(settings, candidate.service, candidate.key, candidate.model, "speech", { chars }) }));
+  const scored = candidates
+    .filter((candidate) => isAllowed(settings, candidate.service, "speech", candidate.model === "chirp3-hd-only" ? "chirp3-hd" : candidate.model))
+    .map((candidate, index) => {
+      const state = check(settings, candidate.service, candidate.key, candidate.model, "speech", { chars });
+      const tier = state.cost > 0 ? 3 : state.renews === "month" ? 2 : 1;
+      return { candidate, index, state, tier, unit: chars ? state.cost / chars : 0 };
+    });
   const allowed = scored.filter((item) => item.state.ok)
-    .sort((a, b) => a.state.cost - b.state.cost || rank[a.state.renews] - rank[b.state.renews] || a.index - b.index)
-    .map((item) => item.candidate);
+    .sort((a, b) => a.tier - b.tier || a.unit - b.unit || a.index - b.index);
   const refusals = scored.filter((item) => !item.state.ok).map((item) => item.state);
-  return { order: allowed, refusals };
+  const best = allowed[0];
+  const soonFree = scored
+    .filter((item) => !item.state.ok && item.state.renews === "minute" && item.state.cost === 0 && (item.state.resetIn ?? Infinity) <= WAIT_FOR_FREE_MS)
+    .sort((a, b) => (a.state.resetIn ?? 0) - (b.state.resetIn ?? 0))[0];
+  const waitMs = soonFree && (!best || best.state.cost > 0) ? soonFree.state.resetIn ?? 0 : 0;
+  return { order: allowed.map((item) => item.candidate), refusals, waitMs, tierOf: (candidate: Candidate) => scored.find((item) => item.candidate === candidate)?.tier ?? 3 };
 }
