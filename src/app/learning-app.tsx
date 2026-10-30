@@ -27,7 +27,7 @@ import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
 import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
 import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeaker, isOfflineClip, packFlag as voicePackFlag, packInstalled as voicePackInstalled, packMB as voicePackMB, removePack as removeVoicePack, synthesize, warmVoice, type PackId as VoicePackId } from "@/lib/offline-tts";
-import { isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, type Candidate, type KeyTier, type ServiceId, type UsageSettings } from "@/lib/usage";
+import { MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, type Candidate, type KeyTier, type ServiceId, type UsageSettings } from "@/lib/usage";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
@@ -585,6 +585,8 @@ export default function Home() {
   /** An optional second Cloud TTS key (another billing account has its own free quota). */
   const [cloudTtsKey2, setCloudTtsKey2] = useState("");
   const [cloudTtsDraft2, setCloudTtsDraft2] = useState("");
+  const [cloudTtsKey3, setCloudTtsKey3] = useState("");
+  const [cloudTtsDraft3, setCloudTtsDraft3] = useState("");
   /** Costs, caps and limits of the AI services (see lib/usage.ts); `usageTick` re-renders the counters. */
   const [usageSettings, setUsageSettings] = useState<UsageSettings>(() => (typeof window === "undefined" ? DEFAULT_USAGE : loadUsageSettings()));
   const [usageTick, setUsageTick] = useState(0);
@@ -1184,6 +1186,9 @@ export default function Home() {
       const savedCloudTts2 = localStorage.getItem(sharedKey("gcloud-tts-key2")) ?? "";
       setCloudTtsKey2(savedCloudTts2);
       setCloudTtsDraft2(savedCloudTts2);
+      const savedCloudTts3 = localStorage.getItem(sharedKey("gcloud-tts-key3")) ?? "";
+      setCloudTtsKey3(savedCloudTts3);
+      setCloudTtsDraft3(savedCloudTts3);
       try {
         const voices = JSON.parse(localStorage.getItem(sharedKey("service-voices")) ?? "null") as Partial<Record<VoiceService, Partial<Record<VoiceSlot, string>>>> | null;
         if (voices) setServiceVoices((current) => Object.fromEntries((Object.keys(current) as VoiceService[]).map((service) => [service, { ...current[service], ...voices[service] }])) as Record<VoiceService, Record<VoiceSlot, string>>);
@@ -1407,7 +1412,7 @@ export default function Home() {
           refusal.detail = "local usage limit";
           throw refusal;
         }
-        reserveUsage(key, model, "chat");
+        reserveUsage(usageSettingsRef.current, service, key, model, "chat");
         try {
           const value = await operation(key, model);
           recordUsage(usageSettingsRef.current, service, key, model, "chat", { inTokens, outTokens: typeof value === "string" ? Math.ceil(value.length / 4) : 300 });
@@ -1415,7 +1420,7 @@ export default function Home() {
           return value;
         } catch (error) {
           if (error instanceof AiError && error.kind === "quota" && error.detail !== "local usage limit") {
-            refuseUsage(key, model, "chat", /per[ _-]?day|RPD/i.test(error.detail) ? "day" : "minute");
+            refuseUsage(usageSettingsRef.current, service, key, model, "chat", /per[ _-]?day|RPD/i.test(error.detail) ? "day" : "minute");
           }
           throw error;
         }
@@ -1944,6 +1949,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       setApiKeyError(`Vui lòng nhập API key ${aiProvider === "google" ? "Google AI" : "OpenAI"}.`);
       return;
     }
+    if (apiKeys[aiProvider].length >= MAX_KEYS) {
+      setApiKeyError(`Mỗi dịch vụ dùng tối đa ${MAX_KEYS} key. Hãy xóa bớt một key trước khi thêm key mới.`);
+      return;
+    }
     const duplicate = apiKeys[aiProvider].find((entry) => entry.value === candidate);
     if (duplicate) {
       setApiKeyError(`Key này đã được lưu với tên “${duplicate.label}”. Hãy dán một key khác.`);
@@ -2084,7 +2093,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   /** Keys for an AI voice engine: Gemini and OpenAI share the AI settings, Cloud TTS has its own key. */
   function voiceKeys(engine: VoiceProfile["engine"]): ApiKeyEntry[] {
     if (engine === "gcloud") {
-      return [cloudTtsKey, cloudTtsKey2].filter(Boolean).map((value, index) => ({ id: `gcloud${index + 1}`, label: `Google Cloud TTS ${index + 1}`, value }));
+      return [cloudTtsKey, cloudTtsKey2, cloudTtsKey3].filter(Boolean).map((value, index) => ({ id: `gcloud${index + 1}`, label: `Google Cloud TTS ${index + 1}`, value }));
     }
     return engine === "device" ? [] : apiKeys[engine];
   }
@@ -2250,7 +2259,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         const choice = order[0];
         tried.add(`${choice.key}|${choice.model}`);
         const voiced = serviceProfile(choice.service, profile, main);
-        reserveUsage(choice.key, choice.model, "speech");
+        reserveUsage(usageSettingsRef.current, choice.service, choice.key, choice.model, "speech");
         try {
           const value = await synthesizeCloudSpeech(choice.service === "gemini" ? "google" : choice.service, choice.key, choice.model, voiced, text, language);
           recordUsage(usageSettingsRef.current, choice.service, choice.key, choice.model, "speech", { chars: text.length });
@@ -2260,8 +2269,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           return value;
         } catch (error) {
           const failure = error instanceof AiError ? error : null;
-          if (failure?.kind === "quota") refuseUsage(choice.key, choice.model, "speech", /per[ _-]?day|RPD|limit:\s*0(?!\d)/i.test(`${failure.detail} ${failure.message}`) ? "day" : "minute");
-          else if (failure?.kind === "auth") refuseUsage(choice.key, choice.model, "speech", "key", failure.message);
+          if (failure?.kind === "quota") refuseUsage(usageSettingsRef.current, choice.service, choice.key, choice.model, "speech", /per[ _-]?day|RPD|limit:\s*0(?!\d)/i.test(`${failure.detail} ${failure.message}`) ? "day" : "minute");
+          else if (failure?.kind === "auth") refuseUsage(usageSettingsRef.current, choice.service, choice.key, choice.model, "speech", "key", failure.message);
           reason = `${SERVICE_NAMES[choice.service]}: ${error instanceof Error ? error.message : "lỗi không xác định"}`;
         }
       }
@@ -2899,6 +2908,13 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           <button type="button" className="button button-primary" disabled={cloudTtsDraft2 === cloudTtsKey2}
             onClick={() => { setCloudTtsKey2(cloudTtsDraft2); try { localStorage.setItem(sharedKey("gcloud-tts-key2"), cloudTtsDraft2); } catch {} }}>Lưu</button>
         </div>
+        <label className="settings-label" htmlFor="gcloud-key3">Key thứ ba (không bắt buộc)</label>
+        <div className="gcloud-key-row">
+          <input id="gcloud-key3" className="settings-input" type="password" autoComplete="off" placeholder="AIza…" value={cloudTtsDraft3} onChange={(event) => setCloudTtsDraft3(event.target.value.trim())} />
+          <button type="button" className="button button-primary" disabled={cloudTtsDraft3 === cloudTtsKey3}
+            onClick={() => { setCloudTtsKey3(cloudTtsDraft3); try { localStorage.setItem(sharedKey("gcloud-tts-key3"), cloudTtsDraft3); } catch {} }}>Lưu</button>
+        </div>
+        <small className="settings-hint key-advice">ℹ️ {keyAdvice("gcloud")} Tối đa {MAX_KEYS} key.</small>
         <small className="settings-hint">Cách tạo: mở <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" target="_blank" rel="noreferrer">Cloud Text-to-Speech API</a>, chọn dự án đã gắn thanh toán → Enable; rồi <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer">Credentials</a> → Create credentials → API key. Số ký tự đã dùng xem ở Chi phí AI.</small>
       </div>
     );
@@ -2935,6 +2951,13 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         ))}
       </div>
     );
+  }
+
+  /** How each provider counts its limits, so the learner creates keys that really add capacity. */
+  function keyAdvice(service: ServiceId) {
+    if (service === "gemini") return <>Gemini tính lượt theo <b>dự án Google Cloud</b>: các key trong cùng một dự án dùng chung lượt. Muốn thêm lượt, tạo key ở <b>dự án khác</b>; không cần khác tài khoản hay thẻ. Hạn mức trả phí (Tier 1) đi theo tài khoản thanh toán gắn với dự án, nên dự án mới cũng phải gắn tài khoản thanh toán thì mới được hạn mức trả phí.</>;
+    if (service === "gcloud") return <>Cloud TTS tính phần miễn phí (1 triệu ký tự mỗi tháng với Chirp 3 HD) theo <b>tài khoản thanh toán</b>: key ở dự án khác nhưng cùng tài khoản thanh toán vẫn dùng chung phần miễn phí. Muốn thêm phần miễn phí, key phải thuộc <b>tài khoản thanh toán khác</b>.</>;
+    return <>OpenAI tính giới hạn và tiền theo <b>tổ chức (organization)</b>; API không có phần miễn phí. Key ở dự án khác trong cùng tổ chức vẫn dùng chung tiền và giới hạn.</>;
   }
 
   /** The tutor stopped at a cap or limit the learner set: raise it, switch provider, or look at the costs. */
@@ -3046,6 +3069,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <span>USD</span>
               </div>
               {!keys.length && <small className="settings-hint">Chưa có key cho dịch vụ này.</small>}
+              <small className="settings-hint key-advice">ℹ️ {keyAdvice(service)} Mỗi dịch vụ tối đa {MAX_KEYS} key; key nào chung dự án / tài khoản thanh toán / tổ chức thì chọn cùng chữ ở ô bên cạnh key để app đếm chung.</small>
               {keys.map((entry, index) => {
                 const report = keyReport(usageSettings, service, entry.value,
                   service === "gemini" ? [...googleModels.map((model) => ({ model, kind: "speech" as const })), { model: activeModel, kind: "chat" as const }]
@@ -3055,6 +3079,17 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   <div className="usage-key" key={entry.id}>
                     <div className="usage-key-head">
                       <span>{entry.label || `Key ${index + 1}`} · …{entry.value.slice(-4)}</span>
+                      <label className="usage-group">
+                        <span>{service === "gemini" ? "Dự án" : service === "gcloud" ? "Tài khoản thanh toán" : "Tổ chức"}</span>
+                        <select className="settings-select" value={usageSettings.groups[keyTag(entry.value)] ?? "ABC"[index]}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            // Every key of the service gets its group written down, so "same letter" really means shared.
+                            updateUsageSettings((current) => ({ ...current, groups: { ...current.groups, ...Object.fromEntries(keys.map((other, otherIndex) => [keyTag(other.value), other.value === entry.value ? value : current.groups[keyTag(other.value)] ?? "ABC"[otherIndex]])) } }));
+                          }}>
+                          {["A", "B", "C"].map((letter) => <option key={letter} value={letter}>{letter}</option>)}
+                        </select>
+                      </label>
                       {service === "gemini" && (
                         <select className="settings-select" value={report.tier} onChange={(event) => { const tier = event.target.value as KeyTier; updateUsageSettings((current) => ({ ...current, tiers: { ...current.tiers, [keyTag(entry.value)]: tier } })); }}>
                           <option value="paid">Trả phí (Tier 1)</option>
@@ -3709,6 +3744,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             {keyEntries.length > 1 && <small className="settings-hint">Khi một key bị từ chối hoặc hết hạn mức, app tự chuyển sang key khác. Lưu ý: các key cùng một dự án Google dùng chung hạn mức — hãy tạo mỗi key ở một dự án riêng.</small>}
           </div>
           <form className="settings-key-form" onSubmit={(event) => { void saveApiKey(event); }}>
+            <small className="settings-hint key-advice">ℹ️ {keyAdvice(aiProvider === "google" ? "gemini" : "openai")} Tối đa {MAX_KEYS} key.</small>
             <label className="settings-label" htmlFor="ai-api-key">Thêm API key {keyEntries.length ? "dự phòng" : ""}</label>
             <input id="ai-api-key" className="settings-input" type="password" autoComplete="off" value={apiKeyDraft} onChange={(event) => {
               setApiKeyDraft(event.target.value);
