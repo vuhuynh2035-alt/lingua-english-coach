@@ -1,0 +1,2027 @@
+{
+ "id": "travel",
+ "title": "Tiếng Anh du lịch",
+ "version": "2.0.0",
+ "framework": "CEFR A1–B2",
+ "overview": "12 bài từ A1 đến B2 cho chuyến đi: sân bay, khách sạn, ăn uống, di chuyển, xử lý sự cố và trải nghiệm văn hóa.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
+ "references": [
+  {
+   "title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)",
+   "url": "https://www.coe.int/en/web/common-european-framework-reference-languages",
+   "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "British Council / EAQUALS – Core Inventory for General English",
+   "url": "https://www.teachingenglish.org.uk/article/british-council-eaquals-core-inventory-general-english",
+   "license": "Tham khảo danh mục chức năng, ngữ pháp, chủ đề theo level (không sao chép nội dung)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "travel-a1-1",
+   "level": "A1",
+   "unit": "A1 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Làm thủ tục tại sân bay",
+   "objective": "Check-in, xuất trình hộ chiếu, gửi hành lý và hỏi cửa ra máy bay.",
+   "reading": "Agent: Good morning. Where are you flying to today?\nPassenger: To Singapore.\nAgent: Can I see your passport, please?\nPassenger: Here you are.\nAgent: Do you have any bags to check in?\nPassenger: Yes, one suitcase.\nAgent: Window or aisle seat?\nPassenger: Window, please.\nAgent: Here's your boarding pass. Your gate is B12. Boarding starts at 9:40.",
+   "vocabulary": [
+    {
+     "term": "passport",
+     "definition": "hộ chiếu",
+     "example": "Can I see your passport, please?"
+    },
+    {
+     "term": "check in",
+     "definition": "làm thủ tục, ký gửi",
+     "example": "I have one bag to check in."
+    },
+    {
+     "term": "suitcase",
+     "definition": "va li",
+     "example": "My suitcase is blue."
+    },
+    {
+     "term": "aisle seat",
+     "definition": "ghế cạnh lối đi",
+     "example": "I'd like an aisle seat."
+    },
+    {
+     "term": "boarding pass",
+     "definition": "thẻ lên máy bay",
+     "example": "Here's your boarding pass."
+    },
+    {
+     "term": "gate",
+     "definition": "cửa ra máy bay",
+     "example": "Your gate is B12."
+    }
+   ],
+   "grammar": {
+    "title": "Câu hỏi Wh- cơ bản",
+    "explanation": "What (gì), Where (ở đâu), When (khi nào), What time (mấy giờ), Which (cái nào). Cấu trúc: Wh- + trợ động từ + chủ ngữ + V: Where are you flying to?",
+    "examples": [
+     "Where is gate B12?",
+     "What time does boarding start?",
+     "Which seat do you want?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "aisle đọc /aɪl/ (chữ s câm)",
+    "tip": "aisle đọc giống 'I'll' — chữ s không phát âm. Gate /geɪt/ nhớ bật âm /t/ cuối.",
+    "words": [
+     "aisle",
+     "gate",
+     "passport",
+     "suitcase"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai làm thủ tục check-in: trả lời nhân viên (thầy/cô).",
+    "Hỏi đường đến cửa B12 và giờ lên máy bay."
+   ],
+   "questions": [
+    {
+     "prompt": "Where is the passenger flying to?",
+     "options": [
+      "Singapore",
+      "Tokyo",
+      "Bangkok"
+     ],
+     "answer": 0,
+     "explanation": "'To Singapore.'"
+    },
+    {
+     "prompt": "How many bags does the passenger check in?",
+     "options": [
+      "One",
+      "None",
+      "Two"
+     ],
+     "answer": 0,
+     "explanation": "'one suitcase'."
+    },
+    {
+     "prompt": "What seat does the passenger choose?",
+     "options": [
+      "Window",
+      "Middle",
+      "Aisle"
+     ],
+     "answer": 0,
+     "explanation": "'Window, please.'"
+    },
+    {
+     "prompt": "What time does boarding start?",
+     "options": [
+      "9:40",
+      "10:40",
+      "9:14"
+     ],
+     "answer": 0,
+     "explanation": "'Boarding starts at 9:40.'"
+    },
+    {
+     "prompt": "Choose the correct question.",
+     "options": [
+      "Where gate B12 is?",
+      "Where is gate B12?",
+      "Where does gate B12?"
+     ],
+     "answer": 1,
+     "explanation": "Wh- + is + chủ ngữ."
+    },
+    {
+     "prompt": "Complete the sentence: I'd like an _____.",
+     "options": [
+      "aisle seat",
+      "check in",
+      "boarding pass"
+     ],
+     "answer": 0,
+     "explanation": "“aisle seat” nghĩa là “ghế cạnh lối đi”. Câu đầy đủ: I'd like an aisle seat."
+    },
+    {
+     "prompt": "What does “check in” mean?",
+     "options": [
+      "làm thủ tục, ký gửi",
+      "ghế cạnh lối đi",
+      "thẻ lên máy bay"
+     ],
+     "answer": 0,
+     "explanation": "“check in” = làm thủ tục, ký gửi. Ví dụ: I have one bag to check in."
+    },
+    {
+     "prompt": "Complete the sentence: Can I see your _____, please?",
+     "options": [
+      "gate",
+      "passport",
+      "suitcase"
+     ],
+     "answer": 1,
+     "explanation": "“passport” nghĩa là “hộ chiếu”. Câu đầy đủ: Can I see your passport, please?"
+    },
+    {
+     "prompt": "What does “boarding pass” mean?",
+     "options": [
+      "thẻ lên máy bay",
+      "ghế cạnh lối đi",
+      "làm thủ tục, ký gửi"
+     ],
+     "answer": 0,
+     "explanation": "“boarding pass” = thẻ lên máy bay. Ví dụ: Here's your boarding pass."
+    },
+    {
+     "prompt": "Complete the sentence: I have one bag to _____.",
+     "options": [
+      "aisle seat",
+      "check in",
+      "boarding pass"
+     ],
+     "answer": 1,
+     "explanation": "“check in” nghĩa là “làm thủ tục, ký gửi”. Câu đầy đủ: I have one bag to check in."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a1-2",
+   "level": "A1",
+   "unit": "A1 · Bài 2",
+   "category": "Từ vựng",
+   "title": "Nhận phòng khách sạn",
+   "objective": "Nhận phòng, hỏi giờ ăn sáng, Wi-Fi và các tiện ích.",
+   "reading": "Receptionist: Good evening. Welcome to the Sunrise Hotel.\nGuest: Hi. I have a reservation. My name is Pham.\nReceptionist: Yes, a double room for three nights. Here is your key card. Your room is 305, on the third floor.\nGuest: What time is breakfast?\nReceptionist: From 6:30 to 10 in the restaurant.\nGuest: Is there Wi-Fi?\nReceptionist: Yes, it's free. The password is on your key card.",
+   "vocabulary": [
+    {
+     "term": "reservation",
+     "definition": "đặt phòng trước",
+     "example": "I have a reservation."
+    },
+    {
+     "term": "double room",
+     "definition": "phòng giường đôi",
+     "example": "We'd like a double room."
+    },
+    {
+     "term": "key card",
+     "definition": "thẻ từ mở phòng",
+     "example": "Here is your key card."
+    },
+    {
+     "term": "breakfast",
+     "definition": "bữa sáng",
+     "example": "Breakfast is from 6:30."
+    },
+    {
+     "term": "free",
+     "definition": "miễn phí",
+     "example": "The Wi-Fi is free."
+    },
+    {
+     "term": "password",
+     "definition": "mật khẩu",
+     "example": "What's the Wi-Fi password?"
+    }
+   ],
+   "grammar": {
+    "title": "Is there…? / Are there…?",
+    "explanation": "Hỏi có hay không: Is there a pool? (số ít) / Are there any towels? (số nhiều). Trả lời: Yes, there is. / No, there aren't.",
+    "examples": [
+     "Is there a gym in the hotel?",
+     "Are there any restaurants nearby?",
+     "Yes, there is. It's on the first floor."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Số phòng và số thứ tự",
+    "tip": "305 đọc 'three-oh-five'. third /θɜːd/ — đặt lưỡi giữa hai răng cho âm /θ/, không đọc thành 'tớt'.",
+    "words": [
+     "third",
+     "three",
+     "breakfast",
+     "reservation"
+    ]
+   },
+   "speakingTasks": [
+    "Nhận phòng với thầy/cô: nói tên, số đêm và hỏi 2 tiện ích.",
+    "Hỏi về giờ trả phòng (check-out)."
+   ],
+   "questions": [
+    {
+     "prompt": "How many nights is the guest staying?",
+     "options": [
+      "Three",
+      "Two",
+      "Four"
+     ],
+     "answer": 0,
+     "explanation": "'for three nights'."
+    },
+    {
+     "prompt": "Which floor is room 305 on?",
+     "options": [
+      "Fifth",
+      "First",
+      "Third"
+     ],
+     "answer": 2,
+     "explanation": "'on the third floor'."
+    },
+    {
+     "prompt": "Where is breakfast served?",
+     "options": [
+      "In the room",
+      "In the lobby",
+      "In the restaurant"
+     ],
+     "answer": 2,
+     "explanation": "'in the restaurant'."
+    },
+    {
+     "prompt": "Where is the Wi-Fi password?",
+     "options": [
+      "On the key card",
+      "On the TV",
+      "At reception"
+     ],
+     "answer": 0,
+     "explanation": "'The password is on your key card.'"
+    },
+    {
+     "prompt": "Choose the correct question.",
+     "options": [
+      "Are there any towels?",
+      "There are any towels?",
+      "Is there any towels?"
+     ],
+     "answer": 0,
+     "explanation": "towels số nhiều → Are there any…?"
+    },
+    {
+     "prompt": "Complete the sentence: What's the Wi-Fi _____?",
+     "options": [
+      "password",
+      "breakfast",
+      "reservation"
+     ],
+     "answer": 0,
+     "explanation": "“password” nghĩa là “mật khẩu”. Câu đầy đủ: What's the Wi-Fi password?"
+    },
+    {
+     "prompt": "What does “double room” mean?",
+     "options": [
+      "mật khẩu",
+      "thẻ từ mở phòng",
+      "phòng giường đôi"
+     ],
+     "answer": 2,
+     "explanation": "“double room” = phòng giường đôi. Ví dụ: We'd like a double room."
+    },
+    {
+     "prompt": "Complete the sentence: Here is your _____.",
+     "options": [
+      "breakfast",
+      "double room",
+      "key card"
+     ],
+     "answer": 2,
+     "explanation": "“key card” nghĩa là “thẻ từ mở phòng”. Câu đầy đủ: Here is your key card."
+    },
+    {
+     "prompt": "What does “breakfast” mean?",
+     "options": [
+      "mật khẩu",
+      "bữa sáng",
+      "đặt phòng trước"
+     ],
+     "answer": 1,
+     "explanation": "“breakfast” = bữa sáng. Ví dụ: Breakfast is from 6:30."
+    },
+    {
+     "prompt": "Complete the sentence: We'd like a _____.",
+     "options": [
+      "password",
+      "key card",
+      "double room"
+     ],
+     "answer": 2,
+     "explanation": "“double room” nghĩa là “phòng giường đôi”. Câu đầy đủ: We'd like a double room."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a1-3",
+   "level": "A1",
+   "unit": "A1 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Mua vé và đi phương tiện công cộng",
+   "objective": "Mua vé tàu/xe buýt, hỏi giờ, sân ga và giá vé.",
+   "reading": "Passenger: Hello. A ticket to Brighton, please.\nClerk: Single or return?\nPassenger: Return, please. How much is it?\nClerk: Twenty-four pounds.\nPassenger: What time is the next train?\nClerk: At 11:15, from platform 4.\nPassenger: How long does it take?\nClerk: About an hour.",
+   "vocabulary": [
+    {
+     "term": "ticket",
+     "definition": "vé",
+     "example": "A ticket to Brighton, please."
+    },
+    {
+     "term": "single",
+     "definition": "vé một chiều",
+     "example": "A single ticket, please."
+    },
+    {
+     "term": "return",
+     "definition": "vé khứ hồi",
+     "example": "I'd like a return ticket."
+    },
+    {
+     "term": "next train",
+     "definition": "chuyến tàu tiếp theo",
+     "example": "When is the next train?"
+    },
+    {
+     "term": "platform",
+     "definition": "sân ga",
+     "example": "The train leaves from platform 4."
+    },
+    {
+     "term": "How long does it take?",
+     "definition": "Mất bao lâu?",
+     "example": "How long does it take to the airport?"
+    }
+   ],
+   "grammar": {
+    "title": "How much / How long / What time",
+    "explanation": "How much…? hỏi giá; How long does it take? hỏi thời gian di chuyển; What time…? hỏi giờ cụ thể.",
+    "examples": [
+     "How much is a single ticket?",
+     "How long does it take by bus?",
+     "What time does the bus leave?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm /ɜː/ trong return, journey",
+    "tip": "return /rɪˈtɜːn/ — nhấn âm sau, nguyên âm 'ơ' dài. Twenty-four nhấn 'twen' và 'four'.",
+    "words": [
+     "return",
+     "platform",
+     "ticket",
+     "twenty-four"
+    ]
+   },
+   "speakingTasks": [
+    "Mua một vé khứ hồi và hỏi giờ tàu, sân ga.",
+    "Hỏi thầy/cô cách đi từ sân bay về trung tâm thành phố."
+   ],
+   "questions": [
+    {
+     "prompt": "What kind of ticket does the passenger buy?",
+     "options": [
+      "Single",
+      "Weekly",
+      "Return"
+     ],
+     "answer": 2,
+     "explanation": "'Return, please.'"
+    },
+    {
+     "prompt": "How much is the ticket?",
+     "options": [
+      "£42",
+      "£24",
+      "£14"
+     ],
+     "answer": 1,
+     "explanation": "'Twenty-four pounds.'"
+    },
+    {
+     "prompt": "Which platform does the train leave from?",
+     "options": [
+      "4",
+      "11",
+      "2"
+     ],
+     "answer": 0,
+     "explanation": "'from platform 4'."
+    },
+    {
+     "prompt": "How long is the journey?",
+     "options": [
+      "Fifteen minutes",
+      "About an hour",
+      "Two hours"
+     ],
+     "answer": 1,
+     "explanation": "'About an hour.'"
+    },
+    {
+     "prompt": "Which question asks about the price?",
+     "options": [
+      "How long is it?",
+      "What time is it?",
+      "How much is it?"
+     ],
+     "answer": 2,
+     "explanation": "How much = bao nhiêu tiền."
+    },
+    {
+     "prompt": "Complete the sentence: A _____ ticket, please.",
+     "options": [
+      "single",
+      "return",
+      "platform"
+     ],
+     "answer": 0,
+     "explanation": "“single” nghĩa là “vé một chiều”. Câu đầy đủ: A single ticket, please."
+    },
+    {
+     "prompt": "What does “single” mean?",
+     "options": [
+      "vé khứ hồi",
+      "vé một chiều",
+      "sân ga"
+     ],
+     "answer": 1,
+     "explanation": "“single” = vé một chiều. Ví dụ: A single ticket, please."
+    },
+    {
+     "prompt": "Complete the sentence: The train leaves from _____ 4.",
+     "options": [
+      "platform",
+      "return",
+      "single"
+     ],
+     "answer": 0,
+     "explanation": "“platform” nghĩa là “sân ga”. Câu đầy đủ: The train leaves from platform 4."
+    },
+    {
+     "prompt": "What does “next train” mean?",
+     "options": [
+      "chuyến tàu tiếp theo",
+      "sân ga",
+      "vé"
+     ],
+     "answer": 0,
+     "explanation": "“next train” = chuyến tàu tiếp theo. Ví dụ: When is the next train?"
+    },
+    {
+     "prompt": "Complete the sentence: A _____ to Brighton, please.",
+     "options": [
+      "return",
+      "ticket",
+      "single"
+     ],
+     "answer": 1,
+     "explanation": "“ticket” nghĩa là “vé”. Câu đầy đủ: A ticket to Brighton, please."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a2-1",
+   "level": "A2",
+   "unit": "A2 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Gọi món và yêu cầu đặc biệt ở nhà hàng",
+   "objective": "Đặt bàn, gọi món, nói về dị ứng/khẩu vị và thanh toán.",
+   "reading": "Waiter: Are you ready to order?\nCustomer: Yes. I'd like the grilled fish, please. Does it come with rice?\nWaiter: It comes with potatoes, but you can have rice instead.\nCustomer: Rice, please. Also, I'm allergic to peanuts. Is there any in the sauce?\nWaiter: No, there isn't, but I'll tell the chef.\nCustomer: Thank you. Could we have some water too?",
+   "vocabulary": [
+    {
+     "term": "ready to order",
+     "definition": "sẵn sàng gọi món",
+     "example": "Are you ready to order?"
+    },
+    {
+     "term": "come with",
+     "definition": "ăn kèm với",
+     "example": "The steak comes with salad."
+    },
+    {
+     "term": "instead",
+     "definition": "thay vào đó",
+     "example": "Can I have rice instead?"
+    },
+    {
+     "term": "allergic to",
+     "definition": "dị ứng với",
+     "example": "I'm allergic to peanuts."
+    },
+    {
+     "term": "chef",
+     "definition": "đầu bếp",
+     "example": "I'll tell the chef."
+    },
+    {
+     "term": "sauce",
+     "definition": "nước sốt",
+     "example": "The sauce is a bit spicy."
+    }
+   ],
+   "grammar": {
+    "title": "some / any với danh từ không đếm được",
+    "explanation": "some dùng trong câu khẳng định và lời mời/xin (Could we have some water?). any dùng trong câu hỏi và phủ định (Is there any sugar? There isn't any).",
+    "examples": [
+     "Could I have some bread?",
+     "Is there any milk in it?",
+     "There aren't any vegetarian options."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm /ʃ/ trong chef, fish",
+    "tip": "chef /ʃef/ — từ gốc Pháp, chữ ch đọc /ʃ/ như 'sh'. fish /fɪʃ/ nhớ giữ âm cuối /ʃ/.",
+    "words": [
+     "chef",
+     "fish",
+     "sauce",
+     "allergic"
+    ]
+   },
+   "speakingTasks": [
+    "Gọi món ăn và đổi một món kèm, nói về một món bạn không ăn được.",
+    "Thầy/cô là phục vụ — hỏi về món đặc biệt của nhà hàng."
+   ],
+   "questions": [
+    {
+     "prompt": "What does the customer order?",
+     "options": [
+      "Fish soup",
+      "Grilled chicken",
+      "Grilled fish"
+     ],
+     "answer": 2,
+     "explanation": "'I'd like the grilled fish'."
+    },
+    {
+     "prompt": "What does the fish usually come with?",
+     "options": [
+      "Potatoes",
+      "Rice",
+      "Salad"
+     ],
+     "answer": 0,
+     "explanation": "'It comes with potatoes'."
+    },
+    {
+     "prompt": "What is the customer allergic to?",
+     "options": [
+      "Fish",
+      "Peanuts",
+      "Milk"
+     ],
+     "answer": 1,
+     "explanation": "'I'm allergic to peanuts.'"
+    },
+    {
+     "prompt": "Choose the correct request.",
+     "options": [
+      "Could we have a water some?",
+      "Could we have any water?",
+      "Could we have some water?"
+     ],
+     "answer": 2,
+     "explanation": "Lời xin dùng some."
+    },
+    {
+     "prompt": "Choose the correct question.",
+     "options": [
+      "Are there any peanuts in it?",
+      "There are any peanuts?",
+      "Is there some peanuts in it?"
+     ],
+     "answer": 0,
+     "explanation": "Câu hỏi dùng any."
+    },
+    {
+     "prompt": "Complete the sentence: I'll tell the _____.",
+     "options": [
+      "sauce",
+      "instead",
+      "chef"
+     ],
+     "answer": 2,
+     "explanation": "“chef” nghĩa là “đầu bếp”. Câu đầy đủ: I'll tell the chef."
+    },
+    {
+     "prompt": "What does “come with” mean?",
+     "options": [
+      "đầu bếp",
+      "dị ứng với",
+      "ăn kèm với"
+     ],
+     "answer": 2,
+     "explanation": "“come with” = ăn kèm với. Ví dụ: The steak comes with salad."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ is a bit spicy.",
+     "options": [
+      "sauce",
+      "chef",
+      "instead"
+     ],
+     "answer": 0,
+     "explanation": "“sauce” nghĩa là “nước sốt”. Câu đầy đủ: The sauce is a bit spicy."
+    },
+    {
+     "prompt": "What does “sauce” mean?",
+     "options": [
+      "nước sốt",
+      "thay vào đó",
+      "đầu bếp"
+     ],
+     "answer": 0,
+     "explanation": "“sauce” = nước sốt. Ví dụ: The sauce is a bit spicy."
+    },
+    {
+     "prompt": "Complete the sentence: I'm _____ peanuts.",
+     "options": [
+      "instead",
+      "come with",
+      "allergic to"
+     ],
+     "answer": 2,
+     "explanation": "“allergic to” nghĩa là “dị ứng với”. Câu đầy đủ: I'm allergic to peanuts."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a2-2",
+   "level": "A2",
+   "unit": "A2 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Tham quan và hỏi thông tin du lịch",
+   "objective": "Hỏi giờ mở cửa, giá vé tham quan, tour và gợi ý địa điểm.",
+   "reading": "Tourist: Excuse me, what time does the museum open?\nGuide: It opens at nine and closes at five, but it's closed on Mondays.\nTourist: How much is the entrance fee?\nGuide: Ten euros for adults and five for students.\nTourist: Are there any guided tours in English?\nGuide: Yes, there's one at eleven. It lasts about ninety minutes.\nTourist: Great. What else would you recommend?\nGuide: You should visit the old market. It's the most famous place in town.",
+   "vocabulary": [
+    {
+     "term": "entrance fee",
+     "definition": "phí vào cửa",
+     "example": "The entrance fee is ten euros."
+    },
+    {
+     "term": "closed",
+     "definition": "đóng cửa",
+     "example": "The museum is closed on Mondays."
+    },
+    {
+     "term": "guided tour",
+     "definition": "tour có hướng dẫn viên",
+     "example": "Is there a guided tour?"
+    },
+    {
+     "term": "last",
+     "definition": "kéo dài",
+     "example": "The tour lasts ninety minutes."
+    },
+    {
+     "term": "recommend",
+     "definition": "giới thiệu, gợi ý",
+     "example": "What would you recommend?"
+    },
+    {
+     "term": "famous",
+     "definition": "nổi tiếng",
+     "example": "It's the most famous place in town."
+    }
+   ],
+   "grammar": {
+    "title": "So sánh nhất: the -est / the most",
+    "explanation": "Tính từ ngắn: the + -est (the oldest, the biggest). Tính từ dài: the most + adj (the most famous). Bất quy tắc: good → the best, bad → the worst.",
+    "examples": [
+     "It's the oldest building in the city.",
+     "This is the most beautiful beach.",
+     "That was the best tour."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm: MUseum? Không — muSEum",
+    "tip": "museum /mjuːˈziːəm/ nhấn âm thứ hai. recommend /ˌrekəˈmend/ nhấn âm cuối.",
+    "words": [
+     "museum",
+     "recommend",
+     "entrance",
+     "famous"
+    ]
+   },
+   "speakingTasks": [
+    "Hỏi thầy/cô thông tin về một điểm tham quan: giờ, giá, tour.",
+    "Giới thiệu nơi nổi tiếng nhất ở quê bạn với so sánh nhất."
+   ],
+   "questions": [
+    {
+     "prompt": "When is the museum closed?",
+     "options": [
+      "Sundays",
+      "Mondays",
+      "Fridays"
+     ],
+     "answer": 1,
+     "explanation": "'it's closed on Mondays'."
+    },
+    {
+     "prompt": "How much is the ticket for a student?",
+     "options": [
+      "€5",
+      "€15",
+      "€10"
+     ],
+     "answer": 0,
+     "explanation": "'five for students'."
+    },
+    {
+     "prompt": "How long is the guided tour?",
+     "options": [
+      "90 minutes",
+      "60 minutes",
+      "2 hours"
+     ],
+     "answer": 0,
+     "explanation": "'about ninety minutes'."
+    },
+    {
+     "prompt": "Choose the correct superlative.",
+     "options": [
+      "the older",
+      "the most old",
+      "the oldest"
+     ],
+     "answer": 2,
+     "explanation": "old → the oldest."
+    },
+    {
+     "prompt": "What does the guide recommend?",
+     "options": [
+      "The old market",
+      "The beach",
+      "A new mall"
+     ],
+     "answer": 0,
+     "explanation": "'You should visit the old market.'"
+    },
+    {
+     "prompt": "Complete the sentence: The tour _____s ninety minutes.",
+     "options": [
+      "famous",
+      "recommend",
+      "last"
+     ],
+     "answer": 2,
+     "explanation": "“last” nghĩa là “kéo dài”. Câu đầy đủ: The tour lasts ninety minutes."
+    },
+    {
+     "prompt": "What does “entrance fee” mean?",
+     "options": [
+      "phí vào cửa",
+      "giới thiệu, gợi ý",
+      "tour có hướng dẫn viên"
+     ],
+     "answer": 0,
+     "explanation": "“entrance fee” = phí vào cửa. Ví dụ: The entrance fee is ten euros."
+    },
+    {
+     "prompt": "Complete the sentence: The museum is _____ on Mondays.",
+     "options": [
+      "recommend",
+      "closed",
+      "last"
+     ],
+     "answer": 1,
+     "explanation": "“closed” nghĩa là “đóng cửa”. Câu đầy đủ: The museum is closed on Mondays."
+    },
+    {
+     "prompt": "What does “recommend” mean?",
+     "options": [
+      "đóng cửa",
+      "nổi tiếng",
+      "giới thiệu, gợi ý"
+     ],
+     "answer": 2,
+     "explanation": "“recommend” = giới thiệu, gợi ý. Ví dụ: What would you recommend?"
+    },
+    {
+     "prompt": "Complete the sentence: What would you _____?",
+     "options": [
+      "famous",
+      "recommend",
+      "closed"
+     ],
+     "answer": 1,
+     "explanation": "“recommend” nghĩa là “giới thiệu, gợi ý”. Câu đầy đủ: What would you recommend?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-a2-3",
+   "level": "A2",
+   "unit": "A2 · Bài 3",
+   "category": "Ngữ pháp",
+   "title": "Phàn nàn nhẹ nhàng ở khách sạn",
+   "objective": "Báo sự cố phòng ở (điều hòa, nước nóng, tiếng ồn) và yêu cầu hỗ trợ.",
+   "reading": "Guest: Hello, this is room 512. I'm afraid there's a problem. The air conditioner isn't working, and the room is very hot.\nReception: I'm sorry to hear that. I'll send someone to check it right away.\nGuest: Thank you. Also, there was no hot water this morning.\nReception: I apologise. If it isn't fixed in thirty minutes, we'll move you to another room.\nGuest: That would be great. Thanks for your help.",
+   "vocabulary": [
+    {
+     "term": "I'm afraid",
+     "definition": "e rằng (mở đầu lời phàn nàn lịch sự)",
+     "example": "I'm afraid the TV doesn't work."
+    },
+    {
+     "term": "air conditioner",
+     "definition": "máy lạnh",
+     "example": "The air conditioner isn't working."
+    },
+    {
+     "term": "right away",
+     "definition": "ngay lập tức",
+     "example": "I'll send someone right away."
+    },
+    {
+     "term": "hot water",
+     "definition": "nước nóng",
+     "example": "There's no hot water."
+    },
+    {
+     "term": "apologise",
+     "definition": "xin lỗi (trang trọng)",
+     "example": "We apologise for the problem."
+    },
+    {
+     "term": "move",
+     "definition": "chuyển",
+     "example": "We'll move you to another room."
+    }
+   ],
+   "grammar": {
+    "title": "will cho lời hứa và quyết định tức thì",
+    "explanation": "Dùng will + V khi quyết định ngay lúc nói hoặc hứa hẹn: I'll send someone. Phủ định: won't.",
+    "examples": [
+     "I'll call the technician now.",
+     "We'll bring you some towels.",
+     "Don't worry, it won't take long."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Rút gọn I'll /aɪl/, isn't /ˈɪznt/",
+    "tip": "I'll đọc liền /aɪl/. isn't có âm /nt/ cuối rất nhẹ — đừng bỏ, vì nó mang nghĩa phủ định.",
+    "words": [
+     "I'll",
+     "isn't",
+     "apologise",
+     "conditioner"
+    ]
+   },
+   "speakingTasks": [
+    "Gọi lễ tân báo 2 sự cố trong phòng và yêu cầu giải pháp.",
+    "Thầy/cô đưa giải pháp chưa ổn — bạn đề nghị cách khác."
+   ],
+   "questions": [
+    {
+     "prompt": "What is the first problem?",
+     "options": [
+      "No Wi-Fi",
+      "The door is broken",
+      "The air conditioner isn't working"
+     ],
+     "answer": 2,
+     "explanation": "'The air conditioner isn't working'."
+    },
+    {
+     "prompt": "What else was wrong?",
+     "options": [
+      "Dirty towels",
+      "No hot water",
+      "Noisy neighbours"
+     ],
+     "answer": 1,
+     "explanation": "'there was no hot water this morning'."
+    },
+    {
+     "prompt": "What will the hotel do if it isn't fixed?",
+     "options": [
+      "Nothing",
+      "Give a refund",
+      "Move the guest to another room"
+     ],
+     "answer": 2,
+     "explanation": "'we'll move you to another room'."
+    },
+    {
+     "prompt": "Choose the instant decision.",
+     "options": [
+      "I sent someone right away tomorrow.",
+      "I'll send someone right away.",
+      "I'm going to send someone, I decided yesterday."
+     ],
+     "answer": 1,
+     "explanation": "Quyết định tức thì: will."
+    },
+    {
+     "prompt": "Which opening is the most polite complaint?",
+     "options": [
+      "Your room is terrible.",
+      "Fix it!",
+      "I'm afraid there's a problem."
+     ],
+     "answer": 2,
+     "explanation": "'I'm afraid…' mở đầu lịch sự."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ isn't working.",
+     "options": [
+      "hot water",
+      "air conditioner",
+      "I'm afraid"
+     ],
+     "answer": 1,
+     "explanation": "“air conditioner” nghĩa là “máy lạnh”. Câu đầy đủ: The air conditioner isn't working."
+    },
+    {
+     "prompt": "What does “hot water” mean?",
+     "options": [
+      "e rằng (mở đầu lời phàn nàn lịch sự)",
+      "nước nóng",
+      "máy lạnh"
+     ],
+     "answer": 1,
+     "explanation": "“hot water” = nước nóng. Ví dụ: There's no hot water."
+    },
+    {
+     "prompt": "Complete the sentence: I'll send someone _____.",
+     "options": [
+      "air conditioner",
+      "right away",
+      "I'm afraid"
+     ],
+     "answer": 1,
+     "explanation": "“right away” nghĩa là “ngay lập tức”. Câu đầy đủ: I'll send someone right away."
+    },
+    {
+     "prompt": "What does “right away” mean?",
+     "options": [
+      "máy lạnh",
+      "ngay lập tức",
+      "e rằng (mở đầu lời phàn nàn lịch sự)"
+     ],
+     "answer": 1,
+     "explanation": "“right away” = ngay lập tức. Ví dụ: I'll send someone right away."
+    },
+    {
+     "prompt": "Complete the sentence: We _____ for the problem.",
+     "options": [
+      "move",
+      "apologise",
+      "I'm afraid"
+     ],
+     "answer": 1,
+     "explanation": "“apologise” nghĩa là “xin lỗi (trang trọng)”. Câu đầy đủ: We apologise for the problem."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b1-1",
+   "level": "B1",
+   "unit": "B1 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Xử lý sự cố khi đi du lịch",
+   "objective": "Báo mất đồ, chuyến bay bị hủy, và mô tả đồ vật bị thất lạc.",
+   "reading": "Passenger: Excuse me, my suitcase didn't arrive. I was on flight VN301 from Hanoi.\nStaff: I'm sorry. Could you describe it?\nPassenger: It's a medium-sized black suitcase with a red ribbon on the handle. It has my name tag on it.\nStaff: Thank you. It may have been sent to another airport. We'll deliver it to your hotel as soon as it's found.\nPassenger: Will I be compensated if I need to buy clothes?\nStaff: Yes, keep your receipts and we'll reimburse reasonable expenses.",
+   "vocabulary": [
+    {
+     "term": "describe",
+     "definition": "mô tả",
+     "example": "Could you describe your bag?"
+    },
+    {
+     "term": "ribbon",
+     "definition": "dải ruy băng",
+     "example": "It has a red ribbon on the handle."
+    },
+    {
+     "term": "name tag",
+     "definition": "thẻ tên",
+     "example": "There's a name tag on it."
+    },
+    {
+     "term": "deliver",
+     "definition": "giao đến",
+     "example": "We'll deliver it to your hotel."
+    },
+    {
+     "term": "compensate",
+     "definition": "bồi thường",
+     "example": "Will I be compensated?"
+    },
+    {
+     "term": "reimburse",
+     "definition": "hoàn trả chi phí",
+     "example": "We'll reimburse your expenses."
+    }
+   ],
+   "grammar": {
+    "title": "Câu bị động thì tương lai và may have been",
+    "explanation": "Bị động tương lai: will be + V3 (It will be delivered). Phỏng đoán quá khứ: may/might have been + V3 (It may have been sent to another airport).",
+    "examples": [
+     "Your bag will be delivered tonight.",
+     "The flight may have been delayed by the storm.",
+     "You will be compensated for the delay."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Mô tả đồ vật: thứ tự tính từ",
+    "tip": "Kích cỡ → màu → chất liệu: a medium-sized black leather suitcase. Nhấn các tính từ quan trọng khi mô tả.",
+    "words": [
+     "describe",
+     "compensate",
+     "reimburse",
+     "suitcase"
+    ]
+   },
+   "speakingTasks": [
+    "Báo mất hành lý: mô tả va li chi tiết và hỏi về bồi thường.",
+    "Thầy/cô hỏi thêm thông tin — trả lời rõ ràng."
+   ],
+   "questions": [
+    {
+     "prompt": "What is the problem?",
+     "options": [
+      "The flight was cancelled.",
+      "The passport was lost.",
+      "The suitcase didn't arrive."
+     ],
+     "answer": 2,
+     "explanation": "'my suitcase didn't arrive'."
+    },
+    {
+     "prompt": "Which description is correct?",
+     "options": [
+      "Small red suitcase",
+      "Medium-sized black suitcase with a red ribbon",
+      "Large blue bag"
+     ],
+     "answer": 1,
+     "explanation": "'medium-sized black suitcase with a red ribbon'."
+    },
+    {
+     "prompt": "Where will the suitcase be delivered?",
+     "options": [
+      "To Hanoi",
+      "To the airport",
+      "To the hotel"
+     ],
+     "answer": 2,
+     "explanation": "'deliver it to your hotel'."
+    },
+    {
+     "prompt": "Choose the correct passive.",
+     "options": [
+      "It will deliver tonight.",
+      "It will delivered tonight.",
+      "It will be delivered tonight."
+     ],
+     "answer": 2,
+     "explanation": "will be + V3."
+    },
+    {
+     "prompt": "What should the passenger keep?",
+     "options": [
+      "Receipts",
+      "Photos",
+      "Boarding pass only"
+     ],
+     "answer": 0,
+     "explanation": "'keep your receipts'."
+    },
+    {
+     "prompt": "Complete the sentence: Could you _____ your bag?",
+     "options": [
+      "describe",
+      "compensate",
+      "reimburse"
+     ],
+     "answer": 0,
+     "explanation": "“describe” nghĩa là “mô tả”. Câu đầy đủ: Could you describe your bag?"
+    },
+    {
+     "prompt": "What does “reimburse” mean?",
+     "options": [
+      "bồi thường",
+      "hoàn trả chi phí",
+      "mô tả"
+     ],
+     "answer": 1,
+     "explanation": "“reimburse” = hoàn trả chi phí. Ví dụ: We'll reimburse your expenses."
+    },
+    {
+     "prompt": "Complete the sentence: It has a red _____ on the handle.",
+     "options": [
+      "ribbon",
+      "compensate",
+      "describe"
+     ],
+     "answer": 0,
+     "explanation": "“ribbon” nghĩa là “dải ruy băng”. Câu đầy đủ: It has a red ribbon on the handle."
+    },
+    {
+     "prompt": "What does “describe” mean?",
+     "options": [
+      "bồi thường",
+      "mô tả",
+      "hoàn trả chi phí"
+     ],
+     "answer": 1,
+     "explanation": "“describe” = mô tả. Ví dụ: Could you describe your bag?"
+    },
+    {
+     "prompt": "Complete the sentence: Will I be _____d?",
+     "options": [
+      "describe",
+      "reimburse",
+      "compensate"
+     ],
+     "answer": 2,
+     "explanation": "“compensate” nghĩa là “bồi thường”. Câu đầy đủ: Will I be compensated?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b1-2",
+   "level": "B1",
+   "unit": "B1 · Bài 2",
+   "category": "Từ vựng",
+   "title": "Thuê xe và lái xe ở nước ngoài",
+   "objective": "Thuê xe, hỏi về bảo hiểm, nhiên liệu và luật giao thông.",
+   "reading": "Agent: Have you booked a car with us?\nCustomer: Yes, a compact car for five days.\nAgent: Would you like full insurance? It covers any damage to the car.\nCustomer: How much extra is it?\nAgent: Fifteen dollars a day. The car has a full tank, and you have to return it full.\nCustomer: Do I need an international driving permit?\nAgent: Yes, you do. And remember, we drive on the left here.",
+   "vocabulary": [
+    {
+     "term": "book",
+     "definition": "đặt trước",
+     "example": "I've booked a car for five days."
+    },
+    {
+     "term": "insurance",
+     "definition": "bảo hiểm",
+     "example": "Full insurance covers all damage."
+    },
+    {
+     "term": "cover",
+     "definition": "chi trả, bao gồm",
+     "example": "It covers any damage."
+    },
+    {
+     "term": "full tank",
+     "definition": "đầy bình xăng",
+     "example": "The car has a full tank."
+    },
+    {
+     "term": "driving permit",
+     "definition": "giấy phép lái xe",
+     "example": "You need an international driving permit."
+    },
+    {
+     "term": "drive on the left",
+     "definition": "lái bên trái",
+     "example": "In the UK, people drive on the left."
+    }
+   ],
+   "grammar": {
+    "title": "have to / must / don't have to",
+    "explanation": "have to và must: bắt buộc (You have to return it full). don't have to: không bắt buộc (You don't have to pay now). mustn't: cấm (You mustn't smoke in the car).",
+    "examples": [
+     "You have to show your licence.",
+     "You don't have to pay a deposit.",
+     "You mustn't park here."
+    ]
+   },
+   "pronunciation": {
+    "focus": "must /mʌst/ vs mustn't /ˈmʌsnt/",
+    "tip": "mustn't — chữ t đầu câm: /ˈmʌsnt/. Nói rõ để tránh nhầm nghĩa 'phải' với 'cấm'.",
+    "words": [
+     "mustn't",
+     "insurance",
+     "permit",
+     "tank"
+    ]
+   },
+   "speakingTasks": [
+    "Thuê một chiếc xe: hỏi giá, bảo hiểm và các quy định.",
+    "Giải thích cho thầy/cô 3 quy định giao thông ở Việt Nam với have to / mustn't."
+   ],
+   "questions": [
+    {
+     "prompt": "How long does the customer need the car?",
+     "options": [
+      "Five days",
+      "A week",
+      "Three days"
+     ],
+     "answer": 0,
+     "explanation": "'for five days'."
+    },
+    {
+     "prompt": "How much is full insurance?",
+     "options": [
+      "$5 a day",
+      "$50 a day",
+      "$15 a day"
+     ],
+     "answer": 2,
+     "explanation": "'Fifteen dollars a day.'"
+    },
+    {
+     "prompt": "How must the car be returned?",
+     "options": [
+      "With a full tank",
+      "Before noon",
+      "Clean"
+     ],
+     "answer": 0,
+     "explanation": "'you have to return it full'."
+    },
+    {
+     "prompt": "“You don't have to pay now” means…",
+     "options": [
+      "Paying now is not necessary.",
+      "You must pay now.",
+      "You mustn't pay now."
+     ],
+     "answer": 0,
+     "explanation": "don't have to = không bắt buộc."
+    },
+    {
+     "prompt": "Which side do they drive on?",
+     "options": [
+      "Both",
+      "Right",
+      "Left"
+     ],
+     "answer": 2,
+     "explanation": "'we drive on the left here'."
+    },
+    {
+     "prompt": "Complete the sentence: The car has a _____.",
+     "options": [
+      "book",
+      "full tank",
+      "driving permit"
+     ],
+     "answer": 1,
+     "explanation": "“full tank” nghĩa là “đầy bình xăng”. Câu đầy đủ: The car has a full tank."
+    },
+    {
+     "prompt": "What does “full tank” mean?",
+     "options": [
+      "đầy bình xăng",
+      "giấy phép lái xe",
+      "đặt trước"
+     ],
+     "answer": 0,
+     "explanation": "“full tank” = đầy bình xăng. Ví dụ: The car has a full tank."
+    },
+    {
+     "prompt": "Complete the sentence: Full _____ covers all damage.",
+     "options": [
+      "insurance",
+      "book",
+      "cover"
+     ],
+     "answer": 0,
+     "explanation": "“insurance” nghĩa là “bảo hiểm”. Câu đầy đủ: Full insurance covers all damage."
+    },
+    {
+     "prompt": "What does “cover” mean?",
+     "options": [
+      "đặt trước",
+      "chi trả, bao gồm",
+      "bảo hiểm"
+     ],
+     "answer": 1,
+     "explanation": "“cover” = chi trả, bao gồm. Ví dụ: It covers any damage."
+    },
+    {
+     "prompt": "Complete the sentence: In the UK, people _____.",
+     "options": [
+      "drive on the left",
+      "full tank",
+      "driving permit"
+     ],
+     "answer": 0,
+     "explanation": "“drive on the left” nghĩa là “lái bên trái”. Câu đầy đủ: In the UK, people drive on the left."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b1-3",
+   "level": "B1",
+   "unit": "B1 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Trò chuyện với người địa phương",
+   "objective": "Bắt chuyện, hỏi về văn hóa, ẩm thực địa phương và chia sẻ về đất nước mình.",
+   "reading": "Local: Is this your first time in Japan?\nTraveller: Yes, it is! I've been here for three days. Everything is so clean and organised.\nLocal: Have you tried any local food yet?\nTraveller: I've tried ramen, but I haven't tried okonomiyaki. What is it exactly?\nLocal: It's a kind of savoury pancake. You should try it in Osaka.\nTraveller: I will. By the way, in Vietnam we have something similar called bánh xèo.",
+   "vocabulary": [
+    {
+     "term": "first time",
+     "definition": "lần đầu",
+     "example": "Is this your first time here?"
+    },
+    {
+     "term": "organised",
+     "definition": "ngăn nắp, có tổ chức",
+     "example": "The city is very organised."
+    },
+    {
+     "term": "local food",
+     "definition": "món ăn địa phương",
+     "example": "I love trying local food."
+    },
+    {
+     "term": "a kind of",
+     "definition": "một loại",
+     "example": "It's a kind of pancake."
+    },
+    {
+     "term": "savoury",
+     "definition": "mặn (không ngọt)",
+     "example": "I prefer savoury snacks."
+    },
+    {
+     "term": "by the way",
+     "definition": "nhân tiện",
+     "example": "By the way, where are you from?"
+    }
+   ],
+   "grammar": {
+    "title": "Hiện tại hoàn thành với for / since",
+    "explanation": "for + khoảng thời gian (for three days), since + mốc thời gian (since Monday). Dùng cho việc bắt đầu trong quá khứ và còn tiếp diễn.",
+    "examples": [
+     "I've been here for three days.",
+     "She has lived in Osaka since 2020.",
+     "How long have you been in Japan?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giới thiệu từ tiếng Việt cho người nước ngoài",
+    "tip": "Khi nói tên món Việt, nói chậm và giải thích ngay: 'bánh xèo — it's a crispy pancake'. Nhấn 'kind of' nhẹ.",
+    "words": [
+     "organised",
+     "savoury",
+     "similar",
+     "exactly"
+    ]
+   },
+   "speakingTasks": [
+    "Bắt chuyện với thầy/cô như người địa phương, hỏi về món ăn và lễ hội.",
+    "Giới thiệu một món ăn Việt Nam và so sánh với món nước ngoài."
+   ],
+   "questions": [
+    {
+     "prompt": "How long has the traveller been in Japan?",
+     "options": [
+      "Three days",
+      "Three weeks",
+      "One day"
+     ],
+     "answer": 0,
+     "explanation": "'I've been here for three days.'"
+    },
+    {
+     "prompt": "What has the traveller already tried?",
+     "options": [
+      "Ramen",
+      "Sushi",
+      "Okonomiyaki"
+     ],
+     "answer": 0,
+     "explanation": "'I've tried ramen'."
+    },
+    {
+     "prompt": "What is okonomiyaki?",
+     "options": [
+      "A soup",
+      "A dessert",
+      "A savoury pancake"
+     ],
+     "answer": 2,
+     "explanation": "'a kind of savoury pancake'."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "I've been here for three days.",
+      "I've been here since three days.",
+      "I'm here for three days ago."
+     ],
+     "answer": 0,
+     "explanation": "for + khoảng thời gian."
+    },
+    {
+     "prompt": "“By the way” is used to…",
+     "options": [
+      "disagree",
+      "introduce a new related topic",
+      "end a conversation"
+     ],
+     "answer": 1,
+     "explanation": "By the way = nhân tiện, chuyển ý."
+    },
+    {
+     "prompt": "Complete the sentence: _____, where are you from?",
+     "options": [
+      "a kind of",
+      "first time",
+      "by the way"
+     ],
+     "answer": 2,
+     "explanation": "“by the way” nghĩa là “nhân tiện”. Câu đầy đủ: By the way, where are you from?"
+    },
+    {
+     "prompt": "What does “a kind of” mean?",
+     "options": [
+      "nhân tiện",
+      "món ăn địa phương",
+      "một loại"
+     ],
+     "answer": 2,
+     "explanation": "“a kind of” = một loại. Ví dụ: It's a kind of pancake."
+    },
+    {
+     "prompt": "Complete the sentence: I prefer _____ snacks.",
+     "options": [
+      "first time",
+      "organised",
+      "savoury"
+     ],
+     "answer": 2,
+     "explanation": "“savoury” nghĩa là “mặn (không ngọt)”. Câu đầy đủ: I prefer savoury snacks."
+    },
+    {
+     "prompt": "What does “first time” mean?",
+     "options": [
+      "mặn (không ngọt)",
+      "lần đầu",
+      "món ăn địa phương"
+     ],
+     "answer": 1,
+     "explanation": "“first time” = lần đầu. Ví dụ: Is this your first time here?"
+    },
+    {
+     "prompt": "Complete the sentence: I love trying _____.",
+     "options": [
+      "first time",
+      "local food",
+      "by the way"
+     ],
+     "answer": 1,
+     "explanation": "“local food” nghĩa là “món ăn địa phương”. Câu đầy đủ: I love trying local food."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b2-1",
+   "level": "B2",
+   "unit": "B2 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Lên kế hoạch chuyến đi dài ngày",
+   "objective": "Thảo luận lịch trình, ngân sách và lựa chọn bằng câu điều kiện và động từ khuyết thiếu.",
+   "reading": "We're planning a two-week trip around Vietnam. If we fly into Hanoi, we could spend three days in the capital before heading to Ha Long Bay. Alternatively, we might start in the south and work our way north. The main issue is the budget: domestic flights are quick but pricier, whereas sleeper trains are cheaper and more scenic. Whichever route we choose, we'll need to book accommodation in Hoi An well in advance, as it gets crowded during festivals.",
+   "vocabulary": [
+    {
+     "term": "head to",
+     "definition": "đi tới, hướng về",
+     "example": "Then we'll head to Ha Long Bay."
+    },
+    {
+     "term": "alternatively",
+     "definition": "hoặc là (phương án khác)",
+     "example": "Alternatively, we could take the train."
+    },
+    {
+     "term": "work our way north",
+     "definition": "đi dần lên phía bắc",
+     "example": "We'll start in Saigon and work our way north."
+    },
+    {
+     "term": "pricier",
+     "definition": "đắt hơn",
+     "example": "Flights are pricier than trains."
+    },
+    {
+     "term": "scenic",
+     "definition": "có phong cảnh đẹp",
+     "example": "The train ride is very scenic."
+    },
+    {
+     "term": "well in advance",
+     "definition": "rất sớm, từ trước",
+     "example": "Book your hotel well in advance."
+    }
+   ],
+   "grammar": {
+    "title": "Động từ khuyết thiếu chỉ khả năng: could / might / may",
+    "explanation": "could/might/may + V diễn tả khả năng, lựa chọn chưa chắc chắn. Kết hợp với 'whereas' để so sánh đối lập và 'whichever' (bất cứ … nào).",
+    "examples": [
+     "We might take the night train.",
+     "Flights are faster, whereas buses are cheaper.",
+     "Whichever hotel you choose, book early."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nói câu dài với nhịp đều",
+    "tip": "Chia cụm: 'If we fly into Hanoi, / we could spend three days / in the capital / before heading to Ha Long Bay.'",
+    "words": [
+     "alternatively",
+     "accommodation",
+     "scenic",
+     "advance"
+    ]
+   },
+   "speakingTasks": [
+    "Lên lịch trình 1 tuần cho người nước ngoài đến Việt Nam, giải thích lựa chọn.",
+    "Thầy/cô có ngân sách thấp — điều chỉnh kế hoạch."
+   ],
+   "questions": [
+    {
+     "prompt": "How long is the planned trip?",
+     "options": [
+      "Two weeks",
+      "One month",
+      "One week"
+     ],
+     "answer": 0,
+     "explanation": "'a two-week trip'."
+    },
+    {
+     "prompt": "What is the main issue?",
+     "options": [
+      "Weather",
+      "Budget",
+      "Visas"
+     ],
+     "answer": 1,
+     "explanation": "'The main issue is the budget'."
+    },
+    {
+     "prompt": "How are sleeper trains described?",
+     "options": [
+      "Cheaper and more scenic",
+      "Faster and pricier",
+      "Uncomfortable"
+     ],
+     "answer": 0,
+     "explanation": "'cheaper and more scenic'."
+    },
+    {
+     "prompt": "Why book Hoi An early?",
+     "options": [
+      "It's closed in winter.",
+      "It gets crowded during festivals.",
+      "Prices drop later."
+     ],
+     "answer": 1,
+     "explanation": "'as it gets crowded during festivals'."
+    },
+    {
+     "prompt": "Which word shows contrast?",
+     "options": [
+      "whichever",
+      "alternatively",
+      "whereas"
+     ],
+     "answer": 2,
+     "explanation": "whereas = trong khi đó (đối lập)."
+    },
+    {
+     "prompt": "Complete the sentence: _____, we could take the train.",
+     "options": [
+      "pricier",
+      "scenic",
+      "alternatively"
+     ],
+     "answer": 2,
+     "explanation": "“alternatively” nghĩa là “hoặc là (phương án khác)”. Câu đầy đủ: Alternatively, we could take the train."
+    },
+    {
+     "prompt": "What does “well in advance” mean?",
+     "options": [
+      "đi tới, hướng về",
+      "rất sớm, từ trước",
+      "đi dần lên phía bắc"
+     ],
+     "answer": 1,
+     "explanation": "“well in advance” = rất sớm, từ trước. Ví dụ: Book your hotel well in advance."
+    },
+    {
+     "prompt": "Complete the sentence: The train ride is very _____.",
+     "options": [
+      "pricier",
+      "scenic",
+      "alternatively"
+     ],
+     "answer": 1,
+     "explanation": "“scenic” nghĩa là “có phong cảnh đẹp”. Câu đầy đủ: The train ride is very scenic."
+    },
+    {
+     "prompt": "What does “pricier” mean?",
+     "options": [
+      "đắt hơn",
+      "có phong cảnh đẹp",
+      "hoặc là (phương án khác)"
+     ],
+     "answer": 0,
+     "explanation": "“pricier” = đắt hơn. Ví dụ: Flights are pricier than trains."
+    },
+    {
+     "prompt": "Complete the sentence: Book your hotel _____.",
+     "options": [
+      "work our way north",
+      "well in advance",
+      "head to"
+     ],
+     "answer": 1,
+     "explanation": "“well in advance” nghĩa là “rất sớm, từ trước”. Câu đầy đủ: Book your hotel well in advance."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b2-2",
+   "level": "B2",
+   "unit": "B2 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Khiếu nại dịch vụ và đòi bồi thường",
+   "objective": "Khiếu nại chuyến bay trễ/tour kém chất lượng, lập luận và thương lượng bồi thường.",
+   "reading": "Customer: I booked a tour that promised a private boat and a seafood lunch. Instead, we were put on a crowded boat with forty people, and lunch was a sandwich. Had I known this, I wouldn't have booked with you.\nManager: I'm very sorry. The private boat was unavailable due to a mechanical fault.\nCustomer: I understand that things go wrong, but nobody informed us. I'd expect at least a partial refund.\nManager: That's fair. We can refund fifty percent, or offer you a free tour of your choice.",
+   "vocabulary": [
+    {
+     "term": "promise",
+     "definition": "hứa hẹn, cam kết",
+     "example": "The website promised a private boat."
+    },
+    {
+     "term": "crowded",
+     "definition": "đông đúc",
+     "example": "The boat was very crowded."
+    },
+    {
+     "term": "unavailable",
+     "definition": "không có sẵn",
+     "example": "The room was unavailable."
+    },
+    {
+     "term": "mechanical fault",
+     "definition": "lỗi kỹ thuật (máy móc)",
+     "example": "There was a mechanical fault."
+    },
+    {
+     "term": "inform",
+     "definition": "thông báo",
+     "example": "Nobody informed us about the change."
+    },
+    {
+     "term": "partial refund",
+     "definition": "hoàn tiền một phần",
+     "example": "I expect a partial refund."
+    }
+   ],
+   "grammar": {
+    "title": "Đảo ngữ điều kiện: Had I known…",
+    "explanation": "Thay cho If I had known…, văn phong trang trọng dùng đảo ngữ: Had I known, I wouldn't have booked. Tương tự: Were I you… (= If I were you), Should you need… (= If you need).",
+    "examples": [
+     "Had I known, I would have chosen another company.",
+     "Should you need help, please call us.",
+     "Were it not for the delay, we'd be there now."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giữ giọng chắc chắn nhưng lịch sự",
+    "tip": "Nhấn sự thật: 'NObody inFORMED us'. Lên giọng nhẹ khi đưa yêu cầu để tránh gay gắt.",
+    "words": [
+     "unavailable",
+     "mechanical",
+     "informed",
+     "partial"
+    ]
+   },
+   "speakingTasks": [
+    "Khiếu nại một dịch vụ du lịch kém: mô tả, lập luận, đề nghị bồi thường.",
+    "Thầy/cô từ chối lần đầu — thương lượng tiếp."
+   ],
+   "questions": [
+    {
+     "prompt": "What did the tour promise?",
+     "options": [
+      "A free hotel",
+      "A private boat and a seafood lunch",
+      "A crowded boat"
+     ],
+     "answer": 1,
+     "explanation": "'promised a private boat and a seafood lunch'."
+    },
+    {
+     "prompt": "Why was the private boat unavailable?",
+     "options": [
+      "Bad weather",
+      "Overbooking",
+      "A mechanical fault"
+     ],
+     "answer": 2,
+     "explanation": "'due to a mechanical fault'."
+    },
+    {
+     "prompt": "What is the customer's main complaint besides the service?",
+     "options": [
+      "It was too expensive",
+      "Nobody informed them",
+      "The guide was rude"
+     ],
+     "answer": 1,
+     "explanation": "'nobody informed us'."
+    },
+    {
+     "prompt": "“Had I known this” means…",
+     "options": [
+      "Because I knew this",
+      "I have known this",
+      "If I had known this"
+     ],
+     "answer": 2,
+     "explanation": "Đảo ngữ của điều kiện loại 3."
+    },
+    {
+     "prompt": "What does the manager offer?",
+     "options": [
+      "A full refund only",
+      "50% refund or a free tour",
+      "Nothing"
+     ],
+     "answer": 1,
+     "explanation": "'refund fifty percent, or offer you a free tour'."
+    },
+    {
+     "prompt": "Complete the sentence: The boat was very _____.",
+     "options": [
+      "promise",
+      "inform",
+      "crowded"
+     ],
+     "answer": 2,
+     "explanation": "“crowded” nghĩa là “đông đúc”. Câu đầy đủ: The boat was very crowded."
+    },
+    {
+     "prompt": "What does “mechanical fault” mean?",
+     "options": [
+      "đông đúc",
+      "hoàn tiền một phần",
+      "lỗi kỹ thuật (máy móc)"
+     ],
+     "answer": 2,
+     "explanation": "“mechanical fault” = lỗi kỹ thuật (máy móc). Ví dụ: There was a mechanical fault."
+    },
+    {
+     "prompt": "Complete the sentence: The website _____d a private boat.",
+     "options": [
+      "unavailable",
+      "promise",
+      "inform"
+     ],
+     "answer": 1,
+     "explanation": "“promise” nghĩa là “hứa hẹn, cam kết”. Câu đầy đủ: The website promised a private boat."
+    },
+    {
+     "prompt": "What does “promise” mean?",
+     "options": [
+      "thông báo",
+      "không có sẵn",
+      "hứa hẹn, cam kết"
+     ],
+     "answer": 2,
+     "explanation": "“promise” = hứa hẹn, cam kết. Ví dụ: The website promised a private boat."
+    },
+    {
+     "prompt": "Complete the sentence: The room was _____.",
+     "options": [
+      "promise",
+      "crowded",
+      "unavailable"
+     ],
+     "answer": 2,
+     "explanation": "“unavailable” nghĩa là “không có sẵn”. Câu đầy đủ: The room was unavailable."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "travel-b2-3",
+   "level": "B2",
+   "unit": "B2 · Bài 3",
+   "category": "Từ vựng",
+   "title": "Du lịch bền vững và văn hóa",
+   "objective": "Thảo luận tác động của du lịch, du lịch có trách nhiệm và tôn trọng văn hóa.",
+   "reading": "Mass tourism can bring economic benefits to local communities, but it also puts pressure on fragile environments and can lead to overcrowding. Responsible travellers try to minimise their footprint: they choose locally owned accommodation, respect cultural customs, and avoid single-use plastics. Some destinations have introduced visitor caps, which, despite being unpopular with tour operators, have helped protect heritage sites.",
+   "vocabulary": [
+    {
+     "term": "mass tourism",
+     "definition": "du lịch đại trà",
+     "example": "Mass tourism damages some beaches."
+    },
+    {
+     "term": "fragile",
+     "definition": "mong manh, dễ tổn thương",
+     "example": "Coral reefs are fragile."
+    },
+    {
+     "term": "overcrowding",
+     "definition": "tình trạng quá tải",
+     "example": "Overcrowding is a problem in summer."
+    },
+    {
+     "term": "footprint",
+     "definition": "dấu chân (tác động môi trường)",
+     "example": "Try to reduce your carbon footprint."
+    },
+    {
+     "term": "customs",
+     "definition": "phong tục",
+     "example": "Respect local customs."
+    },
+    {
+     "term": "heritage site",
+     "definition": "di sản",
+     "example": "Hoi An is a heritage site."
+    }
+   ],
+   "grammar": {
+    "title": "Mệnh đề quan hệ không xác định và despite",
+    "explanation": "Mệnh đề quan hệ không xác định bổ sung thông tin, có dấu phẩy và không dùng 'that': Visitor caps, which are unpopular, help protect sites. despite + danh từ/V-ing (despite being unpopular).",
+    "examples": [
+     "Hoi An, which is a heritage site, gets crowded.",
+     "Despite the rain, we enjoyed the tour.",
+     "The guide, who was very friendly, spoke three languages."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm từ dài",
+    "tip": "reSPONsible, enviRONment, HERitage, OVERcrowding. Từ dài nói sai trọng âm rất khó hiểu.",
+    "words": [
+     "responsible",
+     "environment",
+     "heritage",
+     "overcrowding"
+    ]
+   },
+   "speakingTasks": [
+    "Nêu quan điểm: có nên giới hạn số khách đến một điểm du lịch nổi tiếng?",
+    "Đề xuất 3 cách để du lịch có trách nhiệm hơn ở Việt Nam."
+   ],
+   "questions": [
+    {
+     "prompt": "What is one negative effect of mass tourism?",
+     "options": [
+      "Overcrowding",
+      "More jobs",
+      "Better roads"
+     ],
+     "answer": 0,
+     "explanation": "'can lead to overcrowding'."
+    },
+    {
+     "prompt": "Which is a habit of responsible travellers?",
+     "options": [
+      "Ignoring customs",
+      "Choosing locally owned accommodation",
+      "Using single-use plastics"
+     ],
+     "answer": 1,
+     "explanation": "'choose locally owned accommodation'."
+    },
+    {
+     "prompt": "What have some destinations introduced?",
+     "options": [
+      "Free entry",
+      "More hotels",
+      "Visitor caps"
+     ],
+     "answer": 2,
+     "explanation": "'introduced visitor caps'."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "Despite the rain, we went.",
+      "Despite it rained, we went.",
+      "Despite of the rain, we went."
+     ],
+     "answer": 0,
+     "explanation": "despite + danh từ, không có 'of'."
+    },
+    {
+     "prompt": "Choose the correct non-defining clause.",
+     "options": [
+      "Hoi An which is beautiful, is busy.",
+      "Hoi An, that is beautiful, is busy.",
+      "Hoi An, which is beautiful, is busy."
+     ],
+     "answer": 2,
+     "explanation": "Không dùng 'that'; có hai dấu phẩy."
+    },
+    {
+     "prompt": "Complete the sentence: Respect local _____.",
+     "options": [
+      "overcrowding",
+      "customs",
+      "footprint"
+     ],
+     "answer": 1,
+     "explanation": "“customs” nghĩa là “phong tục”. Câu đầy đủ: Respect local customs."
+    },
+    {
+     "prompt": "What does “customs” mean?",
+     "options": [
+      "phong tục",
+      "dấu chân (tác động môi trường)",
+      "tình trạng quá tải"
+     ],
+     "answer": 0,
+     "explanation": "“customs” = phong tục. Ví dụ: Respect local customs."
+    },
+    {
+     "prompt": "Complete the sentence: Hoi An is a _____.",
+     "options": [
+      "customs",
+      "heritage site",
+      "mass tourism"
+     ],
+     "answer": 1,
+     "explanation": "“heritage site” nghĩa là “di sản”. Câu đầy đủ: Hoi An is a heritage site."
+    },
+    {
+     "prompt": "What does “overcrowding” mean?",
+     "options": [
+      "mong manh, dễ tổn thương",
+      "tình trạng quá tải",
+      "phong tục"
+     ],
+     "answer": 1,
+     "explanation": "“overcrowding” = tình trạng quá tải. Ví dụ: Overcrowding is a problem in summer."
+    },
+    {
+     "prompt": "Complete the sentence: _____ is a problem in summer.",
+     "options": [
+      "overcrowding",
+      "fragile",
+      "customs"
+     ],
+     "answer": 0,
+     "explanation": "“overcrowding” nghĩa là “tình trạng quá tải”. Câu đầy đủ: Overcrowding is a problem in summer."
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
+}

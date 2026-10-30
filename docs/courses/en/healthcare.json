@@ -1,0 +1,2027 @@
+{
+ "id": "healthcare",
+ "title": "Tiếng Anh chuyên ngành y khoa",
+ "version": "2.0.0",
+ "framework": "CEFR A1–B2",
+ "overview": "12 bài từ A1 đến B2 cho nhân viên y tế: tiếp nhận bệnh nhân, hỏi triệu chứng, hướng dẫn dùng thuốc, giải thích thủ thuật và trao đổi chuyên môn.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
+ "references": [
+  {
+   "title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)",
+   "url": "https://www.coe.int/en/web/common-european-framework-reference-languages",
+   "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "British Council / EAQUALS – Core Inventory for General English",
+   "url": "https://www.teachingenglish.org.uk/article/british-council-eaquals-core-inventory-general-english",
+   "license": "Tham khảo danh mục chức năng, ngữ pháp, chủ đề theo level (không sao chép nội dung)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "healthcare-a1-1",
+   "level": "A1",
+   "unit": "A1 · Bài 1",
+   "category": "Từ vựng",
+   "title": "Các bộ phận cơ thể",
+   "objective": "Gọi tên bộ phận cơ thể và hỏi bệnh nhân đau ở đâu.",
+   "reading": "Nurse: Good morning. What's the matter?\nPatient: I have a headache and my throat hurts.\nNurse: Do you have a fever?\nPatient: I don't know. I feel hot.\nNurse: Let me check your temperature. Open your mouth, please… It's 38.5 degrees. You have a fever.\nPatient: My back hurts too.",
+   "vocabulary": [
+    {
+     "term": "headache",
+     "definition": "đau đầu",
+     "example": "I have a bad headache."
+    },
+    {
+     "term": "throat",
+     "definition": "cổ họng",
+     "example": "My throat hurts."
+    },
+    {
+     "term": "fever",
+     "definition": "sốt",
+     "example": "You have a fever."
+    },
+    {
+     "term": "temperature",
+     "definition": "nhiệt độ",
+     "example": "Let me check your temperature."
+    },
+    {
+     "term": "back",
+     "definition": "lưng",
+     "example": "My back hurts."
+    },
+    {
+     "term": "hurt",
+     "definition": "đau",
+     "example": "Where does it hurt?"
+    }
+   ],
+   "grammar": {
+    "title": "have + bệnh / something hurts",
+    "explanation": "Nói triệu chứng: I have a headache / a cough / a fever. Hoặc bộ phận + hurts: My arm hurts. Hỏi: Where does it hurt? What's the matter?",
+    "examples": [
+     "I have a stomachache.",
+     "My knee hurts.",
+     "Where does it hurt?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm /θ/ trong throat, mouth",
+    "tip": "Đặt đầu lưỡi giữa hai răng, thổi hơi: throat /θrəʊt/, mouth /maʊθ/. Không đọc thành /t/ hay /s/.",
+    "words": [
+     "throat",
+     "mouth",
+     "temperature",
+     "headache"
+    ]
+   },
+   "speakingTasks": [
+    "Thầy/cô là bệnh nhân — hỏi triệu chứng và vị trí đau.",
+    "Mô tả 3 triệu chứng khi bạn bị cảm."
+   ],
+   "questions": [
+    {
+     "prompt": "What are the patient's first two problems?",
+     "options": [
+      "Headache and sore throat",
+      "Fever and rash",
+      "Backache and cough"
+     ],
+     "answer": 0,
+     "explanation": "'I have a headache and my throat hurts.'"
+    },
+    {
+     "prompt": "What is the patient's temperature?",
+     "options": [
+      "37.5",
+      "39.5",
+      "38.5"
+     ],
+     "answer": 2,
+     "explanation": "'It's 38.5 degrees.'"
+    },
+    {
+     "prompt": "What else hurts?",
+     "options": [
+      "The back",
+      "The eye",
+      "The leg"
+     ],
+     "answer": 0,
+     "explanation": "'My back hurts too.'"
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "My arm is hurt me.",
+      "My arm hurt.",
+      "My arm hurts."
+     ],
+     "answer": 2,
+     "explanation": "Ngôi thứ ba số ít: hurts."
+    },
+    {
+     "prompt": "Which question asks about the location of pain?",
+     "options": [
+      "When does it hurt?",
+      "Where does it hurt?",
+      "Why does it hurt?"
+     ],
+     "answer": 1,
+     "explanation": "Where = ở đâu."
+    },
+    {
+     "prompt": "Complete the sentence: You have a _____.",
+     "options": [
+      "throat",
+      "headache",
+      "fever"
+     ],
+     "answer": 2,
+     "explanation": "“fever” nghĩa là “sốt”. Câu đầy đủ: You have a fever."
+    },
+    {
+     "prompt": "What does “back” mean?",
+     "options": [
+      "nhiệt độ",
+      "sốt",
+      "lưng"
+     ],
+     "answer": 2,
+     "explanation": "“back” = lưng. Ví dụ: My back hurts."
+    },
+    {
+     "prompt": "Complete the sentence: My _____ hurts.",
+     "options": [
+      "hurt",
+      "fever",
+      "throat"
+     ],
+     "answer": 2,
+     "explanation": "“throat” nghĩa là “cổ họng”. Câu đầy đủ: My throat hurts."
+    },
+    {
+     "prompt": "What does “hurt” mean?",
+     "options": [
+      "cổ họng",
+      "sốt",
+      "đau"
+     ],
+     "answer": 2,
+     "explanation": "“hurt” = đau. Ví dụ: Where does it hurt?"
+    },
+    {
+     "prompt": "Complete the sentence: Where does it _____?",
+     "options": [
+      "throat",
+      "fever",
+      "hurt"
+     ],
+     "answer": 2,
+     "explanation": "“hurt” nghĩa là “đau”. Câu đầy đủ: Where does it hurt?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a1-2",
+   "level": "A1",
+   "unit": "A1 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Tiếp nhận bệnh nhân",
+   "objective": "Chào, hỏi thông tin cá nhân, đặt lịch khám và hướng dẫn chờ.",
+   "reading": "Receptionist: Good afternoon. How can I help you?\nPatient: I'd like to see a doctor, please.\nReceptionist: Do you have an appointment?\nPatient: No, I don't.\nReceptionist: OK. What's your full name and date of birth?\nPatient: Tran Van An. Fifth of June, nineteen ninety.\nReceptionist: Thank you. Please fill in this form and take a seat. The doctor will see you in twenty minutes.",
+   "vocabulary": [
+    {
+     "term": "appointment",
+     "definition": "cuộc hẹn",
+     "example": "Do you have an appointment?"
+    },
+    {
+     "term": "full name",
+     "definition": "họ tên đầy đủ",
+     "example": "What's your full name?"
+    },
+    {
+     "term": "date of birth",
+     "definition": "ngày sinh",
+     "example": "What's your date of birth?"
+    },
+    {
+     "term": "fill in",
+     "definition": "điền (đơn)",
+     "example": "Please fill in this form."
+    },
+    {
+     "term": "take a seat",
+     "definition": "mời ngồi",
+     "example": "Please take a seat."
+    },
+    {
+     "term": "see a doctor",
+     "definition": "đi khám bác sĩ",
+     "example": "I'd like to see a doctor."
+    }
+   ],
+   "grammar": {
+    "title": "Ngày tháng và số thứ tự",
+    "explanation": "Ngày sinh dùng số thứ tự: first, second, third, fifth… Đọc: the fifth of June (Anh) / June fifth (Mỹ). Năm 1990: nineteen ninety.",
+    "examples": [
+     "My birthday is on the third of May.",
+     "She was born in 2001 — two thousand and one.",
+     "The appointment is on the twenty-first."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Số thứ tự: fifth /fɪfθ/, sixth /sɪksθ/",
+    "tip": "Cụm phụ âm cuối khó: fifth, sixth, twelfth. Nói chậm từng âm, không bỏ /θ/.",
+    "words": [
+     "fifth",
+     "sixth",
+     "twelfth",
+     "appointment"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai lễ tân: hỏi tên, ngày sinh, lý do khám của thầy/cô.",
+    "Đọc ngày sinh của 3 người trong gia đình bạn."
+   ],
+   "questions": [
+    {
+     "prompt": "Does the patient have an appointment?",
+     "options": [
+      "Not mentioned",
+      "No",
+      "Yes"
+     ],
+     "answer": 1,
+     "explanation": "'No, I don't.'"
+    },
+    {
+     "prompt": "When was the patient born?",
+     "options": [
+      "15 June 1990",
+      "5 June 1990",
+      "5 July 1990"
+     ],
+     "answer": 1,
+     "explanation": "'Fifth of June, nineteen ninety.'"
+    },
+    {
+     "prompt": "How long will the patient wait?",
+     "options": [
+      "10 minutes",
+      "20 minutes",
+      "An hour"
+     ],
+     "answer": 1,
+     "explanation": "'in twenty minutes'."
+    },
+    {
+     "prompt": "Which ordinal number is correct for 3?",
+     "options": [
+      "thirth",
+      "three",
+      "third"
+     ],
+     "answer": 2,
+     "explanation": "3 → third."
+    },
+    {
+     "prompt": "What should the patient do first?",
+     "options": [
+      "Pay",
+      "Go home",
+      "Fill in a form"
+     ],
+     "answer": 2,
+     "explanation": "'Please fill in this form'."
+    },
+    {
+     "prompt": "Complete the sentence: Please _____.",
+     "options": [
+      "take a seat",
+      "see a doctor",
+      "date of birth"
+     ],
+     "answer": 0,
+     "explanation": "“take a seat” nghĩa là “mời ngồi”. Câu đầy đủ: Please take a seat."
+    },
+    {
+     "prompt": "What does “see a doctor” mean?",
+     "options": [
+      "đi khám bác sĩ",
+      "ngày sinh",
+      "mời ngồi"
+     ],
+     "answer": 0,
+     "explanation": "“see a doctor” = đi khám bác sĩ. Ví dụ: I'd like to see a doctor."
+    },
+    {
+     "prompt": "Complete the sentence: What's your _____?",
+     "options": [
+      "date of birth",
+      "see a doctor",
+      "take a seat"
+     ],
+     "answer": 0,
+     "explanation": "“date of birth” nghĩa là “ngày sinh”. Câu đầy đủ: What's your date of birth?"
+    },
+    {
+     "prompt": "What does “appointment” mean?",
+     "options": [
+      "điền (đơn)",
+      "họ tên đầy đủ",
+      "cuộc hẹn"
+     ],
+     "answer": 2,
+     "explanation": "“appointment” = cuộc hẹn. Ví dụ: Do you have an appointment?"
+    },
+    {
+     "prompt": "Complete the sentence: I'd like to _____.",
+     "options": [
+      "see a doctor",
+      "take a seat",
+      "date of birth"
+     ],
+     "answer": 0,
+     "explanation": "“see a doctor” nghĩa là “đi khám bác sĩ”. Câu đầy đủ: I'd like to see a doctor."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a1-3",
+   "level": "A1",
+   "unit": "A1 · Bài 3",
+   "category": "Ngữ pháp",
+   "title": "Hướng dẫn bệnh nhân trong khi khám",
+   "objective": "Đưa chỉ dẫn lịch sự khi khám: hít thở, nằm, ngồi, giơ tay.",
+   "reading": "Doctor: Please sit on the bed. Take off your jacket, please. Now, breathe in… and breathe out. Again, deep breaths. Good. Please lie down on your back. Does this hurt? Tell me if it hurts. OK, you can sit up now. Thank you. You can get dressed.",
+   "vocabulary": [
+    {
+     "term": "breathe in",
+     "definition": "hít vào",
+     "example": "Breathe in slowly."
+    },
+    {
+     "term": "breathe out",
+     "definition": "thở ra",
+     "example": "Now breathe out."
+    },
+    {
+     "term": "lie down",
+     "definition": "nằm xuống",
+     "example": "Please lie down on your back."
+    },
+    {
+     "term": "sit up",
+     "definition": "ngồi dậy",
+     "example": "You can sit up now."
+    },
+    {
+     "term": "take off",
+     "definition": "cởi ra",
+     "example": "Please take off your jacket."
+    },
+    {
+     "term": "get dressed",
+     "definition": "mặc lại quần áo",
+     "example": "You can get dressed now."
+    }
+   ],
+   "grammar": {
+    "title": "Mệnh lệnh lịch sự với please",
+    "explanation": "Câu mệnh lệnh + please để lịch sự: Please lie down. Mềm hơn: Could you…? / Can you…? Thêm 'for me' rất thường dùng trong y khoa: Can you raise your arm for me?",
+    "examples": [
+     "Please open your mouth.",
+     "Could you roll up your sleeve?",
+     "Can you take a deep breath for me?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "breathe /briːð/ (động từ) vs breath /breθ/ (danh từ)",
+    "tip": "Động từ breathe có âm /ð/ rung và nguyên âm dài; danh từ breath âm /θ/ không rung, nguyên âm ngắn.",
+    "words": [
+     "breathe",
+     "breath",
+     "lie down",
+     "dressed"
+    ]
+   },
+   "speakingTasks": [
+    "Hướng dẫn thầy/cô các bước khám phổi bằng câu lịch sự.",
+    "Thầy/cô hướng dẫn — bạn làm theo và phản hồi."
+   ],
+   "questions": [
+    {
+     "prompt": "What does the doctor ask first?",
+     "options": [
+      "Lie down",
+      "Sit on the bed",
+      "Stand up"
+     ],
+     "answer": 1,
+     "explanation": "'Please sit on the bed.'"
+    },
+    {
+     "prompt": "How should the patient lie?",
+     "options": [
+      "On the stomach",
+      "On the back",
+      "On the side"
+     ],
+     "answer": 1,
+     "explanation": "'lie down on your back'."
+    },
+    {
+     "prompt": "Choose the correct instruction.",
+     "options": [
+      "Please breathing in.",
+      "Please breath in.",
+      "Please breathe in."
+     ],
+     "answer": 2,
+     "explanation": "Động từ: breathe."
+    },
+    {
+     "prompt": "Which is the most polite?",
+     "options": [
+      "You lie down.",
+      "Lie down!",
+      "Could you lie down for me?"
+     ],
+     "answer": 2,
+     "explanation": "Could you… for me? rất lịch sự."
+    },
+    {
+     "prompt": "“Get dressed” means…",
+     "options": [
+      "buy clothes",
+      "take your clothes off",
+      "put your clothes back on"
+     ],
+     "answer": 2,
+     "explanation": "get dressed = mặc quần áo vào."
+    },
+    {
+     "prompt": "Complete the sentence: Now _____.",
+     "options": [
+      "breathe out",
+      "breathe in",
+      "lie down"
+     ],
+     "answer": 0,
+     "explanation": "“breathe out” nghĩa là “thở ra”. Câu đầy đủ: Now breathe out."
+    },
+    {
+     "prompt": "What does “lie down” mean?",
+     "options": [
+      "nằm xuống",
+      "hít vào",
+      "mặc lại quần áo"
+     ],
+     "answer": 0,
+     "explanation": "“lie down” = nằm xuống. Ví dụ: Please lie down on your back."
+    },
+    {
+     "prompt": "Complete the sentence: You can _____ now.",
+     "options": [
+      "take off",
+      "lie down",
+      "sit up"
+     ],
+     "answer": 2,
+     "explanation": "“sit up” nghĩa là “ngồi dậy”. Câu đầy đủ: You can sit up now."
+    },
+    {
+     "prompt": "What does “breathe in” mean?",
+     "options": [
+      "ngồi dậy",
+      "hít vào",
+      "thở ra"
+     ],
+     "answer": 1,
+     "explanation": "“breathe in” = hít vào. Ví dụ: Breathe in slowly."
+    },
+    {
+     "prompt": "Complete the sentence: _____ slowly.",
+     "options": [
+      "breathe in",
+      "sit up",
+      "breathe out"
+     ],
+     "answer": 0,
+     "explanation": "“breathe in” nghĩa là “hít vào”. Câu đầy đủ: Breathe in slowly."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a2-1",
+   "level": "A2",
+   "unit": "A2 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Hỏi bệnh sử",
+   "objective": "Hỏi triệu chứng bắt đầu khi nào, mức độ, tiền sử bệnh và dị ứng.",
+   "reading": "Doctor: When did the pain start?\nPatient: Three days ago.\nDoctor: How bad is it on a scale of one to ten?\nPatient: About seven.\nDoctor: Have you had this problem before?\nPatient: Yes, once, two years ago.\nDoctor: Are you taking any medication at the moment?\nPatient: Only vitamins.\nDoctor: Are you allergic to anything?\nPatient: Yes, penicillin.",
+   "vocabulary": [
+    {
+     "term": "on a scale of one to ten",
+     "definition": "trên thang điểm 1 đến 10",
+     "example": "How bad is it on a scale of one to ten?"
+    },
+    {
+     "term": "medication",
+     "definition": "thuốc (đang dùng)",
+     "example": "Are you taking any medication?"
+    },
+    {
+     "term": "allergic",
+     "definition": "bị dị ứng",
+     "example": "I'm allergic to penicillin."
+    },
+    {
+     "term": "ago",
+     "definition": "cách đây",
+     "example": "It started three days ago."
+    },
+    {
+     "term": "at the moment",
+     "definition": "hiện tại",
+     "example": "I'm not taking anything at the moment."
+    },
+    {
+     "term": "pain",
+     "definition": "cơn đau",
+     "example": "The pain is sharp."
+    }
+   ],
+   "grammar": {
+    "title": "Hỏi về quá khứ và hiện tại: did / have you / are you",
+    "explanation": "When did it start? (quá khứ đơn, mốc thời gian). Have you had this before? (trải nghiệm). Are you taking…? (hiện tại tiếp diễn — đang dùng).",
+    "examples": [
+     "When did the cough start?",
+     "Have you ever had surgery?",
+     "Are you taking any painkillers?"
+    ]
+   },
+   "pronunciation": {
+    "focus": "penicillin /ˌpenɪˈsɪlɪn/",
+    "tip": "Tên thuốc nhấn đúng âm: peniCILlin, paraCEtamol (Anh) / aceta-MIN-ophen (Mỹ), IBuprofen.",
+    "words": [
+     "penicillin",
+     "paracetamol",
+     "medication",
+     "allergic"
+    ]
+   },
+   "speakingTasks": [
+    "Hỏi bệnh sử đầy đủ của thầy/cô (bệnh nhân): khởi phát, mức độ, tiền sử, thuốc, dị ứng.",
+    "Tóm tắt lại thông tin bằng tiếng Anh."
+   ],
+   "questions": [
+    {
+     "prompt": "When did the pain start?",
+     "options": [
+      "Yesterday",
+      "Two years ago",
+      "Three days ago"
+     ],
+     "answer": 2,
+     "explanation": "'Three days ago.'"
+    },
+    {
+     "prompt": "How bad is the pain?",
+     "options": [
+      "7/10",
+      "3/10",
+      "10/10"
+     ],
+     "answer": 0,
+     "explanation": "'About seven.'"
+    },
+    {
+     "prompt": "What medication is the patient taking?",
+     "options": [
+      "Painkillers",
+      "Only vitamins",
+      "Penicillin"
+     ],
+     "answer": 1,
+     "explanation": "'Only vitamins.'"
+    },
+    {
+     "prompt": "What is the patient allergic to?",
+     "options": [
+      "Aspirin",
+      "Nothing",
+      "Penicillin"
+     ],
+     "answer": 2,
+     "explanation": "'Yes, penicillin.'"
+    },
+    {
+     "prompt": "Choose the correct question.",
+     "options": [
+      "When did the pain started?",
+      "When did the pain start?",
+      "When the pain started?"
+     ],
+     "answer": 1,
+     "explanation": "did + V nguyên mẫu."
+    },
+    {
+     "prompt": "Complete the sentence: Are you taking any _____?",
+     "options": [
+      "pain",
+      "allergic",
+      "medication"
+     ],
+     "answer": 2,
+     "explanation": "“medication” nghĩa là “thuốc (đang dùng)”. Câu đầy đủ: Are you taking any medication?"
+    },
+    {
+     "prompt": "What does “allergic” mean?",
+     "options": [
+      "cách đây",
+      "bị dị ứng",
+      "cơn đau"
+     ],
+     "answer": 1,
+     "explanation": "“allergic” = bị dị ứng. Ví dụ: I'm allergic to penicillin."
+    },
+    {
+     "prompt": "Complete the sentence: I'm not taking anything _____.",
+     "options": [
+      "medication",
+      "allergic",
+      "at the moment"
+     ],
+     "answer": 2,
+     "explanation": "“at the moment” nghĩa là “hiện tại”. Câu đầy đủ: I'm not taking anything at the moment."
+    },
+    {
+     "prompt": "What does “medication” mean?",
+     "options": [
+      "thuốc (đang dùng)",
+      "cơn đau",
+      "bị dị ứng"
+     ],
+     "answer": 0,
+     "explanation": "“medication” = thuốc (đang dùng). Ví dụ: Are you taking any medication?"
+    },
+    {
+     "prompt": "Complete the sentence: I'm _____ to penicillin.",
+     "options": [
+      "allergic",
+      "pain",
+      "ago"
+     ],
+     "answer": 0,
+     "explanation": "“allergic” nghĩa là “bị dị ứng”. Câu đầy đủ: I'm allergic to penicillin."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a2-2",
+   "level": "A2",
+   "unit": "A2 · Bài 2",
+   "category": "Từ vựng",
+   "title": "Hướng dẫn dùng thuốc",
+   "objective": "Giải thích liều lượng, thời điểm uống và tác dụng phụ thường gặp.",
+   "reading": "Pharmacist: Take two tablets three times a day, after meals. Don't take more than six tablets in twenty-four hours. This medicine may make you feel sleepy, so don't drive after taking it. If you get a rash, stop taking it and see your doctor immediately. Finish the whole course, even if you feel better.",
+   "vocabulary": [
+    {
+     "term": "tablet",
+     "definition": "viên thuốc",
+     "example": "Take two tablets."
+    },
+    {
+     "term": "three times a day",
+     "definition": "ba lần một ngày",
+     "example": "Take it three times a day."
+    },
+    {
+     "term": "after meals",
+     "definition": "sau bữa ăn",
+     "example": "Take the medicine after meals."
+    },
+    {
+     "term": "sleepy",
+     "definition": "buồn ngủ",
+     "example": "It may make you sleepy."
+    },
+    {
+     "term": "rash",
+     "definition": "phát ban",
+     "example": "Stop if you get a rash."
+    },
+    {
+     "term": "course",
+     "definition": "liệu trình (thuốc)",
+     "example": "Finish the whole course."
+    }
+   ],
+   "grammar": {
+    "title": "may / might cho tác dụng phụ; if cho chỉ dẫn",
+    "explanation": "may/might + V: có thể xảy ra (It may cause headaches). If + hiện tại đơn, mệnh lệnh: If you feel dizzy, sit down.",
+    "examples": [
+     "This medicine may cause nausea.",
+     "If the pain continues, call us.",
+     "It might make you thirsty."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm cuối /ts/ trong tablets",
+    "tip": "tablets /ˈtæbləts/, meals /miːlz/ — giữ âm cuối số nhiều để nói đúng số lượng.",
+    "words": [
+     "tablets",
+     "meals",
+     "immediately",
+     "medicine"
+    ]
+   },
+   "speakingTasks": [
+    "Hướng dẫn thầy/cô cách dùng một loại thuốc: liều, thời điểm, tác dụng phụ.",
+    "Trả lời câu hỏi 'What if I forget a dose?'"
+   ],
+   "questions": [
+    {
+     "prompt": "How many tablets per dose?",
+     "options": [
+      "Two",
+      "Three",
+      "One"
+     ],
+     "answer": 0,
+     "explanation": "'Take two tablets'."
+    },
+    {
+     "prompt": "What is the maximum in 24 hours?",
+     "options": [
+      "Four",
+      "Eight",
+      "Six"
+     ],
+     "answer": 2,
+     "explanation": "'more than six tablets'."
+    },
+    {
+     "prompt": "Why shouldn't the patient drive?",
+     "options": [
+      "It causes a rash.",
+      "It's too strong.",
+      "It may make them sleepy."
+     ],
+     "answer": 2,
+     "explanation": "'may make you feel sleepy'."
+    },
+    {
+     "prompt": "What should the patient do if a rash appears?",
+     "options": [
+      "Take more",
+      "Ignore it",
+      "Stop and see the doctor"
+     ],
+     "answer": 2,
+     "explanation": "'stop taking it and see your doctor immediately'."
+    },
+    {
+     "prompt": "“Finish the whole course” means…",
+     "options": [
+      "stop when better",
+      "take all the tablets",
+      "go to class"
+     ],
+     "answer": 1,
+     "explanation": "Uống hết liệu trình."
+    },
+    {
+     "prompt": "Complete the sentence: It may make you _____.",
+     "options": [
+      "sleepy",
+      "course",
+      "rash"
+     ],
+     "answer": 0,
+     "explanation": "“sleepy” nghĩa là “buồn ngủ”. Câu đầy đủ: It may make you sleepy."
+    },
+    {
+     "prompt": "What does “course” mean?",
+     "options": [
+      "liệu trình (thuốc)",
+      "viên thuốc",
+      "buồn ngủ"
+     ],
+     "answer": 0,
+     "explanation": "“course” = liệu trình (thuốc). Ví dụ: Finish the whole course."
+    },
+    {
+     "prompt": "Complete the sentence: Take it _____.",
+     "options": [
+      "rash",
+      "after meals",
+      "three times a day"
+     ],
+     "answer": 2,
+     "explanation": "“three times a day” nghĩa là “ba lần một ngày”. Câu đầy đủ: Take it three times a day."
+    },
+    {
+     "prompt": "What does “tablet” mean?",
+     "options": [
+      "viên thuốc",
+      "phát ban",
+      "buồn ngủ"
+     ],
+     "answer": 0,
+     "explanation": "“tablet” = viên thuốc. Ví dụ: Take two tablets."
+    },
+    {
+     "prompt": "Complete the sentence: Take the medicine _____.",
+     "options": [
+      "after meals",
+      "rash",
+      "tablet"
+     ],
+     "answer": 0,
+     "explanation": "“after meals” nghĩa là “sau bữa ăn”. Câu đầy đủ: Take the medicine after meals."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a2-3",
+   "level": "A2",
+   "unit": "A2 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Trấn an bệnh nhân",
+   "objective": "Thể hiện sự cảm thông, trấn an và giải thích đơn giản cho bệnh nhân lo lắng.",
+   "reading": "Patient: I'm really worried. Is it serious?\nNurse: I understand that you're worried. Try not to panic. The doctor will explain everything after the test.\nPatient: Will it hurt?\nNurse: You may feel a small sting, but it will only take a few seconds. I'll be here with you the whole time.\nPatient: Thank you. That makes me feel better.\nNurse: You're doing really well.",
+   "vocabulary": [
+    {
+     "term": "worried",
+     "definition": "lo lắng",
+     "example": "I'm worried about the results."
+    },
+    {
+     "term": "serious",
+     "definition": "nghiêm trọng",
+     "example": "Is it serious?"
+    },
+    {
+     "term": "panic",
+     "definition": "hoảng sợ",
+     "example": "Try not to panic."
+    },
+    {
+     "term": "sting",
+     "definition": "cảm giác châm chích",
+     "example": "You may feel a small sting."
+    },
+    {
+     "term": "the whole time",
+     "definition": "suốt thời gian",
+     "example": "I'll stay the whole time."
+    },
+    {
+     "term": "You're doing well",
+     "definition": "Bạn đang làm rất tốt",
+     "example": "Don't worry, you're doing well."
+    }
+   ],
+   "grammar": {
+    "title": "Câu thể hiện cảm thông",
+    "explanation": "I understand (that)… / I can see you're… / That must be… Kết hợp với lời hứa will: I'll be here with you.",
+    "examples": [
+     "I understand that this is difficult.",
+     "That must be very painful.",
+     "I'll explain each step."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng nói chậm, ấm, xuống giọng",
+    "tip": "Khi trấn an: nói chậm, hạ giọng ở cuối câu, nhấn từ 'only', 'small', 'few'.",
+    "words": [
+     "worried",
+     "serious",
+     "understand",
+     "seconds"
+    ]
+   },
+   "speakingTasks": [
+    "Trấn an thầy/cô (bệnh nhân sợ tiêm) bằng 3 câu cảm thông.",
+    "Giải thích đơn giản một xét nghiệm máu."
+   ],
+   "questions": [
+    {
+     "prompt": "How does the patient feel?",
+     "options": [
+      "Worried",
+      "Angry",
+      "Happy"
+     ],
+     "answer": 0,
+     "explanation": "'I'm really worried.'"
+    },
+    {
+     "prompt": "Who will explain the results?",
+     "options": [
+      "The receptionist",
+      "The nurse",
+      "The doctor"
+     ],
+     "answer": 2,
+     "explanation": "'The doctor will explain everything after the test.'"
+    },
+    {
+     "prompt": "What will the patient feel?",
+     "options": [
+      "Nothing at all",
+      "A small sting",
+      "Strong pain"
+     ],
+     "answer": 1,
+     "explanation": "'You may feel a small sting'."
+    },
+    {
+     "prompt": "Which sentence shows empathy?",
+     "options": [
+      "It's not my problem.",
+      "I understand that you're worried.",
+      "Stop worrying."
+     ],
+     "answer": 1,
+     "explanation": "'I understand…' thể hiện cảm thông."
+    },
+    {
+     "prompt": "How long will it take?",
+     "options": [
+      "A few minutes",
+      "A few seconds",
+      "An hour"
+     ],
+     "answer": 1,
+     "explanation": "'only take a few seconds'."
+    },
+    {
+     "prompt": "Complete the sentence: You may feel a small _____.",
+     "options": [
+      "panic",
+      "sting",
+      "worried"
+     ],
+     "answer": 1,
+     "explanation": "“sting” nghĩa là “cảm giác châm chích”. Câu đầy đủ: You may feel a small sting."
+    },
+    {
+     "prompt": "What does “panic” mean?",
+     "options": [
+      "nghiêm trọng",
+      "hoảng sợ",
+      "lo lắng"
+     ],
+     "answer": 1,
+     "explanation": "“panic” = hoảng sợ. Ví dụ: Try not to panic."
+    },
+    {
+     "prompt": "Complete the sentence: Is it _____?",
+     "options": [
+      "sting",
+      "serious",
+      "worried"
+     ],
+     "answer": 1,
+     "explanation": "“serious” nghĩa là “nghiêm trọng”. Câu đầy đủ: Is it serious?"
+    },
+    {
+     "prompt": "What does “serious” mean?",
+     "options": [
+      "nghiêm trọng",
+      "lo lắng",
+      "cảm giác châm chích"
+     ],
+     "answer": 0,
+     "explanation": "“serious” = nghiêm trọng. Ví dụ: Is it serious?"
+    },
+    {
+     "prompt": "Complete the sentence: Try not to _____.",
+     "options": [
+      "serious",
+      "worried",
+      "panic"
+     ],
+     "answer": 2,
+     "explanation": "“panic” nghĩa là “hoảng sợ”. Câu đầy đủ: Try not to panic."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b1-1",
+   "level": "B1",
+   "unit": "B1 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Giải thích thủ thuật và xin đồng ý",
+   "objective": "Giải thích thủ thuật, lợi ích, rủi ro và xin sự đồng ý của bệnh nhân.",
+   "reading": "Doctor: We'd like to do an endoscopy to look inside your stomach. A thin tube with a camera will be passed through your mouth. You'll be given a sedative, so you'll feel relaxed. The procedure usually takes about fifteen minutes. It's generally very safe, but there's a small risk of a sore throat or, rarely, bleeding. Do you have any questions before you sign the consent form?",
+   "vocabulary": [
+    {
+     "term": "procedure",
+     "definition": "thủ thuật",
+     "example": "The procedure takes fifteen minutes."
+    },
+    {
+     "term": "sedative",
+     "definition": "thuốc an thần",
+     "example": "You'll be given a sedative."
+    },
+    {
+     "term": "consent form",
+     "definition": "giấy đồng ý",
+     "example": "Please sign the consent form."
+    },
+    {
+     "term": "risk",
+     "definition": "rủi ro",
+     "example": "There's a small risk of bleeding."
+    },
+    {
+     "term": "generally",
+     "definition": "nhìn chung",
+     "example": "It's generally very safe."
+    },
+    {
+     "term": "rarely",
+     "definition": "hiếm khi",
+     "example": "Rarely, patients feel sick."
+    }
+   ],
+   "grammar": {
+    "title": "Bị động tương lai: will be + V3",
+    "explanation": "Mô tả quy trình bệnh nhân sẽ trải qua: You will be given…, A tube will be passed… Làm câu khách quan, nhẹ nhàng hơn.",
+    "examples": [
+     "You will be asked to fast for six hours.",
+     "The results will be sent to your doctor.",
+     "A small sample will be taken."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trọng âm: proCEdure, SEDative, enDOScopy",
+    "tip": "Nhấn sai làm bệnh nhân khó hiểu: pro-CE-dure /prəˈsiːʤə/, en-DOS-copy.",
+    "words": [
+     "procedure",
+     "sedative",
+     "endoscopy",
+     "consent"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích một thủ thuật đơn giản (ví dụ: lấy máu) và xin đồng ý.",
+    "Thầy/cô hỏi về rủi ro — trả lời trung thực, dễ hiểu."
+   ],
+   "questions": [
+    {
+     "prompt": "What is the procedure for?",
+     "options": [
+      "To test the eyes",
+      "To check the heart",
+      "To look inside the stomach"
+     ],
+     "answer": 2,
+     "explanation": "'to look inside your stomach'."
+    },
+    {
+     "prompt": "Why is a sedative given?",
+     "options": [
+      "To clean the stomach",
+      "To help the patient relax",
+      "To stop bleeding"
+     ],
+     "answer": 1,
+     "explanation": "'so you'll feel relaxed'."
+    },
+    {
+     "prompt": "How long does it take?",
+     "options": [
+      "50 minutes",
+      "15 minutes",
+      "5 minutes"
+     ],
+     "answer": 1,
+     "explanation": "'about fifteen minutes'."
+    },
+    {
+     "prompt": "Which is a common risk?",
+     "options": [
+      "Sore throat",
+      "Fever for a week",
+      "Broken tooth"
+     ],
+     "answer": 0,
+     "explanation": "'a small risk of a sore throat'."
+    },
+    {
+     "prompt": "Choose the correct passive.",
+     "options": [
+      "You will be give a sedative.",
+      "You will be given a sedative.",
+      "You will give a sedative."
+     ],
+     "answer": 1,
+     "explanation": "will be + V3 (given)."
+    },
+    {
+     "prompt": "Complete the sentence: There's a small _____ of bleeding.",
+     "options": [
+      "rarely",
+      "risk",
+      "procedure"
+     ],
+     "answer": 1,
+     "explanation": "“risk” nghĩa là “rủi ro”. Câu đầy đủ: There's a small risk of bleeding."
+    },
+    {
+     "prompt": "What does “rarely” mean?",
+     "options": [
+      "hiếm khi",
+      "thủ thuật",
+      "nhìn chung"
+     ],
+     "answer": 0,
+     "explanation": "“rarely” = hiếm khi. Ví dụ: Rarely, patients feel sick."
+    },
+    {
+     "prompt": "Complete the sentence: The _____ takes fifteen minutes.",
+     "options": [
+      "risk",
+      "procedure",
+      "generally"
+     ],
+     "answer": 1,
+     "explanation": "“procedure” nghĩa là “thủ thuật”. Câu đầy đủ: The procedure takes fifteen minutes."
+    },
+    {
+     "prompt": "What does “consent form” mean?",
+     "options": [
+      "hiếm khi",
+      "giấy đồng ý",
+      "nhìn chung"
+     ],
+     "answer": 1,
+     "explanation": "“consent form” = giấy đồng ý. Ví dụ: Please sign the consent form."
+    },
+    {
+     "prompt": "Complete the sentence: _____, patients feel sick.",
+     "options": [
+      "generally",
+      "procedure",
+      "rarely"
+     ],
+     "answer": 2,
+     "explanation": "“rarely” nghĩa là “hiếm khi”. Câu đầy đủ: Rarely, patients feel sick."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b1-2",
+   "level": "B1",
+   "unit": "B1 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Bàn giao ca (handover)",
+   "objective": "Bàn giao thông tin bệnh nhân rõ ràng theo cấu trúc SBAR.",
+   "reading": "Situation: Mr. Lam in bed 4 has had increasing shortness of breath over the last two hours.\nBackground: He's 68, admitted yesterday with pneumonia, and has a history of heart failure.\nAssessment: His oxygen saturation has dropped to 90%, and his heart rate is 110.\nRecommendation: I think he needs a doctor's review within thirty minutes. I've already increased his oxygen as prescribed.",
+   "vocabulary": [
+    {
+     "term": "shortness of breath",
+     "definition": "khó thở",
+     "example": "He has shortness of breath."
+    },
+    {
+     "term": "admitted",
+     "definition": "nhập viện",
+     "example": "She was admitted yesterday."
+    },
+    {
+     "term": "history of",
+     "definition": "tiền sử",
+     "example": "He has a history of heart failure."
+    },
+    {
+     "term": "oxygen saturation",
+     "definition": "độ bão hòa oxy",
+     "example": "Oxygen saturation is 90%."
+    },
+    {
+     "term": "heart rate",
+     "definition": "nhịp tim",
+     "example": "His heart rate is 110."
+    },
+    {
+     "term": "prescribed",
+     "definition": "được kê đơn",
+     "example": "I gave oxygen as prescribed."
+    }
+   ],
+   "grammar": {
+    "title": "Hiện tại hoàn thành tiếp diễn",
+    "explanation": "has/have been + V-ing: diễn tả việc bắt đầu trước và còn tiếp diễn, nhấn mạnh quá trình: He has been coughing all night. So sánh: has dropped (kết quả).",
+    "examples": [
+     "She has been vomiting since this morning.",
+     "His temperature has been rising.",
+     "His saturation has dropped to 90%."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc chỉ số rõ ràng",
+    "tip": "Nói chậm và tách số: 'ninety percent', 'one-ten' (110). pneumonia /njuːˈməʊniə/ — chữ p câm.",
+    "words": [
+     "pneumonia",
+     "saturation",
+     "admitted",
+     "prescribed"
+    ]
+   },
+   "speakingTasks": [
+    "Bàn giao một bệnh nhân (tưởng tượng) cho thầy/cô theo SBAR.",
+    "Thầy/cô hỏi thêm — trả lời chính xác số liệu."
+   ],
+   "questions": [
+    {
+     "prompt": "What is Mr. Lam's main problem?",
+     "options": [
+      "Chest pain",
+      "Increasing shortness of breath",
+      "High fever"
+     ],
+     "answer": 1,
+     "explanation": "'increasing shortness of breath'."
+    },
+    {
+     "prompt": "Why was he admitted?",
+     "options": [
+      "Surgery",
+      "A fall",
+      "Pneumonia"
+     ],
+     "answer": 2,
+     "explanation": "'admitted yesterday with pneumonia'."
+    },
+    {
+     "prompt": "What is his oxygen saturation?",
+     "options": [
+      "80%",
+      "90%",
+      "98%"
+     ],
+     "answer": 1,
+     "explanation": "'dropped to 90%'."
+    },
+    {
+     "prompt": "What does the nurse recommend?",
+     "options": [
+      "Wait until morning",
+      "Discharge him",
+      "A doctor's review within 30 minutes"
+     ],
+     "answer": 2,
+     "explanation": "'needs a doctor's review within thirty minutes'."
+    },
+    {
+     "prompt": "Which letter in “pneumonia” is silent?",
+     "options": [
+      "p",
+      "m",
+      "n"
+     ],
+     "answer": 0,
+     "explanation": "pneumonia — chữ p câm."
+    },
+    {
+     "prompt": "Complete the sentence: He has a _____ heart failure.",
+     "options": [
+      "oxygen saturation",
+      "heart rate",
+      "history of"
+     ],
+     "answer": 2,
+     "explanation": "“history of” nghĩa là “tiền sử”. Câu đầy đủ: He has a history of heart failure."
+    },
+    {
+     "prompt": "What does “admitted” mean?",
+     "options": [
+      "độ bão hòa oxy",
+      "nhập viện",
+      "được kê đơn"
+     ],
+     "answer": 1,
+     "explanation": "“admitted” = nhập viện. Ví dụ: She was admitted yesterday."
+    },
+    {
+     "prompt": "Complete the sentence: _____ is 90%.",
+     "options": [
+      "oxygen saturation",
+      "heart rate",
+      "history of"
+     ],
+     "answer": 0,
+     "explanation": "“oxygen saturation” nghĩa là “độ bão hòa oxy”. Câu đầy đủ: Oxygen saturation is 90%."
+    },
+    {
+     "prompt": "What does “heart rate” mean?",
+     "options": [
+      "nhịp tim",
+      "tiền sử",
+      "độ bão hòa oxy"
+     ],
+     "answer": 0,
+     "explanation": "“heart rate” = nhịp tim. Ví dụ: His heart rate is 110."
+    },
+    {
+     "prompt": "Complete the sentence: I gave oxygen as _____.",
+     "options": [
+      "prescribed",
+      "heart rate",
+      "admitted"
+     ],
+     "answer": 0,
+     "explanation": "“prescribed” nghĩa là “được kê đơn”. Câu đầy đủ: I gave oxygen as prescribed."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b1-3",
+   "level": "B1",
+   "unit": "B1 · Bài 3",
+   "category": "Từ vựng",
+   "title": "Tư vấn lối sống cho bệnh nhân mạn tính",
+   "objective": "Tư vấn chế độ ăn, vận động và theo dõi cho bệnh nhân tiểu đường/huyết áp.",
+   "reading": "Doctor: Your blood sugar levels are still quite high. Have you been following the diet we discussed?\nPatient: Mostly, but I find it hard to give up rice.\nDoctor: You don't have to give it up completely. Try brown rice and smaller portions. It would also help if you walked for thirty minutes after dinner.\nPatient: Should I check my blood sugar at home?\nDoctor: Yes, twice a day, and write the results in a diary so we can review them next month.",
+   "vocabulary": [
+    {
+     "term": "blood sugar",
+     "definition": "đường huyết",
+     "example": "Your blood sugar is high."
+    },
+    {
+     "term": "give up",
+     "definition": "từ bỏ",
+     "example": "It's hard to give up sweets."
+    },
+    {
+     "term": "portion",
+     "definition": "khẩu phần",
+     "example": "Try smaller portions."
+    },
+    {
+     "term": "diet",
+     "definition": "chế độ ăn",
+     "example": "Follow a healthy diet."
+    },
+    {
+     "term": "diary",
+     "definition": "nhật ký",
+     "example": "Write the results in a diary."
+    },
+    {
+     "term": "review",
+     "definition": "xem lại",
+     "example": "We'll review them next month."
+    }
+   ],
+   "grammar": {
+    "title": "Khuyên nhủ: It would help if… / You don't have to… / Try + V-ing",
+    "explanation": "It would help if + quá khứ đơn (lời khuyên mềm). You don't have to (không bắt buộc). Try + V-ing (thử làm).",
+    "examples": [
+     "It would help if you slept earlier.",
+     "You don't have to stop eating fruit.",
+     "Try walking after meals."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm /aɪ/: diet, diary",
+    "tip": "diet /ˈdaɪət/, diary /ˈdaɪəri/ — đừng nhầm với daily /ˈdeɪli/.",
+    "words": [
+     "diet",
+     "diary",
+     "portion",
+     "sugar"
+    ]
+   },
+   "speakingTasks": [
+    "Tư vấn lối sống cho thầy/cô (bệnh nhân huyết áp cao).",
+    "Thầy/cô viện cớ — bạn thuyết phục nhẹ nhàng."
+   ],
+   "questions": [
+    {
+     "prompt": "What is the patient's problem?",
+     "options": [
+      "Low blood pressure",
+      "Weight loss",
+      "High blood sugar"
+     ],
+     "answer": 2,
+     "explanation": "'Your blood sugar levels are still quite high.'"
+    },
+    {
+     "prompt": "What does the patient find hard?",
+     "options": [
+      "Giving up rice",
+      "Taking medicine",
+      "Walking"
+     ],
+     "answer": 0,
+     "explanation": "'I find it hard to give up rice.'"
+    },
+    {
+     "prompt": "What does the doctor suggest about rice?",
+     "options": [
+      "Eat more",
+      "Brown rice and smaller portions",
+      "Stop completely"
+     ],
+     "answer": 1,
+     "explanation": "'Try brown rice and smaller portions.'"
+    },
+    {
+     "prompt": "How often should blood sugar be checked at home?",
+     "options": [
+      "Twice a day",
+      "Every hour",
+      "Once a week"
+     ],
+     "answer": 0,
+     "explanation": "'twice a day'."
+    },
+    {
+     "prompt": "Choose the correct advice.",
+     "options": [
+      "It would help if you will walk.",
+      "It would help if you walked.",
+      "It would help if you walk."
+     ],
+     "answer": 1,
+     "explanation": "It would help if + quá khứ đơn."
+    },
+    {
+     "prompt": "Complete the sentence: Write the results in a _____.",
+     "options": [
+      "review",
+      "diary",
+      "portion"
+     ],
+     "answer": 1,
+     "explanation": "“diary” nghĩa là “nhật ký”. Câu đầy đủ: Write the results in a diary."
+    },
+    {
+     "prompt": "What does “diary” mean?",
+     "options": [
+      "nhật ký",
+      "xem lại",
+      "khẩu phần"
+     ],
+     "answer": 0,
+     "explanation": "“diary” = nhật ký. Ví dụ: Write the results in a diary."
+    },
+    {
+     "prompt": "Complete the sentence: Follow a healthy _____.",
+     "options": [
+      "diary",
+      "portion",
+      "diet"
+     ],
+     "answer": 2,
+     "explanation": "“diet” nghĩa là “chế độ ăn”. Câu đầy đủ: Follow a healthy diet."
+    },
+    {
+     "prompt": "What does “diet” mean?",
+     "options": [
+      "nhật ký",
+      "khẩu phần",
+      "chế độ ăn"
+     ],
+     "answer": 2,
+     "explanation": "“diet” = chế độ ăn. Ví dụ: Follow a healthy diet."
+    },
+    {
+     "prompt": "Complete the sentence: We'll _____ them next month.",
+     "options": [
+      "review",
+      "portion",
+      "diet"
+     ],
+     "answer": 0,
+     "explanation": "“review” nghĩa là “xem lại”. Câu đầy đủ: We'll review them next month."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b2-1",
+   "level": "B2",
+   "unit": "B2 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Thông báo tin xấu",
+   "objective": "Truyền đạt tin xấu một cách nhân văn theo các bước SPIKES.",
+   "reading": "Doctor: Thank you for coming in. Before we start, could you tell me what you understand about the tests so far?\nPatient: Only that they found a lump.\nDoctor: I'm afraid the results show that the lump is cancerous. I'm so sorry — I know this isn't what you were hoping to hear.\nPatient: (silence)\nDoctor: Take your time. The good news is that it was detected early, which means treatment options are very good. Would you like me to go through them now, or would you prefer to talk about it with your family first?",
+   "vocabulary": [
+    {
+     "term": "I'm afraid",
+     "definition": "tôi e rằng (báo tin xấu)",
+     "example": "I'm afraid the news isn't good."
+    },
+    {
+     "term": "lump",
+     "definition": "khối u, cục",
+     "example": "They found a small lump."
+    },
+    {
+     "term": "cancerous",
+     "definition": "ác tính, ung thư",
+     "example": "The lump is not cancerous."
+    },
+    {
+     "term": "detect",
+     "definition": "phát hiện",
+     "example": "It was detected early."
+    },
+    {
+     "term": "treatment options",
+     "definition": "các lựa chọn điều trị",
+     "example": "Let's discuss the treatment options."
+    },
+    {
+     "term": "take your time",
+     "definition": "cứ từ từ",
+     "example": "Take your time, there's no rush."
+    }
+   ],
+   "grammar": {
+    "title": "Ngôn ngữ giảm nhẹ và lựa chọn cho bệnh nhân",
+    "explanation": "Dùng 'I'm afraid…', 'I'm sorry to tell you…' để báo tin. Đưa quyền lựa chọn: Would you like me to…, or would you prefer to…? Mệnh đề 'which means…' để giải thích hệ quả.",
+    "examples": [
+     "I'm sorry to tell you that the scan shows a fracture.",
+     "Would you prefer to discuss this now or later?",
+     "It was caught early, which means surgery may not be needed."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nhịp chậm, ngừng nghỉ hợp lý",
+    "tip": "Ngừng sau tin xấu, không nói liên tục. Giọng thấp, đều, tránh lên giọng ở cuối câu thông báo.",
+    "words": [
+     "cancerous",
+     "detected",
+     "treatment",
+     "options"
+    ]
+   },
+   "speakingTasks": [
+    "Thông báo một kết quả không tốt (ví dụ: gãy xương cần mổ) cho thầy/cô một cách nhân văn.",
+    "Phản ứng khi bệnh nhân im lặng hoặc tức giận."
+   ],
+   "questions": [
+    {
+     "prompt": "What does the doctor ask first?",
+     "options": [
+      "About insurance",
+      "What the patient already understands",
+      "The patient's age"
+     ],
+     "answer": 1,
+     "explanation": "'could you tell me what you understand…'"
+    },
+    {
+     "prompt": "What do the results show?",
+     "options": [
+      "Nothing was found.",
+      "The lump is cancerous.",
+      "The lump is benign."
+     ],
+     "answer": 1,
+     "explanation": "'the lump is cancerous'."
+    },
+    {
+     "prompt": "What is the positive point?",
+     "options": [
+      "No treatment needed.",
+      "It was detected early.",
+      "It will disappear."
+     ],
+     "answer": 1,
+     "explanation": "'it was detected early'."
+    },
+    {
+     "prompt": "What choice does the doctor give?",
+     "options": [
+      "Discuss options now or with family first",
+      "Pay now or later",
+      "Choose a hospital"
+     ],
+     "answer": 0,
+     "explanation": "'go through them now, or… talk about it with your family first?'"
+    },
+    {
+     "prompt": "Which phrase softens bad news?",
+     "options": [
+      "You have a problem.",
+      "I'm afraid…",
+      "The news is bad."
+     ],
+     "answer": 1,
+     "explanation": "'I'm afraid…' làm nhẹ tin xấu."
+    },
+    {
+     "prompt": "Complete the sentence: Let's discuss the _____.",
+     "options": [
+      "treatment options",
+      "take your time",
+      "I'm afraid"
+     ],
+     "answer": 0,
+     "explanation": "“treatment options” nghĩa là “các lựa chọn điều trị”. Câu đầy đủ: Let's discuss the treatment options."
+    },
+    {
+     "prompt": "What does “take your time” mean?",
+     "options": [
+      "tôi e rằng (báo tin xấu)",
+      "các lựa chọn điều trị",
+      "cứ từ từ"
+     ],
+     "answer": 2,
+     "explanation": "“take your time” = cứ từ từ. Ví dụ: Take your time, there's no rush."
+    },
+    {
+     "prompt": "Complete the sentence: _____ the news isn't good.",
+     "options": [
+      "I'm afraid",
+      "cancerous",
+      "treatment options"
+     ],
+     "answer": 0,
+     "explanation": "“I'm afraid” nghĩa là “tôi e rằng (báo tin xấu)”. Câu đầy đủ: I'm afraid the news isn't good."
+    },
+    {
+     "prompt": "What does “I'm afraid” mean?",
+     "options": [
+      "tôi e rằng (báo tin xấu)",
+      "ác tính, ung thư",
+      "các lựa chọn điều trị"
+     ],
+     "answer": 0,
+     "explanation": "“I'm afraid” = tôi e rằng (báo tin xấu). Ví dụ: I'm afraid the news isn't good."
+    },
+    {
+     "prompt": "Complete the sentence: _____, there's no rush.",
+     "options": [
+      "take your time",
+      "treatment options",
+      "I'm afraid"
+     ],
+     "answer": 0,
+     "explanation": "“take your time” nghĩa là “cứ từ từ”. Câu đầy đủ: Take your time, there's no rush."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b2-2",
+   "level": "B2",
+   "unit": "B2 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Trình bày ca bệnh",
+   "objective": "Trình bày ca lâm sàng ngắn gọn, logic trước nhóm chuyên môn.",
+   "reading": "This is a 54-year-old man who presented to the emergency department with crushing central chest pain radiating to his left arm, which had started two hours earlier. He is a smoker with a history of hypertension. On examination, he was sweaty and pale. His ECG showed ST elevation in the anterior leads, consistent with an acute myocardial infarction. He was treated with aspirin and taken for urgent angioplasty, and he is now stable.",
+   "vocabulary": [
+    {
+     "term": "present with",
+     "definition": "đến khám với (triệu chứng)",
+     "example": "She presented with a high fever."
+    },
+    {
+     "term": "radiating to",
+     "definition": "lan ra",
+     "example": "The pain was radiating to his left arm."
+    },
+    {
+     "term": "hypertension",
+     "definition": "tăng huyết áp",
+     "example": "He has a history of hypertension."
+    },
+    {
+     "term": "on examination",
+     "definition": "khi thăm khám",
+     "example": "On examination, he was pale."
+    },
+    {
+     "term": "consistent with",
+     "definition": "phù hợp với",
+     "example": "The findings are consistent with infection."
+    },
+    {
+     "term": "stable",
+     "definition": "ổn định",
+     "example": "The patient is now stable."
+    }
+   ],
+   "grammar": {
+    "title": "Thì trong trình bày ca bệnh",
+    "explanation": "Hiện tại đơn cho thông tin nền (He is a smoker). Quá khứ đơn cho diễn biến (He presented…, was treated…). Quá khứ hoàn thành cho việc trước khi đến viện (pain had started two hours earlier). Mệnh đề quan hệ để nén thông tin.",
+    "examples": [
+     "She is a 30-year-old teacher who presented with headaches.",
+     "The fever had started three days before admission.",
+     "He was given antibiotics and improved."
+    ]
+   },
+   "pronunciation": {
+    "focus": "Thuật ngữ dài: myocardial infarction",
+    "tip": "myo-CAR-dial in-FARC-tion /ˌmaɪəʊˈkɑːdiəl ɪnˈfɑːkʃən/. Nói chậm, tách từng phần.",
+    "words": [
+     "myocardial",
+     "infarction",
+     "hypertension",
+     "angioplasty"
+    ]
+   },
+   "speakingTasks": [
+    "Trình bày một ca bệnh (tưởng tượng) trong 1 phút theo cấu trúc chuẩn.",
+    "Thầy/cô là trưởng khoa — hỏi chẩn đoán phân biệt."
+   ],
+   "questions": [
+    {
+     "prompt": "How old is the patient?",
+     "options": [
+      "64",
+      "45",
+      "54"
+     ],
+     "answer": 2,
+     "explanation": "'a 54-year-old man'."
+    },
+    {
+     "prompt": "Where did the pain radiate?",
+     "options": [
+      "To the jaw",
+      "To the back",
+      "To the left arm"
+     ],
+     "answer": 2,
+     "explanation": "'radiating to his left arm'."
+    },
+    {
+     "prompt": "What risk factors does he have?",
+     "options": [
+      "Diabetes only",
+      "No risk factors",
+      "Smoking and hypertension"
+     ],
+     "answer": 2,
+     "explanation": "'a smoker with a history of hypertension'."
+    },
+    {
+     "prompt": "What did the ECG suggest?",
+     "options": [
+      "Pneumonia",
+      "Normal heart",
+      "Acute myocardial infarction"
+     ],
+     "answer": 2,
+     "explanation": "'consistent with an acute myocardial infarction'."
+    },
+    {
+     "prompt": "Choose the correct tense: The pain ___ two hours before he arrived.",
+     "options": [
+      "had started",
+      "starts",
+      "has started"
+     ],
+     "answer": 0,
+     "explanation": "Trước một mốc quá khứ → had started."
+    },
+    {
+     "prompt": "Complete the sentence: The pain was _____ his left arm.",
+     "options": [
+      "on examination",
+      "consistent with",
+      "radiating to"
+     ],
+     "answer": 2,
+     "explanation": "“radiating to” nghĩa là “lan ra”. Câu đầy đủ: The pain was radiating to his left arm."
+    },
+    {
+     "prompt": "What does “present with” mean?",
+     "options": [
+      "phù hợp với",
+      "khi thăm khám",
+      "đến khám với (triệu chứng)"
+     ],
+     "answer": 2,
+     "explanation": "“present with” = đến khám với (triệu chứng). Ví dụ: She presented with a high fever."
+    },
+    {
+     "prompt": "Complete the sentence: The patient is now _____.",
+     "options": [
+      "hypertension",
+      "stable",
+      "present with"
+     ],
+     "answer": 1,
+     "explanation": "“stable” nghĩa là “ổn định”. Câu đầy đủ: The patient is now stable."
+    },
+    {
+     "prompt": "What does “radiating to” mean?",
+     "options": [
+      "phù hợp với",
+      "khi thăm khám",
+      "lan ra"
+     ],
+     "answer": 2,
+     "explanation": "“radiating to” = lan ra. Ví dụ: The pain was radiating to his left arm."
+    },
+    {
+     "prompt": "Complete the sentence: The findings are _____ infection.",
+     "options": [
+      "radiating to",
+      "consistent with",
+      "on examination"
+     ],
+     "answer": 1,
+     "explanation": "“consistent with” nghĩa là “phù hợp với”. Câu đầy đủ: The findings are consistent with infection."
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b2-3",
+   "level": "B2",
+   "unit": "B2 · Bài 3",
+   "category": "Từ vựng",
+   "title": "Đạo đức y khoa và an toàn người bệnh",
+   "objective": "Thảo luận bảo mật thông tin, sai sót y khoa và văn hóa an toàn.",
+   "reading": "Patient safety relies on a culture in which staff feel able to report errors without fear of blame. When a medication error occurs, it should be disclosed to the patient promptly and honestly. Confidentiality must also be respected: patient information may only be shared with those directly involved in their care, unless there is a legal obligation or a serious risk to others.",
+   "vocabulary": [
+    {
+     "term": "report",
+     "definition": "báo cáo",
+     "example": "Staff should report errors."
+    },
+    {
+     "term": "blame",
+     "definition": "đổ lỗi",
+     "example": "We focus on learning, not blame."
+    },
+    {
+     "term": "disclose",
+     "definition": "công khai, cho biết",
+     "example": "The error was disclosed to the patient."
+    },
+    {
+     "term": "promptly",
+     "definition": "nhanh chóng, kịp thời",
+     "example": "Respond to complaints promptly."
+    },
+    {
+     "term": "confidentiality",
+     "definition": "bảo mật thông tin",
+     "example": "Confidentiality must be respected."
+    },
+    {
+     "term": "obligation",
+     "definition": "nghĩa vụ",
+     "example": "There is a legal obligation to report it."
+    }
+   ],
+   "grammar": {
+    "title": "Động từ khuyết thiếu trang trọng ở bị động",
+    "explanation": "must be + V3 (bắt buộc), should be + V3 (nên), may only be + V3 (chỉ được phép). unless = trừ khi.",
+    "examples": [
+     "Patient records must be kept secure.",
+     "Errors should be reported within 24 hours.",
+     "Information may only be shared with consent, unless there is a risk."
+    ]
+   },
+   "pronunciation": {
+    "focus": "confidentiality /ˌkɒnfɪˌdenʃiˈæləti/",
+    "tip": "Từ 6 âm tiết, nhấn chính ở 'AL'. Chia: con-fi-den-shi-AL-i-ty.",
+    "words": [
+     "confidentiality",
+     "obligation",
+     "disclosed",
+     "promptly"
+    ]
+   },
+   "speakingTasks": [
+    "Thảo luận: có nên báo cho bệnh nhân mọi sai sót nhỏ không?",
+    "Thầy/cô là người nhà muốn xem hồ sơ — bạn xử lý theo quy định bảo mật."
+   ],
+   "questions": [
+    {
+     "prompt": "What does patient safety rely on?",
+     "options": [
+      "Fewer patients",
+      "A culture where staff can report errors",
+      "Expensive equipment"
+     ],
+     "answer": 1,
+     "explanation": "'a culture in which staff feel able to report errors'."
+    },
+    {
+     "prompt": "How should a medication error be handled?",
+     "options": [
+      "Ignored",
+      "Hidden",
+      "Disclosed promptly and honestly"
+     ],
+     "answer": 2,
+     "explanation": "'disclosed to the patient promptly and honestly'."
+    },
+    {
+     "prompt": "Who can patient information be shared with?",
+     "options": [
+      "Anyone",
+      "The media",
+      "Those directly involved in care"
+     ],
+     "answer": 2,
+     "explanation": "'only… those directly involved in their care'."
+    },
+    {
+     "prompt": "“Unless” means…",
+     "options": [
+      "if not",
+      "because",
+      "although"
+     ],
+     "answer": 0,
+     "explanation": "unless = trừ khi."
+    },
+    {
+     "prompt": "Choose the correct sentence.",
+     "options": [
+      "Records must be keep secure.",
+      "Records must be kept secure.",
+      "Records must keep secure."
+     ],
+     "answer": 1,
+     "explanation": "must be + V3."
+    },
+    {
+     "prompt": "Complete the sentence: _____ must be respected.",
+     "options": [
+      "disclose",
+      "confidentiality",
+      "blame"
+     ],
+     "answer": 1,
+     "explanation": "“confidentiality” nghĩa là “bảo mật thông tin”. Câu đầy đủ: Confidentiality must be respected."
+    },
+    {
+     "prompt": "What does “report” mean?",
+     "options": [
+      "báo cáo",
+      "đổ lỗi",
+      "bảo mật thông tin"
+     ],
+     "answer": 0,
+     "explanation": "“report” = báo cáo. Ví dụ: Staff should report errors."
+    },
+    {
+     "prompt": "Complete the sentence: Respond to complaints _____.",
+     "options": [
+      "report",
+      "promptly",
+      "blame"
+     ],
+     "answer": 1,
+     "explanation": "“promptly” nghĩa là “nhanh chóng, kịp thời”. Câu đầy đủ: Respond to complaints promptly."
+    },
+    {
+     "prompt": "What does “confidentiality” mean?",
+     "options": [
+      "công khai, cho biết",
+      "bảo mật thông tin",
+      "đổ lỗi"
+     ],
+     "answer": 1,
+     "explanation": "“confidentiality” = bảo mật thông tin. Ví dụ: Confidentiality must be respected."
+    },
+    {
+     "prompt": "Complete the sentence: We focus on learning, not _____.",
+     "options": [
+      "report",
+      "confidentiality",
+      "blame"
+     ],
+     "answer": 2,
+     "explanation": "“blame” nghĩa là “đổ lỗi”. Câu đầy đủ: We focus on learning, not blame."
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
+}
