@@ -9,12 +9,37 @@ const CACHE = "lingua-tts-v1";
 const base = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 const FLAGS: Record<PackId, string> = { vi: "lingua-vi-pack", en: "lingua-en-pack" };
 
+/**
+ * The files come from where they are published: the Piper voices from Hugging Face (pinned to one
+ * commit, so they never change under the app) and the two WebAssembly libraries from the jsDelivr
+ * npm CDN. Only the small worker script is part of the app. Everything is kept in the browser cache
+ * after the first download; files saved by older versions under the app's own address still count.
+ */
+const HF = "https://huggingface.co/rhasspy/piper-voices/resolve/b4e358ffcb232591bf73a540e70f7de528e4174a/";
+const PIPER_WASM = "https://cdn.jsdelivr.net/npm/@diffusionstudio/piper-wasm@1.0.0/build/";
+const ORT = "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.18.0/dist/";
+/** Changing the worker script changes this, so a cached old copy is never used. */
+export const WORKER_VERSION = "3";
+
+const SOURCES: Record<string, string> = {
+  "vi_VN-vais1000-medium.onnx": `${HF}vi/vi_VN/vais1000/medium/vi_VN-vais1000-medium.onnx`,
+  "vi_VN-vais1000-medium.onnx.json": `${HF}vi/vi_VN/vais1000/medium/vi_VN-vais1000-medium.onnx.json`,
+  "en_US-libritts_r-medium.onnx": `${HF}en/en_US/libritts_r/medium/en_US-libritts_r-medium.onnx`,
+  "en_US-libritts_r-medium.onnx.json": `${HF}en/en_US/libritts_r/medium/en_US-libritts_r-medium.onnx.json`,
+  "piper_phonemize.data": `${PIPER_WASM}piper_phonemize.data`,
+  "piper_phonemize.wasm": `${PIPER_WASM}piper_phonemize.wasm`,
+  "piper_phonemize.js": `${PIPER_WASM}piper_phonemize.js`,
+  "ort-wasm-simd.wasm": `${ORT}ort-wasm-simd.wasm`,
+  "ort.min.js": `${ORT}ort.min.js`,
+};
+
 const SHARED = [
   { name: "piper_phonemize.data", bytes: 18_077_249 },
   { name: "ort-wasm-simd.wasm", bytes: 10_595_041 },
   { name: "piper_phonemize.wasm", bytes: 635_212 },
   { name: "ort.min.js", bytes: 540_716 },
   { name: "piper_phonemize.js", bytes: 120_714 },
+  { name: `worker.js?v=${WORKER_VERSION}`, bytes: 6_000 },
 ];
 
 export const PACKS: Record<PackId, { model: string; files: { name: string; bytes: number }[] }> = {
@@ -34,7 +59,14 @@ export function packMB(id: PackId, otherInstalled = false): number {
   return Math.round(own.reduce((sum, file) => sum + file.bytes, 0) / 1_000_000);
 }
 
-const fileUrl = (name: string) => new URL(`${base}/tts/vi/${name}`, location.href).href;
+/** Where a file was kept by versions up to 2.15 (inside the app's own address). */
+const legacyUrl = (name: string) => new URL(`${base}/tts/vi/${name}`, location.href).href;
+/** Where a file is downloaded from now. */
+const fileUrl = (name: string) => SOURCES[name] ?? legacyUrl(name);
+
+async function cached(cache: Cache, name: string): Promise<Response | undefined> {
+  return (await cache.match(fileUrl(name))) ?? (await cache.match(legacyUrl(name)));
+}
 
 /** Quick answer from a flag; `packInstalled` checks the cache itself. */
 export function packFlag(id: PackId): boolean {
@@ -44,7 +76,7 @@ export function packFlag(id: PackId): boolean {
 export async function packInstalled(id: PackId): Promise<boolean> {
   try {
     const cache = await caches.open(CACHE);
-    for (const file of PACKS[id].files) if (!(await cache.match(fileUrl(file.name)))) return false;
+    for (const file of PACKS[id].files) if (!(await cached(cache, file.name))) return false;
     return true;
   } catch { return false; }
 }
@@ -56,7 +88,7 @@ export async function downloadPack(id: PackId, onProgress: (fraction: number) =>
   let done = 0;
   for (const file of files) {
     const url = fileUrl(file.name);
-    if (await cache.match(url)) { done += file.bytes; onProgress(done / total); continue; }
+    if (await cached(cache, file.name)) { done += file.bytes; onProgress(done / total); continue; }
     const response = await fetch(url, { signal, cache: "no-cache" });
     if (!response.ok || !response.body) throw new Error(`Không tải được ${file.name} (HTTP ${response.status}).`);
     const reader = response.body.getReader();
@@ -67,7 +99,7 @@ export async function downloadPack(id: PackId, onProgress: (fraction: number) =>
       if (finished) break;
       chunks.push(value);
       loaded += value.length;
-      onProgress((done + loaded) / total);
+      onProgress((done + Math.min(loaded, file.bytes)) / total);
     }
     await cache.put(url, new Response(new Blob(chunks as BlobPart[]), { headers: { "Content-Type": response.headers.get("Content-Type") ?? "application/octet-stream" } }));
     done += file.bytes;
@@ -80,9 +112,10 @@ export async function removePack(id: PackId): Promise<void> {
   stopWorker();
   try {
     const cache = await caches.open(CACHE);
-    for (const file of PACKS[id].files) if (!SHARED.some((item) => item.name === file.name)) await cache.delete(fileUrl(file.name));
+    const drop = async (name: string) => { await cache.delete(fileUrl(name)); await cache.delete(legacyUrl(name)); };
+    for (const file of PACKS[id].files) if (!SHARED.some((item) => item.name === file.name)) await drop(file.name);
     const other: PackId = id === "vi" ? "en" : "vi";
-    if (!(await packInstalled(other))) for (const file of SHARED) await cache.delete(fileUrl(file.name));
+    if (!(await packInstalled(other))) for (const file of SHARED) await drop(file.name);
   } catch {}
   try { localStorage.removeItem(FLAGS[id]); } catch {}
 }
@@ -110,7 +143,7 @@ function stopWorker() {
 
 function getWorker(): Worker {
   if (worker) return worker;
-  const created = new Worker(`${base}/tts/vi/worker.js`);
+  const created = new Worker(`${base}/tts/vi/worker.js?v=${WORKER_VERSION}`);
   created.onmessage = (event: MessageEvent<{ id: number; wav?: ArrayBuffer; error?: string }>) => {
     const item = pending.get(event.data.id);
     if (!item) return;
@@ -171,7 +204,8 @@ let enSpeakerIds: Record<string, number> | null = null;
 export async function englishSpeaker(slot: { gender: "female" | "male"; index: number; child?: boolean }): Promise<number> {
   if (!enSpeakerIds) {
     try {
-      const response = await fetch(fileUrl(`${PACKS.en.model}.json`));
+      const name = `${PACKS.en.model}.json`;
+      const response = (await cached(await caches.open(CACHE), name)) ?? (await fetch(fileUrl(name)));
       enSpeakerIds = (await response.json() as { speaker_id_map: Record<string, number> }).speaker_id_map;
     } catch { enSpeakerIds = {}; }
   }

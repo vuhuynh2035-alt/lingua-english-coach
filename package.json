@@ -1,12 +1,13 @@
 {
   "name": "teacher-ai",
-  "version": "2.15.1",
+  "version": "2.16.0",
   "private": true,
   "scripts": {
     "predev": "node scripts/write-version.mjs",
     "dev": "next dev",
     "prebuild": "node scripts/write-version.mjs",
     "build": "next build",
+    "postbuild": "node scripts/optimize-css.mjs",
     "publish:pages": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/publish-pages.ps1",
     "lint": "eslint src next.config.ts eslint.config.mjs"
   },
@@ -19,8 +20,10 @@
     "@types/node": "^24.2.1",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
+    "csso": "^5.0.5",
     "eslint": "^9.32.0",
     "eslint-config-next": "^15.4.6",
+    "purgecss": "^6.0.0",
     "typescript": "^5.9.2"
   },
   "overrides": {
