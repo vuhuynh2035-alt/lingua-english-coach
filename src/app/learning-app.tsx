@@ -588,6 +588,12 @@ export default function Home() {
   /** Costs, caps and limits of the AI services (see lib/usage.ts); `usageTick` re-renders the counters. */
   const [usageSettings, setUsageSettings] = useState<UsageSettings>(() => (typeof window === "undefined" ? DEFAULT_USAGE : loadUsageSettings()));
   const [usageTick, setUsageTick] = useState(0);
+  const usageSettingsRef = useRef(usageSettings);
+  usageSettingsRef.current = usageSettings;
+  /** The tutor turn that stopped at a limit, run again once the learner chose what to do. */
+  const retryArgsRef = useRef<{ base: Message[]; apiHistory: ChatMessage[]; voice: boolean } | null>(null);
+  const [retryRequest, setRetryRequest] = useState(0);
+  const [connectRequest, setConnectRequest] = useState(0);
   /** Voices of each service for a woman, a man and a child tutor. */
   const [serviceVoices, setServiceVoices] = useState<Record<VoiceService, Record<VoiceSlot, string>>>(DEFAULT_SERVICE_VOICES);
   const lastVoiceLabelRef = useRef("");
@@ -793,6 +799,22 @@ export default function Home() {
     const timer = window.setInterval(() => setUsageTick((count) => count + 1), 30_000);
     return () => window.clearInterval(timer);
   }, [section]);
+
+  useEffect(() => {
+    const args = retryArgsRef.current;
+    if (!retryRequest || !args) return;
+    retryArgsRef.current = null;
+    retryTurnRef.current = null;
+    setChatError("");
+    void tutorTurn(args.base, args.apiHistory, args.voice);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [retryRequest]);
+
+  // Opening the class again after the learner raised a cap or switched provider (with the new settings).
+  useEffect(() => {
+    if (connectRequest) void connectClassroom();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectRequest]);
 
   // A sample read through the speech queue is over when the queue is.
   useEffect(() => {
@@ -1365,7 +1387,7 @@ export default function Home() {
     const service: ServiceId = aiProvider === "google" ? "gemini" : "openai";
     const candidatesAll = await chatModelCandidates();
     // Only the models the learner allows (the first one stays if none is ticked).
-    const allowedModels = candidatesAll.filter((model) => modelAllowed(usageSettings, service, "chat", model));
+    const allowedModels = candidatesAll.filter((model) => modelAllowed(usageSettingsRef.current, service, "chat", model));
     const models = allowedModels.length ? allowedModels : candidatesAll.slice(0, 1);
     // The tutor's prompt and the recent conversation: about 3,000 tokens a turn.
     const inTokens = 3000;
@@ -1379,7 +1401,7 @@ export default function Home() {
       },
       async (key, model) => {
         // Counted on the device first: a key at its limit or over the money cap is skipped (the next key is tried).
-        const state = checkUsage(usageSettings, service, key, model, "chat", { inTokens, outTokens: 700 });
+        const state = checkUsage(usageSettingsRef.current, service, key, model, "chat", { inTokens, outTokens: 700 });
         if (!state.ok) {
           const refusal = new AiError("quota", `${state.reason}${state.resetIn ? `; dùng lại sau khoảng ${inWords(state.resetIn)}` : ""}. Muốn dùng tiếp ngay, hãy nâng trần trong Cài đặt → Chi phí AI.`, 429);
           refusal.detail = "local usage limit";
@@ -1388,7 +1410,7 @@ export default function Home() {
         reserveUsage(key, model, "chat");
         try {
           const value = await operation(key, model);
-          recordUsage(usageSettings, service, key, model, "chat", { inTokens, outTokens: typeof value === "string" ? Math.ceil(value.length / 4) : 300 });
+          recordUsage(usageSettingsRef.current, service, key, model, "chat", { inTokens, outTokens: typeof value === "string" ? Math.ceil(value.length / 4) : 300 });
           setUsageTick((count) => count + 1);
           return value;
         } catch (error) {
@@ -1602,6 +1624,7 @@ RULES:
         : "Gia sư chưa thể trả lời. Bạn vui lòng thử lại nhé."));
       lastAiErrorRef.current = error instanceof AiError ? error : null;
       retryTurnRef.current = () => { void tutorTurn(base, apiHistory, voice); };
+      retryArgsRef.current = { base, apiHistory, voice };
       return false;
     } finally {
       if (current()) {
@@ -2212,7 +2235,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     let waited = 0;
     try {
       for (let attempt = 0; attempt < 8; attempt++) {
-        const { order, refusals, waitMs } = planSpeech(usageSettings, candidates.filter((item) => !tried.has(`${item.key}|${item.model}`)), text.length);
+        const { order, refusals, waitMs } = planSpeech(usageSettingsRef.current, candidates.filter((item) => !tried.has(`${item.key}|${item.model}`)), text.length);
         // A free voice back within seconds beats paying for this sentence.
         if (waitMs && waited + waitMs <= 10_000) {
           await new Promise((resolve) => setTimeout(resolve, waitMs + 50));
@@ -2230,7 +2253,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         reserveUsage(choice.key, choice.model, "speech");
         try {
           const value = await synthesizeCloudSpeech(choice.service === "gemini" ? "google" : choice.service, choice.key, choice.model, voiced, text, language);
-          recordUsage(usageSettings, choice.service, choice.key, choice.model, "speech", { chars: text.length });
+          recordUsage(usageSettingsRef.current, choice.service, choice.key, choice.model, "speech", { chars: text.length });
           setUsageTick((count) => count + 1);
           showVoiceService(choice.service, voiced);
           try { await saveCachedSpeech(speechCacheKey(voiced, language), text, value); } catch {}
@@ -2882,11 +2905,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   function updateUsageSettings(change: (current: UsageSettings) => UsageSettings) {
-    setUsageSettings((current) => {
-      const next = change(current);
-      saveUsageSettings(next);
-      return next;
-    });
+    const next = change(usageSettingsRef.current);
+    usageSettingsRef.current = next;
+    saveUsageSettings(next);
+    setUsageSettings(next);
   }
 
   function setModelAllowed(service: ServiceId, kind: "chat" | "speech", model: string, value: boolean) {
@@ -2911,6 +2933,27 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             <span>{model.label}{model.note && <small> — {model.note}</small>}</span>
           </label>
         ))}
+      </div>
+    );
+  }
+
+  /** The tutor stopped at a cap or limit the learner set: raise it, switch provider, or look at the costs. */
+  function renderCapChoices(again: () => void) {
+    const service: ServiceId = aiProvider === "google" ? "gemini" : "openai";
+    const other: AiProvider = aiProvider === "google" ? "openai" : "google";
+    return (
+      <div className="cap-choices">
+        <small>Gia sư đã dừng ở hạn mức bạn đặt. Bạn muốn làm gì?</small>
+        <button type="button" className="button button-primary" onClick={() => {
+          updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: Math.round((current.caps[service] + 2) * 100) / 100 } }));
+          again();
+        }}>Nâng trần {SERVICE_NAMES[service]} thêm 2 USD và học tiếp</button>
+        {apiKeys[other].length > 0 && (
+          <button type="button" className="button button-outline" onClick={() => { setAiProvider(other); again(); }}>
+            Chuyển sang {other === "google" ? "Gemini" : "OpenAI"} và học tiếp
+          </button>
+        )}
+        <button type="button" className="button button-outline" onClick={() => navigateToSection("settings")}>Mở Cài đặt → Chi phí AI</button>
       </div>
     );
   }
@@ -3811,12 +3854,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               <ul>{connection.details.map((line, index) => <li key={index}>{line}</li>)}</ul>
             </details>
           )}
-          {!checking && (
+          {!checking && (lastAiErrorRef.current?.detail === "local usage limit" ? renderCapChoices(() => setConnectRequest((count) => count + 1)) : (
             <div className="cr-connect-actions">
               <button type="button" className="button button-primary" onClick={() => { void connectClassroom(); }}>↻ Thử lại</button>
               <button type="button" className="button button-outline" onClick={() => navigateToSection("settings")}>Kiểm tra API key</button>
             </div>
-          )}
+          ))}
           {checking && <div className="cr-spinner" aria-hidden="true" />}
         </section>
       );
@@ -3896,7 +3939,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           {chatError && (
             <div className="chat-error-row" role="alert">
               <p className="error-message chat-error">{chatError}</p>
-              {retryTurnRef.current && <button type="button" className="button button-outline" onClick={() => { const retry = retryTurnRef.current; retryTurnRef.current = null; setChatError(""); retry?.(); }}>↻ Thử lại</button>}
+              {lastAiErrorRef.current?.detail === "local usage limit" ? renderCapChoices(() => setRetryRequest((count) => count + 1)) : retryTurnRef.current && <button type="button" className="button button-outline" onClick={() => { const retry = retryTurnRef.current; retryTurnRef.current = null; setChatError(""); retry?.(); }}>↻ Thử lại</button>}
             </div>
           )}
           <div className="suggested-chips cr-chips">
