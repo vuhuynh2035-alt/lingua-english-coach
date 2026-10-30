@@ -2761,3 +2761,13 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; backg
 .medal.earned { background: #fff4d6; filter: none; opacity: 1; box-shadow: inset 0 0 0 1px #f2c85b; }
 .medal i { font-style: normal; font-size: 1.5rem; line-height: 1.1; }
 .medal small { font-size: .6875rem; color: var(--muted); }
+
+/* Back tab: always the size it had when touched, with a wider invisible touch area */
+.floating-back-button,
+html[data-theme] .floating-back-button,
+html[data-theme="blue"] .floating-back-button { width: 22px; height: 88px; background: #2a86c8d9; }
+.floating-back-button span { font-size: .5625rem; }
+.floating-back-button::after { content: ""; position: absolute; inset: -8px -18px -8px 0; }
+.floating-back-button:hover:not(:disabled), .floating-back-button:focus-visible,
+html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
+.cr-voice-note { display: block; margin-top: 6px; color: #9a5b00; font-size: .8125rem; }

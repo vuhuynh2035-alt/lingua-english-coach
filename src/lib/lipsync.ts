@@ -11,6 +11,35 @@ let connected: HTMLAudioElement | null = null;
 let pulseLevel = 0;
 let lastRealAt = 0;
 
+let bufferSource: AudioBufferSourceNode | null = null;
+
+/**
+ * Plays a clip through the AudioContext started in an earlier tap. Some phones (e.g. Chinese ROM
+ * browsers) refuse <audio>.play() once a network wait has passed, but let a running context play.
+ */
+export async function playThroughContext(blob: Blob): Promise<void> {
+  const ctx = context;
+  if (!ctx) throw new Error("chưa có Web Audio");
+  // resume() never settles on a phone that still wants a tap, so it gets a short time limit.
+  if (ctx.state !== "running") await Promise.race([ctx.resume(), new Promise((resolve) => setTimeout(resolve, 1500))]);
+  if (ctx.state !== "running") throw new Error("Web Audio đang bị tạm dừng");
+  const buffer = await ctx.decodeAudioData(await blob.arrayBuffer());
+  stopContextPlayback();
+  await new Promise<void>((resolve) => {
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(analyser ?? ctx.destination);
+    source.onended = () => { if (bufferSource === source) bufferSource = null; resolve(); };
+    bufferSource = source;
+    source.start();
+  });
+}
+
+export function stopContextPlayback() {
+  try { bufferSource?.stop(); } catch {}
+  bufferSource = null;
+}
+
 /** Call inside a tap: browsers only start an AudioContext from a user gesture. */
 export function attachLipSync(player: HTMLAudioElement) {
   try {
