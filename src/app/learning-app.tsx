@@ -669,6 +669,7 @@ export default function Home() {
   const recorderRef = useRef<MediaRecorder | null>(null);
   const voiceChatRecorderRef = useRef<MediaRecorder | null>(null);
   const voiceChatStreamRef = useRef<MediaStream | null>(null);
+  const voiceChatCancelledRef = useRef(false);
   const voiceChatChunksRef = useRef<Blob[]>([]);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
@@ -1690,6 +1691,7 @@ RULES:
       recorder.onstop = async () => {
         stream.getTracks().forEach((track) => track.stop());
         voiceChatStreamRef.current = null;
+        if (voiceChatCancelledRef.current) { voiceChatCancelledRef.current = false; return; }
         const blob = new Blob(voiceChatChunksRef.current, { type: recorder.mimeType || "audio/mp4" });
         if (!blob.size) {
           setVoiceError("Chưa ghi được âm thanh. Bạn vui lòng thử lại nhé.");
@@ -1734,6 +1736,12 @@ Listen to their pronunciation (ending sounds, word stress, th sounds, z/sh sound
         ? `Không thể dùng micro: ${error.message}`
         : "Không thể dùng micro. Hãy kiểm tra quyền truy cập micro của trình duyệt.");
     }
+  }
+
+  /** Stops recording and throws the recording away, nothing is sent. */
+  function cancelVoiceChatRecording() {
+    voiceChatCancelledRef.current = true;
+    stopVoiceChatRecording();
   }
 
   function stopVoiceChatRecording() {
@@ -3357,7 +3365,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     const caption = waitingForWords
       ? tutorSubtitle || `${TUTOR_PERSONAS[tutorPersona].name} đang suy nghĩ…`
       : voiceChatRecording
-      ? "Đang lắng nghe bạn… nói xong thì nhấn nút dừng nhé."
+      ? "Đang lắng nghe bạn… nói xong thì nhấn nút Gửi nhé."
       : cleanSpeechText(lastTeacherMessage?.content ?? `Hi! I'm ${TUTOR_PERSONAS[tutorPersona].name}. ${persona.greeting}`);
     const waitNote = waitingForWords
       ? <span className="cr-wait">💭 Đang chờ AI trả lời <WaitDots /></span>
@@ -3475,9 +3483,17 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             ))}
           </div>
           <form className="composer" onSubmit={sendMessage}>
-            <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Nhập câu trả lời hoặc nhấn micro để nói…" aria-label="Câu trả lời của bạn" />
-            <button type="button" className={voiceChatRecording ? "mic-button recording" : "mic-button"} aria-label={voiceChatRecording ? "Dừng ghi âm" : "Trả lời bằng giọng nói"} onClick={voiceChatRecording ? stopVoiceChatRecording : startVoiceInput} disabled={chatBusy}><IllustrationIcon name={voiceChatRecording ? "stop" : "microphone"} /></button>
-            <button type="submit" className="send-button" disabled={chatBusy || !draft.trim()}>Gửi <span>↑</span></button>
+            {voiceChatRecording ? (
+              <div className="composer-recording" role="status" aria-live="polite">
+                <i aria-hidden="true" />
+                <span>Đang ghi âm… nói xong thì nhấn <b>Gửi</b></span>
+                <button type="button" className="text-button" onClick={cancelVoiceChatRecording}>Hủy</button>
+              </div>
+            ) : (
+              <input value={draft} onChange={(event) => setDraft(event.target.value)} placeholder="Nhập câu trả lời hoặc nhấn micro để nói…" aria-label="Câu trả lời của bạn" />
+            )}
+            <button type="button" className={voiceChatRecording ? "mic-button recording" : "mic-button"} aria-label="Trả lời bằng giọng nói" onClick={startVoiceInput} disabled={chatBusy || voiceChatRecording}><IllustrationIcon name="microphone" /></button>
+            <button type={voiceChatRecording ? "button" : "submit"} className="send-button" onClick={voiceChatRecording ? stopVoiceChatRecording : undefined} disabled={chatBusy || (!voiceChatRecording && !draft.trim())}>Gửi <span>↑</span></button>
           </form>
           {voiceError && !recording && <p className="error-message voice-inline">{voiceError}</p>}
         </section>
