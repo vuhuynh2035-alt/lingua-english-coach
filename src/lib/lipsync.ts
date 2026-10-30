@@ -40,10 +40,18 @@ export function stopContextPlayback() {
   bufferSource = null;
 }
 
+/**
+ * iPhone and iPad: a <audio> element wired into an AudioContext plays only through that context, and
+ * iOS pauses ("interrupted") the context at will, which left the voice silent while the app went on
+ * "reading". There the element plays natively and the mouth uses the synthetic movement instead.
+ */
+const isApple = typeof navigator !== "undefined"
+  && (/iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+
 /** Call inside a tap: browsers only start an AudioContext from a user gesture. */
 export function attachLipSync(player: HTMLAudioElement) {
   try {
-    if (typeof window === "undefined" || !("AudioContext" in window)) return;
+    if (isApple || typeof window === "undefined" || !("AudioContext" in window)) return;
     context ??= new AudioContext();
     const ctx = context;
     void ctx.resume().then(() => {

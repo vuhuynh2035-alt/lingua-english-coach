@@ -1479,7 +1479,9 @@ RULES:
         stopSpeech();
         spoken = "";
       }
-      const end = final ? text.length : speakableEnd(text, spoken.length);
+      // An AI voice is billed and limited per request: after a short first chunk, read 2-3 sentences at a time.
+      const aiVoice = voiceProfile.engine !== "device" && apiKeys[voiceProfile.engine].length > 0;
+      const end = final ? text.length : speakableEnd(text, spoken.length, aiVoice && spoken.length > 0 ? 150 : 24);
       if (end > spoken.length) {
         enqueueSpeech(text.slice(spoken.length, end));
         spoken = text.slice(0, end);
@@ -1944,9 +1946,26 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       }
 
       // Each spoken word moves the avatar's mouth.
-      utterance.onboundary = (event) => { if (event.name === "word") pulseMouth(); };
-      utterance.onend = () => resolve();
-      utterance.onerror = () => resolve();
+      // iPhone sometimes swallows a sentence without a word or an end event: if nothing starts within
+      // a few seconds, the queue is cleared and the sentence is spoken once more; a hard limit
+      // keeps the reading from waiting forever.
+      let started = false;
+      let retried = false;
+      let finished = false;
+      let cancelling = false;
+      const done = () => { if (finished) return; finished = true; clearTimeout(watchdog); clearTimeout(limit); resolve(); };
+      utterance.onstart = () => { started = true; };
+      utterance.onboundary = (event) => { started = true; if (event.name === "word") pulseMouth(); };
+      utterance.onend = done;
+      utterance.onerror = () => { if (!cancelling) done(); };
+      const limit = setTimeout(done, 8000 + clean.length * 140);
+      const watchdog = setTimeout(() => {
+        if (started || finished || retried) return;
+        retried = true;
+        // cancel() makes the old attempt report an error: that one must not end the sentence.
+        cancelling = true;
+        try { window.speechSynthesis.cancel(); setTimeout(() => { cancelling = false; if (!finished) window.speechSynthesis.speak(utterance); }, 250); } catch { done(); }
+      }, 3500);
       window.speechSynthesis.speak(utterance);
     });
   }
@@ -2254,12 +2273,12 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           setSpeechNotice(usedOffline && !usedCloud
             ? profile.engine === "device" || enSource === "pack"
               ? "🔊 Vừa phát bằng giọng tiếng Anh trong app."
-              : `⚠️ ${engineLabel(profile)} chưa dùng được (${reason || "không rõ lý do"}), nên vừa phát tạm bằng giọng tiếng Anh trong app.`
+              : `⚠️ ${engineLabel(profile)} chưa dùng được (${shortReason(reason)}), nên vừa phát tạm bằng giọng tiếng Anh trong app.`
             : usedCloud && !reason
             ? `🔊 Vừa phát bằng ${engineLabel(profile)}.`
             : profile.engine === "device"
             ? `🔊 Vừa phát bằng giọng trên máy${deviceName ? `: ${deviceName}` : ""}.`
-            : `⚠️ ${engineLabel(profile)} chưa dùng được (${reason || "không rõ lý do"}), nên vừa phát bằng giọng trên máy${deviceName ? ` (${deviceName})` : ""}.`);
+            : `⚠️ ${engineLabel(profile)} chưa dùng được (${shortReason(reason)}), nên vừa phát bằng giọng trên máy${deviceName ? ` (${deviceName})` : ""}.`);
         }
       } else if (speechQueueRef.current.length) {
         // A new run queued text while this one was stopping.
@@ -2337,13 +2356,21 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     try { localStorage.setItem(sharedKey("dialogue-names"), value ? "1" : "0"); } catch {}
   }
 
+  /** The long advice text of a quota error, cut to one line for the notice under the voice. */
+  function shortReason(reason: string): string {
+    if (!reason) return "không rõ lý do";
+    if (/trong ngày/.test(reason)) return "hôm nay đã dùng hết lượt của giọng AI, đặt lại khoảng 14–15 giờ giờ Việt Nam";
+    if (/theo phút|giới hạn tốc độ/.test(reason)) return "đang dùng quá nhanh, thử lại sau ít phút";
+    return reason.length > 140 ? `${reason.slice(0, 137)}…` : reason;
+  }
+
   /** End of the last complete sentence after `from`, or `from` when none is long enough yet. */
-  function speakableEnd(text: string, from: number): number {
+  function speakableEnd(text: string, from: number, minLength = 24): number {
     let end = from;
     for (const match of text.slice(from).matchAll(/[.!?…:](?:["”'’)\]」』]*)\s+|[。！？](?:[」』）)\]]*)\s*|\n+/g)) {
       end = from + (match.index ?? 0) + match[0].length;
     }
-    return end - from >= 24 ? end : from;
+    return end - from >= minLength ? end : from;
   }
 
   /** Tap to read, tap the same button again to stop; another button switches to its text. */
