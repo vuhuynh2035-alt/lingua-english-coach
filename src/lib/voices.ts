@@ -197,13 +197,23 @@ async function httpError(provider: AiProvider, response: Response): Promise<AiEr
     // OpenAI says "insufficient_quota" when the API account has no credit: a ChatGPT Plus plan does not pay for the API.
     const error = /insufficient_quota|billing|exceeded your current quota/i.test(detail) && provider === "openai"
       ? new AiError("quota", "Tài khoản OpenAI API chưa có tiền (insufficient_quota). Gói ChatGPT Plus không dùng được cho API; cần nạp tiền tại platform.openai.com.", 429)
-      : new AiError("quota", `Giọng AI ${name} đã hết hạn mức${/per ?day|PerDay|RPD/i.test(detail) ? " trong ngày" : ""} (HTTP 429).`, 429);
+      : new AiError("quota", `Giọng AI ${name} đã hết hạn mức${/per[ _-]?day|RPD/i.test(detail) ? " trong ngày" : ""} (HTTP 429).`, 429);
     error.detail = detail;
     return error;
   }
   if (response.status === 404 || (response.status === 400 && /model|voice/i.test(detail))) return new AiError("model", `Mô hình giọng không khả dụng (HTTP ${response.status}).`, response.status);
   if (response.status >= 500) return new AiError("busy", `${name} đang bận (HTTP ${response.status}).`, response.status);
   return new AiError("other", `Không tạo được giọng đọc (HTTP ${response.status})${detail ? `: ${detail}` : ""}`, response.status);
+}
+
+const NO_DIRECTION_KEY = "lingua-tts-no-direction";
+
+function modelsWithoutDirection(): string[] {
+  try { return JSON.parse(localStorage.getItem(NO_DIRECTION_KEY) ?? "[]") as string[]; } catch { return []; }
+}
+
+function rememberModelWithoutDirection(model: string) {
+  try { localStorage.setItem(NO_DIRECTION_KEY, JSON.stringify([...new Set([...modelsWithoutDirection(), model])])); } catch {}
 }
 
 /** One cloud TTS request for one model; failover over keys/models is done by the caller. */
@@ -236,8 +246,14 @@ export async function synthesizeCloudSpeech(
         signal: AbortSignal.timeout(18_000),
       },
     );
-    let response = await request(true);
-    if (response.status === 400) response = await request(false);
+    // A model that refuses the direction answers 400; that is remembered, so each later sentence
+    // costs one request instead of two.
+    const direct = !modelsWithoutDirection().includes(model);
+    let response = await request(direct);
+    if (response.status === 400 && direct) {
+      response = await request(false);
+      if (response.ok) rememberModelWithoutDirection(model);
+    }
     if (!response.ok) throw await httpError("google", response);
     const body = await response.json() as {
       candidates?: { content?: { parts?: { inlineData?: { mimeType?: string; data?: string } }[] } }[];

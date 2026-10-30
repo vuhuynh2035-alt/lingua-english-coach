@@ -346,7 +346,7 @@ function quotaAdvice(quota: AiError[], providerName: string): string {
   if (/limit:\s*0(?!\d)/i.test(text)) {
     return `Key ${providerName} không có hạn mức miễn phí cho các mô hình này (limit: 0). Hãy tạo key mới trong Google AI Studio, hoặc bật thanh toán cho dự án Google Cloud của key.`;
   }
-  const perDay = /per ?day|PerDay|RPD/i.test(text);
+  const perDay = /per[ _-]?day|RPD/i.test(text);
   const retry = /retry in ([\d.]+)s/i.exec(text);
   const wait = retry ? ` Thử lại sau khoảng ${Math.ceil(Number(retry[1]))} giây.` : perDay ? " Hạn mức theo ngày sẽ đặt lại vào khoảng 14–15 giờ (giờ Việt Nam)." : " Chờ khoảng 1 phút rồi thử lại.";
   return `Tất cả API key ${providerName} đã hết hạn mức ${perDay ? "trong ngày" : "tạm thời (theo phút)"}.${wait} Lưu ý: các key tạo trong cùng một dự án Google dùng chung hạn mức — muốn có thêm hạn mức, hãy tạo key ở dự án khác.`;

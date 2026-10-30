@@ -701,6 +701,8 @@ export default function Home() {
   const cloudSlotsRef = useRef({ busy: 0, waiting: [] as (() => void)[] });
   /** When the last Google speech requests started, per key and model: each pair allows about 10 a minute. */
   const cloudStartsRef = useRef<Record<string, number[]>>({});
+  /** Google speech requests sent today per key and model, and the ones Google already closed for the day. */
+  const ttsDayRef = useRef<{ day: string; counts: Record<string, number>; full: Record<string, boolean> } | null>(null);
   const cloudSpeechPauseRef = useRef<Record<"google" | "openai", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } });
   const courseSyncRef = useRef<string | null>(null);
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
@@ -2067,13 +2069,34 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   /**
-   * Google allows about 10 speech requests a minute for each model of a key (paid Tier 1). One more
-   * is refused here without calling Google, so the failover moves on to the next model or key,
-   * and the learner only waits when every one of them is used up.
+   * Google allows each speech model of a key about 10 requests a minute and 100 a day (paid Tier 1).
+   * The app counts its own requests (the daily count is kept on the device until Google's day
+   * ends at midnight Pacific time) and never sends one that Google would refuse: a full model is
+   * skipped locally, so the failover moves on to the next model or key without a wasted call.
    */
+  function googleSpeechDay() {
+    const day = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles" }).format(new Date());
+    const current = ttsDayRef.current;
+    if (current?.day === day) return current;
+    let stored: { day: string; counts: Record<string, number>; full: Record<string, boolean> } | null = null;
+    try { stored = JSON.parse(localStorage.getItem(sharedKey("tts-day")) ?? "null"); } catch {}
+    ttsDayRef.current = stored?.day === day ? stored : { day, counts: {}, full: {} };
+    return ttsDayRef.current;
+  }
+
+  function saveGoogleSpeechDay() {
+    try { localStorage.setItem(sharedKey("tts-day"), JSON.stringify(ttsDayRef.current)); } catch {}
+  }
+
   function reserveGoogleSpeech(key: string, model: string) {
     const now = Date.now();
     const bucket = `${key.slice(-12)}|${model}`;
+    const day = googleSpeechDay();
+    if (day.full[bucket] || (day.counts[bucket] ?? 0) >= 95) {
+      const error = new AiError("quota", "Mô hình đọc này đã dùng hết lượt hôm nay", 429);
+      error.detail = "GenerateRequestsPerDayPerProjectPerModel (counted on the device)";
+      throw error;
+    }
     const list = (cloudStartsRef.current[bucket] ?? []).filter((time) => now - time < 60_000);
     cloudStartsRef.current[bucket] = list;
     if (list.length >= 8) {
@@ -2082,6 +2105,20 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       throw error;
     }
     list.push(now);
+    day.counts[bucket] = (day.counts[bucket] ?? 0) + 1;
+    saveGoogleSpeechDay();
+  }
+
+  /** Google refused a speech request: a daily limit closes that model for the day, a minute limit for a minute. */
+  function noteGoogleSpeechRefusal(key: string, model: string, error: AiError) {
+    const bucket = `${key.slice(-12)}|${model}`;
+    if (/per[ _-]?day|RPD|limit:\s*0(?!\d)/i.test(`${error.detail} ${error.message}`)) {
+      googleSpeechDay().full[bucket] = true;
+      saveGoogleSpeechDay();
+    } else {
+      const now = Date.now();
+      cloudStartsRef.current[bucket] = Array.from({ length: 8 }, () => now);
+    }
   }
 
   /** Cloud audio for one English sentence, or null when the device voice should be used. */
@@ -2112,9 +2149,14 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             : OPENAI_TTS_MODELS,
           deadlineMs: 35_000,
         },
-        (key, model) => {
+        async (key, model) => {
           if (engine === "google") reserveGoogleSpeech(key, model);
-          return synthesizeCloudSpeech(engine, key, model, profile, text, language);
+          try {
+            return await synthesizeCloudSpeech(engine, key, model, profile, text, language);
+          } catch (error) {
+            if (engine === "google" && error instanceof AiError && error.kind === "quota") noteGoogleSpeechRefusal(key, model, error);
+            throw error;
+          }
         },
       ));
     } catch (error) {
