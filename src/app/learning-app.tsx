@@ -85,6 +85,13 @@ import {
 type Section = "home" | "choose" | "mode" | "lessons" | "practice" | "progress" | "placement" | "grammar" | "library" | "settings" | "setup" | "dictionary";
 type CourseLevel = "A1" | "A2" | "B1" | "B2";
 const COURSE_LEVELS: CourseLevel[] = ["A1", "A2", "B1", "B2"];
+/** The medal for passing every lesson of one level group of a course, from easiest to hardest. */
+const MEDALS: Record<CourseLevel, { icon: string; name: string }> = {
+  A1: { icon: "🥉", name: "Huân chương Đồng" },
+  A2: { icon: "🥈", name: "Huân chương Bạc" },
+  B1: { icon: "🥇", name: "Huân chương Vàng" },
+  B2: { icon: "🏆", name: "Cúp Kim cương" },
+};
 type HelpContent = { title: string; description: string; steps: string[] };
 type ApiKeyEntry = { id: string; label: string; value: string };
 type ProviderRecord<T> = Record<AiProvider, T>;
@@ -648,6 +655,8 @@ export default function Home() {
   const [courseSyncing, setCourseSyncing] = useState(false);
   const [courseQuizSubmitted, setCourseQuizSubmitted] = useState(false);
   const [courseProgress, setCourseProgress] = useState<Record<string, string[]>>({});
+  /** A medal just earned, shown in a small celebration card. */
+  const [newMedal, setNewMedal] = useState<{ course: string; level: CourseLevel } | null>(null);
   const [courseLessonScores, setCourseLessonScores] = useState<Record<string, Record<string, number>>>({});
   const [offlineAudioUrl, setOfflineAudioUrl] = useState("");
   const [personalMaterials, setPersonalMaterials] = useState<PersonalMaterial[]>([]);
@@ -2637,13 +2646,25 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       (total, answer, index) => total + (answer === placementQuestions[index].answer ? 1 : 0),
       0,
     );
-    const level = score >= 7 ? "B2" : score >= 5 ? "B1" : score >= 3 ? "A2" : "A1";
+    // A level counts when at least 3 of its 5 questions and of every easier level are right,
+    // so a few lucky guesses on hard questions do not place the learner too high.
+    const levels = ["A1", "A2", "B1", "B2"] as const;
+    const byLevel = levels.map((item) => {
+      const indexes = placementQuestions.map((question, index) => (question.level === item ? index : -1)).filter((index) => index >= 0);
+      return { level: item, total: indexes.length, right: indexes.filter((index) => placementAnswers[index] === placementQuestions[index].answer).length };
+    });
+    let level: CourseLevel = "A1";
+    for (const row of byLevel) {
+      if (row.right * 5 >= row.total * 3) level = row.level;
+      else break;
+    }
+    const breakdown = byLevel.map((row) => `${levelLabel(row.level)}: ${row.right}/${row.total}`).join(" · ");
     setProgress((current) => ({ ...current, level }));
     const corrections = placementQuestions
       .filter((question, index) => placementAnswers[index] !== question.answer)
       .map((question) => question.explanation);
     setPlacementResult(
-      `Bạn trả lời đúng ${score}/${placementQuestions.length} câu. Trình độ bắt đầu của bạn là ${levelLabel(level)}. Gia sư sẽ điều chỉnh bài luyện tập cho phù hợp.` +
+      `Bạn trả lời đúng ${score}/${placementQuestions.length} câu (${breakdown}). Trình độ bắt đầu của bạn là ${levelLabel(level)}. Gia sư sẽ điều chỉnh bài luyện tập cho phù hợp.` +
       (corrections.length ? `\n\nCùng học thêm nhé:\n${corrections.map((item) => `• ${item}`).join("\n")}` : `\n\nTuyệt lắm, bạn đã trả lời đúng cả ${placementQuestions.length} câu!`),
     );
   }
@@ -2874,6 +2895,13 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     setCourseLessonScores(updatedScores);
     if (passed) {
       setCourseProgress(updatedProgress);
+      // Passing the last lesson of a level group earns that group's medal.
+      const groupLevel = course.lessons.find((item) => item.id === lessonId)?.level;
+      const group = course.lessons.filter((item) => item.level === groupLevel);
+      const before = courseProgress[course.id] ?? [];
+      if (groupLevel && group.every((item) => updatedProgress[course.id].includes(item.id)) && !group.every((item) => before.includes(item.id))) {
+        setNewMedal({ course: course.title, level: groupLevel });
+      }
       // Finishing every lesson of the learner's current level moves them up one level.
       const levelIndex = COURSE_LEVELS.findIndex((level) => level === progress.level);
       const currentLevel = COURSE_LEVELS[Math.max(levelIndex, 0)];
@@ -3526,9 +3554,12 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       <section className="panel placement-panel">
         <span className="eyebrow">BƯỚC ĐẦU TIÊN</span>
         <h2>Cùng tìm trình độ {LANG.viName} của bạn</h2>
-        <p>Trả lời {placementQuestions.length} câu hỏi để ước lượng mức bắt đầu từ {levelLabel("A1")} đến {levelLabel("B2")}. Đây là bài sàng lọc ngắn, không thay thế bài thi {LANG.levelSystem} chính thức; bạn có thể làm lại bất cứ lúc nào.</p>
+        <p>{placementQuestions.length} câu hỏi chia 4 phần từ dễ đến khó ({levelLabel("A1")} → {levelLabel("B2")}), mỗi phần 5 câu về ngữ pháp, từ vựng và đọc hiểu. Bạn đạt một cấp khi đúng ít nhất 3/5 câu của cấp đó và các cấp dưới. Không biết thì cứ chọn đáp án bạn nghĩ đúng nhất, đừng đoán bừa. Bài này không thay thế bài thi {LANG.levelSystem} chính thức; bạn có thể làm lại bất cứ lúc nào.</p>
         {placementQuestions.map((item, questionIndex) => (
           <fieldset className="question-card" key={item.question}>
+            {(questionIndex === 0 || placementQuestions[questionIndex - 1].level !== item.level) && (
+              <h3 className="placement-part">Phần {["A1", "A2", "B1", "B2"].indexOf(item.level) + 1} · {levelLabel(item.level)}</h3>
+            )}
             <legend>{questionIndex + 1}. {item.question}</legend>
             <div className="answer-options">
               {item.options.map((option, optionIndex) => (
@@ -4326,6 +4357,13 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       const doneCount = course.lessons.filter((item) => completedLessons.includes(item.id)).length;
       return (
         <>
+          {newMedal && (
+            <div className="medal-toast" role="status" onClick={() => setNewMedal(null)}>
+              <span className="medal-toast-icon" aria-hidden="true">{MEDALS[newMedal.level].icon}</span>
+              <div><strong>Chúc mừng! Bạn nhận {MEDALS[newMedal.level].name}</strong><small>Đã đạt hết nhóm {levelLabel(newMedal.level)} · {newMedal.course}</small></div>
+              <button type="button" className="text-button" aria-label="Đóng">✕</button>
+            </div>
+          )}
           <div className="page-intro lesson-course-head">
             <span className="eyebrow">{course.framework} · {doneCount}/{course.lessons.length} BÀI ĐÃ ĐẠT</span>
             <h2>{course.title}</h2>
@@ -4342,7 +4380,9 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                     <strong className="course-level-title">
                       <span className="level-chip">{levelLabel(level)}</span>
                       <span>{levelDone}/{levelLessons.length} bài</span>
-                      {levelDone === levelLessons.length && <span className="course-level-done">✓ Hoàn thành</span>}
+                      {levelDone === levelLessons.length
+                        ? <span className="course-level-done medal-chip">{MEDALS[level].icon} {MEDALS[level].name}</span>
+                        : <span className="medal-chip pending" title={`Đạt hết ${levelLessons.length} bài để nhận ${MEDALS[level].name}`}>{MEDALS[level].icon}</span>}
                     </strong>
                     {levelLessons.map((item) => {
                       const complete = completedLessons.includes(item.id);
@@ -4370,7 +4410,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                   </div>
                 );
               })}
-              <p className="course-progress-note">Bạn tự chọn tình huống muốn học. Đạt từ 8/10 câu để bài được đánh dấu ✓ đã đạt.</p>
+              <p className="course-progress-note">Bạn tự chọn tình huống muốn học. Đạt từ 8/10 câu để bài được đánh dấu ✓ đã đạt. Đạt hết các bài trong một nhóm để nhận huân chương 🥉 🥈 🥇 🏆.</p>
               <div className="course-references">
                 <strong>Khung tham chiếu</strong>
                 {course.references.map((reference) => (
@@ -4717,6 +4757,56 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     );
   }
 
+  /** Medals earned in a downloaded course, one per level group whose lessons are all passed. */
+  function courseMedals(course: StoredCourse): CourseLevel[] {
+    const done = courseProgress[course.id] ?? [];
+    return COURSE_LEVELS.filter((level) => {
+      const group = course.lessons.filter((item) => item.level === level);
+      return group.length > 0 && group.every((item) => done.includes(item.id));
+    });
+  }
+
+  function renderMedalCollection() {
+    const passedCount = (course: StoredCourse) => course.lessons.filter((item) => (courseProgress[course.id] ?? []).includes(item.id)).length;
+    const totalTicks = coursePacks.reduce((sum, course) => sum + passedCount(course), 0);
+    const totalMedals = coursePacks.reduce((sum, course) => sum + courseMedals(course).length, 0);
+    return (
+      <section className="panel medal-panel">
+        <span className="eyebrow">BỘ SƯU TẬP HUÂN CHƯƠNG</span>
+        <div className="medal-summary">
+          <div><strong>{totalTicks}</strong><span>bài đã đạt ✓</span></div>
+          <div><strong>{totalMedals}</strong><span>huân chương</span></div>
+        </div>
+        <p className="medal-hint">Mỗi giáo trình chia 4 nhóm từ dễ đến khó. Đạt hết các bài trong một nhóm để nhận huân chương: 🥉 {levelLabel("A1")} · 🥈 {levelLabel("A2")} · 🥇 {levelLabel("B1")} · 🏆 {levelLabel("B2")}.</p>
+        <div className="medal-courses">
+          {[...profiles].sort((a, b) => {
+            // Courses being studied come first.
+            const done = (id: string) => { const course = coursePacks.find((item) => item.id === id); return course ? passedCount(course) + 0.5 : 0; };
+            return done(b.id) - done(a.id);
+          }).map((profile) => {
+            const course = coursePacks.find((item) => item.id === profile.id);
+            const earned = course ? courseMedals(course) : [];
+            return (
+              <div className="medal-course" key={profile.id}>
+                <div className="medal-course-head">
+                  <strong>{profile.title}</strong>
+                  <small>{course ? `${passedCount(course)}/${course.lessons.length} bài` : "Chưa tải"}</small>
+                </div>
+                <div className="medal-row">
+                  {COURSE_LEVELS.map((level) => (
+                    <span key={level} className={earned.includes(level) ? "medal earned" : "medal"} title={`${MEDALS[level].name} · ${levelLabel(level)}`}>
+                      <i aria-hidden="true">{MEDALS[level].icon}</i><small>{levelLabel(level)}</small>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
+
   function renderProgress() {
     return (
       <>
@@ -4729,6 +4819,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           </div></section>
           <section className="panel streak-panel"><span className="streak-emoji"><IllustrationIcon name="streak" /></span><strong>{progress.streak} ngày liên tục</strong><p>Bạn đang tạo một thói quen tuyệt vời. Mỗi ngày luyện một chút sẽ tạo nên khác biệt.</p><button className="text-button" onClick={() => navigateToSection("practice")}>Luyện tập hôm nay →</button></section>
         </div>
+        {renderMedalCollection()}
         <section className="panel milestone-panel"><span className="eyebrow">BƯỚC TIẾN TIẾP THEO</span><h3>Bạn đã sẵn sàng cho cuộc trò chuyện tiếp theo</h3><p>Hoàn thành một tình huống giao tiếp để duy trì thói quen và tăng sự tự tin.</p><button className="button button-primary" onClick={() => navigateToSection("practice")}>Bắt đầu trò chuyện →</button></section>
       </>
     );
