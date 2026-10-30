@@ -560,6 +560,11 @@ export default function Home() {
   const [enSource, setEnSource] = useState<"auto" | "pack" | "device">("auto");
   /** Google speech model: "flash" sounds better, "lite" costs about a third less. */
   const [ttsModelPref, setTtsModelPref] = useState<"flash" | "lite">("flash");
+  /** API key of Google Cloud Text-to-Speech (a separate Google service, much higher limits than Gemini voices). */
+  const [cloudTtsKey, setCloudTtsKey] = useState("");
+  const [cloudTtsDraft, setCloudTtsDraft] = useState("");
+  /** The AI voice service picked in the voice settings ("Giọng AI" goes back to it after "Giọng trên máy"). */
+  const [aiVoiceEngine, setAiVoiceEngine] = useState<"google" | "openai" | "gcloud">("google");
   /** Speech models the Google key really has, shown in the voice settings (null: not checked yet). */
   const [googleTtsModels, setGoogleTtsModels] = useState<string[] | null>(null);
   /** The voice sample button that is playing (tap it again to stop). */
@@ -703,7 +708,7 @@ export default function Home() {
   const cloudStartsRef = useRef<Record<string, number[]>>({});
   /** Google speech requests sent today per key and model, and the ones Google already closed for the day. */
   const ttsDayRef = useRef<{ day: string; counts: Record<string, number>; full: Record<string, boolean> } | null>(null);
-  const cloudSpeechPauseRef = useRef<Record<"google" | "openai", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } });
+  const cloudSpeechPauseRef = useRef<Record<"google" | "openai" | "gcloud", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" }, gcloud: { until: 0, reason: "" } });
   const courseSyncRef = useRef<string | null>(null);
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
   const speechPlayerUnlockedRef = useRef(false);
@@ -763,15 +768,10 @@ export default function Home() {
     if (!speechBusy && !speechQueueRunningRef.current) setPreviewing((current) => (current?.startsWith("pack:") ? current : null));
   }, [speechBusy]);
 
-  // "Giọng AI" always means the AI provider chosen in the AI settings.
-  useEffect(() => {
-    if (aiSettingsLoaded && voiceProfile.engine !== "device" && voiceProfile.engine !== aiProvider) updateVoiceProfile({ engine: aiProvider });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [aiProvider, aiSettingsLoaded]);
 
   // A newly added key gets a fresh try at once.
   useEffect(() => {
-    cloudSpeechPauseRef.current = { google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } };
+    cloudSpeechPauseRef.current = { google: { until: 0, reason: "" }, openai: { until: 0, reason: "" }, gcloud: { until: 0, reason: "" } };
   }, [apiKeys]);
 
   useEffect(() => {
@@ -1125,6 +1125,11 @@ export default function Home() {
       const savedViSource = localStorage.getItem(sharedKey("vi-source"));
       if (savedViSource === "pack" || savedViSource === "device") setViSource(savedViSource);
       if (localStorage.getItem(sharedKey("tts-model")) === "lite") setTtsModelPref("lite");
+      const savedCloudTts = localStorage.getItem(sharedKey("gcloud-tts-key")) ?? "";
+      setCloudTtsKey(savedCloudTts);
+      setCloudTtsDraft(savedCloudTts);
+      const savedAiVoice = localStorage.getItem(sharedKey("ai-voice-engine"));
+      if (savedAiVoice === "google" || savedAiVoice === "openai" || savedAiVoice === "gcloud") setAiVoiceEngine(savedAiVoice);
       const savedEnVoice = localStorage.getItem(sharedKey("en-pack-voice"));
       if (savedEnVoice && /^(female|male)-[0-3]$/.test(savedEnVoice)) setEnPackVoice(savedEnVoice);
       for (const id of ["vi", "en"] as const) {
@@ -1484,7 +1489,7 @@ RULES:
         spoken = "";
       }
       // An AI voice is billed and limited per request: after a short first chunk, read 2-3 sentences at a time.
-      const aiVoice = voiceProfile.engine !== "device" && apiKeys[voiceProfile.engine].length > 0;
+      const aiVoice = voiceProfile.engine !== "device" && voiceKeys(voiceProfile.engine).length > 0;
       const end = final ? text.length : speakableEnd(text, spoken.length, aiVoice && spoken.length > 0 ? 150 : 24);
       if (end > spoken.length) {
         enqueueSpeech(text.slice(spoken.length, end));
@@ -1991,13 +1996,19 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     });
   }
 
+  /** Keys for an AI voice engine: Gemini and OpenAI share the AI settings, Cloud TTS has its own key. */
+  function voiceKeys(engine: VoiceProfile["engine"]): ApiKeyEntry[] {
+    if (engine === "gcloud") return cloudTtsKey ? [{ id: "gcloud", label: "Google Cloud TTS", value: cloudTtsKey }] : [];
+    return engine === "device" ? [] : apiKeys[engine];
+  }
+
   /** Audio for one Vietnamese sentence: AI voice (with a key), else the voice built into the app, else null (the phone's voice). */
   async function vietnameseClip(text: string): Promise<Blob | null> {
     const clean = cleanSpeechText(text);
     if (!clean || viSource === "device") return null;
     // Vietnamese uses the AI provider chosen in the AI settings, even when English is set to the device voice.
     const engine = voiceProfile.engine !== "device" ? voiceProfile.engine : aiProvider;
-    if (viSource === "auto" && apiKeys[engine].length) {
+    if (viSource === "auto" && voiceKeys(engine).length) {
       try {
         const cloud = await englishAudio(clean, { ...voiceProfile, engine, childlike: false }, "vi");
         if (cloud) return cloud;
@@ -2014,7 +2025,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     const run = speechRunRef.current;
     const clean = cleanSpeechText(text);
     if (!clean) return "";
-    if (fresh) cloudSpeechPauseRef.current = { google: { until: 0, reason: "" }, openai: { until: 0, reason: "" } };
+    if (fresh) cloudSpeechPauseRef.current = { google: { until: 0, reason: "" }, openai: { until: 0, reason: "" }, gcloud: { until: 0, reason: "" } };
     viFallbackRef.current = "";
     const clip = await vietnameseClip(clean);
     if (speechRunRef.current !== run) return "";
@@ -2124,7 +2135,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   /** Cloud audio for one English sentence, or null when the device voice should be used. */
   async function englishAudio(text: string, profile = voiceProfile, language: "en" | "vi" = "en"): Promise<Blob | null> {
     const engine = profile.engine;
-    if (engine === "device" || !apiKeys[engine].length) return null;
+    if (engine === "device" || !voiceKeys(engine).length) return null;
     // v4: earlier Google clips could contain the spoken direction, so they are not reused.
     const cacheKey = `v4${language === "vi" ? "vi" : ""}:${engine}:${cloudVoiceId(profile)}:${profile.accent}:${profile.style}:${profile.speed}${profile.childlike ? ":child" : ""}${engine === "google" && ttsModelPref === "lite" ? ":lite" : ""}`;
     // A sentence made before is always played from the device, even while the AI voice rests.
@@ -2139,7 +2150,15 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     slots.busy += 1;
     let value: Blob;
     try {
-      ({ value } = await runWithFailover(
+      // Cloud TTS has one key and generous limits: one request, tried twice on a busy server.
+      if (engine === "gcloud") {
+        const key = voiceKeys("gcloud")[0].value;
+        try { value = await synthesizeCloudSpeech("gcloud", key, "cloud", profile, text, language); }
+        catch (error) {
+          if (!(error instanceof AiError) || error.kind !== "busy") throw error;
+          value = await synthesizeCloudSpeech("gcloud", key, "cloud", profile, text, language);
+        }
+      } else ({ value } = await runWithFailover(
         {
           provider: engine,
           keys: apiKeys[engine],
@@ -2246,8 +2265,14 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     setSpeechPlaying(false);
   }
 
+  function engineName(engine: VoiceProfile["engine"]): string {
+    return engine === "google" ? "Google Gemini" : engine === "gcloud" ? "Google Cloud TTS" : "OpenAI";
+  }
+
   function engineLabel(profile: VoiceProfile): string {
-    return profile.engine === "google" ? `Giọng AI Google · ${profile.googleVoice}` : `Giọng AI OpenAI · ${profile.openaiVoice}`;
+    return profile.engine === "google" ? `Giọng AI Google · ${profile.googleVoice}`
+      : profile.engine === "gcloud" ? `Giọng Google Cloud · ${profile.googleVoice}`
+      : `Giọng AI OpenAI · ${profile.openaiVoice}`;
   }
 
   /**
@@ -2362,8 +2387,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     stopSpeech();
     // Must happen inside the tap, before any await.
     unlockSpeechPlayer();
-    speechFallbackRef.current = voiceProfile.engine !== "device" && !apiKeys[voiceProfile.engine].length
-      ? `chưa có API key ${voiceProfile.engine === "google" ? "Google" : "OpenAI"}`
+    speechFallbackRef.current = voiceProfile.engine !== "device" && !voiceKeys(voiceProfile.engine).length
+      ? `chưa có API key ${engineName(voiceProfile.engine)}`
       : "";
     setSpeechNotice(voiceProfile.engine === "device" ? "" : `Đang tạo ${engineLabel(voiceProfile)}…`);
     enqueueSpeech(clean, englishOnly);
@@ -2374,8 +2399,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     stopSpeech();
     unlockSpeechPlayer();
     if (profile.engine !== "device") cloudSpeechPauseRef.current[profile.engine] = { until: 0, reason: "" };
-    speechFallbackRef.current = profile.engine !== "device" && !apiKeys[profile.engine].length
-      ? `chưa có API key ${profile.engine === "google" ? "Google" : "OpenAI"}`
+    speechFallbackRef.current = profile.engine !== "device" && !voiceKeys(profile.engine).length
+      ? `chưa có API key ${engineName(profile.engine)}`
       : "";
     setSpeechNotice(profile.engine === "device" ? "" : `Đang tạo ${engineLabel(profile)}…`);
     enqueueSpeech(getAccent(profile.accent).sample, true, profile);
@@ -2386,8 +2411,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     if (!lines.length) return;
     stopSpeech();
     unlockSpeechPlayer();
-    speechFallbackRef.current = voiceProfile.engine !== "device" && !apiKeys[voiceProfile.engine].length
-      ? `chưa có API key ${voiceProfile.engine === "google" ? "Google" : "OpenAI"}`
+    speechFallbackRef.current = voiceProfile.engine !== "device" && !voiceKeys(voiceProfile.engine).length
+      ? `chưa có API key ${engineName(voiceProfile.engine)}`
       : "";
     setSpeechNotice(voiceProfile.engine === "device" ? "" : `Đang tạo ${engineLabel(voiceProfile)}…`);
     const voices = systemVoices.length ? systemVoices : window.speechSynthesis?.getVoices?.() ?? [];
@@ -2630,7 +2655,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   function renderVoiceStudio() {
-    const providerName = aiProvider === "google" ? "Google" : "OpenAI";
+    const aiEngine = voiceProfile.engine !== "device" ? voiceProfile.engine : aiVoiceEngine;
     const aiMode = voiceProfile.engine !== "device";
     const groups = [...new Set(ACCENTS.map((item) => item.group))];
     const packGender = voiceProfile.gender === "male" ? "male" : "female";
@@ -2645,8 +2670,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
         <div className="voice-mode" role="radiogroup" aria-label="Nguồn giọng">
           <button type="button" role="radio" aria-checked={aiMode} className={aiMode ? "voice-engine active" : "voice-engine"}
-            onClick={() => { stopSpeech(); updateVoiceProfile({ engine: aiProvider }); }}>
-            <strong>Giọng AI</strong><small>{providerName} · tự nhiên, đủ vùng miền · cần mạng và API key</small>
+            onClick={() => { stopSpeech(); updateVoiceProfile({ engine: aiVoiceEngine }); }}>
+            <strong>Giọng AI</strong><small>{engineName(aiEngine)} · tự nhiên, đủ vùng miền · cần mạng và API key</small>
           </button>
           <button type="button" role="radio" aria-checked={!aiMode} className={!aiMode ? "voice-engine active" : "voice-engine"}
             onClick={() => { stopSpeech(); updateVoiceProfile({ engine: "device" }); }}>
@@ -2656,7 +2681,30 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
         {aiMode ? (
           <>
-            {!apiKeys[aiProvider].length && <p className="voice-warning">Chưa có API key {providerName}. Thêm key ở mục Nhà cung cấp &amp; mô hình AI; trong lúc chờ, app đọc bằng giọng trên máy.</p>}
+            <span className="settings-label">Dịch vụ giọng AI</span>
+            <div className="voice-chips">
+              {([["google", "Gemini"], ["gcloud", "Google Cloud TTS"], ["openai", "OpenAI"]] as const).map(([id, label]) => (
+                <button key={id} type="button" className={voiceProfile.engine === id ? "voice-chip active" : "voice-chip"}
+                  onClick={() => { stopSpeech(); setAiVoiceEngine(id); try { localStorage.setItem(sharedKey("ai-voice-engine"), id); } catch {} updateVoiceProfile({ engine: id }); }}>{label}</button>
+              ))}
+            </div>
+            <small className="settings-hint">
+              {voiceProfile.engine === "google" ? "Giọng Gemini: tự nhiên nhất nhưng Google chỉ cho khoảng 10 câu/phút và 100 câu/ngày mỗi mô hình."
+                : voiceProfile.engine === "gcloud" ? "Google Cloud Text-to-Speech: dịch vụ đọc riêng của Google, giới hạn rộng hơn nhiều; giọng Chirp 3 HD miễn phí 1 triệu ký tự mỗi tháng, sau đó khoảng 30 USD cho 1 triệu ký tự."
+                : "Giọng OpenAI: không giới hạn kiểu 100 câu/ngày, tính tiền theo lượng đọc (cần nạp tiền trước ở platform.openai.com)."}
+            </small>
+            {voiceProfile.engine === "gcloud" && (
+              <div className="gcloud-key">
+                <label className="settings-label" htmlFor="gcloud-key">API key Google Cloud TTS</label>
+                <div className="gcloud-key-row">
+                  <input id="gcloud-key" className="settings-input" type="password" autoComplete="off" placeholder="AIza…" value={cloudTtsDraft} onChange={(event) => setCloudTtsDraft(event.target.value.trim())} />
+                  <button type="button" className="button button-primary" disabled={cloudTtsDraft === cloudTtsKey}
+                    onClick={() => { setCloudTtsKey(cloudTtsDraft); try { localStorage.setItem(sharedKey("gcloud-tts-key"), cloudTtsDraft); } catch {} cloudSpeechPauseRef.current.gcloud = { until: 0, reason: "" }; }}>Lưu</button>
+                </div>
+                <small className="settings-hint">Cách tạo: mở <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" target="_blank" rel="noreferrer">Cloud Text-to-Speech API</a>, chọn dự án đã gắn thanh toán (ví dụ English-Vietnam) → Enable; rồi vào <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noreferrer">Credentials</a> → Create credentials → API key, dán vào đây. Key Gemini cũ cũng dùng được nếu bạn bật API này cho đúng dự án của nó.</small>
+              </div>
+            )}
+            {!voiceKeys(voiceProfile.engine).length && voiceProfile.engine !== "gcloud" && <p className="voice-warning">Chưa có API key {engineName(voiceProfile.engine)}. {voiceProfile.engine === "openai" ? "Vào Nhà cung cấp & mô hình AI, chọn OpenAI, thêm key, rồi có thể chọn lại Google cho gia sư; giọng OpenAI vẫn được dùng." : "Thêm key ở mục Nhà cung cấp & mô hình AI."} Trong lúc chờ, app đọc bằng giọng trên máy.</p>}
             <span className="settings-label">Vùng miền</span>
             {groups.map((group) => (
               <div className="voice-accent-group" key={group}>
@@ -2717,7 +2765,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         </label>
         {speechNotice && <p className="settings-hint" role="status">{speechNotice}</p>}
 
-        {aiMode && aiProvider === "google" && (
+        {aiMode && voiceProfile.engine === "google" && (
           <>
             <span className="settings-label">Mô hình giọng AI của Google</span>
             <div className="voice-chips">
@@ -3827,7 +3875,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     const providerName = aiProvider === "google" ? "Google Gemini" : "OpenAI / ChatGPT";
     const keyUrl = aiProvider === "google" ? "https://aistudio.google.com/app/apikey" : "https://platform.openai.com/api-keys";
     const accent = getAccent(voiceProfile.accent);
-    const cloudReady = voiceProfile.engine === "device" || apiKeys[voiceProfile.engine].length > 0;
+    const cloudReady = voiceProfile.engine === "device" || voiceKeys(voiceProfile.engine).length > 0;
     const finish = () => {
       try { localStorage.setItem(sharedKey("setup-done"), "1"); } catch {}
       setSetupStep(0);
