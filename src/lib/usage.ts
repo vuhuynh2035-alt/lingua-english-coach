@@ -28,6 +28,12 @@ export type UsageSettings = {
   prices: Prices;
   /** Gemini key tier, by the key's last characters. */
   tiers: Record<string, KeyTier>;
+  /**
+   * Which keys share limits, by the key's last characters → a group name ("A", "B", "C"). Keys of one
+   * group are counted together: Gemini limits are per Google Cloud project, Cloud TTS's free
+   * characters per billing account, OpenAI's limits per organization. Unset: each key on its own.
+   */
+  groups: Record<string, string>;
   /** Models the learner allows ("service|kind|model" → true/false); unset ones follow `allowedByDefault`. */
   allowed: Record<string, boolean>;
 };
@@ -73,6 +79,7 @@ export const DEFAULT_SETTINGS: UsageSettings = {
   caps: { gemini: 5, openai: 0, gcloud: 0 },
   prices: DEFAULT_PRICES,
   tiers: {},
+  groups: {},
   allowed: {},
 };
 
@@ -86,6 +93,14 @@ const CHARS_PER_SECOND = 15;
 const AUDIO_TOKENS_PER_SECOND = 25;
 
 export const keyTag = (key: string) => key.slice(-12);
+
+/** The counters a key uses: its group's (same project / billing account / organization) or its own. */
+export function groupTag(settings: UsageSettings, service: ServiceId, key: string): string {
+  return `${service}:${settings.groups[keyTag(key)] ?? keyTag(key)}`;
+}
+
+/** At most this many keys per service. */
+export const MAX_KEYS = 3;
 
 // ---------------------------------------------------------------- settings
 export function loadSettings(): UsageSettings {
@@ -102,6 +117,7 @@ export function loadSettings(): UsageSettings {
         gcloud: { ...DEFAULT_PRICES.gcloud, ...stored.prices?.gcloud },
       },
       tiers: { ...stored.tiers },
+      groups: { ...stored.groups },
       allowed: { ...stored.allowed },
     };
   } catch {
@@ -211,20 +227,21 @@ export type Check = { ok: boolean; cost: number; reason?: string; resetIn?: numb
 /** Whether one request may be sent now, what it would cost, and when a refused one becomes possible again. */
 export function check(settings: UsageSettings, service: ServiceId, key: string, model: string, kind: UsageKind, amount: Amount): Check {
   const tag = keyTag(key);
+  const group = groupTag(settings, service, key);
   const tier = settings.tiers[tag] ?? "paid";
   const name = SERVICE_NAMES[service];
   const blocked = blockedUntil[tag];
   if (blocked && blocked.until > Date.now()) return { ok: false, cost: 0, reason: blocked.reason, resetIn: blocked.until - Date.now(), renews: "never" };
-  const entry = keyLedger(tag);
+  const entry = keyLedger(group);
   const { rpm, rpd } = limitsFor(service, tier, kind);
   const bucket = `${kind}:${model}`;
-  const cost = estimateCost(settings, service, tier, kind, model, amount, tag);
+  const cost = estimateCost(settings, service, tier, kind, model, amount, group);
   if (entry.closed[bucket] || (entry.dayCount[bucket] ?? 0) >= safe(rpd)) {
     return { ok: false, cost, reason: `${name} (${model}) đã dùng hết lượt hôm nay`, resetIn: untilPacificMidnight(), renews: "day" };
   }
   const now = Date.now();
-  const recent = (minute[`${tag}|${bucket}`] ?? []).filter((time) => now - time < 60_000);
-  minute[`${tag}|${bucket}`] = recent;
+  const recent = (minute[`${group}|${bucket}`] ?? []).filter((time) => now - time < 60_000);
+  minute[`${group}|${bucket}`] = recent;
   if (recent.length >= safe(rpm)) {
     return { ok: false, cost, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
   }
@@ -244,17 +261,16 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
 }
 
 /** A request is about to be sent: it takes its place in the per-minute window at once. */
-export function reserve(key: string, model: string, kind: UsageKind) {
-  const tag = keyTag(key);
-  (minute[`${tag}|${kind}:${model}`] ??= []).push(Date.now());
+export function reserve(settings: UsageSettings, service: ServiceId, key: string, model: string, kind: UsageKind) {
+  (minute[`${groupTag(settings, service, key)}|${kind}:${model}`] ??= []).push(Date.now());
 }
 
 /** A request worked: counts and money are added to the ledger. */
 export function record(settings: UsageSettings, service: ServiceId, key: string, model: string, kind: UsageKind, amount: Amount) {
-  const tag = keyTag(key);
-  const tier = settings.tiers[tag] ?? "paid";
-  const cost = estimateCost(settings, service, tier, kind, model, amount, tag);
-  const entry = keyLedger(tag);
+  const tier = settings.tiers[keyTag(key)] ?? "paid";
+  const group = groupTag(settings, service, key);
+  const cost = estimateCost(settings, service, tier, kind, model, amount, group);
+  const entry = keyLedger(group);
   const bucket = `${kind}:${model}`;
   entry.dayCount[bucket] = (entry.dayCount[bucket] ?? 0) + 1;
   if (service === "gcloud") entry.monthChars += amount.chars ?? 0;
@@ -263,12 +279,12 @@ export function record(settings: UsageSettings, service: ServiceId, key: string,
 }
 
 /** The provider refused: a daily limit closes the model for the day, a minute limit fills the minute, a bad key rests. */
-export function refused(key: string, model: string, kind: UsageKind, how: "day" | "minute" | "key", reason = "") {
-  const tag = keyTag(key);
+export function refused(settings: UsageSettings, service: ServiceId, key: string, model: string, kind: UsageKind, how: "day" | "minute" | "key", reason = "") {
+  const group = groupTag(settings, service, key);
   const bucket = `${kind}:${model}`;
-  if (how === "day") { keyLedger(tag).closed[bucket] = true; persist(); }
-  else if (how === "minute") { const now = Date.now(); minute[`${tag}|${bucket}`] = Array.from({ length: 1000 }, () => now); }
-  else blockedUntil[tag] = { until: Date.now() + 30 * 60_000, reason: reason || "key bị từ chối" };
+  if (how === "day") { keyLedger(group).closed[bucket] = true; persist(); }
+  else if (how === "minute") { const now = Date.now(); minute[`${group}|${bucket}`] = Array.from({ length: 1000 }, () => now); }
+  else blockedUntil[keyTag(key)] = { until: Date.now() + 30 * 60_000, reason: reason || "key bị từ chối" };
 }
 
 // ---------------------------------------------------------------- reports for the settings screen
@@ -277,9 +293,8 @@ export function spentThisMonth(service: ServiceId): number {
 }
 
 export function keyReport(settings: UsageSettings, service: ServiceId, key: string, models: { model: string; kind: UsageKind }[]) {
-  const tag = keyTag(key);
-  const tier = settings.tiers[tag] ?? "paid";
-  const entry = keyLedger(tag);
+  const tier = settings.tiers[keyTag(key)] ?? "paid";
+  const entry = keyLedger(groupTag(settings, service, key));
   return {
     tier,
     monthChars: entry.monthChars,
