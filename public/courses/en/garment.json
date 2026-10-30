@@ -1,0 +1,2027 @@
+{
+  "id": "garment",
+  "title": "Tiếng Anh ngành may mặc",
+  "version": "2.0.0",
+  "framework": "CEFR A1–B2",
+  "overview": "12 bài từ A1 đến B2 cho công nhân, tổ trưởng và nhân viên văn phòng xưởng may: dụng cụ, chuyền may, size và số đo, QC, an toàn, buyer, đóng gói, đàm phán và kiểm toán.",
+  "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
+  "references": [
+    {
+      "title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)",
+      "url": "https://www.coe.int/en/web/common-european-framework-reference-languages",
+      "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"
+    },
+    {
+      "title": "British Council / EAQUALS – Core Inventory for General English",
+      "url": "https://www.teachingenglish.org.uk/article/british-council-eaquals-core-inventory-general-english",
+      "license": "Tham khảo danh mục chức năng, ngữ pháp, chủ đề theo level (không sao chép nội dung)"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "garment-a1-1",
+      "level": "A1",
+      "unit": "A1 · Bài 1",
+      "category": "Từ vựng",
+      "title": "Vải, máy may và dụng cụ",
+      "objective": "Gọi tên vải, máy và dụng cụ cơ bản trong xưởng may.",
+      "reading": "This is our sewing workshop. We use cotton, polyester and denim. Each worker has a sewing machine. We use scissors and a cutting machine to cut the fabric. A tape measure is for measuring, and we use thread, needles, buttons and zippers. At the end, the iron makes the garments look neat.",
+      "vocabulary": [
+        {
+          "term": "fabric",
+          "definition": "vải",
+          "example": "This fabric is cotton."
+        },
+        {
+          "term": "sewing machine",
+          "definition": "máy may",
+          "example": "My sewing machine is broken."
+        },
+        {
+          "term": "thread",
+          "definition": "chỉ",
+          "example": "We need more white thread."
+        },
+        {
+          "term": "needle",
+          "definition": "kim",
+          "example": "Change the needle, please."
+        },
+        {
+          "term": "zipper",
+          "definition": "dây kéo, khóa kéo",
+          "example": "Sew the zipper on the jacket."
+        },
+        {
+          "term": "tape measure",
+          "definition": "thước dây",
+          "example": "Use a tape measure to check the length."
+        }
+      ],
+      "grammar": {
+        "title": "There is / There are",
+        "explanation": "There is + số ít; There are + số nhiều.",
+        "examples": [
+          "There is a sewing machine at each table.",
+          "There are fifty workers on this line.",
+          "Is there any blue thread?"
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /θ/ trong thread, three, thick",
+        "tip": "Đặt lưỡi giữa hai răng, thổi hơi. Thread ≠ 'tred'.",
+        "words": [
+          "thread",
+          "fabric",
+          "needle",
+          "zipper"
+        ]
+      },
+      "speakingTasks": [
+        "Gọi tên 6 vật dụng ở bàn làm việc của bạn.",
+        "Mô tả xưởng của bạn với There is / There are."
+      ],
+      "questions": [
+        {
+          "prompt": "Which fabric is NOT mentioned?",
+          "options": [
+            "Denim",
+            "Silk",
+            "Cotton"
+          ],
+          "answer": 1,
+          "explanation": "Bài nói cotton, polyester, denim."
+        },
+        {
+          "prompt": "What do they use to cut the fabric?",
+          "options": [
+            "Scissors and a cutting machine",
+            "A needle",
+            "An iron"
+          ],
+          "answer": 0,
+          "explanation": "'scissors and a cutting machine'."
+        },
+        {
+          "prompt": "What is the tape measure for?",
+          "options": [
+            "Sewing",
+            "Ironing",
+            "Measuring"
+          ],
+          "answer": 2,
+          "explanation": "'for measuring'."
+        },
+        {
+          "prompt": "What makes the garments look neat?",
+          "options": [
+            "The thread",
+            "The zipper",
+            "The iron"
+          ],
+          "answer": 2,
+          "explanation": "'the iron makes the garments look neat'."
+        },
+        {
+          "prompt": "Complete: There _____ fifty workers on this line.",
+          "options": [
+            "is",
+            "are",
+            "be"
+          ],
+          "answer": 1,
+          "explanation": "Số nhiều → There are."
+        },
+        {
+          "prompt": "Complete the sentence: This _____ is cotton.",
+          "options": [
+            "fabric",
+            "tape measure",
+            "sewing machine"
+          ],
+          "answer": 0,
+          "explanation": "“fabric” nghĩa là “vải”. Câu đầy đủ: This fabric is cotton."
+        },
+        {
+          "prompt": "What does “sewing machine” mean?",
+          "options": [
+            "máy may",
+            "vải",
+            "dây kéo, khóa kéo"
+          ],
+          "answer": 0,
+          "explanation": "“sewing machine” = máy may. Ví dụ: My sewing machine is broken."
+        },
+        {
+          "prompt": "Complete the sentence: We need more white _____.",
+          "options": [
+            "thread",
+            "needle",
+            "fabric"
+          ],
+          "answer": 0,
+          "explanation": "“thread” nghĩa là “chỉ”. Câu đầy đủ: We need more white thread."
+        },
+        {
+          "prompt": "What does “needle” mean?",
+          "options": [
+            "thước dây",
+            "kim",
+            "chỉ"
+          ],
+          "answer": 1,
+          "explanation": "“needle” = kim. Ví dụ: Change the needle, please."
+        },
+        {
+          "prompt": "Complete the sentence: Sew the _____ on the jacket.",
+          "options": [
+            "tape measure",
+            "zipper",
+            "fabric"
+          ],
+          "answer": 1,
+          "explanation": "“zipper” nghĩa là “dây kéo, khóa kéo”. Câu đầy đủ: Sew the zipper on the jacket."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-a1-2",
+      "level": "A1",
+      "unit": "A1 · Bài 2",
+      "category": "Giao tiếp",
+      "title": "Giao tiếp trên chuyền may",
+      "objective": "Hỏi và trả lời đơn giản với tổ trưởng và đồng nghiệp.",
+      "reading": "Supervisor: Good morning, Linh. Are you ready?\nWorker: Yes. What do I do today?\nSupervisor: Today you sew the sleeves. Here is the sample.\nWorker: How many pieces?\nSupervisor: Two hundred pieces before lunch.\nWorker: Okay. My machine is making a noise.\nSupervisor: I'll call the mechanic. Use machine number twelve for now.",
+      "vocabulary": [
+        {
+          "term": "supervisor",
+          "definition": "tổ trưởng, quản lý chuyền",
+          "example": "Ask the supervisor for help."
+        },
+        {
+          "term": "sleeve",
+          "definition": "tay áo",
+          "example": "Sew the sleeves first."
+        },
+        {
+          "term": "sample",
+          "definition": "mẫu",
+          "example": "Follow the sample."
+        },
+        {
+          "term": "piece",
+          "definition": "chiếc, sản phẩm",
+          "example": "We need two hundred pieces."
+        },
+        {
+          "term": "mechanic",
+          "definition": "thợ sửa máy",
+          "example": "Call the mechanic, please."
+        },
+        {
+          "term": "noise",
+          "definition": "tiếng ồn, tiếng kêu",
+          "example": "The machine is making a noise."
+        }
+      ],
+      "grammar": {
+        "title": "How many...? / What do I...?",
+        "explanation": "How many + danh từ số nhiều: hỏi số lượng.",
+        "examples": [
+          "How many pieces do we need?",
+          "What do I do now?",
+          "How many sleeves are left?"
+        ]
+      },
+      "pronunciation": {
+        "focus": "Đọc số: two hundred, twelve, fifty",
+        "tip": "Đọc rõ số để tránh sai sản lượng: FIF-ty khác fif-TEEN.",
+        "words": [
+          "sleeve",
+          "sample",
+          "supervisor",
+          "mechanic"
+        ]
+      },
+      "speakingTasks": [
+        "Hỏi tổ trưởng công việc và số lượng hôm nay.",
+        "Báo máy bị hỏng."
+      ],
+      "questions": [
+        {
+          "prompt": "What does Linh sew today?",
+          "options": [
+            "Collars",
+            "Sleeves",
+            "Pockets"
+          ],
+          "answer": 1,
+          "explanation": "'you sew the sleeves'."
+        },
+        {
+          "prompt": "How many pieces before lunch?",
+          "options": [
+            "Two hundred",
+            "Twelve",
+            "Twenty"
+          ],
+          "answer": 0,
+          "explanation": "'Two hundred pieces'."
+        },
+        {
+          "prompt": "What is wrong with her machine?",
+          "options": [
+            "It has no thread",
+            "It's too slow",
+            "It's making a noise"
+          ],
+          "answer": 2,
+          "explanation": "'making a noise'."
+        },
+        {
+          "prompt": "Which machine should she use now?",
+          "options": [
+            "Number 20",
+            "Number 12",
+            "Number 2"
+          ],
+          "answer": 1,
+          "explanation": "'machine number twelve'."
+        },
+        {
+          "prompt": "Choose the correct question.",
+          "options": [
+            "How many pieces do we need?",
+            "How many piece?",
+            "How much pieces?"
+          ],
+          "answer": 0,
+          "explanation": "How many + danh từ số nhiều."
+        },
+        {
+          "prompt": "Complete the sentence: Ask the _____ for help.",
+          "options": [
+            "supervisor",
+            "noise",
+            "piece"
+          ],
+          "answer": 0,
+          "explanation": "“supervisor” nghĩa là “tổ trưởng, quản lý chuyền”. Câu đầy đủ: Ask the supervisor for help."
+        },
+        {
+          "prompt": "What does “sleeve” mean?",
+          "options": [
+            "tay áo",
+            "mẫu",
+            "tiếng ồn, tiếng kêu"
+          ],
+          "answer": 0,
+          "explanation": "“sleeve” = tay áo. Ví dụ: Sew the sleeves first."
+        },
+        {
+          "prompt": "Complete the sentence: Follow the _____.",
+          "options": [
+            "sample",
+            "supervisor",
+            "sleeve"
+          ],
+          "answer": 0,
+          "explanation": "“sample” nghĩa là “mẫu”. Câu đầy đủ: Follow the sample."
+        },
+        {
+          "prompt": "What does “piece” mean?",
+          "options": [
+            "tổ trưởng, quản lý chuyền",
+            "chiếc, sản phẩm",
+            "tay áo"
+          ],
+          "answer": 1,
+          "explanation": "“piece” = chiếc, sản phẩm. Ví dụ: We need two hundred pieces."
+        },
+        {
+          "prompt": "Complete the sentence: Call the _____, please.",
+          "options": [
+            "mechanic",
+            "noise",
+            "supervisor"
+          ],
+          "answer": 0,
+          "explanation": "“mechanic” nghĩa là “thợ sửa máy”. Câu đầy đủ: Call the mechanic, please."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-a1-3",
+      "level": "A1",
+      "unit": "A1 · Bài 3",
+      "category": "Ngữ pháp",
+      "title": "Kích cỡ, màu sắc và số đo",
+      "objective": "Đọc kích cỡ, màu và số đo trên phiếu kỹ thuật.",
+      "reading": "The order is for T-shirts in four sizes: small, medium, large and extra large. The colours are white, navy and grey. For size medium, the chest is fifty-two centimetres, the length is seventy centimetres and the sleeve is twenty centimetres. Please check every measurement carefully.",
+      "vocabulary": [
+        {
+          "term": "size",
+          "definition": "kích cỡ",
+          "example": "What size is this shirt?"
+        },
+        {
+          "term": "medium",
+          "definition": "cỡ vừa (M)",
+          "example": "We need 500 medium shirts."
+        },
+        {
+          "term": "navy",
+          "definition": "xanh đậm (xanh hải quân)",
+          "example": "The colour is navy blue."
+        },
+        {
+          "term": "chest",
+          "definition": "vòng ngực",
+          "example": "Measure the chest width."
+        },
+        {
+          "term": "length",
+          "definition": "chiều dài",
+          "example": "The length is seventy centimetres."
+        },
+        {
+          "term": "measurement",
+          "definition": "số đo",
+          "example": "Check every measurement."
+        }
+      ],
+      "grammar": {
+        "title": "Câu hỏi What/How long + đơn vị đo",
+        "explanation": "How long is...? What size...? It's ... centimetres.",
+        "examples": [
+          "What size is it? It's large.",
+          "How long is the sleeve? It's twenty centimetres.",
+          "What colour is it? It's navy."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Đọc số đo: fifty-two centimetres",
+        "tip": "CEN-ti-me-tres — nhấn âm đầu.",
+        "words": [
+          "centimetres",
+          "measurement",
+          "medium",
+          "navy"
+        ]
+      },
+      "speakingTasks": [
+        "Đọc to bảng size của một mẫu áo.",
+        "Hỏi và trả lời về màu và số đo."
+      ],
+      "questions": [
+        {
+          "prompt": "How many sizes are there?",
+          "options": [
+            "Five",
+            "Four",
+            "Three"
+          ],
+          "answer": 1,
+          "explanation": "S, M, L, XL."
+        },
+        {
+          "prompt": "Which colour is NOT in the order?",
+          "options": [
+            "Grey",
+            "White",
+            "Red"
+          ],
+          "answer": 2,
+          "explanation": "Màu: white, navy, grey."
+        },
+        {
+          "prompt": "What is the chest measurement for medium?",
+          "options": [
+            "20 cm",
+            "70 cm",
+            "52 cm"
+          ],
+          "answer": 2,
+          "explanation": "'fifty-two centimetres'."
+        },
+        {
+          "prompt": "How long is the sleeve?",
+          "options": [
+            "25 cm",
+            "20 cm",
+            "52 cm"
+          ],
+          "answer": 1,
+          "explanation": "'twenty centimetres'."
+        },
+        {
+          "prompt": "Choose the correct question.",
+          "options": [
+            "How long the sleeve?",
+            "How long sleeve is?",
+            "How long is the sleeve?"
+          ],
+          "answer": 2,
+          "explanation": "How long + is + chủ ngữ?"
+        },
+        {
+          "prompt": "Complete the sentence: What _____ is this shirt?",
+          "options": [
+            "length",
+            "size",
+            "chest"
+          ],
+          "answer": 1,
+          "explanation": "“size” nghĩa là “kích cỡ”. Câu đầy đủ: What size is this shirt?"
+        },
+        {
+          "prompt": "What does “medium” mean?",
+          "options": [
+            "xanh đậm (xanh hải quân)",
+            "cỡ vừa (M)",
+            "kích cỡ"
+          ],
+          "answer": 1,
+          "explanation": "“medium” = cỡ vừa (M). Ví dụ: We need 500 medium shirts."
+        },
+        {
+          "prompt": "Complete the sentence: The colour is _____ blue.",
+          "options": [
+            "navy",
+            "length",
+            "measurement"
+          ],
+          "answer": 0,
+          "explanation": "“navy” nghĩa là “xanh đậm (xanh hải quân)”. Câu đầy đủ: The colour is navy blue."
+        },
+        {
+          "prompt": "What does “chest” mean?",
+          "options": [
+            "chiều dài",
+            "cỡ vừa (M)",
+            "vòng ngực"
+          ],
+          "answer": 2,
+          "explanation": "“chest” = vòng ngực. Ví dụ: Measure the chest width."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ is seventy centimetres.",
+          "options": [
+            "chest",
+            "length",
+            "medium"
+          ],
+          "answer": 1,
+          "explanation": "“length” nghĩa là “chiều dài”. Câu đầy đủ: The length is seventy centimetres."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-a2-1",
+      "level": "A2",
+      "unit": "A2 · Bài 1",
+      "category": "Kỹ năng",
+      "title": "Kiểm tra chất lượng (QC)",
+      "objective": "Mô tả lỗi sản phẩm và báo cáo cho tổ trưởng.",
+      "reading": "QC inspector: I've checked this box and found some problems. On five shirts, the stitches are uneven. Two shirts have a stain on the front, and one has a hole near the collar. Also, some threads aren't trimmed.\nSupervisor: How many pieces did you check?\nQC inspector: Fifty. So the defect rate is sixteen percent. That's too high.\nSupervisor: Okay, we'll stop the line and fix it now.",
+      "vocabulary": [
+        {
+          "term": "stitch",
+          "definition": "mũi may",
+          "example": "The stitches are uneven."
+        },
+        {
+          "term": "uneven",
+          "definition": "không đều",
+          "example": "This seam is uneven."
+        },
+        {
+          "term": "stain",
+          "definition": "vết bẩn",
+          "example": "There's a stain on the front."
+        },
+        {
+          "term": "defect",
+          "definition": "lỗi, khuyết tật",
+          "example": "We found three defects."
+        },
+        {
+          "term": "trim",
+          "definition": "cắt (chỉ thừa)",
+          "example": "Trim the loose threads."
+        },
+        {
+          "term": "collar",
+          "definition": "cổ áo",
+          "example": "There's a hole near the collar."
+        }
+      ],
+      "grammar": {
+        "title": "Quá khứ đơn và hiện tại hoàn thành trong báo cáo",
+        "explanation": "I've checked (kết quả bây giờ); I found... (sự việc đã xong).",
+        "examples": [
+          "I've checked fifty pieces.",
+          "I found a stain on two shirts.",
+          "Have you checked the labels?"
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm cuối /tʃ/ trong stitch, stretch",
+        "tip": "Đọc rõ 'ch' cuối từ, đừng nuốt âm.",
+        "words": [
+          "stitch",
+          "uneven",
+          "defect",
+          "collar"
+        ]
+      },
+      "speakingTasks": [
+        "Báo cáo 3 lỗi bạn tìm thấy trên một sản phẩm.",
+        "Tính và nói tỷ lệ lỗi."
+      ],
+      "questions": [
+        {
+          "prompt": "How many shirts have uneven stitches?",
+          "options": [
+            "Five",
+            "Two",
+            "One"
+          ],
+          "answer": 0,
+          "explanation": "'On five shirts'."
+        },
+        {
+          "prompt": "Where is the hole?",
+          "options": [
+            "Near the collar",
+            "On the back",
+            "On the sleeve"
+          ],
+          "answer": 0,
+          "explanation": "'near the collar'."
+        },
+        {
+          "prompt": "How many pieces did she check?",
+          "options": [
+            "Sixteen",
+            "Five",
+            "Fifty"
+          ],
+          "answer": 2,
+          "explanation": "'Fifty'."
+        },
+        {
+          "prompt": "What is the defect rate?",
+          "options": [
+            "60%",
+            "16%",
+            "6%"
+          ],
+          "answer": 1,
+          "explanation": "8/50 = 16%."
+        },
+        {
+          "prompt": "What will the supervisor do?",
+          "options": [
+            "Stop the line and fix it",
+            "Ship the box",
+            "Ignore it"
+          ],
+          "answer": 0,
+          "explanation": "'stop the line and fix it'."
+        },
+        {
+          "prompt": "Complete the sentence: The _____es are uneven.",
+          "options": [
+            "stitch",
+            "uneven",
+            "stain"
+          ],
+          "answer": 0,
+          "explanation": "“stitch” nghĩa là “mũi may”. Câu đầy đủ: The stitches are uneven."
+        },
+        {
+          "prompt": "What does “uneven” mean?",
+          "options": [
+            "không đều",
+            "lỗi, khuyết tật",
+            "vết bẩn"
+          ],
+          "answer": 0,
+          "explanation": "“uneven” = không đều. Ví dụ: This seam is uneven."
+        },
+        {
+          "prompt": "Complete the sentence: There's a _____ on the front.",
+          "options": [
+            "uneven",
+            "stain",
+            "collar"
+          ],
+          "answer": 1,
+          "explanation": "“stain” nghĩa là “vết bẩn”. Câu đầy đủ: There's a stain on the front."
+        },
+        {
+          "prompt": "What does “defect” mean?",
+          "options": [
+            "không đều",
+            "cắt (chỉ thừa)",
+            "lỗi, khuyết tật"
+          ],
+          "answer": 2,
+          "explanation": "“defect” = lỗi, khuyết tật. Ví dụ: We found three defects."
+        },
+        {
+          "prompt": "Complete the sentence: _____ the loose threads.",
+          "options": [
+            "defect",
+            "stain",
+            "trim"
+          ],
+          "answer": 2,
+          "explanation": "“trim” nghĩa là “cắt (chỉ thừa)”. Câu đầy đủ: Trim the loose threads."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-a2-2",
+      "level": "A2",
+      "unit": "A2 · Bài 2",
+      "category": "Từ vựng",
+      "title": "An toàn lao động trong xưởng may",
+      "objective": "Hiểu và nhắc nhở quy định an toàn.",
+      "reading": "Safety is very important in our factory. Always keep your fingers away from the needle and use the finger guard. Tie back long hair. Don't wear loose clothes near the cutting machine. Know where the emergency exits and fire extinguishers are. If there's a fire alarm, stop working, leave your things and go to the assembly point.",
+      "vocabulary": [
+        {
+          "term": "finger guard",
+          "definition": "tấm chắn ngón tay",
+          "example": "Always use the finger guard."
+        },
+        {
+          "term": "loose",
+          "definition": "rộng, lỏng",
+          "example": "Don't wear loose clothes."
+        },
+        {
+          "term": "emergency exit",
+          "definition": "lối thoát hiểm",
+          "example": "Keep the emergency exit clear."
+        },
+        {
+          "term": "fire extinguisher",
+          "definition": "bình chữa cháy",
+          "example": "Where is the fire extinguisher?"
+        },
+        {
+          "term": "alarm",
+          "definition": "chuông báo động",
+          "example": "The fire alarm is ringing."
+        },
+        {
+          "term": "assembly point",
+          "definition": "điểm tập trung",
+          "example": "Go to the assembly point."
+        }
+      ],
+      "grammar": {
+        "title": "Always / Never / Don't + V",
+        "explanation": "Dùng để nói quy định an toàn ngắn gọn.",
+        "examples": [
+          "Always use the finger guard.",
+          "Never block the emergency exit.",
+          "Don't run in the factory."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Đọc rõ cụm danh từ dài: fire exTINguisher, eMERgency exit",
+        "tip": "Nhấn vào từ chính của cụm.",
+        "words": [
+          "extinguisher",
+          "emergency",
+          "assembly",
+          "alarm"
+        ]
+      },
+      "speakingTasks": [
+        "Nhắc đồng nghiệp 4 quy định an toàn.",
+        "Giải thích phải làm gì khi có chuông báo cháy."
+      ],
+      "questions": [
+        {
+          "prompt": "What should you use near the needle?",
+          "options": [
+            "The finger guard",
+            "Gloves",
+            "A mask"
+          ],
+          "answer": 0,
+          "explanation": "'use the finger guard'."
+        },
+        {
+          "prompt": "What should you do with long hair?",
+          "options": [
+            "Tie it back",
+            "Cover it with a towel",
+            "Cut it"
+          ],
+          "answer": 0,
+          "explanation": "'Tie back long hair.'"
+        },
+        {
+          "prompt": "Where shouldn't you wear loose clothes?",
+          "options": [
+            "Outside",
+            "Near the cutting machine",
+            "In the canteen"
+          ],
+          "answer": 1,
+          "explanation": "'near the cutting machine'."
+        },
+        {
+          "prompt": "Where do you go when the fire alarm rings?",
+          "options": [
+            "Your desk",
+            "The assembly point",
+            "The canteen"
+          ],
+          "answer": 1,
+          "explanation": "'go to the assembly point'."
+        },
+        {
+          "prompt": "Choose the safety rule.",
+          "options": [
+            "Never block the exit.",
+            "Never blocking exit.",
+            "Never to block the exit."
+          ],
+          "answer": 0,
+          "explanation": "Never + V nguyên mẫu."
+        },
+        {
+          "prompt": "Complete the sentence: Always use the _____.",
+          "options": [
+            "finger guard",
+            "fire extinguisher",
+            "emergency exit"
+          ],
+          "answer": 0,
+          "explanation": "“finger guard” nghĩa là “tấm chắn ngón tay”. Câu đầy đủ: Always use the finger guard."
+        },
+        {
+          "prompt": "What does “loose” mean?",
+          "options": [
+            "rộng, lỏng",
+            "tấm chắn ngón tay",
+            "chuông báo động"
+          ],
+          "answer": 0,
+          "explanation": "“loose” = rộng, lỏng. Ví dụ: Don't wear loose clothes."
+        },
+        {
+          "prompt": "Complete the sentence: Keep the _____ clear.",
+          "options": [
+            "assembly point",
+            "finger guard",
+            "emergency exit"
+          ],
+          "answer": 2,
+          "explanation": "“emergency exit” nghĩa là “lối thoát hiểm”. Câu đầy đủ: Keep the emergency exit clear."
+        },
+        {
+          "prompt": "What does “fire extinguisher” mean?",
+          "options": [
+            "rộng, lỏng",
+            "điểm tập trung",
+            "bình chữa cháy"
+          ],
+          "answer": 2,
+          "explanation": "“fire extinguisher” = bình chữa cháy. Ví dụ: Where is the fire extinguisher?"
+        },
+        {
+          "prompt": "Complete the sentence: The fire _____ is ringing.",
+          "options": [
+            "finger guard",
+            "loose",
+            "alarm"
+          ],
+          "answer": 2,
+          "explanation": "“alarm” nghĩa là “chuông báo động”. Câu đầy đủ: The fire alarm is ringing."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-a2-3",
+      "level": "A2",
+      "unit": "A2 · Bài 3",
+      "category": "Giao tiếp",
+      "title": "Báo cáo sản lượng và tiến độ",
+      "objective": "Báo cáo số lượng đã làm, còn lại và vấn đề trong ngày.",
+      "reading": "Supervisor: How's the line doing today?\nLine leader: We've finished four hundred pieces so far. Our target is six hundred.\nSupervisor: Will you reach the target?\nLine leader: I think so, but we're a little behind because two workers are absent and one machine was broken for an hour.\nSupervisor: Can you ask two people from line five to help?\nLine leader: Yes, good idea. Then we can finish by five o'clock.",
+      "vocabulary": [
+        {
+          "term": "target",
+          "definition": "chỉ tiêu",
+          "example": "Our daily target is 600 pieces."
+        },
+        {
+          "term": "so far",
+          "definition": "đến giờ",
+          "example": "We've finished 400 so far."
+        },
+        {
+          "term": "behind",
+          "definition": "chậm (tiến độ)",
+          "example": "We're a little behind schedule."
+        },
+        {
+          "term": "absent",
+          "definition": "vắng mặt",
+          "example": "Two workers are absent today."
+        },
+        {
+          "term": "reach",
+          "definition": "đạt được",
+          "example": "We will reach the target."
+        },
+        {
+          "term": "output",
+          "definition": "sản lượng",
+          "example": "Our output is higher this week."
+        }
+      ],
+      "grammar": {
+        "title": "Hiện tại hoàn thành với so far / already / yet",
+        "explanation": "Nói về kết quả tính đến bây giờ.",
+        "examples": [
+          "We've finished 400 pieces so far.",
+          "Have you finished the order yet?",
+          "We've already packed 200 boxes."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Nhấn số liệu: FOUR hundred, SIX hundred",
+        "tip": "Nhấn rõ con số khi báo cáo để tránh nhầm.",
+        "words": [
+          "target",
+          "absent",
+          "behind",
+          "output"
+        ]
+      },
+      "speakingTasks": [
+        "Báo cáo tiến độ chuyền của bạn hôm nay.",
+        "Giải thích lý do chậm tiến độ và đề xuất giải pháp."
+      ],
+      "questions": [
+        {
+          "prompt": "How many pieces are finished?",
+          "options": [
+            "600",
+            "200",
+            "400"
+          ],
+          "answer": 2,
+          "explanation": "'four hundred pieces so far'."
+        },
+        {
+          "prompt": "What is the target?",
+          "options": [
+            "500",
+            "400",
+            "600"
+          ],
+          "answer": 2,
+          "explanation": "'Our target is six hundred.'"
+        },
+        {
+          "prompt": "Why are they behind?",
+          "options": [
+            "The power is off",
+            "Two workers are absent and a machine broke",
+            "The fabric is late"
+          ],
+          "answer": 1,
+          "explanation": "Hai lý do."
+        },
+        {
+          "prompt": "What is the solution?",
+          "options": [
+            "Lower the target",
+            "Work on Sunday",
+            "Get two people from line five"
+          ],
+          "answer": 2,
+          "explanation": "'ask two people from line five'."
+        },
+        {
+          "prompt": "Choose the correct sentence.",
+          "options": [
+            "We've finished 400 pieces so far.",
+            "We finished 400 so far yet.",
+            "We finishing 400 so far."
+          ],
+          "answer": 0,
+          "explanation": "Hiện tại hoàn thành + so far."
+        },
+        {
+          "prompt": "Complete the sentence: Our daily _____ is 600 pieces.",
+          "options": [
+            "target",
+            "output",
+            "behind"
+          ],
+          "answer": 0,
+          "explanation": "“target” nghĩa là “chỉ tiêu”. Câu đầy đủ: Our daily target is 600 pieces."
+        },
+        {
+          "prompt": "What does “so far” mean?",
+          "options": [
+            "sản lượng",
+            "chậm (tiến độ)",
+            "đến giờ"
+          ],
+          "answer": 2,
+          "explanation": "“so far” = đến giờ. Ví dụ: We've finished 400 so far."
+        },
+        {
+          "prompt": "Complete the sentence: We're a little _____ schedule.",
+          "options": [
+            "output",
+            "behind",
+            "so far"
+          ],
+          "answer": 1,
+          "explanation": "“behind” nghĩa là “chậm (tiến độ)”. Câu đầy đủ: We're a little behind schedule."
+        },
+        {
+          "prompt": "What does “absent” mean?",
+          "options": [
+            "vắng mặt",
+            "chậm (tiến độ)",
+            "chỉ tiêu"
+          ],
+          "answer": 0,
+          "explanation": "“absent” = vắng mặt. Ví dụ: Two workers are absent today."
+        },
+        {
+          "prompt": "Complete the sentence: We will _____ the target.",
+          "options": [
+            "reach",
+            "output",
+            "absent"
+          ],
+          "answer": 0,
+          "explanation": "“reach” nghĩa là “đạt được”. Câu đầy đủ: We will reach the target."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-b1-1",
+      "level": "B1",
+      "unit": "B1 · Bài 1",
+      "category": "Giao tiếp",
+      "title": "Làm việc với khách hàng (buyer)",
+      "objective": "Trao đổi với buyer về mẫu, chỉnh sửa và duyệt mẫu.",
+      "reading": "Buyer: We've received the pre-production sample. Overall it looks good, but there are a few comments.\nMerchandiser: Sure, please go ahead.\nBuyer: The colour of the fabric is slightly darker than the approved lab dip, and the pocket is two centimetres too low.\nMerchandiser: I understand. We'll adjust the pocket position and ask the mill to match the lab dip. We can send a revised sample by next Friday.\nBuyer: Great. Once it's approved, you can start bulk production.",
+      "vocabulary": [
+        {
+          "term": "buyer",
+          "definition": "khách hàng (người mua)",
+          "example": "The buyer approved the sample."
+        },
+        {
+          "term": "merchandiser",
+          "definition": "nhân viên điều hành đơn hàng",
+          "example": "Our merchandiser will contact you."
+        },
+        {
+          "term": "lab dip",
+          "definition": "mẫu nhuộm màu",
+          "example": "Please match the approved lab dip."
+        },
+        {
+          "term": "revised",
+          "definition": "đã chỉnh sửa",
+          "example": "We'll send a revised sample."
+        },
+        {
+          "term": "approve",
+          "definition": "duyệt",
+          "example": "The buyer needs to approve the sample."
+        },
+        {
+          "term": "bulk production",
+          "definition": "sản xuất hàng loạt",
+          "example": "Bulk production starts next month."
+        }
+      ],
+      "grammar": {
+        "title": "So sánh với slightly / a bit / too",
+        "explanation": "slightly darker; two centimetres too low.",
+        "examples": [
+          "The colour is slightly darker.",
+          "The pocket is two centimetres too low.",
+          "The sleeves are a bit too long."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Trọng âm: MERchandiser, apPROVE, reVISED",
+        "tip": "Nhấn đúng thuật ngữ khi họp với khách nước ngoài.",
+        "words": [
+          "merchandiser",
+          "approve",
+          "revised",
+          "production"
+        ]
+      },
+      "speakingTasks": [
+        "Nhận góp ý của buyer và hứa ngày gửi mẫu mới.",
+        "Mô tả 2 điểm chỉnh sửa trên một mẫu."
+      ],
+      "questions": [
+        {
+          "prompt": "What did the buyer receive?",
+          "options": [
+            "The pre-production sample",
+            "The invoice",
+            "The bulk order"
+          ],
+          "answer": 0,
+          "explanation": "'pre-production sample'."
+        },
+        {
+          "prompt": "What is wrong with the colour?",
+          "options": [
+            "Too light",
+            "Wrong colour completely",
+            "Slightly darker"
+          ],
+          "answer": 2,
+          "explanation": "'slightly darker'."
+        },
+        {
+          "prompt": "What is wrong with the pocket?",
+          "options": [
+            "Too high",
+            "Too low",
+            "Too small"
+          ],
+          "answer": 1,
+          "explanation": "'two centimetres too low'."
+        },
+        {
+          "prompt": "When will they send a revised sample?",
+          "options": [
+            "Tomorrow",
+            "By next Friday",
+            "Next month"
+          ],
+          "answer": 1,
+          "explanation": "'by next Friday'."
+        },
+        {
+          "prompt": "When can bulk production start?",
+          "options": [
+            "Now",
+            "Once the sample is approved",
+            "Never"
+          ],
+          "answer": 1,
+          "explanation": "'Once it's approved'."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ approved the sample.",
+          "options": [
+            "merchandiser",
+            "buyer",
+            "approve"
+          ],
+          "answer": 1,
+          "explanation": "“buyer” nghĩa là “khách hàng (người mua)”. Câu đầy đủ: The buyer approved the sample."
+        },
+        {
+          "prompt": "What does “merchandiser” mean?",
+          "options": [
+            "nhân viên điều hành đơn hàng",
+            "đã chỉnh sửa",
+            "duyệt"
+          ],
+          "answer": 0,
+          "explanation": "“merchandiser” = nhân viên điều hành đơn hàng. Ví dụ: Our merchandiser will contact you."
+        },
+        {
+          "prompt": "Complete the sentence: Please match the approved _____.",
+          "options": [
+            "lab dip",
+            "merchandiser",
+            "buyer"
+          ],
+          "answer": 0,
+          "explanation": "“lab dip” nghĩa là “mẫu nhuộm màu”. Câu đầy đủ: Please match the approved lab dip."
+        },
+        {
+          "prompt": "What does “revised” mean?",
+          "options": [
+            "đã chỉnh sửa",
+            "nhân viên điều hành đơn hàng",
+            "sản xuất hàng loạt"
+          ],
+          "answer": 0,
+          "explanation": "“revised” = đã chỉnh sửa. Ví dụ: We'll send a revised sample."
+        },
+        {
+          "prompt": "Complete the sentence: The buyer needs to _____ the sample.",
+          "options": [
+            "approve",
+            "lab dip",
+            "buyer"
+          ],
+          "answer": 0,
+          "explanation": "“approve” nghĩa là “duyệt”. Câu đầy đủ: The buyer needs to approve the sample."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-b1-2",
+      "level": "B1",
+      "unit": "B1 · Bài 2",
+      "category": "Kỹ năng",
+      "title": "Đóng gói, giao hàng và chứng từ",
+      "objective": "Hiểu yêu cầu đóng gói, nhãn mác và lịch giao hàng.",
+      "reading": "Each garment must be folded, put in a polybag with a size sticker, and packed twelve pieces to a carton. The carton label shows the order number, style, colour, size breakdown and gross weight. The goods must be ready for shipment by the fifteenth so the container can leave on the twentieth. Please send the packing list and commercial invoice to the buyer two days before shipping.",
+      "vocabulary": [
+        {
+          "term": "fold",
+          "definition": "gấp",
+          "example": "Fold each shirt neatly."
+        },
+        {
+          "term": "polybag",
+          "definition": "túi nilon (đóng gói)",
+          "example": "Put each shirt in a polybag."
+        },
+        {
+          "term": "carton",
+          "definition": "thùng carton",
+          "example": "Pack twelve pieces per carton."
+        },
+        {
+          "term": "shipment",
+          "definition": "lô hàng, việc giao hàng",
+          "example": "The shipment leaves on Friday."
+        },
+        {
+          "term": "packing list",
+          "definition": "phiếu đóng gói",
+          "example": "Send the packing list to the buyer."
+        },
+        {
+          "term": "invoice",
+          "definition": "hóa đơn",
+          "example": "The invoice shows the total price."
+        }
+      ],
+      "grammar": {
+        "title": "Bị động với must be / will be",
+        "explanation": "Dùng cho yêu cầu kỹ thuật và quy trình.",
+        "examples": [
+          "Each garment must be folded.",
+          "The cartons will be labelled tomorrow.",
+          "The goods must be ready by the 15th."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Đọc ngày tháng: the fifteenth, the twentieth",
+        "tip": "Đọc số thứ tự với 'the': the FIF-teenth.",
+        "words": [
+          "shipment",
+          "carton",
+          "invoice",
+          "packing"
+        ]
+      },
+      "speakingTasks": [
+        "Giải thích quy trình đóng gói 4 bước.",
+        "Đọc thông tin trên một nhãn thùng."
+      ],
+      "questions": [
+        {
+          "prompt": "How many pieces go in one carton?",
+          "options": [
+            "Twelve",
+            "Twenty",
+            "Six"
+          ],
+          "answer": 0,
+          "explanation": "'twelve pieces to a carton'."
+        },
+        {
+          "prompt": "What is put on the polybag?",
+          "options": [
+            "A size sticker",
+            "The invoice",
+            "A price tag"
+          ],
+          "answer": 0,
+          "explanation": "'with a size sticker'."
+        },
+        {
+          "prompt": "When must the goods be ready?",
+          "options": [
+            "By the 15th",
+            "By the 20th",
+            "By the 2nd"
+          ],
+          "answer": 0,
+          "explanation": "'by the fifteenth'."
+        },
+        {
+          "prompt": "When should documents be sent?",
+          "options": [
+            "After shipping",
+            "Two days before shipping",
+            "On the 20th"
+          ],
+          "answer": 1,
+          "explanation": "'two days before shipping'."
+        },
+        {
+          "prompt": "Choose the passive sentence.",
+          "options": [
+            "Each garment must be folded.",
+            "Each garment must folded.",
+            "Each garment must be fold."
+          ],
+          "answer": 0,
+          "explanation": "must be + V3."
+        },
+        {
+          "prompt": "Complete the sentence: _____ each shirt neatly.",
+          "options": [
+            "polybag",
+            "fold",
+            "shipment"
+          ],
+          "answer": 1,
+          "explanation": "“fold” nghĩa là “gấp”. Câu đầy đủ: Fold each shirt neatly."
+        },
+        {
+          "prompt": "What does “polybag” mean?",
+          "options": [
+            "hóa đơn",
+            "gấp",
+            "túi nilon (đóng gói)"
+          ],
+          "answer": 2,
+          "explanation": "“polybag” = túi nilon (đóng gói). Ví dụ: Put each shirt in a polybag."
+        },
+        {
+          "prompt": "Complete the sentence: Pack twelve pieces per _____.",
+          "options": [
+            "fold",
+            "invoice",
+            "carton"
+          ],
+          "answer": 2,
+          "explanation": "“carton” nghĩa là “thùng carton”. Câu đầy đủ: Pack twelve pieces per carton."
+        },
+        {
+          "prompt": "What does “shipment” mean?",
+          "options": [
+            "gấp",
+            "thùng carton",
+            "lô hàng, việc giao hàng"
+          ],
+          "answer": 2,
+          "explanation": "“shipment” = lô hàng, việc giao hàng. Ví dụ: The shipment leaves on Friday."
+        },
+        {
+          "prompt": "Complete the sentence: Send the _____ to the buyer.",
+          "options": [
+            "packing list",
+            "fold",
+            "shipment"
+          ],
+          "answer": 0,
+          "explanation": "“packing list” nghĩa là “phiếu đóng gói”. Câu đầy đủ: Send the packing list to the buyer."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-b1-3",
+      "level": "B1",
+      "unit": "B1 · Bài 3",
+      "category": "Từ vựng",
+      "title": "Quy trình sản xuất hàng may mặc",
+      "objective": "Mô tả các công đoạn từ vải đến thành phẩm.",
+      "reading": "Production starts when the fabric arrives. First, it's inspected and relaxed for twenty-four hours. Then the patterns are made and the marker is planned to reduce waste. The fabric is spread on long tables and cut. The cut pieces are bundled and sent to the sewing lines. After sewing, garments go through finishing: trimming threads, pressing, and final inspection before packing.",
+      "vocabulary": [
+        {
+          "term": "pattern",
+          "definition": "rập (mẫu cắt)",
+          "example": "The pattern maker updated the pattern."
+        },
+        {
+          "term": "marker",
+          "definition": "sơ đồ giác mẫu",
+          "example": "A good marker reduces fabric waste."
+        },
+        {
+          "term": "spread",
+          "definition": "trải vải",
+          "example": "Spread the fabric on the table."
+        },
+        {
+          "term": "bundle",
+          "definition": "bó (bán thành phẩm)",
+          "example": "Each bundle has twenty pieces."
+        },
+        {
+          "term": "finishing",
+          "definition": "hoàn thiện",
+          "example": "The finishing team trims and presses."
+        },
+        {
+          "term": "waste",
+          "definition": "hao hụt, lãng phí",
+          "example": "We try to reduce waste."
+        }
+      ],
+      "grammar": {
+        "title": "Bị động thì hiện tại để mô tả quy trình",
+        "explanation": "is inspected / are cut / are sent.",
+        "examples": [
+          "The fabric is inspected first.",
+          "The pieces are cut and bundled.",
+          "Garments are pressed before packing."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Nối âm trong bị động: is inspected /ɪz‿ɪnˈspektɪd/",
+        "tip": "Nối 'is' với từ bắt đầu bằng nguyên âm.",
+        "words": [
+          "pattern",
+          "marker",
+          "bundle",
+          "finishing"
+        ]
+      },
+      "speakingTasks": [
+        "Mô tả 6 công đoạn sản xuất bằng câu bị động.",
+        "Giải thích vì sao cần giác sơ đồ tốt."
+      ],
+      "questions": [
+        {
+          "prompt": "How long is the fabric relaxed?",
+          "options": [
+            "2 days",
+            "12 hours",
+            "24 hours"
+          ],
+          "answer": 2,
+          "explanation": "'for twenty-four hours'."
+        },
+        {
+          "prompt": "Why is the marker planned?",
+          "options": [
+            "To change colour",
+            "To pack faster",
+            "To reduce waste"
+          ],
+          "answer": 2,
+          "explanation": "'to reduce waste'."
+        },
+        {
+          "prompt": "Where are the cut pieces sent?",
+          "options": [
+            "To the sewing lines",
+            "To the warehouse",
+            "To the buyer"
+          ],
+          "answer": 0,
+          "explanation": "'sent to the sewing lines'."
+        },
+        {
+          "prompt": "Which is part of finishing?",
+          "options": [
+            "Spreading",
+            "Pressing",
+            "Cutting"
+          ],
+          "answer": 1,
+          "explanation": "trimming, pressing, final inspection."
+        },
+        {
+          "prompt": "Choose the passive sentence.",
+          "options": [
+            "The fabric inspects first.",
+            "The fabric is inspected first.",
+            "The fabric inspected is first."
+          ],
+          "answer": 1,
+          "explanation": "is + V3."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ maker updated the pattern.",
+          "options": [
+            "pattern",
+            "marker",
+            "bundle"
+          ],
+          "answer": 0,
+          "explanation": "“pattern” nghĩa là “rập (mẫu cắt)”. Câu đầy đủ: The pattern maker updated the pattern."
+        },
+        {
+          "prompt": "What does “marker” mean?",
+          "options": [
+            "trải vải",
+            "rập (mẫu cắt)",
+            "sơ đồ giác mẫu"
+          ],
+          "answer": 2,
+          "explanation": "“marker” = sơ đồ giác mẫu. Ví dụ: A good marker reduces fabric waste."
+        },
+        {
+          "prompt": "Complete the sentence: _____ the fabric on the table.",
+          "options": [
+            "pattern",
+            "waste",
+            "spread"
+          ],
+          "answer": 2,
+          "explanation": "“spread” nghĩa là “trải vải”. Câu đầy đủ: Spread the fabric on the table."
+        },
+        {
+          "prompt": "What does “bundle” mean?",
+          "options": [
+            "sơ đồ giác mẫu",
+            "bó (bán thành phẩm)",
+            "trải vải"
+          ],
+          "answer": 1,
+          "explanation": "“bundle” = bó (bán thành phẩm). Ví dụ: Each bundle has twenty pieces."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ team trims and presses.",
+          "options": [
+            "finishing",
+            "marker",
+            "pattern"
+          ],
+          "answer": 0,
+          "explanation": "“finishing” nghĩa là “hoàn thiện”. Câu đầy đủ: The finishing team trims and presses."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-b2-1",
+      "level": "B2",
+      "unit": "B2 · Bài 1",
+      "category": "Kỹ năng",
+      "title": "Đàm phán giá và thời gian giao hàng",
+      "objective": "Đàm phán FOB price, MOQ và lead time với khách.",
+      "reading": "Buyer: Your FOB price of eight dollars fifty is higher than we expected. Our target is seven eighty.\nSales manager: I understand. The price reflects the organic cotton and the double-needle stitching you requested. If you could increase the order to ten thousand pieces, we could bring it down to eight dollars.\nBuyer: And the lead time?\nSales manager: Normally seventy-five days, but if you confirm the fabric this week, we can shorten it to sixty.\nBuyer: Let me discuss it with my team and get back to you tomorrow.",
+      "vocabulary": [
+        {
+          "term": "FOB price",
+          "definition": "giá FOB (giao lên tàu)",
+          "example": "Our FOB price is $8.50."
+        },
+        {
+          "term": "MOQ",
+          "definition": "số lượng đặt tối thiểu",
+          "example": "Our MOQ is 3,000 pieces per style."
+        },
+        {
+          "term": "lead time",
+          "definition": "thời gian sản xuất/giao hàng",
+          "example": "The lead time is 60 days."
+        },
+        {
+          "term": "reflect",
+          "definition": "phản ánh",
+          "example": "The price reflects the quality."
+        },
+        {
+          "term": "confirm",
+          "definition": "xác nhận",
+          "example": "Please confirm the order this week."
+        },
+        {
+          "term": "get back to",
+          "definition": "phản hồi lại",
+          "example": "I'll get back to you tomorrow."
+        }
+      ],
+      "grammar": {
+        "title": "Câu điều kiện loại 2 để đàm phán: If you could..., we could...",
+        "explanation": "Đề xuất có điều kiện, mềm mỏng hơn loại 1.",
+        "examples": [
+          "If you could increase the order, we could lower the price.",
+          "If you confirmed today, we could start next week.",
+          "We could offer a discount if you paid in advance."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Ngữ điệu đàm phán: bình tĩnh, nhấn điều kiện",
+        "tip": "IF you could increase the order, we COULD bring it down.",
+        "words": [
+          "reflect",
+          "confirm",
+          "negotiate",
+          "production"
+        ]
+      },
+      "speakingTasks": [
+        "Đàm phán giá với khách: đưa một đề nghị có điều kiện.",
+        "Giải thích vì sao giá cao hơn mong đợi."
+      ],
+      "questions": [
+        {
+          "prompt": "What is the buyer's target price?",
+          "options": [
+            "$7.80",
+            "$8.50",
+            "$8.00"
+          ],
+          "answer": 0,
+          "explanation": "'Our target is seven eighty.'"
+        },
+        {
+          "prompt": "Why is the price high?",
+          "options": [
+            "Shipping is expensive",
+            "Organic cotton and double-needle stitching",
+            "Labour is slow"
+          ],
+          "answer": 1,
+          "explanation": "Lý do chất lượng."
+        },
+        {
+          "prompt": "What price is offered for 10,000 pieces?",
+          "options": [
+            "$7.80",
+            "$8.00",
+            "$8.50"
+          ],
+          "answer": 1,
+          "explanation": "'bring it down to eight dollars'."
+        },
+        {
+          "prompt": "How can the lead time be shortened to 60 days?",
+          "options": [
+            "Pay more",
+            "Confirm the fabric this week",
+            "Order fewer pieces"
+          ],
+          "answer": 1,
+          "explanation": "'if you confirm the fabric this week'."
+        },
+        {
+          "prompt": "Choose the second conditional.",
+          "options": [
+            "If you will order, we could.",
+            "If you could order more, we could lower the price.",
+            "If you can order more, we lowered."
+          ],
+          "answer": 1,
+          "explanation": "If + could/past, could + V."
+        },
+        {
+          "prompt": "Complete the sentence: Our _____ is $8.50.",
+          "options": [
+            "reflect",
+            "lead time",
+            "FOB price"
+          ],
+          "answer": 2,
+          "explanation": "“FOB price” nghĩa là “giá FOB (giao lên tàu)”. Câu đầy đủ: Our FOB price is $8.50."
+        },
+        {
+          "prompt": "What does “MOQ” mean?",
+          "options": [
+            "giá FOB (giao lên tàu)",
+            "số lượng đặt tối thiểu",
+            "xác nhận"
+          ],
+          "answer": 1,
+          "explanation": "“MOQ” = số lượng đặt tối thiểu. Ví dụ: Our MOQ is 3,000 pieces per style."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ is 60 days.",
+          "options": [
+            "confirm",
+            "MOQ",
+            "lead time"
+          ],
+          "answer": 2,
+          "explanation": "“lead time” nghĩa là “thời gian sản xuất/giao hàng”. Câu đầy đủ: The lead time is 60 days."
+        },
+        {
+          "prompt": "What does “reflect” mean?",
+          "options": [
+            "phản hồi lại",
+            "thời gian sản xuất/giao hàng",
+            "phản ánh"
+          ],
+          "answer": 2,
+          "explanation": "“reflect” = phản ánh. Ví dụ: The price reflects the quality."
+        },
+        {
+          "prompt": "Complete the sentence: Please _____ the order this week.",
+          "options": [
+            "MOQ",
+            "confirm",
+            "FOB price"
+          ],
+          "answer": 1,
+          "explanation": "“confirm” nghĩa là “xác nhận”. Câu đầy đủ: Please confirm the order this week."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-b2-2",
+      "level": "B2",
+      "unit": "B2 · Bài 2",
+      "category": "Giao tiếp",
+      "title": "Đánh giá nhà máy và tuân thủ",
+      "objective": "Trả lời câu hỏi kiểm toán về điều kiện lao động và an toàn.",
+      "reading": "Auditor: Could you show me the records of working hours for last month?\nCompliance officer: Certainly. All overtime is voluntary and recorded. No one worked more than sixty hours a week, and every worker had at least one day off.\nAuditor: How do workers raise concerns?\nCompliance officer: There's an anonymous suggestion box and a hotline, and worker representatives meet management every month.\nAuditor: I noticed that one fire exit was partly blocked by boxes.\nCompliance officer: Thank you for pointing that out. We'll clear it immediately and add it to our daily checklist.",
+      "vocabulary": [
+        {
+          "term": "auditor",
+          "definition": "kiểm toán viên, người đánh giá",
+          "example": "The auditor visits next week."
+        },
+        {
+          "term": "compliance",
+          "definition": "tuân thủ",
+          "example": "Compliance with labour law is required."
+        },
+        {
+          "term": "overtime",
+          "definition": "làm thêm giờ",
+          "example": "All overtime is voluntary."
+        },
+        {
+          "term": "voluntary",
+          "definition": "tự nguyện",
+          "example": "Overtime must be voluntary."
+        },
+        {
+          "term": "anonymous",
+          "definition": "ẩn danh",
+          "example": "Workers can use an anonymous hotline."
+        },
+        {
+          "term": "checklist",
+          "definition": "danh sách kiểm tra",
+          "example": "Add it to the daily checklist."
+        }
+      ],
+      "grammar": {
+        "title": "Trả lời trang trọng: Certainly. / Thank you for pointing that out. / We'll...",
+        "explanation": "Giữ giọng chuyên nghiệp, nhận lỗi và nêu hành động khắc phục.",
+        "examples": [
+          "Certainly, here are the records.",
+          "Thank you for pointing that out.",
+          "We'll clear it immediately."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Trọng âm: comPLIance, VOLuntary, aNONymous",
+        "tip": "Từ khó — tập từng âm tiết trước khi họp.",
+        "words": [
+          "compliance",
+          "voluntary",
+          "anonymous",
+          "auditor"
+        ]
+      },
+      "speakingTasks": [
+        "Trả lời 3 câu hỏi của kiểm toán về giờ làm và an toàn.",
+        "Phản hồi khi kiểm toán phát hiện một lỗi."
+      ],
+      "questions": [
+        {
+          "prompt": "What does the auditor ask to see first?",
+          "options": [
+            "Payment records",
+            "Working hours records",
+            "The fire alarm"
+          ],
+          "answer": 1,
+          "explanation": "'records of working hours'."
+        },
+        {
+          "prompt": "What is the maximum weekly working time mentioned?",
+          "options": [
+            "72 hours",
+            "60 hours",
+            "48 hours"
+          ],
+          "answer": 1,
+          "explanation": "'more than sixty hours'."
+        },
+        {
+          "prompt": "How can workers raise concerns anonymously?",
+          "options": [
+            "They can't",
+            "A suggestion box and a hotline",
+            "Email to the boss"
+          ],
+          "answer": 1,
+          "explanation": "Hộp góp ý ẩn danh và đường dây nóng."
+        },
+        {
+          "prompt": "What problem did the auditor notice?",
+          "options": [
+            "A broken machine",
+            "A partly blocked fire exit",
+            "No lights"
+          ],
+          "answer": 1,
+          "explanation": "'one fire exit was partly blocked'."
+        },
+        {
+          "prompt": "What will the company do?",
+          "options": [
+            "Ignore it",
+            "Close the exit",
+            "Clear it and add it to the daily checklist"
+          ],
+          "answer": 2,
+          "explanation": "Khắc phục ngay và thêm vào checklist."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ visits next week.",
+          "options": [
+            "auditor",
+            "anonymous",
+            "checklist"
+          ],
+          "answer": 0,
+          "explanation": "“auditor” nghĩa là “kiểm toán viên, người đánh giá”. Câu đầy đủ: The auditor visits next week."
+        },
+        {
+          "prompt": "What does “compliance” mean?",
+          "options": [
+            "làm thêm giờ",
+            "tuân thủ",
+            "kiểm toán viên, người đánh giá"
+          ],
+          "answer": 1,
+          "explanation": "“compliance” = tuân thủ. Ví dụ: Compliance with labour law is required."
+        },
+        {
+          "prompt": "Complete the sentence: All _____ is voluntary.",
+          "options": [
+            "overtime",
+            "checklist",
+            "auditor"
+          ],
+          "answer": 0,
+          "explanation": "“overtime” nghĩa là “làm thêm giờ”. Câu đầy đủ: All overtime is voluntary."
+        },
+        {
+          "prompt": "What does “voluntary” mean?",
+          "options": [
+            "tự nguyện",
+            "làm thêm giờ",
+            "tuân thủ"
+          ],
+          "answer": 0,
+          "explanation": "“voluntary” = tự nguyện. Ví dụ: Overtime must be voluntary."
+        },
+        {
+          "prompt": "Complete the sentence: Workers can use an _____ hotline.",
+          "options": [
+            "anonymous",
+            "voluntary",
+            "auditor"
+          ],
+          "answer": 0,
+          "explanation": "“anonymous” nghĩa là “ẩn danh”. Câu đầy đủ: Workers can use an anonymous hotline."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "garment-b2-3",
+      "level": "B2",
+      "unit": "B2 · Bài 3",
+      "category": "Kỹ năng",
+      "title": "Cải tiến năng suất và sản xuất bền vững",
+      "objective": "Trình bày đề xuất cải tiến chuyền và giảm tác động môi trường.",
+      "reading": "In my proposal, I'd like to focus on two areas. First, line balancing: by analysing the time each operation takes, we found a bottleneck at the collar station. Adding one operator there could raise output by twelve percent. Second, sustainability: switching to recycled polyester and reusing fabric offcuts would cut waste by about a fifth. Although the initial cost is higher, many buyers now require sustainable materials, so it would strengthen our position.",
+      "vocabulary": [
+        {
+          "term": "line balancing",
+          "definition": "cân bằng chuyền",
+          "example": "Line balancing improves efficiency."
+        },
+        {
+          "term": "bottleneck",
+          "definition": "điểm nghẽn",
+          "example": "The collar station is a bottleneck."
+        },
+        {
+          "term": "operator",
+          "definition": "công nhân đứng máy",
+          "example": "Add one operator to this station."
+        },
+        {
+          "term": "sustainability",
+          "definition": "tính bền vững",
+          "example": "Sustainability is important to buyers."
+        },
+        {
+          "term": "recycled",
+          "definition": "tái chế",
+          "example": "We use recycled polyester."
+        },
+        {
+          "term": "offcuts",
+          "definition": "vải vụn thừa",
+          "example": "Reuse fabric offcuts."
+        }
+      ],
+      "grammar": {
+        "title": "Although / By + V-ing / would + V để trình bày đề xuất",
+        "explanation": "By analysing...: bằng cách...; Although: mặc dù...",
+        "examples": [
+          "By analysing each operation, we found the bottleneck.",
+          "Although the cost is higher, buyers want it.",
+          "Adding one operator would raise output."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Trình bày: nói theo cụm ý, ngắt nghỉ sau First/Second",
+        "tip": "First, | line balancing: ... Second, | sustainability.",
+        "words": [
+          "bottleneck",
+          "sustainability",
+          "recycled",
+          "operator"
+        ]
+      },
+      "speakingTasks": [
+        "Trình bày một đề xuất cải tiến chuyền trong 1 phút.",
+        "Thuyết phục quản lý đầu tư vào vật liệu tái chế."
+      ],
+      "questions": [
+        {
+          "prompt": "Where is the bottleneck?",
+          "options": [
+            "Cutting room",
+            "Packing area",
+            "Collar station"
+          ],
+          "answer": 2,
+          "explanation": "'at the collar station'."
+        },
+        {
+          "prompt": "How much could output rise?",
+          "options": [
+            "12%",
+            "5%",
+            "20%"
+          ],
+          "answer": 0,
+          "explanation": "'by twelve percent'."
+        },
+        {
+          "prompt": "What is suggested for sustainability?",
+          "options": [
+            "Cheaper cotton",
+            "Recycled polyester and reusing offcuts",
+            "More overtime"
+          ],
+          "answer": 1,
+          "explanation": "Hai giải pháp."
+        },
+        {
+          "prompt": "By how much could waste be cut?",
+          "options": [
+            "Half",
+            "About a fifth",
+            "10%"
+          ],
+          "answer": 1,
+          "explanation": "'about a fifth'."
+        },
+        {
+          "prompt": "Why is it worth the higher cost?",
+          "options": [
+            "Workers like it",
+            "It's faster",
+            "Many buyers require sustainable materials"
+          ],
+          "answer": 2,
+          "explanation": "'many buyers now require sustainable materials'."
+        },
+        {
+          "prompt": "Complete the sentence: _____ improves efficiency.",
+          "options": [
+            "line balancing",
+            "recycled",
+            "operator"
+          ],
+          "answer": 0,
+          "explanation": "“line balancing” nghĩa là “cân bằng chuyền”. Câu đầy đủ: Line balancing improves efficiency."
+        },
+        {
+          "prompt": "What does “bottleneck” mean?",
+          "options": [
+            "điểm nghẽn",
+            "vải vụn thừa",
+            "tái chế"
+          ],
+          "answer": 0,
+          "explanation": "“bottleneck” = điểm nghẽn. Ví dụ: The collar station is a bottleneck."
+        },
+        {
+          "prompt": "Complete the sentence: Add one _____ to this station.",
+          "options": [
+            "line balancing",
+            "sustainability",
+            "operator"
+          ],
+          "answer": 2,
+          "explanation": "“operator” nghĩa là “công nhân đứng máy”. Câu đầy đủ: Add one operator to this station."
+        },
+        {
+          "prompt": "What does “sustainability” mean?",
+          "options": [
+            "vải vụn thừa",
+            "tái chế",
+            "tính bền vững"
+          ],
+          "answer": 2,
+          "explanation": "“sustainability” = tính bền vững. Ví dụ: Sustainability is important to buyers."
+        },
+        {
+          "prompt": "Complete the sentence: We use _____ polyester.",
+          "options": [
+            "operator",
+            "recycled",
+            "bottleneck"
+          ],
+          "answer": 1,
+          "explanation": "“recycled” nghĩa là “tái chế”. Câu đầy đủ: We use recycled polyester."
+        }
+      ],
+      "audioIds": []
+    }
+  ],
+  "audio": []
+}

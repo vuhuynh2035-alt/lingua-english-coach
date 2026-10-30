@@ -76,7 +76,7 @@ export default function Page() {
               <strong><span aria-hidden="true">{item.flag}</span> {item.nameVi}</strong>
               <span className="lc-native">{item.nameNative}</span>
               <small>{item.tagline}</small>
-              <em>88 bài · 7 khóa học</em>
+              <em>{item.id === "en" ? "124 bài · 10 khóa học" : "88 bài · 7 khóa học"}</em>
             </button>
           ))}
         </div>
