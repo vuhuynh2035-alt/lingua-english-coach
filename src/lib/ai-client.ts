@@ -43,9 +43,13 @@ export const FALLBACK_MODELS: Record<AiProvider, string[]> = {
 const FIRST_BYTE_TIMEOUT_MS = 20_000;
 const TOTAL_STREAM_TIMEOUT_MS = 45_000;
 
-/** Speech, image, embedding and similar models also answer generateContent but cannot chat. */
+/**
+ * Speech, image, embedding and similar models also answer generateContent but cannot chat;
+ * agent and research models (Antigravity, Deep Research) do not suit a tutor; Gemini 1.x and 2.x are retired.
+ */
 export function isChatModel(model: string): boolean {
-  return !/(tts|image|embed|aqa|live|audio|veo|imagen|robotics|computer-use|learnlm|gemma)/i.test(model);
+  return !/(tts|image|embed|aqa|live|audio|veo|imagen|robotics|computer-use|learnlm|gemma|antigravity|research|nano-banana|codex|instruct)/i.test(model)
+    && !/^gemini-[12]\./.test(model);
 }
 
 function modelVersion(id: string): number {
@@ -58,7 +62,7 @@ function modelVersion(id: string): number {
  */
 export function rankGoogleModels(available: string[], kind: "chat" | "tts"): string[] {
   const wanted = available.filter((id) => kind === "tts"
-    ? /tts/i.test(id)
+    ? /tts/i.test(id) && !/^gemini-[12]\./.test(id)
     : isChatModel(id) && /flash/i.test(id) && !/thinking|exp/i.test(id) && !/^gemini-(1\.|2\.0)/.test(id));
   return wanted
     // Previews have small quotas, so stable models come first whatever their version.

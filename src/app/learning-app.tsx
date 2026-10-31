@@ -27,7 +27,7 @@ import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
 import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
 import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeaker, isOfflineClip, packFlag as voicePackFlag, packInstalled as voicePackInstalled, packMB as voicePackMB, removePack as removeVoicePack, synthesize, warmVoice, type PackId as VoicePackId } from "@/lib/offline-tts";
-import { keyEnabled, keyTier, MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, type Candidate, type ServiceId, type UsageSettings } from "@/lib/usage";
+import { keyEnabled, keyTier, MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, usesDefaultModels, type Candidate, type ServiceId, type UsageSettings } from "@/lib/usage";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
@@ -1446,7 +1446,7 @@ export default function Home() {
     const service: ServiceId = provider === "google" ? "gemini" : "openai";
     const candidatesAll = await chatModelCandidates(false, provider);
     // Only the models the learner allows (the first one stays if none is ticked).
-    const allowedModels = candidatesAll.filter((model) => modelAllowed(usageSettingsRef.current, service, "chat", model));
+    const allowedModels = candidatesAll.filter((model) => modelPermitted(usageSettingsRef.current, service, "chat", model));
     const models = allowedModels.length ? allowedModels : candidatesAll.slice(0, 1);
     const keys = apiKeys[provider].filter((entry) => keyEnabled(usageSettingsRef.current, entry.value));
     // The tutor's prompt and the recent conversation: about 3,000 tokens a turn.
@@ -2291,7 +2291,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       } catch {}
     }
     const googleModels = services.includes("gemini")
-      ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS, "gemini-2.5-flash-tts"])].filter((id) => !/gemini-3\.1/.test(id)))
+      ? ttsModelOrder([...new Set([...rankGoogleModels(await googleModelIds(), "tts"), ...GOOGLE_TTS_MODELS])].filter((id) => !/gemini-3\.1/.test(id)))
       : [];
     const candidates: Candidate[] = services.flatMap((service) => serviceKeys(service).flatMap((entry) =>
       (service === "gemini" ? googleModels : service === "openai" ? OPENAI_TTS_MODELS : [modelAllowed(usageSettings, "gcloud", "speech", "standard") ? "chirp3-hd" : "chirp3-hd-only"]).map((model) => ({ service, key: entry.value, model }))));
@@ -2918,25 +2918,60 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     setUsageSettings(next);
   }
 
+  /** Whether a model may be used; the main chat model the learner picked counts as allowed unless they untick it. */
+  function modelPermitted(settings: UsageSettings, service: ServiceId, kind: "chat" | "speech", model: string): boolean {
+    if (kind === "chat" && settings.allowed[`${service}|chat|${model}`] === undefined) {
+      const provider: AiProvider = service === "gemini" ? "google" : "openai";
+      if (model === (selectedModels[provider] || DEFAULT_MODELS[provider])) return true;
+    }
+    return modelAllowed(settings, service, kind, model);
+  }
+
+  /** The models shown for a service: the speech models, or the chat models loaded from its keys. */
+  function modelList(service: ServiceId, kind: "chat" | "speech") {
+    if (kind === "speech") return SPEECH_MODELS[service];
+    const provider = service === "gemini" ? "google" : "openai";
+    const loaded = modelCatalog[provider].filter((model) => isChatModel(model.id)).map((model) => ({ id: model.id, label: model.label, note: "" }));
+    const current = selectedModels[provider] || DEFAULT_MODELS[provider];
+    return loaded.length ? loaded : [{ id: current, label: current, note: "bấm “Kiểm tra” ở một key để tải đủ danh sách" }];
+  }
+
+  /** Changing one tick leaves "Mặc định": every model of the service is then written down as it is shown. */
   function setModelAllowed(service: ServiceId, kind: "chat" | "speech", model: string, value: boolean) {
-    updateUsageSettings((current) => ({ ...current, allowed: { ...current.allowed, [`${service}|${kind}|${model}`]: value } }));
+    updateUsageSettings((current) => {
+      const allowed = { ...current.allowed };
+      for (const which of ["speech", "chat"] as const) {
+        for (const item of modelList(service, which)) {
+          const key = `${service}|${which}|${item.id}`;
+          if (allowed[key] === undefined) allowed[key] = modelPermitted(current, service, which, item.id);
+        }
+      }
+      allowed[`${service}|${kind}|${model}`] = value;
+      return { ...current, allowed };
+    });
+  }
+
+  /** "Mặc định" on: forget the learner's ticks so the recommended models apply; off: keep today's ticks as their own. */
+  function setDefaultModels(service: ServiceId, value: boolean) {
+    updateUsageSettings((current) => {
+      const allowed = Object.fromEntries(Object.entries(current.allowed).filter(([key]) => !key.startsWith(`${service}|`)));
+      if (!value) {
+        for (const which of ["speech", "chat"] as const) {
+          for (const item of modelList(service, which)) allowed[`${service}|${which}|${item.id}`] = modelPermitted(current, service, which, item.id);
+        }
+      }
+      return { ...current, allowed };
+    });
   }
 
   /** Tick boxes: which models the app may use (and switch between) for a service. */
   function renderModelChecks(service: ServiceId, kind: "chat" | "speech") {
-    const list = kind === "speech"
-      ? SPEECH_MODELS[service]
-      : (() => {
-          const provider = service === "gemini" ? "google" : "openai";
-          const loaded = modelCatalog[provider].map((model) => ({ id: model.id, label: model.label, note: "" }));
-          const current = selectedModels[provider] || DEFAULT_MODELS[provider];
-          return loaded.length ? loaded : [{ id: current, label: current, note: "bấm “Kiểm tra” ở một key để tải đủ danh sách" }];
-        })();
+    const list = modelList(service, kind);
     return (
       <div className="model-checks">
         {list.map((model) => (
           <label key={model.id} className="model-check">
-            <input type="checkbox" checked={modelAllowed(usageSettings, service, kind, model.id)} onChange={(event) => setModelAllowed(service, kind, model.id, event.target.checked)} />
+            <input type="checkbox" checked={modelPermitted(usageSettings, service, kind, model.id)} onChange={(event) => setModelAllowed(service, kind, model.id, event.target.checked)} />
             <span>{model.label}{model.note && <small> — {model.note}</small>}</span>
           </label>
         ))}
@@ -3250,6 +3285,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               <details className="usage-prices">
                 <summary>Mô hình được phép dùng</summary>
                 <small className="settings-hint">Chỉ mô hình được tick mới được app chọn và tự chuyển qua lại; bỏ tick mô hình rẻ nhưng chưa đạt chất lượng.</small>
+                <label className="model-check model-check-default">
+                  <input type="checkbox" checked={usesDefaultModels(usageSettings, service)} onChange={(event) => setDefaultModels(service, event.target.checked)} />
+                  <span><strong>Mặc định</strong><small> — app tick sẵn các mô hình phù hợp (nhanh, giọng tự nhiên). Đổi một ô bên dưới là chuyển sang tự chọn.</small></span>
+                </label>
                 <span className="settings-label">Đọc</span>
                 {renderModelChecks(service, "speech")}
                 {service !== "gcloud" && (<><span className="settings-label">Trò chuyện</span>{renderModelChecks(service, "chat")}</>)}

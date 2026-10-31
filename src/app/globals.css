@@ -2839,6 +2839,7 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
 .model-check { display: flex; align-items: flex-start; gap: 8px; font-size: .875rem; }
 .model-check input { margin-top: 3px; }
 .model-check small { color: var(--muted); }
+.model-check-default { margin: 6px 0 2px; padding: 8px 10px; border-radius: 10px; background: #eef7f2; border: 1px solid #cfe6da; }
 .cap-choices { display: grid; gap: 8px; justify-items: stretch; width: 100%; max-width: 420px; margin: 6px auto 0; }
 .cap-choices small { text-align: center; color: var(--muted); }
 .usage-group { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: .8125rem; color: var(--muted); }
