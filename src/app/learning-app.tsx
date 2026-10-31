@@ -724,7 +724,17 @@ export default function Home() {
   const speechRunRef = useRef(0);
   const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null; load?: () => Promise<Blob | null>; profile?: VoiceProfile; line?: number }[]>([]);
   const [dialogueNames, setDialogueNames] = useState(true);
-  const [viTesting, setViTesting] = useState(false);
+  /** Counts taps on the Vietnamese voice choices: each tap reads a sample with the voice just chosen. */
+  const [viPreview, setViPreview] = useState(0);
+  useEffect(() => {
+    if (!viPreview) return;
+    stopSpeech();
+    setVoiceTestNotice("Đang phát thử giọng tiếng Việt...");
+    void playVietnamese(`Xin chào bạn! Tôi là gia sư ${LANG.viName} của bạn, chúc bạn học tập thật vui và tiến bộ mỗi ngày.`, true)
+      .then((used) => setVoiceTestNotice(used));
+    // Runs after the render that holds the new choice, so the sample uses it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viPreview]);
   /** The conversation line being read aloud, highlighted in the lesson. */
   const [speakingLine, setSpeakingLine] = useState<number | null>(null);
   const speechQueueRunningRef = useRef(false);
@@ -2755,9 +2765,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <span className="settings-label">Dùng giọng nào để đọc {name}?</span>
         <div className="voice-chips">
           {([["auto", "Tự động (khuyên dùng)"], ["pack", "Giọng trong app"], ["device", "Giọng của máy"]] as const).map(([value, label]) => (
-            <button key={value} type="button" className={source === value ? "voice-chip active" : "voice-chip"} onClick={() => updateSource(id, value)}>{label}</button>
+            <button key={value} type="button" className={source === value ? "voice-chip active" : "voice-chip"} onClick={() => { updateSource(id, value); setViPreview((count) => count + 1); }}>{label}</button>
           ))}
         </div>
+        {voiceTestNotice && <small className="settings-hint" role="status">{voiceTestNotice}</small>}
         <small className="settings-hint">Tự động: dùng giọng AI nếu bạn đã nhập API key, nếu không thì dùng giọng trong app, cuối cùng mới tới giọng của máy.</small>
         </>)}
         <small className="settings-hint">{id === "vi" ? "Giọng trong app: Piper (rhasspy) huấn luyện từ bộ dữ liệu VAIS-1000, giấy phép CC BY 4.0." : "Giọng trong app: Piper (rhasspy) huấn luyện từ bộ dữ liệu LibriTTS-R, giấy phép CC BY 4.0."}</small>
@@ -3768,25 +3779,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   <span>1.0x · Tiêu chuẩn</span>
                   <span>1.2x · Trong trẻo</span>
                 </div>
-              </div>
-
-              {/* Test button */}
-              <div style={{ marginTop: "14px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-                <button
-                  type="button"
-                  className="button button-outline"
-                  onClick={async () => {
-                    if (viTesting) { stopSpeech(); setViTesting(false); setVoiceTestNotice(""); return; }
-                    setViTesting(true);
-                    setVoiceTestNotice("Đang phát thử giọng tiếng Việt...");
-                    const used = await playVietnamese(`Xin chào bạn! Tôi là gia sư ${LANG.viName} của bạn, chúc bạn học tập thật vui và tiến bộ mỗi ngày.`, true);
-                    setViTesting(false);
-                    setVoiceTestNotice((current) => (current ? used : ""));
-                  }}
-                >
-                  {viTesting ? "■ Dừng phát" : "▶ Nghe thử giọng tiếng Việt"}
-                </button>
-                {voiceTestNotice && <span style={{ fontSize: "0.85rem", color: "var(--theme-text, #134e4a)" }}>{voiceTestNotice}</span>}
               </div>
 
               <div className="speech-device-tip-box" style={{ marginTop: "14px", padding: "10px 14px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "8px", fontSize: "0.84rem", color: "#475569", lineHeight: "1.5" }}>
