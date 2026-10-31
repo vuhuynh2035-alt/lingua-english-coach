@@ -274,11 +274,8 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   if (cost > 0 && spent + cost > cap + 1e-9) {
     return {
       ok: false, cost,
-      reason: tier === "free"
-        ? `${name} (key …${key.slice(-4)}) là key miễn phí và phần miễn phí đã hết`
-        : cap > 0
-        ? `${name} đã chạm trần chi phí ${cap} USD tháng này (tính chung mọi key)`
-        : `${name} có trần 0 USD: chỉ dùng phần miễn phí, và phần miễn phí đã hết`,
+      // No free capacity left and no money left under the cap (0 USD included): simply "used up".
+      reason: `${name} đã hết hạn mức sử dụng`,
       resetIn: untilNextMonth(), renews: "month",
     };
   }

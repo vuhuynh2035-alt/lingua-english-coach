@@ -2778,10 +2778,15 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     void Promise.resolve(start()).finally(() => setPreviewing((current) => (current === key && !speechQueueRunningRef.current ? null : current)));
   }
 
-  /** A service whose every use costs money (OpenAI, or only paid Gemini keys) cannot run under a 0 USD cap. */
-  function blockedByZeroCap(service: ServiceId): boolean {
-    if (usageSettings.caps[service] > 0 || service === "gcloud") return false;
-    return serviceKeys(service).every((entry) => keyTier(usageSettings, service, entry.value) === "paid");
+  /** True when no key of the service can read a sentence now because both its free part and its money cap are used up. */
+  function serviceUsedUp(service: ServiceId): boolean {
+    void usageTick;
+    const keys = serviceKeys(service);
+    const model = service === "openai" ? OPENAI_TTS_MODELS[0] : service === "gcloud" ? "chirp3-hd" : (ttsModelOrder([...GOOGLE_TTS_MODELS]).find((id) => modelAllowed(usageSettings, "gemini", "speech", id)) ?? GOOGLE_TTS_MODELS[0]);
+    return keys.length > 0 && keys.every((entry) => {
+      const state = checkUsage(usageSettings, service, entry.value, model, "speech", { chars: 200 });
+      return !state.ok && /hết hạn mức sử dụng/.test(state.reason ?? "");
+    });
   }
 
   /** Regional accents a service really offers: Cloud TTS only has its own locales (one accent each). */
@@ -2855,7 +2860,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               <div className="service-accents">
                 {services.map((service) => (
                   <div className={`service-accent${serviceKeys(service).length ? "" : " no-key"}`} key={service}>
-                    <label htmlFor={`accent-${service}`}>{SERVICE_NAMES[service]}{serviceKeys(service).length > 0 && blockedByZeroCap(service) && <small className="cap-warning"> · trần 0 USD nên chưa đọc được</small>}</label>
+                    <label htmlFor={`accent-${service}`}>{SERVICE_NAMES[service]}{serviceUsedUp(service) && <small className="cap-warning"> · đã hết hạn mức sử dụng</small>}</label>
                     {serviceKeys(service).length ? (
                       <select id={`accent-${service}`} className="settings-select" value={serviceAccent(service)}
                       onChange={(event) => { updateServiceAccent(service, event.target.value); stopSpeech(); setPreviewing(null); if (serviceKeys(service).length) previewService(service, event.target.value); }}>
@@ -2989,7 +2994,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           {!withKeys.length && <p className="settings-hint">Chưa có key nào. Thêm key ở mục Dịch vụ AI.</p>}
           {withKeys.map((service) => {
             const keys = serviceKeys(service);
-            const paidCap = keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid") ? usageSettings.caps[service] : 0;
+            const hasPaid = keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid");
+            // A paid key under a 0 USD cap has nothing left to spend: the gauge shows full.
+            const paidCap = hasPaid ? usageSettings.caps[service] : 0;
             const spent = spentThisMonth(service);
             const rows: { label: string; left: number; total: number; reset: string }[] = [];
             if (service === "gcloud") {
@@ -3013,7 +3020,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <div className="gauge-service-head"><strong>{SERVICE_NAMES[service]}</strong><small> · {keys.length} key</small></div>
                 <div className="gauge-row">
                   {rows.map((row) => <div key={row.label}>{gauge("left", row.total ? row.left / row.total : 0, `${Math.round((row.total ? row.left / row.total : 0) * 100)}%`, row.label, `còn ${row.left.toLocaleString("vi-VN")} / ${row.total.toLocaleString("vi-VN")}`, row.reset)}</div>)}
-                  <div>{gauge("money", paidCap > 0 ? spent / paidCap : 0, `$${spent < 10 ? spent.toFixed(2) : Math.round(spent)}`, "Tiền tháng này", paidCap > 0 ? `${spent.toFixed(3)} / ${paidCap} USD trần` : "Chưa có key tính phí: không mất tiền", "về 0 đầu tháng sau")}</div>
+                  <div>{gauge("money", !hasPaid ? 0 : paidCap > 0 ? Math.min(1, spent / paidCap) : 1, `$${spent < 10 ? spent.toFixed(2) : Math.round(spent)}`, "Tiền tháng này", !hasPaid ? "Chưa có key tính phí: không mất tiền" : spent + 1e-9 >= paidCap ? `Đã hết hạn mức: ${spent.toFixed(3)} / ${paidCap} USD trần` : `${spent.toFixed(3)} / ${paidCap} USD trần`, "về 0 đầu tháng sau")}</div>
                 </div>
               </div>
             );
@@ -3188,7 +3195,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: value } })); }} />
                 <span>USD · tháng này đã dùng {spentThisMonth(service).toFixed(3)} USD. Chạm trần thì app ngừng phần tính phí, vẫn dùng key miễn phí và phần miễn phí.</span>
               </div>
-              {keys.length > 0 && blockedByZeroCap(service) && <p className="voice-warning">⚠️ {service === "openai" ? "ChatGPT không có phần miễn phí" : "Mọi key của dịch vụ này đều trả phí"} và trần đang là 0 USD, nên app sẽ không dùng được dịch vụ này. Đặt trần lớn hơn 0 (ví dụ 2 USD) để dùng.</p>}
+              {serviceUsedUp(service) && <p className="voice-warning">⚠️ {SERVICE_NAMES[service]} đã hết hạn mức sử dụng. Muốn dùng tiếp, nâng trần chi phí ở ô trên.</p>}
 
               {keys.map((entry) => {
                 const tier = keyTier(usageSettings, service, entry.value);
