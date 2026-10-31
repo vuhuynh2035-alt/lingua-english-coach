@@ -2844,3 +2844,27 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
 .usage-group { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: .8125rem; color: var(--muted); }
 .usage-group .settings-select { width: auto; padding: 4px 8px; }
 .key-advice { display: block; font-size: .8125rem; padding: 8px 10px; border-radius: 10px; background: #eef6ff; color: #1d4f7a !important; line-height: 1.45; }
+
+/* ===== Settings, v2.17: accent per service, how services are chosen, services with their keys ===== */
+.settings-group { scroll-margin-top: 72px; }
+.service-accents { display: grid; gap: 8px; }
+.service-accent { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.service-accent label { font-weight: 700; font-size: .875rem; }
+.service-accent .settings-select { width: 100%; min-width: 0; }
+.service-accent .voice-chip { min-width: 44px; justify-content: center; }
+@media (max-width: 480px) { .service-accent { grid-template-columns: minmax(0, 1fr) auto; } .service-accent label { grid-column: 1 / -1; } }
+.auto-table { width: 100%; border-collapse: collapse; font-size: .9375rem; }
+.auto-table th, .auto-table td { padding: 8px 6px; border-bottom: 1px solid #e3ebe7; text-align: center; }
+.auto-table th:first-child, .auto-table td:first-child { text-align: left; font-weight: 700; }
+.auto-table input { width: 20px; height: 20px; }
+.manual-picks { display: grid; gap: 6px; }
+.manual-picks label, .manual-picks > span { font-weight: 700; font-size: .875rem; }
+.service-card { display: grid; gap: 10px; }
+.service-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.service-card-head h3 { margin: 0; font-size: 1.0625rem; }
+.service-card-head small { color: var(--muted); }
+.service-key { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--line, #d8e6e0); border-radius: 12px; background: var(--paper, #f6fbf8); }
+.service-key.off { opacity: .6; }
+.service-key-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.service-key-head strong { flex: 1 1 auto; min-width: 0; }
+.service-key-head .button { padding: 6px 12px; min-height: 0; font-size: .8125rem; }
