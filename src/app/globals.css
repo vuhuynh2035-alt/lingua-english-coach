@@ -2868,3 +2868,6 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
 .service-key-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .service-key-head strong { flex: 1 1 auto; min-width: 0; }
 .service-key-head .button { padding: 6px 12px; min-height: 0; font-size: .8125rem; }
+.service-accent.no-key label small { font-weight: 500; color: var(--muted); }
+.service-accent .voice-chip:disabled { opacity: .4; }
+.service-accent.no-key { opacity: .5; }

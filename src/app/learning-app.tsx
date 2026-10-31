@@ -2823,7 +2823,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
   function renderVoiceStudio() {
     const aiMode = voiceProfile.engine !== "device";
-    const services = (["gemini", "gcloud", "openai"] as const).filter((service) => serviceKeys(service).length > 0);
+    // Every service is listed, so its accent can be picked before a key is added.
+    const services = ["gemini", "gcloud", "openai"] as const;
     return (
       <section className="panel settings-panel voice-studio">
         <div className="settings-section-heading">
@@ -2844,22 +2845,28 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
         {aiMode ? (
           <>
-            {services.length ? (
+            {(
               <div className="service-accents">
                 {services.map((service) => (
-                  <div className="service-accent" key={service}>
+                  <div className={`service-accent${serviceKeys(service).length ? "" : " no-key"}`} key={service}>
                     <label htmlFor={`accent-${service}`}>{SERVICE_NAMES[service]}</label>
-                    <select id={`accent-${service}`} className="settings-select" value={serviceAccent(service)}
-                      onChange={(event) => { updateServiceAccent(service, event.target.value); stopSpeech(); setPreviewing(null); previewService(service, event.target.value); }}>
+                    {serviceKeys(service).length ? (
+                      <select id={`accent-${service}`} className="settings-select" value={serviceAccent(service)}
+                      onChange={(event) => { updateServiceAccent(service, event.target.value); stopSpeech(); setPreviewing(null); if (serviceKeys(service).length) previewService(service, event.target.value); }}>
                       {accentsFor(service).map((accent) => <option key={accent.id} value={accent.id}>{accent.flag} {accent.name}</option>)}
                     </select>
-                    <button type="button" className={`voice-chip${previewing === `service:${service}` ? " playing" : ""}`} aria-label={`Nghe ${SERVICE_NAMES[service]}`} onClick={() => previewService(service)}>
+                    ) : (
+                      <select id={`accent-${service}`} className="settings-select" disabled value="">
+                        <option value="">Chưa có key</option>
+                      </select>
+                    )}
+                    <button type="button" disabled={!serviceKeys(service).length} className={`voice-chip${previewing === `service:${service}` ? " playing" : ""}`} aria-label={`Nghe ${SERVICE_NAMES[service]}`} onClick={() => previewService(service)}>
                       {previewing === `service:${service}` ? "■" : "▶"}
                     </button>
                   </div>
                 ))}
               </div>
-            ) : <p className="voice-warning">Chưa có dịch vụ AI nào có key. Thêm key ở Cài đặt → Dịch vụ AI; trong lúc chờ, app đọc bằng giọng trên máy.</p>}
+            )}
             <small className="settings-hint">Dùng dịch vụ nào để đọc là do mục <b>Chi phí AI</b> quyết định (Tự động hoặc Tự chọn). Google Cloud TTS chỉ có các vùng nó hỗ trợ thật.</small>
           </>
         ) : (
