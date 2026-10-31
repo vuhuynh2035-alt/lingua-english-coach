@@ -49,7 +49,6 @@ export const SPEECH_MODELS: Record<ServiceId, { id: string; label: string; note:
   gemini: [
     { id: "gemini-3.8-flash-tts", label: "3.8 Flash TTS", note: "tự nhiên nhất" },
     { id: "gemini-3.8-flash-lite-tts", label: "3.8 Flash-Lite TTS", note: "rẻ hơn khoảng 1/3" },
-    { id: "gemini-2.5-flash-tts", label: "2.5 Flash TTS", note: "đời cũ" },
   ],
   openai: [
     { id: "gpt-4o-mini-tts", label: "gpt-4o-mini-tts", note: "tự nhiên, theo chỉ dẫn giọng" },
@@ -61,8 +60,12 @@ export const SPEECH_MODELS: Record<ServiceId, { id: string; label: string; note:
   ],
 };
 
-function allowedByDefault(service: ServiceId, kind: UsageKind, model: string): boolean {
-  if (kind === "chat") return true;
+/** The models the app recommends ("Mặc định"): fast, current chat models and the natural-sounding speech models. */
+export function allowedByDefault(service: ServiceId, kind: UsageKind, model: string): boolean {
+  if (kind === "chat") {
+    if (service === "gemini") return /flash/i.test(model) && !/thinking|exp/i.test(model);
+    return /^gpt-[\d.o]+-mini$/.test(model);
+  }
   if (service === "gemini") return /gemini-3\.8/.test(model);
   if (service === "openai") return model === "gpt-4o-mini-tts";
   return true;
@@ -70,6 +73,11 @@ function allowedByDefault(service: ServiceId, kind: UsageKind, model: string): b
 
 export function isAllowed(settings: UsageSettings, service: ServiceId, kind: UsageKind, model: string): boolean {
   return settings.allowed[`${service}|${kind}|${model}`] ?? allowedByDefault(service, kind, model);
+}
+
+/** True while a service follows the recommended models ("Mặc định"), i.e. the learner has changed no tick. */
+export function usesDefaultModels(settings: UsageSettings, service: ServiceId): boolean {
+  return !Object.keys(settings.allowed).some((key) => key.startsWith(`${service}|`));
 }
 
 /** Prices as published in October 2026 (USD per 1M tokens, per minute, or per 1M characters). */

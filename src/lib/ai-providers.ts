@@ -36,7 +36,7 @@ export async function fetchAiModels(provider: AiProvider, apiKey: string): Promi
           !item.supportedGenerationMethods.includes("generateContent")) return [];
       const id = item.name.replace(/^models\//, "");
       // Retired generations are hidden even when an old key still lists them.
-      if (!isChatModel(id) || /^gemini-(1\.|2\.0)/.test(id)) return [];
+      if (!isChatModel(id)) return [];
       return [{ id, label: typeof item.displayName === "string" ? item.displayName : id }];
     });
     if (!models.length) throw new Error("API key Google không có mô hình hỗ trợ tạo nội dung.");
@@ -51,7 +51,8 @@ export async function fetchAiModels(provider: AiProvider, apiKey: string): Promi
   const models = result.data.flatMap((item): AiModel[] => {
     if (!isRecord(item) || typeof item.id !== "string") return [];
     const id = item.id;
-    if (!/^(gpt-|o[134](?:-|$))/.test(id) ||
+    // Dated snapshots (gpt-4o-2024-08-06…) repeat their alias; old and special-purpose models do not suit a tutor.
+    if (!/^(gpt-|o[134](?:-|$))/.test(id) || !isChatModel(id) || /\d{4}-\d{2}-\d{2}|gpt-3\.5|gpt-4-|^gpt-4$/.test(id) ||
         /(audio|transcri|tts|embedding|moderation|realtime|search|image|video)/i.test(id)) return [];
     return [{ id, label: id }];
   });
