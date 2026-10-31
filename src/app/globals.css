@@ -2871,3 +2871,4 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
 .service-accent.no-key label small { font-weight: 500; color: var(--muted); }
 .service-accent .voice-chip:disabled { opacity: .4; }
 .service-accent.no-key { opacity: .5; }
+.cap-warning { color: #b42318; font-weight: 600; }

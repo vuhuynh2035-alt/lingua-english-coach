@@ -2778,6 +2778,12 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     void Promise.resolve(start()).finally(() => setPreviewing((current) => (current === key && !speechQueueRunningRef.current ? null : current)));
   }
 
+  /** A service whose every use costs money (OpenAI, or only paid Gemini keys) cannot run under a 0 USD cap. */
+  function blockedByZeroCap(service: ServiceId): boolean {
+    if (usageSettings.caps[service] > 0 || service === "gcloud") return false;
+    return serviceKeys(service).every((entry) => keyTier(usageSettings, service, entry.value) === "paid");
+  }
+
   /** Regional accents a service really offers: Cloud TTS only has its own locales (one accent each). */
   function accentsFor(service: ServiceId) {
     if (service !== "gcloud") return ACCENTS;
@@ -2849,7 +2855,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               <div className="service-accents">
                 {services.map((service) => (
                   <div className={`service-accent${serviceKeys(service).length ? "" : " no-key"}`} key={service}>
-                    <label htmlFor={`accent-${service}`}>{SERVICE_NAMES[service]}</label>
+                    <label htmlFor={`accent-${service}`}>{SERVICE_NAMES[service]}{serviceKeys(service).length > 0 && blockedByZeroCap(service) && <small className="cap-warning"> · trần 0 USD nên chưa đọc được</small>}</label>
                     {serviceKeys(service).length ? (
                       <select id={`accent-${service}`} className="settings-select" value={serviceAccent(service)}
                       onChange={(event) => { updateServiceAccent(service, event.target.value); stopSpeech(); setPreviewing(null); if (serviceKeys(service).length) previewService(service, event.target.value); }}>
@@ -3182,6 +3188,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: value } })); }} />
                 <span>USD · tháng này đã dùng {spentThisMonth(service).toFixed(3)} USD. Chạm trần thì app ngừng phần tính phí, vẫn dùng key miễn phí và phần miễn phí.</span>
               </div>
+              {keys.length > 0 && blockedByZeroCap(service) && <p className="voice-warning">⚠️ {service === "openai" ? "ChatGPT không có phần miễn phí" : "Mọi key của dịch vụ này đều trả phí"} và trần đang là 0 USD, nên app sẽ không dùng được dịch vụ này. Đặt trần lớn hơn 0 (ví dụ 2 USD) để dùng.</p>}
 
               {keys.map((entry) => {
                 const tier = keyTier(usageSettings, service, entry.value);
