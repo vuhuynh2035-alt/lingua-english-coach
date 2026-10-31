@@ -27,7 +27,7 @@ import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
 import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
 import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeaker, isOfflineClip, packFlag as voicePackFlag, packInstalled as voicePackInstalled, packMB as voicePackMB, removePack as removeVoicePack, synthesize, warmVoice, type PackId as VoicePackId } from "@/lib/offline-tts";
-import { keyCap, keyEnabled, keyTier, MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, type Candidate, type ServiceId, type UsageSettings } from "@/lib/usage";
+import { keyEnabled, keyTier, MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, type Candidate, type ServiceId, type UsageSettings } from "@/lib/usage";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
@@ -2932,7 +2932,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <small>Gia sư đã dừng ở hạn mức bạn đặt. Bạn muốn làm gì?</small>
         {paidKeys.length > 0 && (
           <button type="button" className="button button-primary" onClick={() => {
-            updateUsageSettings((current) => ({ ...current, keyCaps: { ...current.keyCaps, ...Object.fromEntries(paidKeys.map((entry) => [keyTag(entry.value), Math.round((keyCap(current, service, entry.value) + 2) * 100) / 100])) } }));
+            updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: Math.round((current.caps[service] + 2) * 100) / 100 } }));
             again();
           }}>Nâng trần {SERVICE_NAMES[service]} thêm 2 USD và học tiếp</button>
         )}
@@ -2976,7 +2976,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           {!withKeys.length && <p className="settings-hint">Chưa có key nào. Thêm key ở mục Dịch vụ AI.</p>}
           {withKeys.map((service) => {
             const keys = serviceKeys(service);
-            const paidCap = keys.filter((entry) => keyTier(usageSettings, service, entry.value) === "paid").reduce((sum, entry) => sum + keyCap(usageSettings, service, entry.value), 0);
+            const paidCap = keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid") ? usageSettings.caps[service] : 0;
             const spent = spentThisMonth(service);
             const rows: { label: string; left: number; total: number; reset: string }[] = [];
             if (service === "gcloud") {
@@ -3169,12 +3169,17 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             <section className="panel settings-panel service-card" key={service}>
               <div className="service-card-head"><h3>{info[service].title}</h3><small>{keys.length}/{MAX_KEYS} key</small></div>
               <small className="settings-hint key-advice">ℹ️ {keyAdvice(service)}</small>
+              <div className="usage-cap">
+                <span>Trần chi phí mỗi tháng (tổng mọi key, cả đọc lẫn trò chuyện)</span>
+                <input type="number" min="0" step="0.5" className="settings-input" value={usageSettings.caps[service]}
+                  onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: value } })); }} />
+                <span>USD · tháng này đã dùng {spentThisMonth(service).toFixed(3)} USD. Chạm trần thì app ngừng phần tính phí, vẫn dùng key miễn phí và phần miễn phí.</span>
+              </div>
 
               {keys.map((entry) => {
                 const tier = keyTier(usageSettings, service, entry.value);
                 const tag = keyTag(entry.value);
                 const message = keyMessages[entry.id];
-                const spent = keyReport(usageSettings, service, entry.value, []).spent;
                 return (
                   <div className={`service-key${keyEnabled(usageSettings, entry.value) ? "" : " off"}`} key={entry.id}>
                     <div className="service-key-head">
@@ -3185,15 +3190,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                     <label className="model-check"><input type="checkbox" checked={keyEnabled(usageSettings, entry.value)} onChange={(event) => updateUsageSettings((current) => ({ ...current, disabled: { ...current.disabled, [tag]: !event.target.checked } }))} /> <span>Đang dùng key này</span></label>
                     {service !== "openai" && (
                       <label className="model-check"><input type="checkbox" checked={tier === "paid"} onChange={(event) => updateUsageSettings((current) => ({ ...current, tiers: { ...current.tiers, [tag]: event.target.checked ? "paid" : "free" } }))} />
-                        <span>{service === "gemini" ? "Key tính phí (đã gắn thanh toán)" : "Cho phép dùng vượt phần miễn phí (tính phí)"}</span></label>
-                    )}
-                    {tier === "paid" && (
-                      <div className="usage-cap">
-                        <span>Trần mỗi tháng</span>
-                        <input type="number" min="0" step="0.5" className="settings-input" value={keyCap(usageSettings, service, entry.value)}
-                          onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, keyCaps: { ...current.keyCaps, [tag]: value } })); }} />
-                        <span>USD · đã dùng {spent.toFixed(3)} USD</span>
-                      </div>
+                        <span>{service === "gemini" ? "Key trả phí (đã gắn thanh toán) — bỏ tick nếu là key miễn phí" : "Key trả phí: cho phép dùng vượt phần miễn phí"}</span></label>
                     )}
                     {message && <small className={message.ok ? "api-key-success" : "error-message"}>{message.text}</small>}
                   </div>
