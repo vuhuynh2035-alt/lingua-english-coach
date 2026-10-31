@@ -20,11 +20,17 @@ export type Prices = {
 };
 
 export type UsageSettings = {
-  /** Voice: "auto" balances every enabled service; "manual" uses the one picked in the voice settings. */
+  /** "auto": the app picks the service for chat and for speech; "manual": the learner's picks are kept. */
   mode: "manual" | "auto";
+  /** Services the Auto mode may use for speech / for chat. */
   enabled: Record<ServiceId, boolean>;
-  /** Monthly spending cap per service, USD (0 = only what is free). */
+  enabledChat: Record<ServiceId, boolean>;
+  /** Older per-service caps; a key without its own cap starts from these. */
   caps: Record<ServiceId, number>;
+  /** Monthly spending cap per key (by its last characters), USD. */
+  keyCaps: Record<string, number>;
+  /** Keys switched off for now (by their last characters). */
+  disabled: Record<string, boolean>;
   prices: Prices;
   /** Gemini key tier, by the key's last characters. */
   tiers: Record<string, KeyTier>;
@@ -76,7 +82,10 @@ export const DEFAULT_PRICES: Prices = {
 export const DEFAULT_SETTINGS: UsageSettings = {
   mode: "manual",
   enabled: { gemini: true, openai: false, gcloud: true },
+  enabledChat: { gemini: true, openai: false, gcloud: false },
   caps: { gemini: 5, openai: 0, gcloud: 0 },
+  keyCaps: {},
+  disabled: {},
   prices: DEFAULT_PRICES,
   tiers: {},
   groups: {},
@@ -99,6 +108,19 @@ export function groupTag(settings: UsageSettings, service: ServiceId, key: strin
   return `${service}:${settings.groups[keyTag(key)] ?? keyTag(key)}`;
 }
 
+/** A key's monthly cap: its own, else the service's older cap. */
+export function keyCap(settings: UsageSettings, service: ServiceId, key: string): number {
+  return settings.keyCaps[keyTag(key)] ?? settings.caps[service];
+}
+
+/** Gemini keys may be free or paid; OpenAI keys are always paid; a Cloud TTS key is "paid" when it may go beyond the free characters. */
+export function keyTier(settings: UsageSettings, service: ServiceId, key: string): KeyTier {
+  if (service === "openai") return "paid";
+  return settings.tiers[keyTag(key)] ?? (service === "gcloud" ? "free" : "paid");
+}
+
+export const keyEnabled = (settings: UsageSettings, key: string) => !settings.disabled[keyTag(key)];
+
 /** At most this many keys per service. */
 export const MAX_KEYS = 3;
 
@@ -110,7 +132,10 @@ export function loadSettings(): UsageSettings {
     return {
       mode: stored.mode === "auto" ? "auto" : "manual",
       enabled: { ...DEFAULT_SETTINGS.enabled, ...stored.enabled },
+      enabledChat: { ...DEFAULT_SETTINGS.enabledChat, ...stored.enabledChat },
       caps: { ...DEFAULT_SETTINGS.caps, ...stored.caps },
+      keyCaps: { ...stored.keyCaps },
+      disabled: { ...stored.disabled },
       prices: {
         gemini: { ...DEFAULT_PRICES.gemini, ...stored.prices?.gemini },
         openai: { ...DEFAULT_PRICES.openai, ...stored.prices?.openai },
@@ -160,7 +185,7 @@ type KeyLedger = {
   monthChars: number;
   month: string;
 };
-type Ledger = { month: string; spent: Record<ServiceId, number>; keys: Record<string, KeyLedger> };
+type Ledger = { month: string; spent: Record<ServiceId, number>; byKey?: Record<string, number>; keys: Record<string, KeyLedger> };
 
 let ledger: Ledger | null = null;
 /** Request start times in the last minute per key|model (memory only: a minute is short). */
@@ -173,7 +198,8 @@ function load(): Ledger {
   if (!ledger) {
     try { ledger = JSON.parse(localStorage.getItem(LEDGER_KEY) ?? "null") as Ledger | null; } catch { ledger = null; }
   }
-  if (!ledger || ledger.month !== month) ledger = { month, spent: { gemini: 0, openai: 0, gcloud: 0 }, keys: ledger?.keys ?? {} };
+  if (!ledger || ledger.month !== month) ledger = { month, spent: { gemini: 0, openai: 0, gcloud: 0 }, byKey: {}, keys: ledger?.keys ?? {} };
+  ledger.byKey ??= {};
   return ledger;
 }
 
@@ -228,8 +254,9 @@ export type Check = { ok: boolean; cost: number; reason?: string; resetIn?: numb
 export function check(settings: UsageSettings, service: ServiceId, key: string, model: string, kind: UsageKind, amount: Amount): Check {
   const tag = keyTag(key);
   const group = groupTag(settings, service, key);
-  const tier = settings.tiers[tag] ?? "paid";
+  const tier = keyTier(settings, service, key);
   const name = SERVICE_NAMES[service];
+  if (settings.disabled[tag]) return { ok: false, cost: 0, reason: `Key …${key.slice(-4)} đang tắt`, renews: "never" };
   const blocked = blockedUntil[tag];
   if (blocked && blocked.until > Date.now()) return { ok: false, cost: 0, reason: blocked.reason, resetIn: blocked.until - Date.now(), renews: "never" };
   const entry = keyLedger(group);
@@ -245,13 +272,14 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   if (recent.length >= safe(rpm)) {
     return { ok: false, cost, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
   }
-  const spent = load().spent[service];
-  if (cost > 0 && spent + cost > settings.caps[service] + 1e-9) {
+  const spent = load().byKey?.[tag] ?? 0;
+  const cap = tier === "free" ? 0 : keyCap(settings, service, key);
+  if (cost > 0 && spent + cost > cap + 1e-9) {
     return {
       ok: false, cost,
-      reason: settings.caps[service] > 0
-        ? `${name} đã chạm trần chi phí ${settings.caps[service]} USD tháng này`
-        : `${name} chỉ được dùng phần miễn phí (trần 0 USD) và phần miễn phí đã hết`,
+      reason: cap > 0
+        ? `${name} (key …${key.slice(-4)}) đã chạm trần chi phí ${cap} USD tháng này`
+        : `${name} (key …${key.slice(-4)}) chỉ dùng phần miễn phí và phần miễn phí đã hết`,
       resetIn: untilNextMonth(), renews: "month",
     };
   }
@@ -267,10 +295,12 @@ export function reserve(settings: UsageSettings, service: ServiceId, key: string
 
 /** A request worked: counts and money are added to the ledger. */
 export function record(settings: UsageSettings, service: ServiceId, key: string, model: string, kind: UsageKind, amount: Amount) {
-  const tier = settings.tiers[keyTag(key)] ?? "paid";
+  const tier = keyTier(settings, service, key);
   const group = groupTag(settings, service, key);
   const cost = estimateCost(settings, service, tier, kind, model, amount, group);
   const entry = keyLedger(group);
+  const book = load();
+  book.byKey = { ...book.byKey, [keyTag(key)]: (book.byKey?.[keyTag(key)] ?? 0) + cost };
   const bucket = `${kind}:${model}`;
   entry.dayCount[bucket] = (entry.dayCount[bucket] ?? 0) + 1;
   if (service === "gcloud") entry.monthChars += amount.chars ?? 0;
@@ -293,10 +323,11 @@ export function spentThisMonth(service: ServiceId): number {
 }
 
 export function keyReport(settings: UsageSettings, service: ServiceId, key: string, models: { model: string; kind: UsageKind }[]) {
-  const tier = settings.tiers[keyTag(key)] ?? "paid";
+  const tier = keyTier(settings, service, key);
   const entry = keyLedger(groupTag(settings, service, key));
   return {
     tier,
+    spent: load().byKey?.[keyTag(key)] ?? 0,
     monthChars: entry.monthChars,
     rows: models.map(({ model, kind }) => {
       const { rpd } = limitsFor(service, tier, kind);
