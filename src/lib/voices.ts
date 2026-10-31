@@ -380,7 +380,8 @@ export function pickDeviceVoice(voices: SpeechSynthesisVoice[], profile: VoicePr
   const chosen = standard ? undefined : voices.find((v) => v.voiceURI === profile.deviceVoice);
   const accentVoices = deviceVoicesForAccent(voices, standard ? LANG.accents[0].id : profile.accent);
   const pool = accentVoices.length ? accentVoices : voices.filter((v) => v.lang.toLowerCase().startsWith(LANG.langPrefix));
-  const score = (voice: SpeechSynthesisVoice) => voiceQuality(voice) * 2 + (!standard && guessDeviceVoiceGender(voice) === profile.gender ? 5 : 0);
+  // The fallback voice ("standard") still follows the tutor: a male tutor never falls back to a woman's voice.
+  const score = (voice: SpeechSynthesisVoice) => voiceQuality(voice) * 2 + (guessDeviceVoiceGender(voice) === profile.gender ? (standard ? 3 : 5) : 0);
   const best = [...pool].sort((a, b) => score(b) - score(a))[0];
   const voice = chosen ?? best;
   const actual = voice ? guessDeviceVoiceGender(voice) : "unknown";
