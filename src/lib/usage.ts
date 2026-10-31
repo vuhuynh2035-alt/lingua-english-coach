@@ -25,9 +25,9 @@ export type UsageSettings = {
   /** Services the Auto mode may use for speech / for chat. */
   enabled: Record<ServiceId, boolean>;
   enabledChat: Record<ServiceId, boolean>;
-  /** Older per-service caps; a key without its own cap starts from these. */
+  /** Monthly spending cap per service (every key, chat and speech together), USD; 0 = only free use. */
   caps: Record<ServiceId, number>;
-  /** Monthly spending cap per key (by its last characters), USD. */
+  /** Unused since 2.17.1 (caps are per service again); kept so older settings still load. */
   keyCaps: Record<string, number>;
   /** Keys switched off for now (by their last characters). */
   disabled: Record<string, boolean>;
@@ -106,11 +106,6 @@ export const keyTag = (key: string) => key.slice(-12);
 /** The counters a key uses: its group's (same project / billing account / organization) or its own. */
 export function groupTag(settings: UsageSettings, service: ServiceId, key: string): string {
   return `${service}:${settings.groups[keyTag(key)] ?? keyTag(key)}`;
-}
-
-/** A key's monthly cap: its own, else the service's older cap. */
-export function keyCap(settings: UsageSettings, service: ServiceId, key: string): number {
-  return settings.keyCaps[keyTag(key)] ?? settings.caps[service];
 }
 
 /** Gemini keys may be free or paid; OpenAI keys are always paid; a Cloud TTS key is "paid" when it may go beyond the free characters. */
@@ -272,14 +267,18 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   if (recent.length >= safe(rpm)) {
     return { ok: false, cost, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
   }
-  const spent = load().byKey?.[tag] ?? 0;
-  const cap = tier === "free" ? 0 : keyCap(settings, service, key);
+  // The money cap belongs to the whole service (every key, chat and speech together). Once it is
+  // reached only free use goes on: free keys, and the free part of paid keys.
+  const spent = load().spent[service];
+  const cap = tier === "free" ? 0 : settings.caps[service];
   if (cost > 0 && spent + cost > cap + 1e-9) {
     return {
       ok: false, cost,
-      reason: cap > 0
-        ? `${name} (key …${key.slice(-4)}) đã chạm trần chi phí ${cap} USD tháng này`
-        : `${name} (key …${key.slice(-4)}) chỉ dùng phần miễn phí và phần miễn phí đã hết`,
+      reason: tier === "free"
+        ? `${name} (key …${key.slice(-4)}) là key miễn phí và phần miễn phí đã hết`
+        : cap > 0
+        ? `${name} đã chạm trần chi phí ${cap} USD tháng này (tính chung mọi key)`
+        : `${name} có trần 0 USD: chỉ dùng phần miễn phí, và phần miễn phí đã hết`,
       resetIn: untilNextMonth(), renews: "month",
     };
   }
