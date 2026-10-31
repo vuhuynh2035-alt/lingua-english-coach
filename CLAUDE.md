@@ -20,7 +20,7 @@
 ## Đưa lên GitHub Pages
 1. Xuất bản đã commit sang thư mục tạm: `git archive HEAD | tar -x -C <tmp>`; `npm ci`.
 2. Build với đường dẫn gốc: `powershell -File scripts\publish-pages.ps1 -BasePath "/lingua-english-coach"` (gõ trong **PowerShell**, Git Bash làm hỏng `/lingua-...`). Dừng máy chủ thử ở cổng 4830 trước khi build.
-3. Clone kho, `git pull`, xóa rồi chép lại `docs public src scripts`, và các tệp `README.md eslint.config.mjs next-env.d.ts next.config.ts package-lock.json package.json tsconfig.json`; commit; `git push origin HEAD:main`.
+3. Clone kho, `git pull`, xóa rồi chép lại `docs` (lấy từ thư mục build tạm — trang chạy thật phục vụ thư mục này; `C:\Teacher AI` không có `docs`), `public src scripts` (từ `C:\Teacher AI`), và các tệp `README.md eslint.config.mjs next-env.d.ts next.config.ts package-lock.json package.json tsconfig.json`; commit; `git push origin HEAD:main`.
 4. Chờ ~90 giây, kiểm tra `version.json` trên trang chạy thật.
 
 ## Kiến trúc cần nhớ
