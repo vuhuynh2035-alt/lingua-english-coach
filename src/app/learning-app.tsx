@@ -724,17 +724,6 @@ export default function Home() {
   const speechRunRef = useRef(0);
   const speechQueueRef = useRef<{ text: string; lang: "vi" | "en"; clip: Promise<Blob | null> | null; load?: () => Promise<Blob | null>; profile?: VoiceProfile; line?: number }[]>([]);
   const [dialogueNames, setDialogueNames] = useState(true);
-  /** Counts taps on the Vietnamese voice choices: each tap reads a sample with the voice just chosen. */
-  const [viPreview, setViPreview] = useState(0);
-  useEffect(() => {
-    if (!viPreview) return;
-    stopSpeech();
-    setVoiceTestNotice("Đang phát thử giọng tiếng Việt...");
-    void playVietnamese(`Xin chào bạn! Tôi là gia sư ${LANG.viName} của bạn, chúc bạn học tập thật vui và tiến bộ mỗi ngày.`, true)
-      .then((used) => setVoiceTestNotice(used));
-    // Runs after the render that holds the new choice, so the sample uses it.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viPreview]);
   /** The conversation line being read aloud, highlighted in the lesson. */
   const [speakingLine, setSpeakingLine] = useState<number | null>(null);
   const speechQueueRunningRef = useRef(false);
@@ -1463,7 +1452,15 @@ export default function Home() {
         // Counted on the device first: a key at its limit or over the money cap is skipped (the next key is tried).
         const state = checkUsage(usageSettingsRef.current, service, key, model, "chat", { inTokens, outTokens: 700 });
         if (!state.ok) {
-          const refusal = new AiError("quota", `${state.reason}${state.resetIn ? `; dùng lại sau khoảng ${inWords(state.resetIn)}` : ""}. Muốn dùng tiếp ngay, hãy nâng trần trong Cài đặt → Dịch vụ AI.`, 429);
+          const freeTierHint = state.cost > 0 && usageSettingsRef.current.caps[service] === 0
+            ? service === "gemini"
+              ? " Key Gemini này đang đặt Paid nên không có quota token miễn phí; nếu dự án chưa bật thanh toán, hãy chọn gói Free ở Cài đặt → Dịch vụ AI."
+              : " OpenAI API không có gói Free; hãy bật Gemini Free hoặc tăng trần nếu muốn tiếp tục."
+            : "";
+          const routingHint = usageSettingsRef.current.mode === "manual"
+            ? " Muốn app tự chuyển nhà cung cấp khi hết quota, chọn Tự động trong Cài đặt → Chi phí AI và bật dịch vụ dự phòng."
+            : "";
+          const refusal = new AiError("quota", `${state.reason ?? "Dịch vụ đã hết hạn mức"}${state.resetIn ? `; dùng lại sau khoảng ${inWords(state.resetIn)}` : ""}.${freeTierHint}${routingHint}`, 429);
           refusal.detail = "local usage limit";
           throw refusal;
         }
@@ -2155,12 +2152,12 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   /** Audio for one Vietnamese sentence: AI voice (with a key), else the voice built into the app, else null (the phone's voice). */
-  async function vietnameseClip(text: string): Promise<Blob | null> {
+  async function vietnameseClip(text: string, source: "auto" | "pack" | "device" = viSource): Promise<Blob | null> {
     const clean = cleanSpeechText(text);
-    if (!clean || viSource === "device") return null;
+    if (!clean || source === "device") return null;
     // Vietnamese uses the AI provider chosen in the AI settings, even when English is set to the device voice.
     const engine = voiceProfile.engine !== "device" ? voiceProfile.engine : aiProvider;
-    if (viSource === "auto" && voiceKeys(engine).length) {
+    if (source === "auto" && voiceKeys(engine).length) {
       try {
         const cloud = await englishAudio(clean, { ...voiceProfile, engine, childlike: false }, "vi");
         if (cloud) return cloud;
@@ -2168,18 +2165,24 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         viFallbackRef.current = error instanceof Error ? error.message : "lỗi không xác định";
       }
     }
-    return packReadyRef.current.vi ? synthesize("vi", clean, { speed: viSpeechRate * PACK_PACE }) : null;
+    if (!packReadyRef.current.vi) return null;
+    try {
+      return await synthesize("vi", clean, { speed: viSpeechRate * PACK_PACE });
+    } catch (error) {
+      viFallbackRef.current = error instanceof Error ? error.message : "không chạy được giọng trong app";
+      return null;
+    }
   }
 
   /** Speaks Vietnamese outside the reading queue (tests, dictionary); call it straight from a tap. */
-  async function playVietnamese(text: string, fresh = false): Promise<string> {
+  async function playVietnamese(text: string, fresh = false, source: "auto" | "pack" | "device" = viSource): Promise<string> {
     unlockSpeechPlayer();
     const run = speechRunRef.current;
     const clean = cleanSpeechText(text);
     if (!clean) return "";
     if (fresh) cloudSpeechPauseRef.current = { google: { until: 0, reason: "" }, openai: { until: 0, reason: "" }, gcloud: { until: 0, reason: "" } };
     viFallbackRef.current = "";
-    const clip = await vietnameseClip(clean);
+    const clip = await vietnameseClip(clean, source);
     if (speechRunRef.current !== run) return "";
     const why = viFallbackRef.current;
     if (clip) {
@@ -2188,10 +2191,25 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         return isOfflineClip(clip)
           ? `🔊 Vừa phát bằng giọng tiếng Việt trong app${why ? ` (giọng AI chưa dùng được: ${why})` : ""}.`
           : "🔊 Vừa phát bằng giọng AI.";
-      } catch {}
+      } catch (error) {
+        viFallbackRef.current = error instanceof Error ? error.message : "trình duyệt không phát được âm thanh";
+      }
     }
     await playNativeUtterance(clean, "vi");
-    return `🔊 Vừa phát bằng giọng của máy${why ? ` (giọng AI chưa dùng được: ${why})` : ""}.`;
+    return `🔊 Vừa phát bằng giọng của máy${viFallbackRef.current ? ` (giọng đã chọn không dùng được: ${viFallbackRef.current})` : ""}.`;
+  }
+
+  function previewVietnameseSource(source: "auto" | "pack" | "device") {
+    stopSpeech();
+    updateSource("vi", source);
+    setVoiceTestNotice("Đang phát thử giọng tiếng Việt...");
+    void playVietnamese(
+      `Xin chào bạn! Tôi là gia sư ${LANG.viName} của bạn, chúc bạn học tập thật vui và tiến bộ mỗi ngày.`,
+      true,
+      source,
+    )
+      .then(setVoiceTestNotice)
+      .catch((error: unknown) => setVoiceTestNotice(error instanceof Error ? error.message : "Không phát được giọng tiếng Việt."));
   }
 
   /** Which of the built-in English speakers a voice profile maps to (dialogue casts use the other slots). */
@@ -2220,9 +2238,14 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       }
     }
     if (enSource !== "device" && packReadyRef.current.en) {
-      const sid = main ? await packSpeaker(serviceVoices.pack[voiceSlot(profile)]) : await offlineEnglishSpeaker(profile);
-      setVoiceServiceLabel("Giọng tiếng Anh trong app");
-      return synthesize("en", text, { sid, speed: Math.min(1.2, Math.max(0.7, profile.speed)) * PACK_PACE });
+      try {
+        const sid = main ? await packSpeaker(serviceVoices.pack[voiceSlot(profile)]) : await offlineEnglishSpeaker(profile);
+        const clip = await synthesize("en", text, { sid, speed: Math.min(1.2, Math.max(0.7, profile.speed)) * PACK_PACE });
+        if (clip) setVoiceServiceLabel("Giọng tiếng Anh trong app");
+        return clip;
+      } catch (error) {
+        speechFallbackRef.current = error instanceof Error ? error.message : "không chạy được giọng tiếng Anh trong app";
+      }
     }
     return null;
   }
@@ -2512,6 +2535,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               : `⚠️ ${label} chưa dùng được (${shortReason(reason)}), nên vừa phát tạm bằng giọng tiếng Anh trong app.`
             : usedCloud && !reason
             ? `🔊 Vừa phát bằng ${label}.`
+            : profile.engine === "device" && reason
+            ? `⚠️ Giọng trong app chưa chạy được (${shortReason(reason)}), nên đã chuyển sang giọng trên máy${deviceName ? `: ${deviceName}` : ""}.`
             : profile.engine === "device"
             ? `🔊 Vừa phát bằng giọng trên máy${deviceName ? `: ${deviceName}` : ""}.`
             : `⚠️ ${label} chưa dùng được (${shortReason(reason)}), nên vừa phát bằng giọng trên máy${deviceName ? ` (${deviceName})` : ""}.`);
@@ -2765,7 +2790,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <span className="settings-label">Dùng giọng nào để đọc {name}?</span>
         <div className="voice-chips">
           {([["auto", "Tự động (khuyên dùng)"], ["pack", "Giọng trong app"], ["device", "Giọng của máy"]] as const).map(([value, label]) => (
-            <button key={value} type="button" className={source === value ? "voice-chip active" : "voice-chip"} onClick={() => { updateSource(id, value); setViPreview((count) => count + 1); }}>{label}</button>
+            <button key={value} type="button" className={source === value ? "voice-chip active" : "voice-chip"} onClick={() => previewVietnameseSource(value)}>{label}</button>
           ))}
         </div>
         {voiceTestNotice && <small className="settings-hint" role="status">{voiceTestNotice}</small>}
@@ -2981,9 +3006,23 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
   /** How each provider counts its limits, so the learner creates keys that really add capacity. */
   function keyAdvice(service: ServiceId) {
-    if (service === "gemini") return <>Gemini tính lượt theo <b>dự án Google Cloud</b>: các key trong cùng một dự án dùng chung lượt; muốn thêm lượt, tạo key ở <b>dự án khác</b> (không cần khác tài khoản hay thẻ). Mỗi mô hình có giới hạn riêng mỗi phút và mỗi ngày (key trả phí Tier 1: đọc khoảng 10 lượt/phút, 100 lượt/ngày; trò chuyện 1.000 lượt/phút, 10.000 lượt/ngày). Lượt ngày đặt lại lúc nửa đêm giờ Mỹ (khoảng 14–15 giờ Việt Nam). Key miễn phí (Free tier) có lượt ít hơn nhiều nhưng không mất tiền.</>;
-    if (service === "gcloud") return <>Google Cloud TTS miễn phí <b>1 triệu ký tự mỗi tháng</b> (giọng Chirp 3 HD), tính theo <b>tài khoản thanh toán</b>: key ở dự án khác nhưng cùng tài khoản thanh toán vẫn dùng chung phần miễn phí. Phần miễn phí đặt lại đầu mỗi tháng; vượt thì khoảng 30 USD cho 1 triệu ký tự. Không tick “Có tính phí” thì app dừng ở 95% phần miễn phí.</>;
+    if (service === "gemini") return <>Gemini tính lượt theo <b>dự án Google Cloud</b>: các key trong cùng một dự án dùng chung lượt. Free có quota miễn phí; Paid được hạn mức cao hơn nhưng tính phí theo lượt ngay từ lần dùng đầu, không có quota token miễn phí chung. Hạn mức thực tế thay đổi theo mô hình và dự án; xem số đang áp dụng trong Google AI Studio.</>;
+    if (service === "gcloud") return <>Google Cloud TTS có <b>1 triệu ký tự miễn phí mỗi tháng</b> (Chirp 3 HD), tính theo <b>tài khoản thanh toán</b>: các key cùng tài khoản dùng chung. App dừng an toàn ở khoảng 95% phần miễn phí; chỉ dùng vượt phần đó nếu chọn gói cho phép tính phí và trần USD còn đủ.</>;
     return <>ChatGPT (OpenAI API) <b>không có phần miễn phí</b>: nạp tiền trước ở platform.openai.com, dùng bao nhiêu trừ bấy nhiêu. Giới hạn và tiền tính theo <b>tổ chức (organization)</b>: key ở dự án khác trong cùng tổ chức vẫn dùng chung. Gói ChatGPT Plus không dùng được cho API.</>;
+  }
+
+  function keyTierAdvice(service: ServiceId, tier: "free" | "paid") {
+    if (service === "gemini") {
+      return tier === "free"
+        ? "Free: Gemini chat dùng quota miễn phí; app tự giới hạn an toàn khoảng 4 lượt/phút, 19 lượt/ngày/mô hình. Hạn mức thực tế xem trong Google AI Studio."
+        : "Paid: hạn mức tham chiếu Tier 1 của app khoảng 950 lượt/phút, 9.500 lượt/ngày cho chat; yêu cầu được tính phí từ lần đầu. Trần 0 USD sẽ chặn yêu cầu trả phí.";
+    }
+    if (service === "gcloud") {
+      return tier === "free"
+        ? "Chỉ dùng tối đa khoảng 950.000 ký tự miễn phí/tháng theo tài khoản thanh toán; không phát sinh phí vượt mức."
+        : "Dùng khoảng 950.000 ký tự miễn phí trước; phần vượt mức tính phí theo trần USD đã đặt.";
+    }
+    return "OpenAI API luôn tính phí theo lượt; không có gói Free. Trần 0 USD sẽ chặn yêu cầu.";
   }
 
   /** The tutor stopped at a cap or limit the learner set: raise it, switch provider, or look at the costs. */
@@ -3080,7 +3119,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           </div>
           <div className="voice-mode" role="radiogroup" aria-label="Cách chọn dịch vụ">
             <button type="button" role="radio" aria-checked={auto} className={auto ? "voice-engine active" : "voice-engine"} onClick={() => updateUsageSettings((current) => ({ ...current, mode: "auto" }))}>
-              <strong>Tự động</strong><small>App tự điều chuyển để chi phí thấp nhất, không vượt trần</small>
+              <strong>Tự động</strong><small>App tự chuyển sang dịch vụ khác đang bật khi dịch vụ hiện tại hết quota hoặc chạm trần</small>
             </button>
             <button type="button" role="radio" aria-checked={!auto} className={!auto ? "voice-engine active" : "voice-engine"} onClick={() => updateUsageSettings((current) => ({ ...current, mode: "manual" }))}>
               <strong>Tự chọn</strong><small>Bạn chọn dịch vụ; hết hạn mức thì app dừng và báo</small>
@@ -3239,7 +3278,11 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <span>Trần chi phí mỗi tháng (tổng mọi key, cả đọc lẫn trò chuyện)</span>
                 <input type="number" min="0" step="0.5" className="settings-input" value={usageSettings.caps[service]}
                   onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: value } })); }} />
-                <span>USD · tháng này đã dùng {spentThisMonth(service).toFixed(3)} USD. Chạm trần thì app ngừng phần tính phí, vẫn dùng key miễn phí và phần miễn phí.</span>
+                <span>USD · tháng này đã dùng {spentThisMonth(service).toFixed(3)} USD. {service === "gemini"
+                  ? "Trần 0 USD vẫn dùng key Gemini Free; key Paid bị dừng vì không có quota token miễn phí."
+                  : service === "gcloud"
+                  ? "Trần 0 USD vẫn dùng phần ký tự miễn phí theo tháng."
+                  : "OpenAI API không có quota miễn phí nên trần 0 USD sẽ dừng dịch vụ này."}</span>
               </div>
               {serviceUsedUp(service) && <p className="voice-warning">⚠️ {SERVICE_NAMES[service]} đã hết hạn mức sử dụng. Muốn dùng tiếp, nâng trần chi phí ở ô trên.</p>}
 
@@ -3256,9 +3299,17 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                     </div>
                     <label className="model-check"><input type="checkbox" checked={keyEnabled(usageSettings, entry.value)} onChange={(event) => updateUsageSettings((current) => ({ ...current, disabled: { ...current.disabled, [tag]: !event.target.checked } }))} /> <span>Đang dùng key này</span></label>
                     {service !== "openai" && (
-                      <label className="model-check"><input type="checkbox" checked={tier === "paid"} onChange={(event) => updateUsageSettings((current) => ({ ...current, tiers: { ...current.tiers, [tag]: event.target.checked ? "paid" : "free" } }))} />
-                        <span>{service === "gemini" ? "Key trả phí (đã gắn thanh toán) — bỏ tick nếu là key miễn phí" : "Key trả phí: cho phép dùng vượt phần miễn phí"}</span></label>
+                      <label className="manual-picks">
+                        <span>Gói của API key</span>
+                        <select className="settings-select" aria-label={`Gói ${SERVICE_NAMES[service]} của ${entry.label}`} value={tier}
+                          onChange={(event) => updateUsageSettings((current) => ({ ...current, tiers: { ...current.tiers, [tag]: event.target.value === "paid" ? "paid" : "free" } }))}>
+                          <option value="free">{service === "gemini" ? "Free — quota miễn phí" : "Chỉ dùng phần miễn phí"}</option>
+                          <option value="paid">{service === "gemini" ? "Paid — tính phí theo lượt" : "Cho phép tính phí vượt phần miễn phí"}</option>
+                        </select>
+                        <small className="settings-hint">{keyTierAdvice(service, tier)}</small>
+                      </label>
                     )}
+                    {service === "openai" && <small className="settings-hint">{keyTierAdvice(service, tier)}</small>}
                     {message && <small className={message.ok ? "api-key-success" : "error-message"}>{message.text}</small>}
                   </div>
                 );

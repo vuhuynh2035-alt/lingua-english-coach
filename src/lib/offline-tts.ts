@@ -121,7 +121,7 @@ export async function removePack(id: PackId): Promise<void> {
 }
 
 // ---------------------------------------------------------------- synthesis in a worker
-type Pending = { resolve: (blob: Blob | null) => void };
+type Pending = { resolve: (blob: Blob | null) => void; reject: (error: Error) => void };
 let worker: Worker | null = null;
 let nextId = 1;
 let idleTimer: ReturnType<typeof setTimeout> | null = null;
@@ -132,12 +132,15 @@ const offlineClips = new WeakSet<Blob>();
 /** True for audio made by these built-in voices. */
 export const isOfflineClip = (blob: Blob) => offlineClips.has(blob);
 
-function stopWorker() {
+function stopWorker(error?: Error) {
   if (idleTimer) clearTimeout(idleTimer);
   idleTimer = null;
   worker?.terminate();
   worker = null;
-  for (const item of pending.values()) item.resolve(null);
+  for (const item of pending.values()) {
+    if (error) item.reject(error);
+    else item.resolve(null);
+  }
   pending.clear();
 }
 
@@ -151,9 +154,10 @@ function getWorker(): Worker {
     // The voice takes a few hundred MB of memory: let it go when nobody is listening.
     if (idleTimer) clearTimeout(idleTimer);
     if (!pending.size) idleTimer = setTimeout(stopWorker, 90_000);
-    item.resolve(event.data.wav ? new Blob([event.data.wav], { type: "audio/wav" }) : null);
+    if (event.data.error) item.reject(new Error(`Giọng trong app không chạy được: ${event.data.error}`));
+    else item.resolve(event.data.wav ? new Blob([event.data.wav], { type: "audio/wav" }) : null);
   };
-  created.onerror = () => stopWorker();
+  created.onerror = (event) => stopWorker(new Error(event.message || "Worker giọng offline gặp lỗi trên trình duyệt này."));
   worker = created;
   return created;
 }
@@ -170,7 +174,7 @@ export function synthesize(id: PackId, text: string, options: { sid?: number; sp
   const key = `${id}:${options.sid ?? 0}:${options.speed ?? 1}:${clean}`;
   const cached = memory.get(key);
   if (cached) return Promise.resolve(cached);
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     try {
       const jobId = nextId++;
       pending.set(jobId, {
@@ -182,9 +186,13 @@ export function synthesize(id: PackId, text: string, options: { sid?: number; sp
           }
           resolve(blob);
         },
+        reject,
       });
       getWorker().postMessage({ type: "speak", id: jobId, text: clean, voice: id, sid: options.sid ?? 0, speed: options.speed ?? 1 });
-    } catch { resolve(null); }
+    } catch (error) {
+      pending.delete(nextId - 1);
+      reject(error instanceof Error ? error : new Error("Không khởi động được giọng offline."));
+    }
   });
 }
 

@@ -10,6 +10,12 @@ Một web app duy nhất để người Việt học **tiếng Anh, tiếng Nh�
 
 Mỗi người dùng API key và hạn mức của riêng mình; yêu cầu gửi thẳng từ trình duyệt tới nhà cung cấp, key chỉ lưu trên thiết bị.
 
+## Hạn mức và chi phí API
+
+Trần **0 USD** vẫn cho phép các hạn mức miễn phí mà dịch vụ thực sự cung cấp: Gemini với key Free và phần ký tự miễn phí hàng tháng của Google Cloud TTS. Gemini Paid được tính phí từ lần dùng đầu; OpenAI API không có gói miễn phí chung nên cả hai bị dừng ở trần 0 USD. Google AI Studio là nơi xem hạn mức Gemini thực tế theo dự án và mô hình.
+
+Muốn ứng dụng tự chuyển khi một dịch vụ hết quota hoặc chạm trần, vào **Cài đặt → Chi phí AI → Tự động** và bật các dịch vụ dự phòng phù hợp. Ở chế độ **Tự chọn**, ứng dụng chỉ dùng dịch vụ bạn đã chọn.
+
 ## Dùng chung và tách riêng
 
 | Dùng chung cho cả ba ngôn ngữ | Tách riêng theo từng ngôn ngữ |
