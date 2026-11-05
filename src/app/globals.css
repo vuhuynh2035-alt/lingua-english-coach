@@ -2861,9 +2861,11 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
 .manual-picks { display: grid; gap: 6px; }
 .manual-picks label, .manual-picks > span { font-weight: 700; font-size: .875rem; }
 .service-card { display: grid; gap: 10px; }
-.service-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.service-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
 .service-card-head h3 { margin: 0; font-size: 1.0625rem; }
 .service-card-head small { color: var(--muted); }
+.service-toggle { flex: 0 0 auto; padding: 6px 11px; border: 1px solid var(--line, #d8e6e0); border-radius: 999px; color: var(--muted); background: #fff; font: inherit; font-size: .8125rem; font-weight: 700; cursor: pointer; }
+.service-toggle.active { border-color: var(--theme-primary, #15966d); color: var(--theme-primary, #15966d); background: var(--theme-soft, #f0faf5); }
 .service-key { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--line, #d8e6e0); border-radius: 12px; background: var(--paper, #f6fbf8); }
 .service-key.off { opacity: .6; }
 .service-key-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }

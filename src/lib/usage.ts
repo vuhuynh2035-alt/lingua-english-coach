@@ -22,6 +22,8 @@ export type Prices = {
 export type UsageSettings = {
   /** "auto": the app picks the service for chat and for speech; "manual": the learner's picks are kept. */
   mode: "manual" | "auto";
+  /** Services the learner has enabled globally; disabled services are not used in any mode. */
+  servicesEnabled: Record<ServiceId, boolean>;
   /** Services the Auto mode may use for speech / for chat. */
   enabled: Record<ServiceId, boolean>;
   enabledChat: Record<ServiceId, boolean>;
@@ -89,6 +91,7 @@ export const DEFAULT_PRICES: Prices = {
 
 export const DEFAULT_SETTINGS: UsageSettings = {
   mode: "manual",
+  servicesEnabled: { gemini: true, openai: true, gcloud: true },
   enabled: { gemini: true, openai: false, gcloud: true },
   enabledChat: { gemini: true, openai: false, gcloud: false },
   caps: { gemini: 5, openai: 0, gcloud: 0 },
@@ -134,6 +137,7 @@ export function loadSettings(): UsageSettings {
     if (!stored) return structuredClone(DEFAULT_SETTINGS);
     return {
       mode: stored.mode === "auto" ? "auto" : "manual",
+      servicesEnabled: { ...DEFAULT_SETTINGS.servicesEnabled, ...stored.servicesEnabled },
       enabled: { ...DEFAULT_SETTINGS.enabled, ...stored.enabled },
       enabledChat: { ...DEFAULT_SETTINGS.enabledChat, ...stored.enabledChat },
       caps: { ...DEFAULT_SETTINGS.caps, ...stored.caps },

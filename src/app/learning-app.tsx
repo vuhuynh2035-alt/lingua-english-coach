@@ -1351,6 +1351,7 @@ export default function Home() {
    * use) and kept; it is refreshed in the background only when Google has retired a model.
    */
   async function googleModelIds(): Promise<string[]> {
+    if (!usageSettingsRef.current.servicesEnabled.gemini) return [];
     if (googleModelsRef.current) return googleModelsRef.current;
     try {
       const cached = JSON.parse(localStorage.getItem(GOOGLE_MODELS_STORAGE) ?? "null") as { at?: unknown; ids?: unknown } | null;
@@ -1361,7 +1362,7 @@ export default function Home() {
         return googleModelsRef.current;
       }
     } catch {}
-    for (const entry of apiKeys.google) {
+    for (const entry of serviceKeys("gemini")) {
       try {
         const ids = await fetchGoogleModelIds(entry.value);
         if (!ids.length) continue;
@@ -1390,7 +1391,10 @@ export default function Home() {
     const settings = usageSettingsRef.current;
     if (settings.mode !== "auto") return [aiProvider];
     const ranked = (["google", "openai"] as AiProvider[])
-      .filter((provider) => settings.enabledChat[provider === "google" ? "gemini" : "openai"])
+      .filter((provider) => {
+        const service: ServiceId = provider === "google" ? "gemini" : "openai";
+        return settings.servicesEnabled[service] && settings.enabledChat[service];
+      })
       .map((provider, index) => {
         const service: ServiceId = provider === "google" ? "gemini" : "openai";
         const model = selectedModels[provider] || DEFAULT_MODELS[provider];
@@ -1414,6 +1418,11 @@ export default function Home() {
     only?: AiProvider,
   ): Promise<T> {
     const providers = only ? [only] : chatProviders();
+    const disabledProvider = providers.find((provider) => !usageSettingsRef.current.servicesEnabled[provider === "google" ? "gemini" : "openai"]);
+    if (disabledProvider) {
+      const service = disabledProvider === "google" ? "Gemini" : "OpenAI";
+      throw new AiError("auth", `${service} đang tắt. Hãy bật lại trong Cài đặt → Dịch vụ AI để sử dụng.`);
+    }
     let failure: unknown = null;
     for (const provider of providers) {
       try {
@@ -1433,6 +1442,9 @@ export default function Home() {
     onStatus?: (message: string) => void,
   ): Promise<T> {
     const service: ServiceId = provider === "google" ? "gemini" : "openai";
+    if (!usageSettingsRef.current.servicesEnabled[service]) {
+      throw new AiError("auth", `${SERVICE_NAMES[service]} đang tắt. Hãy bật lại trong Cài đặt → Dịch vụ AI để sử dụng.`);
+    }
     const candidatesAll = await chatModelCandidates(false, provider);
     // Only the models the learner allows (the first one stays if none is ticked).
     const allowedModels = candidatesAll.filter((model) => modelPermitted(usageSettingsRef.current, service, "chat", model));
@@ -1449,6 +1461,9 @@ export default function Home() {
         onStatus,
       },
       async (key, model) => {
+        if (!usageSettingsRef.current.servicesEnabled[service]) {
+          throw new AiError("auth", `${SERVICE_NAMES[service]} đang tắt. Hãy bật lại trong Cài đặt → Dịch vụ AI để sử dụng.`);
+        }
         // Counted on the device first: a key at its limit or over the money cap is skipped (the next key is tried).
         const state = checkUsage(usageSettingsRef.current, service, key, model, "chat", { inTokens, outTokens: 700 });
         if (!state.ok) {
@@ -1494,6 +1509,11 @@ export default function Home() {
   }
 
   async function testAiConnection(): Promise<boolean> {
+    const service: ServiceId = aiProvider === "google" ? "gemini" : "openai";
+    if (!usageSettingsRef.current.servicesEnabled[service]) {
+      setConnection({ status: "error", message: `${SERVICE_NAMES[service]} đang tắt. Hãy bật lại trong Cài đặt → Dịch vụ AI để sử dụng.` });
+      return false;
+    }
     if (!apiKeys[aiProvider].length) {
       setConnection({ status: "error", message: `Chưa có API key ${aiProvider === "google" ? "Google AI" : "OpenAI"}. Hãy thêm key trong Cài đặt.` });
       return false;
@@ -1744,6 +1764,11 @@ RULES:
   /** The teacher's opening turn doubles as the connection check, saving one request of quota. */
   async function connectClassroom() {
     if (chatBusy) return;
+    const service: ServiceId = aiProvider === "google" ? "gemini" : "openai";
+    if (!usageSettingsRef.current.servicesEnabled[service]) {
+      setConnection({ status: "error", message: `${SERVICE_NAMES[service]} đang tắt. Hãy bật lại trong Cài đặt → Dịch vụ AI để sử dụng.` });
+      return;
+    }
     if (!apiKeys[aiProvider].length) {
       setConnection({ status: "error", message: `Chưa có API key ${aiProvider === "google" ? "Google AI" : "OpenAI"}. Hãy thêm key trong Cài đặt.` });
       return;
@@ -2147,8 +2172,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
   /** Keys for an AI voice engine: Gemini and OpenAI share the AI settings, Cloud TTS has its own key. */
   function voiceKeys(engine: VoiceProfile["engine"]): ApiKeyEntry[] {
-    if (engine === "gcloud") return cloudKeys;
-    return engine === "device" ? [] : apiKeys[engine];
+    if (engine === "device") return [];
+    return serviceKeys(engine === "google" ? "gemini" : engine);
   }
 
   /** Audio for one Vietnamese sentence: AI voice (with a key), else the voice built into the app, else null (the phone's voice). */
@@ -2275,13 +2300,15 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   /** A service's keys; the ones switched off are left out unless `includeOff`. */
   function serviceKeys(service: ServiceId, includeOff = false): ApiKeyEntry[] {
     const list = service === "gcloud" ? cloudKeys : apiKeys[service === "gemini" ? "google" : "openai"];
-    return includeOff ? list : list.filter((entry) => keyEnabled(usageSettingsRef.current, entry.value));
+    if (includeOff) return list;
+    if (!usageSettingsRef.current.servicesEnabled[service]) return [];
+    return list.filter((entry) => keyEnabled(usageSettingsRef.current, entry.value));
   }
 
   /** Services the AI voice may use now: every ticked one in Auto mode, else the one picked. */
   function speechServices(profile: SpeechProfile): ServiceId[] {
     const list: ServiceId[] = profile.only ? [profile.only]
-      : usageSettings.mode === "auto" ? (["gcloud", "gemini", "openai"] as const).filter((service) => usageSettings.enabled[service])
+      : usageSettings.mode === "auto" ? (["gcloud", "gemini", "openai"] as const).filter((service) => usageSettings.servicesEnabled[service] && usageSettings.enabled[service])
       : profile.engine === "device" ? [] : [profile.engine === "google" ? "gemini" : profile.engine];
     return list.filter((service) => serviceKeys(service).length > 0);
   }
@@ -2326,7 +2353,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     let waited = 0;
     try {
       for (let attempt = 0; attempt < 8; attempt++) {
-        const { order, refusals, waitMs } = planSpeech(usageSettingsRef.current, candidates.filter((item) => !tried.has(`${item.key}|${item.model}`)), text.length);
+        const { order, refusals, waitMs } = planSpeech(usageSettingsRef.current, candidates.filter((item) => usageSettingsRef.current.servicesEnabled[item.service] && !tried.has(`${item.key}|${item.model}`)), text.length);
         // A free voice back within seconds beats paying for this sentence.
         if (waitMs && waited + waitMs <= 10_000) {
           await new Promise((resolve) => setTimeout(resolve, waitMs + 50));
@@ -2340,6 +2367,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         }
         const choice = order[0];
         tried.add(`${choice.key}|${choice.model}`);
+        if (!usageSettingsRef.current.servicesEnabled[choice.service]) continue;
         const voiced = serviceProfile(choice.service, profile, main);
         reserveUsage(usageSettingsRef.current, choice.service, choice.key, choice.model, "speech");
         try {
@@ -2869,9 +2897,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   }
 
   function renderVoiceStudio() {
-    const aiMode = voiceProfile.engine !== "device";
-    // Every service is listed, so its accent can be picked before a key is added.
-    const services = ["gemini", "gcloud", "openai"] as const;
+    const voiceService = voiceProfile.engine === "google" ? "gemini" : voiceProfile.engine === "device" ? null : voiceProfile.engine;
+    const aiMode = voiceService !== null && usageSettings.servicesEnabled[voiceService];
+    const services = (["gemini", "gcloud", "openai"] as const).filter((service) => usageSettings.servicesEnabled[service]);
     return (
       <section className="panel settings-panel voice-studio">
         <div className="settings-section-heading">
@@ -2881,6 +2909,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
         <div className="voice-mode" role="radiogroup" aria-label="Nguồn giọng">
           <button type="button" role="radio" aria-checked={aiMode} className={aiMode ? "voice-engine active" : "voice-engine"}
+            disabled={!services.length}
             onClick={() => { stopSpeech(); updateVoiceProfile({ engine: aiVoiceEngine }); }}>
             <strong>Giọng AI</strong><small>Tự nhiên, đủ vùng miền · cần mạng và API key</small>
           </button>
@@ -2941,6 +2970,24 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     usageSettingsRef.current = next;
     saveUsageSettings(next);
     setUsageSettings(next);
+  }
+
+  function toggleService(service: ServiceId) {
+    const enabled = usageSettingsRef.current.servicesEnabled[service];
+    if (enabled) {
+      stopSpeech();
+      setPreviewing(null);
+      const engine: VoiceProfile["engine"] = service === "gemini" ? "google" : service;
+      const fallback = (["gemini", "gcloud", "openai"] as const)
+        .find((candidate) => candidate !== service && usageSettingsRef.current.servicesEnabled[candidate]);
+      const fallbackEngine: VoiceProfile["engine"] = fallback === "gemini" ? "google" : fallback ?? "device";
+      if (voiceProfile.engine === engine) updateVoiceProfile({ engine: fallbackEngine });
+      if (aiVoiceEngine === engine && fallbackEngine !== "device") setAiVoiceEngine(fallbackEngine);
+    }
+    updateUsageSettings((current) => ({
+      ...current,
+      servicesEnabled: { ...current.servicesEnabled, [service]: !current.servicesEnabled[service] },
+    }));
   }
 
   /** Whether a model may be used; the main chat model the learner picked counts as allowed unless they untick it. */
@@ -3068,7 +3115,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     void usageTick;
     const withKeys = (["gemini", "gcloud", "openai"] as const).filter((service) => serviceKeys(service).length > 0);
     const auto = usageSettings.mode === "auto";
-    const chatChoices = (["google", "openai"] as AiProvider[]).filter((provider) => apiKeys[provider].length > 0);
+    const chatChoices = (["google", "openai"] as AiProvider[]).filter((provider) => serviceKeys(provider === "google" ? "gemini" : "openai").length > 0);
+    const hasConfiguredKeys = (["gemini", "gcloud", "openai"] as const).some((service) => serviceKeys(service, true).length > 0);
     return (
       <>
         <section className="panel settings-panel usage-settings">
@@ -3076,7 +3124,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             <span className="settings-icon" aria-hidden="true">📊</span>
             <div><h3>Hạn mức đang có</h3><p>Vòng xanh: phần còn lại của hạn mức (đầy 100%, giảm dần khi dùng, tự đầy lại khi nhà cung cấp đặt lại). Vòng đỏ: tiền đã dùng tháng này so với trần bạn đặt.</p></div>
           </div>
-          {!withKeys.length && <p className="settings-hint">Chưa có key nào. Thêm key ở mục Dịch vụ AI.</p>}
+          {!withKeys.length && <p className="settings-hint">{hasConfiguredKeys ? "Các dịch vụ đã có key đều đang tắt. Bật dịch vụ ở mục Dịch vụ AI để xem hạn mức." : "Chưa có key nào. Thêm key ở mục Dịch vụ AI."}</p>}
           {withKeys.map((service) => {
             const keys = serviceKeys(service);
             const hasPaid = keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid");
@@ -3140,13 +3188,14 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   ))}
                 </tbody>
               </table>
-              {!withKeys.length && <small className="settings-hint">Chưa có dịch vụ nào có key.</small>}
+              {!withKeys.length && <small className="settings-hint">{hasConfiguredKeys ? "Các dịch vụ có key hiện đều đang tắt." : "Chưa có dịch vụ nào có key."}</small>}
             </>
           ) : (
             <div className="manual-picks">
               <label htmlFor="manual-chat">Trò chuyện dùng</label>
               <select id="manual-chat" className="settings-select" value={aiProvider} onChange={(event) => { if (isAiProvider(event.target.value)) setAiProvider(event.target.value); }}>
-                {(chatChoices.length ? chatChoices : [aiProvider]).map((provider) => <option key={provider} value={provider}>{provider === "google" ? "Gemini" : "ChatGPT (OpenAI)"}</option>)}
+                {!chatChoices.includes(aiProvider) && <option value={aiProvider}>{aiProvider === "google" ? "Gemini" : "ChatGPT (OpenAI)"} · {usageSettings.servicesEnabled[aiProvider === "google" ? "gemini" : "openai"] ? "chưa có key đang bật" : "đang tắt"}</option>}
+                {chatChoices.map((provider) => <option key={provider} value={provider}>{provider === "google" ? "Gemini" : "ChatGPT (OpenAI)"}</option>)}
               </select>
               <label htmlFor="manual-speech">Đọc dùng</label>
               <select id="manual-speech" className="settings-select" value={voiceProfile.engine}
@@ -3272,7 +3321,18 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           const provider: AiProvider | null = service === "gemini" ? "google" : service === "openai" ? "openai" : null;
           return (
             <section className="panel settings-panel service-card" key={service}>
-              <div className="service-card-head"><h3>{info[service].title}</h3><small>{keys.length}/{MAX_KEYS} key</small></div>
+              <div className="service-card-head">
+                <h3>{info[service].title}</h3>
+                <small>{keys.length}/{MAX_KEYS} key</small>
+                <button type="button" className={`service-toggle${usageSettings.servicesEnabled[service] ? " active" : ""}`}
+                  role="switch" aria-checked={usageSettings.servicesEnabled[service]}
+                  aria-label={`${usageSettings.servicesEnabled[service] ? "Tắt" : "Bật"} ${info[service].title}`}
+                  onClick={() => toggleService(service)}>
+                  {usageSettings.servicesEnabled[service] ? "Đang bật · Tắt" : "Đang tắt · Bật"}
+                </button>
+              </div>
+              {!usageSettings.servicesEnabled[service] && <small className="settings-hint">Dịch vụ đã tắt; app sẽ không sử dụng. Các cài đặt đã lưu sẽ được giữ lại.</small>}
+              {usageSettings.servicesEnabled[service] && <>
               <small className="settings-hint key-advice">ℹ️ {keyAdvice(service)}</small>
               <div className="usage-cap">
                 <span>Trần chi phí mỗi tháng (tổng mọi key, cả đọc lẫn trò chuyện)</span>
@@ -3350,6 +3410,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 {service === "openai" && [price("openai", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("openai", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("openai", "ttsPerMinute", "Đọc", "USD / phút")]}
                 {service === "gcloud" && [price("gcloud", "perMillionChars", "Đọc – Chirp 3 HD", "USD / 1 triệu ký tự"), price("gcloud", "freeChars", "Miễn phí mỗi tháng", "ký tự / tài khoản thanh toán")]}
               </details>
+              </>}
             </section>
           );
         })}
