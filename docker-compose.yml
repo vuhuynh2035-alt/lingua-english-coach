@@ -6,4 +6,4 @@ services:
     container_name: teacher-ai-app
     restart: unless-stopped
     ports:
-      - "${PORT:-3001}:80"
+      - "${PORT:-8083}:80"
