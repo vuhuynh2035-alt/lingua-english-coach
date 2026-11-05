@@ -3328,7 +3328,8 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   role="switch" aria-checked={usageSettings.servicesEnabled[service]}
                   aria-label={`${usageSettings.servicesEnabled[service] ? "Tắt" : "Bật"} ${info[service].title}`}
                   onClick={() => toggleService(service)}>
-                  {usageSettings.servicesEnabled[service] ? "Đang bật · Tắt" : "Đang tắt · Bật"}
+                  <span className="service-toggle-indicator" aria-hidden="true" />
+                  <span>{usageSettings.servicesEnabled[service] ? "Đang bật" : "Đang tắt"}</span>
                 </button>
               </div>
               {!usageSettings.servicesEnabled[service] && <small className="settings-hint">Dịch vụ đã tắt; app sẽ không sử dụng. Các cài đặt đã lưu sẽ được giữ lại.</small>}

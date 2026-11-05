@@ -2864,8 +2864,14 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
 .service-card-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
 .service-card-head h3 { margin: 0; font-size: 1.0625rem; }
 .service-card-head small { color: var(--muted); }
-.service-toggle { flex: 0 0 auto; padding: 6px 11px; border: 1px solid var(--line, #d8e6e0); border-radius: 999px; color: var(--muted); background: #fff; font: inherit; font-size: .8125rem; font-weight: 700; cursor: pointer; }
-.service-toggle.active { border-color: var(--theme-primary, #15966d); color: var(--theme-primary, #15966d); background: var(--theme-soft, #f0faf5); }
+.service-toggle { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 7px; min-height: 34px; padding: 5px 10px 5px 7px; border: 1px solid var(--line, #d8e6e0); border-radius: 999px; color: #64736c; background: #f5f7f6; font: inherit; font-size: .8125rem; font-weight: 700; cursor: pointer; transition: border-color .16s ease, color .16s ease, background-color .16s ease, box-shadow .16s ease; }
+.service-toggle:hover { border-color: #9aa9a1; }
+.service-toggle:focus-visible { outline: 3px solid color-mix(in srgb, var(--theme-primary, #15966d) 35%, transparent); outline-offset: 2px; }
+.service-toggle.active { border-color: var(--theme-border, #bde5d2); color: var(--theme-text, #174b3b); background: var(--theme-soft, #f0faf5); }
+.service-toggle-indicator { position: relative; width: 28px; height: 16px; flex: 0 0 28px; border-radius: 999px; background: #c5cec9; transition: background-color .16s ease; }
+.service-toggle-indicator::after { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px #17251d33; content: ""; transition: transform .16s ease; }
+.service-toggle.active .service-toggle-indicator { background: var(--theme-primary, #15966d); }
+.service-toggle.active .service-toggle-indicator::after { transform: translateX(12px); }
 .service-key { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid var(--line, #d8e6e0); border-radius: 12px; background: var(--paper, #f6fbf8); }
 .service-key.off { opacity: .6; }
 .service-key-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
