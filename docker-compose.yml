@@ -1,0 +1,9 @@
+services:
+  teacher-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: teacher-ai-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3001}:80"
