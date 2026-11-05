@@ -1,11 +1,9 @@
 #!/bin/bash
-set -e
+# Script tự động cập nhật và khởi chạy Teacher AI trên Docker (Proxmox Server)
 
-echo "=== Pulling latest changes from Git ==="
+echo "=== DANG DONG BO VA CAP NHAT TEACHER AI TREN DOCKER ==="
 git pull origin main
-
-echo "=== Building and restarting Docker container ==="
+docker compose down
 docker compose up -d --build
-
-echo "=== Deployment status ==="
-docker compose ps
+echo "=== TRIEN KHAI THANH CONG! ==="
+echo "Truy cap noi bo: http://$(hostname -I | awk '{print $1}'):3001"
