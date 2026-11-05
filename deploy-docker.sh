@@ -7,4 +7,4 @@ docker compose down
 docker compose up -d --build
 echo "=== TRIEN KHAI THANH CONG! ==="
 echo "Truy cap noi bo: http://$(hostname -I | awk '{print $1}'):8083"
-echo "Truy cap domain : https://English.saigonref.com"
+echo "Truy cap domain : https://teacher.saigonref.com"
