@@ -1,0 +1,2327 @@
+{
+ "id": "technology",
+ "title": "Tiếng Trung ngành công nghệ",
+ "version": "1.1.0",
+ "framework": "HSK 1–5",
+ "overview": "12 bài từ HSK 1 đến HSK 5 cho kỹ sư IT làm việc với đối tác Trung Quốc: máy tính, báo lỗi, hướng dẫn thao tác, họp hằng ngày, báo cáo bug, giải thích tính năng, review code, phỏng vấn kỹ thuật, bảo mật, thuyết trình giải pháp, xử lý sự cố và AI.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI, phân cấp theo HSK/CEFR",
+ "references": [
+  {
+   "title": "Chinese Proficiency Grading Standards for International Chinese Language Education",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Khung tham chiếu năng lực tiếng Trung theo HSK (chỉ dùng để phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "HSK – Hanyu Shuiping Kaoshi",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Tham khảo cấp độ HSK 1–5 (không sao chép đề thi)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "technology-a1-1",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 1",
+   "category": "Từ vựng",
+   "title": "Máy tính và công việc IT",
+   "objective": "Gọi tên thiết bị và nói công việc IT của bạn.",
+   "reading": "小王: 你做什么工作?\n小明: 我是程序员,每天用电脑写程序。\n小王: 你用什么语言?\n小明: 我用Java和Python。",
+   "dialogue": [
+    {
+     "speaker": "小王",
+     "text": "你做什么工作?",
+     "phonetic": "Nǐ zuò shénme gōngzuò?",
+     "translation": "Bạn làm nghề gì?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我是程序员,每天用电脑写程序。",
+     "phonetic": "Wǒ shì chéngxùyuán, měi tiān yòng diànnǎo xiě chéngxù.",
+     "translation": "Tôi là lập trình viên, ngày nào cũng viết chương trình trên máy tính."
+    },
+    {
+     "speaker": "小王",
+     "text": "你用什么语言?",
+     "phonetic": "Nǐ yòng shénme yǔyán?",
+     "translation": "Bạn dùng ngôn ngữ gì?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我用Java和Python。",
+     "phonetic": "Wǒ yòng Java hé Python.",
+     "translation": "Tôi dùng Java và Python."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "电脑",
+     "reading": "diànnǎo",
+     "definition": "máy tính",
+     "example": "我用电脑工作。 (Tôi làm việc bằng máy tính.)"
+    },
+    {
+     "term": "程序员",
+     "reading": "chéngxùyuán",
+     "definition": "lập trình viên",
+     "example": "他是程序员。 (Anh ấy là lập trình viên.)"
+    },
+    {
+     "term": "程序",
+     "reading": "chéngxù",
+     "definition": "chương trình",
+     "example": "我写程序。 (Tôi viết chương trình.)"
+    },
+    {
+     "term": "语言",
+     "reading": "yǔyán",
+     "definition": "ngôn ngữ",
+     "example": "你会什么语言?(Bạn biết ngôn ngữ nào?)"
+    },
+    {
+     "term": "屏幕",
+     "reading": "píngmù",
+     "definition": "màn hình",
+     "example": "屏幕很大。 (Màn hình rất to.)"
+    }
+   ],
+   "grammar": {
+    "title": "用 + công cụ + V",
+    "explanation": "Công cụ: 用 + N + động từ (用电脑写程序). Hỏi loại: 什么 + N. Nối danh từ: A 和 B.",
+    "examples": [
+     "我用手机看邮件。[wǒ yòng shǒujī kàn yóujiàn] (Tôi xem email bằng điện thoại.)",
+     "你做什么工作?[nǐ zuò shénme gōngzuò] (Bạn làm nghề gì?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm ch và ü",
+    "tip": "程序 chéngxù: ch cuốn lưỡi bật hơi, xù có ü. 语言 yǔyán: yu = ü.",
+    "words": [
+     "电脑",
+     "程序员",
+     "语言",
+     "屏幕"
+    ]
+   },
+   "speakingTasks": [
+    "Giới thiệu công việc IT và công cụ bạn dùng hằng ngày.",
+    "Hỏi thầy/cô: 你用什么电脑?"
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi viết chương trình bằng máy tính.”",
+     "options": [
+      "我写程序用电脑在。",
+      "电脑我用写程序了。",
+      "我用电脑写程序。"
+     ],
+     "answer": 2,
+     "explanation": "用 + công cụ + V."
+    },
+    {
+     "prompt": "Hỏi “Bạn dùng ngôn ngữ gì?”",
+     "options": [
+      "语言你用哪?",
+      "你用什么语言?",
+      "你什么用语言?"
+     ],
+     "answer": 1,
+     "explanation": "什么 + N."
+    },
+    {
+     "prompt": "「屏幕」 là:",
+     "options": [
+      "bàn phím",
+      "ổ cứng",
+      "màn hình"
+     ],
+     "answer": 2,
+     "explanation": "屏幕 = màn hình."
+    },
+    {
+     "prompt": "「程序员」 là:",
+     "options": [
+      "lập trình viên",
+      "quản lý",
+      "khách hàng"
+     ],
+     "answer": 0,
+     "explanation": "Người viết chương trình."
+    },
+    {
+     "prompt": "「程序」 có nghĩa là gì?",
+     "options": [
+      "màn hình",
+      "chương trình",
+      "ngôn ngữ"
+     ],
+     "answer": 1,
+     "explanation": "「程序」 [chéngxù] = chương trình."
+    },
+    {
+     "prompt": "「屏幕」 đọc là gì?",
+     "options": [
+      "diànnǎo",
+      "píngmù",
+      "yǔyán"
+     ],
+     "answer": 1,
+     "explanation": "「屏幕」 đọc là [píngmù], nghĩa là màn hình."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 他是＿＿＿。  (Anh ấy là lập trình viên.)",
+     "options": [
+      "屏幕",
+      "程序员",
+      "语言"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「程序员」 (lập trình viên). Câu đầy đủ: 他是程序员。"
+    },
+    {
+     "prompt": "「电脑」 có nghĩa là gì?",
+     "options": [
+      "ngôn ngữ",
+      "lập trình viên",
+      "máy tính"
+     ],
+     "answer": 2,
+     "explanation": "「电脑」 [diànnǎo] = máy tính."
+    },
+    {
+     "prompt": "「语言」 đọc là gì?",
+     "options": [
+      "píngmù",
+      "yǔyán",
+      "chéngxùyuán"
+     ],
+     "answer": 1,
+     "explanation": "「语言」 đọc là [yǔyán], nghĩa là ngôn ngữ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 你会什么＿＿＿?  (Bạn biết ngôn ngữ nào?)",
+     "options": [
+      "屏幕",
+      "程序员",
+      "语言"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「语言」 (ngôn ngữ). Câu đầy đủ: 你会什么语言?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a1-2",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Báo lỗi máy tính đơn giản",
+   "objective": "Nói máy tính không chạy, hỏi giúp đỡ.",
+   "reading": "小明: 不好意思,我的电脑打不开了。\nIT: 电源插好了吗?\n小明: 插好了,可是屏幕是黑的。\nIT: 你先重启一下试试。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "不好意思,我的电脑打不开了。",
+     "phonetic": "Bù hǎoyìsi, wǒ de diànnǎo dǎ bu kāi le.",
+     "translation": "Xin lỗi, máy tính của tôi không mở lên được."
+    },
+    {
+     "speaker": "IT",
+     "text": "电源插好了吗?",
+     "phonetic": "Diànyuán chā hǎo le ma?",
+     "translation": "Đã cắm nguồn chưa?"
+    },
+    {
+     "speaker": "小明",
+     "text": "插好了,可是屏幕是黑的。",
+     "phonetic": "Chā hǎo le, kěshì píngmù shì hēi de.",
+     "translation": "Cắm rồi, nhưng màn hình đen."
+    },
+    {
+     "speaker": "IT",
+     "text": "你先重启一下试试。",
+     "phonetic": "Nǐ xiān chóngqǐ yíxià shìshi.",
+     "translation": "Bạn thử khởi động lại trước xem."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "打不开",
+     "reading": "dǎ bu kāi",
+     "definition": "không mở được",
+     "example": "文件打不开。 (Tệp không mở được.)"
+    },
+    {
+     "term": "电源",
+     "reading": "diànyuán",
+     "definition": "nguồn điện",
+     "example": "请关掉电源。 (Xin tắt nguồn.)"
+    },
+    {
+     "term": "重启",
+     "reading": "chóngqǐ",
+     "definition": "khởi động lại",
+     "example": "电脑需要重启。 (Máy tính cần khởi động lại.)"
+    },
+    {
+     "term": "网络",
+     "reading": "wǎngluò",
+     "definition": "mạng",
+     "example": "网络连不上。 (Không kết nối được mạng.)"
+    },
+    {
+     "term": "密码",
+     "reading": "mìmǎ",
+     "definition": "mật khẩu",
+     "example": "我忘了密码。 (Tôi quên mật khẩu.)"
+    }
+   ],
+   "grammar": {
+    "title": "Bổ ngữ khả năng V 不 C / V 一下试试",
+    "explanation": "Không làm được: V + 不 + kết quả (打不开, 连不上). Thử làm: V + 一下 + 试试. Đã xong: V + 好了.",
+    "examples": [
+     "我登不上去。[wǒ dēng bu shàngqù] (Tôi không đăng nhập được.)",
+     "你再按一下试试。[nǐ zài àn yíxià shìshi] (Bạn thử bấm lại xem.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm ch và q",
+    "tip": "重启 chóngqǐ: ch cuốn lưỡi, q đầu lưỡi phẳng. 密码 mìmǎ (4-3).",
+    "words": [
+     "重启",
+     "电源",
+     "网络",
+     "密码"
+    ]
+   },
+   "speakingTasks": [
+    "Báo cho bộ phận IT biết máy tính của bạn gặp lỗi.",
+    "Hỏi thầy/cô cách xử lý khi không vào được Wi-Fi."
+   ],
+   "questions": [
+    {
+     "prompt": "“Máy tính không mở được.”",
+     "options": [
+      "电脑开打不了。",
+      "电脑打不开了。",
+      "电脑不打开了。"
+     ],
+     "answer": 1,
+     "explanation": "V + 不 + C."
+    },
+    {
+     "prompt": "“Thử khởi động lại xem.”",
+     "options": [
+      "一下重启试。",
+      "试试重启一下了。",
+      "重启一下试试。"
+     ],
+     "answer": 2,
+     "explanation": "V + 一下 + 试试."
+    },
+    {
+     "prompt": "“Tôi quên mật khẩu.”",
+     "options": [
+      "我忘了密码。",
+      "我忘密码了了。",
+      "我密码忘。"
+     ],
+     "answer": 0,
+     "explanation": "忘了 + N."
+    },
+    {
+     "prompt": "「网络」 là:",
+     "options": [
+      "mạng",
+      "nguồn",
+      "màn hình"
+     ],
+     "answer": 0,
+     "explanation": "网络 = mạng."
+    },
+    {
+     "prompt": "「重启」 có nghĩa là gì?",
+     "options": [
+      "không mở được",
+      "khởi động lại",
+      "nguồn điện"
+     ],
+     "answer": 1,
+     "explanation": "「重启」 [chóngqǐ] = khởi động lại."
+    },
+    {
+     "prompt": "「电源」 đọc là gì?",
+     "options": [
+      "mìmǎ",
+      "diànyuán",
+      "wǎngluò"
+     ],
+     "answer": 1,
+     "explanation": "「电源」 đọc là [diànyuán], nghĩa là nguồn điện."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请关掉＿＿＿。  (Xin tắt nguồn.)",
+     "options": [
+      "电源",
+      "网络",
+      "密码"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「电源」 (nguồn điện). Câu đầy đủ: 请关掉电源。"
+    },
+    {
+     "prompt": "「打不开」 có nghĩa là gì?",
+     "options": [
+      "không mở được",
+      "mạng",
+      "mật khẩu"
+     ],
+     "answer": 0,
+     "explanation": "「打不开」 [dǎ bu kāi] = không mở được."
+    },
+    {
+     "prompt": "「重启」 đọc là gì?",
+     "options": [
+      "diànyuán",
+      "chóngqǐ",
+      "dǎ bu kāi"
+     ],
+     "answer": 1,
+     "explanation": "「重启」 đọc là [chóngqǐ], nghĩa là khởi động lại."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 电脑需要＿＿＿。  (Máy tính cần khởi động lại.)",
+     "options": [
+      "打不开",
+      "电源",
+      "重启"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「重启」 (khởi động lại). Câu đầy đủ: 电脑需要重启。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a1-3",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Hướng dẫn từng bước",
+   "objective": "Hướng dẫn thao tác theo thứ tự: trước tiên, tiếp theo, cuối cùng.",
+   "reading": "小明: 首先,点一下这个图标。\n客户: 好,点了。\n小明: 然后输入名字,再点保存。\n小明: 最后,关掉这个窗口。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "首先,点一下这个图标。",
+     "phonetic": "Shǒuxiān, diǎn yíxià zhège túbiāo.",
+     "translation": "Trước tiên, bấm vào biểu tượng này."
+    },
+    {
+     "speaker": "客户",
+     "text": "好,点了。",
+     "phonetic": "Hǎo, diǎn le.",
+     "translation": "Được, bấm rồi."
+    },
+    {
+     "speaker": "小明",
+     "text": "然后输入名字,再点保存。",
+     "phonetic": "Ránhòu shūrù míngzi, zài diǎn bǎocún.",
+     "translation": "Sau đó nhập tên rồi bấm lưu."
+    },
+    {
+     "speaker": "小明",
+     "text": "最后,关掉这个窗口。",
+     "phonetic": "Zuìhòu, guāndiào zhège chuāngkǒu.",
+     "translation": "Cuối cùng, đóng cửa sổ này."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "首先",
+     "reading": "shǒuxiān",
+     "definition": "trước tiên",
+     "example": "首先打开电脑。 (Trước tiên mở máy tính.)"
+    },
+    {
+     "term": "然后",
+     "reading": "ránhòu",
+     "definition": "sau đó",
+     "example": "然后点这里。 (Sau đó bấm vào đây.)"
+    },
+    {
+     "term": "输入",
+     "reading": "shūrù",
+     "definition": "nhập (dữ liệu)",
+     "example": "请输入密码。 (Xin nhập mật khẩu.)"
+    },
+    {
+     "term": "保存",
+     "reading": "bǎocún",
+     "definition": "lưu",
+     "example": "别忘了保存。 (Đừng quên lưu.)"
+    },
+    {
+     "term": "最后",
+     "reading": "zuìhòu",
+     "definition": "cuối cùng",
+     "example": "最后关掉窗口。 (Cuối cùng đóng cửa sổ.)"
+    }
+   ],
+   "grammar": {
+    "title": "首先……然后……再……最后……",
+    "explanation": "Thứ tự các bước: 首先 → 然后 → 再 → 最后. Bấm: 点 / 点击. Đóng: 关掉 (掉 = mất đi, xong).",
+    "examples": [
+     "首先登录,然后上传文件。[shǒuxiān dēnglù, ránhòu shàngchuán wénjiàn] (Trước tiên đăng nhập, sau đó tải tệp lên.)",
+     "最后点击确定。[zuìhòu diǎnjī quèdìng] (Cuối cùng bấm Xác nhận.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm sh và r",
+    "tip": "首先 shǒuxiān, 输入 shūrù: sh và r cuốn lưỡi. 然后 ránhòu.",
+    "words": [
+     "首先",
+     "然后",
+     "输入",
+     "保存"
+    ]
+   },
+   "speakingTasks": [
+    "Hướng dẫn thầy/cô cách gửi một email có tệp đính kèm theo 3 bước.",
+    "Hướng dẫn cách đổi mật khẩu theo thứ tự."
+   ],
+   "questions": [
+    {
+     "prompt": "Từ chỉ bước đầu tiên:",
+     "options": [
+      "首先",
+      "所以",
+      "最后"
+     ],
+     "answer": 0,
+     "explanation": "首先 = trước tiên."
+    },
+    {
+     "prompt": "“Xin nhập mật khẩu.”",
+     "options": [
+      "输入请密码。",
+      "请密码输入了。",
+      "请输入密码。"
+     ],
+     "answer": 2,
+     "explanation": "请 + V + N."
+    },
+    {
+     "prompt": "「保存」 nghĩa là:",
+     "options": [
+      "xóa",
+      "lưu",
+      "mở"
+     ],
+     "answer": 1,
+     "explanation": "保存 = lưu."
+    },
+    {
+     "prompt": "“Đóng cửa sổ” là:",
+     "options": [
+      "打开窗口",
+      "窗口关在",
+      "关掉窗口"
+     ],
+     "answer": 2,
+     "explanation": "关掉 = tắt, đóng."
+    },
+    {
+     "prompt": "「保存」 có nghĩa là gì?",
+     "options": [
+      "lưu",
+      "trước tiên",
+      "nhập (dữ liệu)"
+     ],
+     "answer": 0,
+     "explanation": "「保存」 [bǎocún] = lưu."
+    },
+    {
+     "prompt": "「最后」 đọc là gì?",
+     "options": [
+      "zuìhòu",
+      "shǒuxiān",
+      "ránhòu"
+     ],
+     "answer": 0,
+     "explanation": "「最后」 đọc là [zuìhòu], nghĩa là cuối cùng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿打开电脑。  (Trước tiên mở máy tính.)",
+     "options": [
+      "首先",
+      "输入",
+      "最后"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「首先」 (trước tiên). Câu đầy đủ: 首先打开电脑。"
+    },
+    {
+     "prompt": "「然后」 có nghĩa là gì?",
+     "options": [
+      "sau đó",
+      "trước tiên",
+      "cuối cùng"
+     ],
+     "answer": 0,
+     "explanation": "「然后」 [ránhòu] = sau đó."
+    },
+    {
+     "prompt": "「保存」 đọc là gì?",
+     "options": [
+      "bǎocún",
+      "shūrù",
+      "shǒuxiān"
+     ],
+     "answer": 0,
+     "explanation": "「保存」 đọc là [bǎocún], nghĩa là lưu."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿关掉窗口。  (Cuối cùng đóng cửa sổ.)",
+     "options": [
+      "首先",
+      "最后",
+      "然后"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「最后」 (cuối cùng). Câu đầy đủ: 最后关掉窗口。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a2-1",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Họp standup hằng ngày",
+   "objective": "Báo cáo việc hôm qua, việc hôm nay và vướng mắc.",
+   "reading": "组长: 我们开始站会吧。小明,你先说。\n小明: 昨天我完成了登录页面。\n小明: 今天我打算做测试。\n小明: 目前没有什么问题。",
+   "dialogue": [
+    {
+     "speaker": "组长",
+     "text": "我们开始站会吧。小明,你先说。",
+     "phonetic": "Wǒmen kāishǐ zhànhuì ba. Xiǎo Míng, nǐ xiān shuō.",
+     "translation": "Bắt đầu họp đứng nhé. Tiểu Minh nói trước."
+    },
+    {
+     "speaker": "小明",
+     "text": "昨天我完成了登录页面。",
+     "phonetic": "Zuótiān wǒ wánchéng le dēnglù yèmiàn.",
+     "translation": "Hôm qua tôi đã làm xong trang đăng nhập."
+    },
+    {
+     "speaker": "小明",
+     "text": "今天我打算做测试。",
+     "phonetic": "Jīntiān wǒ dǎsuàn zuò cèshì.",
+     "translation": "Hôm nay tôi định làm kiểm thử."
+    },
+    {
+     "speaker": "小明",
+     "text": "目前没有什么问题。",
+     "phonetic": "Mùqián méiyǒu shénme wèntí.",
+     "translation": "Hiện tại không có vấn đề gì."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "站会",
+     "reading": "zhànhuì",
+     "definition": "họp đứng (standup)",
+     "example": "站会九点开始。 (Họp đứng bắt đầu lúc 9 giờ.)"
+    },
+    {
+     "term": "完成",
+     "reading": "wánchéng",
+     "definition": "hoàn thành",
+     "example": "我完成了任务。 (Tôi đã hoàn thành nhiệm vụ.)"
+    },
+    {
+     "term": "页面",
+     "reading": "yèmiàn",
+     "definition": "trang (web)",
+     "example": "这个页面很简单。 (Trang này rất đơn giản.)"
+    },
+    {
+     "term": "测试",
+     "reading": "cèshì",
+     "definition": "kiểm thử",
+     "example": "测试已经通过了。 (Kiểm thử đã qua.)"
+    },
+    {
+     "term": "问题",
+     "reading": "wèntí",
+     "definition": "vấn đề",
+     "example": "有问题请告诉我。 (Có vấn đề xin báo tôi.)"
+    }
+   ],
+   "grammar": {
+    "title": "V 了 / 打算 / 没有什么……",
+    "explanation": "Việc đã xong: V + 了. Dự định: 打算 + V. Không có gì: 没有什么 + N. Thời điểm: 昨天, 今天, 目前.",
+    "examples": [
+     "下午我打算修复这个bug。[xiàwǔ wǒ dǎsuàn xiūfù zhège bug] (Chiều nay tôi định sửa lỗi này.)",
+     "我没有什么问题。[wǒ méiyǒu shénme wèntí] (Tôi không có câu hỏi gì.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm c và s",
+    "tip": "测试 cèshì: c bật hơi (ts’), sh cuốn lưỡi. 完成 wánchéng.",
+    "words": [
+     "站会",
+     "完成",
+     "测试",
+     "页面"
+    ]
+   },
+   "speakingTasks": [
+    "Báo cáo standup 3 câu: hôm qua, hôm nay, vướng mắc.",
+    "Hỏi thầy/cô cách nói “tôi đang bị chặn bởi …”."
+   ],
+   "questions": [
+    {
+     "prompt": "“Hôm nay tôi định làm kiểm thử.”",
+     "options": [
+      "今天我测试打算做。",
+      "今天我打算做测试。",
+      "我打算今天了测试。"
+     ],
+     "answer": 1,
+     "explanation": "打算 + V."
+    },
+    {
+     "prompt": "“Không có vấn đề gì.”",
+     "options": [
+      "问题没什么有。",
+      "没有什么问题。",
+      "什么问题没有吗。"
+     ],
+     "answer": 1,
+     "explanation": "没有什么 + N."
+    },
+    {
+     "prompt": "「站会」 là:",
+     "options": [
+      "họp đứng hằng ngày",
+      "bữa trưa",
+      "cuối tuần"
+     ],
+     "answer": 0,
+     "explanation": "Standup meeting."
+    },
+    {
+     "prompt": "Báo việc đã xong hôm qua:",
+     "options": [
+      "昨天我要完成……",
+      "昨天我完成了……",
+      "昨天我在完成……"
+     ],
+     "answer": 1,
+     "explanation": "V + 了."
+    },
+    {
+     "prompt": "「页面」 có nghĩa là gì?",
+     "options": [
+      "trang (web)",
+      "vấn đề",
+      "kiểm thử"
+     ],
+     "answer": 0,
+     "explanation": "「页面」 [yèmiàn] = trang (web)."
+    },
+    {
+     "prompt": "「测试」 đọc là gì?",
+     "options": [
+      "wèntí",
+      "wánchéng",
+      "cèshì"
+     ],
+     "answer": 2,
+     "explanation": "「测试」 đọc là [cèshì], nghĩa là kiểm thử."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿已经通过了。  (Kiểm thử đã qua.)",
+     "options": [
+      "测试",
+      "问题",
+      "完成"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「测试」 (kiểm thử). Câu đầy đủ: 测试已经通过了。"
+    },
+    {
+     "prompt": "「测试」 có nghĩa là gì?",
+     "options": [
+      "hoàn thành",
+      "kiểm thử",
+      "vấn đề"
+     ],
+     "answer": 1,
+     "explanation": "「测试」 [cèshì] = kiểm thử."
+    },
+    {
+     "prompt": "「问题」 đọc là gì?",
+     "options": [
+      "yèmiàn",
+      "wèntí",
+      "wánchéng"
+     ],
+     "answer": 1,
+     "explanation": "「问题」 đọc là [wèntí], nghĩa là vấn đề."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我＿＿＿了任务。  (Tôi đã hoàn thành nhiệm vụ.)",
+     "options": [
+      "页面",
+      "完成",
+      "问题"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「完成」 (hoàn thành). Câu đầy đủ: 我完成了任务。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a2-2",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Mô tả lỗi phần mềm (bug report)",
+   "objective": "Mô tả bước tái hiện, kết quả mong đợi và kết quả thực tế.",
+   "reading": "小明: 我发现了一个bug。\n师兄: 怎么重现?\n小明: 只要连续点两次保存,就会报错。\n师兄: 正常情况下应该只保存一次。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "我发现了一个bug。",
+     "phonetic": "Wǒ fāxiàn le yí gè bug.",
+     "translation": "Tôi phát hiện một lỗi."
+    },
+    {
+     "speaker": "师兄",
+     "text": "怎么重现?",
+     "phonetic": "Zěnme chóngxiàn?",
+     "translation": "Tái hiện thế nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "只要连续点两次保存,就会报错。",
+     "phonetic": "Zhǐyào liánxù diǎn liǎng cì bǎocún, jiù huì bàocuò.",
+     "translation": "Chỉ cần bấm lưu hai lần liên tiếp là báo lỗi."
+    },
+    {
+     "speaker": "师兄",
+     "text": "正常情况下应该只保存一次。",
+     "phonetic": "Zhèngcháng qíngkuàng xià yīnggāi zhǐ bǎocún yí cì.",
+     "translation": "Bình thường lẽ ra chỉ lưu một lần."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "发现",
+     "reading": "fāxiàn",
+     "definition": "phát hiện",
+     "example": "我发现了问题。 (Tôi phát hiện ra vấn đề.)"
+    },
+    {
+     "term": "重现",
+     "reading": "chóngxiàn",
+     "definition": "tái hiện",
+     "example": "这个问题很难重现。 (Lỗi này khó tái hiện.)"
+    },
+    {
+     "term": "报错",
+     "reading": "bàocuò",
+     "definition": "báo lỗi",
+     "example": "程序报错了。 (Chương trình báo lỗi.)"
+    },
+    {
+     "term": "应该",
+     "reading": "yīnggāi",
+     "definition": "lẽ ra, nên",
+     "example": "应该没问题。 (Lẽ ra không có vấn đề.)"
+    },
+    {
+     "term": "修复",
+     "reading": "xiūfù",
+     "definition": "sửa chữa (lỗi)",
+     "example": "我已经修复了。 (Tôi đã sửa xong.)"
+    }
+   ],
+   "grammar": {
+    "title": "只要……就…… / 应该",
+    "explanation": "Chỉ cần … là …: 只要 + điều kiện, 就 + kết quả. Lẽ ra/nên: 应该. Số lần: V + 两次.",
+    "examples": [
+     "只要点这个按钮,页面就会刷新。[zhǐyào diǎn zhège ànniǔ, yèmiàn jiù huì shuāxīn] (Chỉ cần bấm nút này là trang sẽ tải lại.)",
+     "这里应该显示名字。[zhèlǐ yīnggāi xiǎnshì míngzi] (Ở đây lẽ ra hiện tên.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm f và x",
+    "tip": "发现 fāxiàn, 修复 xiūfù: f môi răng, x đầu lưỡi phẳng. 报错 bàocuò: c bật hơi.",
+    "words": [
+     "发现",
+     "重现",
+     "报错",
+     "修复"
+    ]
+   },
+   "speakingTasks": [
+    "Báo cáo một lỗi: các bước, kết quả mong đợi và thực tế.",
+    "Giải thích cho thầy/cô lỗi bạn từng gặp và cách sửa."
+   ],
+   "questions": [
+    {
+     "prompt": "“Chỉ cần bấm nút là báo lỗi.”",
+     "options": [
+      "就要点按钮,只报错。",
+      "只要点按钮,才报错。",
+      "只要点按钮,就会报错。"
+     ],
+     "answer": 2,
+     "explanation": "只要……就……"
+    },
+    {
+     "prompt": "「应该」 nghĩa là:",
+     "options": [
+      "không bao giờ",
+      "vừa mới",
+      "lẽ ra, nên"
+     ],
+     "answer": 2,
+     "explanation": "应该 = should."
+    },
+    {
+     "prompt": "“Tôi đã sửa lỗi.”",
+     "options": [
+      "我修复已经。",
+      "我已经了修复。",
+      "我已经修复了。"
+     ],
+     "answer": 2,
+     "explanation": "已经 + V + 了."
+    },
+    {
+     "prompt": "Hỏi cách tái hiện lỗi:",
+     "options": [
+      "怎么重现?",
+      "谁重现了吗?",
+      "什么时候吃?"
+     ],
+     "answer": 0,
+     "explanation": "怎么 + V."
+    },
+    {
+     "prompt": "「修复」 có nghĩa là gì?",
+     "options": [
+      "tái hiện",
+      "báo lỗi",
+      "sửa chữa (lỗi)"
+     ],
+     "answer": 2,
+     "explanation": "「修复」 [xiūfù] = sửa chữa (lỗi)."
+    },
+    {
+     "prompt": "「发现」 đọc là gì?",
+     "options": [
+      "fāxiàn",
+      "chóngxiàn",
+      "xiūfù"
+     ],
+     "answer": 0,
+     "explanation": "「发现」 đọc là [fāxiàn], nghĩa là phát hiện."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我＿＿＿了问题。  (Tôi phát hiện ra vấn đề.)",
+     "options": [
+      "修复",
+      "发现",
+      "重现"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「发现」 (phát hiện). Câu đầy đủ: 我发现了问题。"
+    },
+    {
+     "prompt": "「重现」 có nghĩa là gì?",
+     "options": [
+      "lẽ ra, nên",
+      "báo lỗi",
+      "tái hiện"
+     ],
+     "answer": 2,
+     "explanation": "「重现」 [chóngxiàn] = tái hiện."
+    },
+    {
+     "prompt": "「应该」 đọc là gì?",
+     "options": [
+      "yīnggāi",
+      "chóngxiàn",
+      "xiūfù"
+     ],
+     "answer": 0,
+     "explanation": "「应该」 đọc là [yīnggāi], nghĩa là lẽ ra, nên."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 这个问题很难＿＿＿。  (Lỗi này khó tái hiện.)",
+     "options": [
+      "应该",
+      "报错",
+      "重现"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「重现」 (tái hiện). Câu đầy đủ: 这个问题很难重现。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-a2-3",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Giải thích tính năng cho khách hàng",
+   "objective": "Giới thiệu tính năng mới và lợi ích của nó.",
+   "reading": "客户: 请介绍一下新功能。\n小明: 用这个应用,您可以马上分享照片。\n客户: 手机上也能用吗?\n小明: 能,电脑和手机都可以用,而且操作很简单。",
+   "dialogue": [
+    {
+     "speaker": "客户",
+     "text": "请介绍一下新功能。",
+     "phonetic": "Qǐng jièshào yíxià xīn gōngnéng.",
+     "translation": "Xin giới thiệu chức năng mới."
+    },
+    {
+     "speaker": "小明",
+     "text": "用这个应用,您可以马上分享照片。",
+     "phonetic": "Yòng zhège yìngyòng, nín kěyǐ mǎshàng fēnxiǎng zhàopiàn.",
+     "translation": "Dùng ứng dụng này, quý khách có thể chia sẻ ảnh ngay."
+    },
+    {
+     "speaker": "客户",
+     "text": "手机上也能用吗?",
+     "phonetic": "Shǒujī shang yě néng yòng ma?",
+     "translation": "Trên điện thoại cũng dùng được chứ?"
+    },
+    {
+     "speaker": "小明",
+     "text": "能,电脑和手机都可以用,而且操作很简单。",
+     "phonetic": "Néng, diànnǎo hé shǒujī dōu kěyǐ yòng, érqiě cāozuò hěn jiǎndān.",
+     "translation": "Được, máy tính và điện thoại đều dùng được, mà thao tác rất đơn giản."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "功能",
+     "reading": "gōngnéng",
+     "definition": "chức năng",
+     "example": "这个功能很方便。 (Chức năng này rất tiện.)"
+    },
+    {
+     "term": "应用",
+     "reading": "yìngyòng",
+     "definition": "ứng dụng",
+     "example": "下载这个应用。 (Tải ứng dụng này.)"
+    },
+    {
+     "term": "分享",
+     "reading": "fēnxiǎng",
+     "definition": "chia sẻ",
+     "example": "我分享了文件。 (Tôi đã chia sẻ tệp.)"
+    },
+    {
+     "term": "方便",
+     "reading": "fāngbiàn",
+     "definition": "tiện lợi",
+     "example": "用起来很方便。 (Dùng rất tiện.)"
+    },
+    {
+     "term": "操作",
+     "reading": "cāozuò",
+     "definition": "thao tác",
+     "example": "操作很简单。 (Thao tác rất đơn giản.)"
+    }
+   ],
+   "grammar": {
+    "title": "可以 / 都 / 而且",
+    "explanation": "Có thể: 可以 + V. Cả hai đều: A 和 B 都 + V. Thêm ý: 而且 (mà còn). 用起来: khi dùng thì.",
+    "examples": [
+     "您可以用中文搜索。[nín kěyǐ yòng Zhōngwén sōusuǒ] (Quý khách có thể tìm bằng tiếng Trung.)",
+     "白天和晚上都能用。[báitiān hé wǎnshang dōu néng yòng] (Ngày và đêm đều dùng được.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm f và -eng",
+    "tip": "功能 gōngnéng, 分享 fēnxiǎng, 方便 fāngbiàn: vần mũi -ng rõ ràng.",
+    "words": [
+     "功能",
+     "应用",
+     "分享",
+     "方便"
+    ]
+   },
+   "speakingTasks": [
+    "Giới thiệu 2 tính năng của một ứng dụng bạn thích.",
+    "Trả lời câu hỏi của khách: 「没有网络也能用吗?」."
+   ],
+   "questions": [
+    {
+     "prompt": "“Có thể chia sẻ ảnh.”",
+     "options": [
+      "可以分享照片。",
+      "分享可以照片。",
+      "照片可以了分享。"
+     ],
+     "answer": 0,
+     "explanation": "可以 + V."
+    },
+    {
+     "prompt": "“Máy tính và điện thoại đều dùng được.”",
+     "options": [
+      "电脑都和手机可以用。",
+      "都电脑手机可以用和。",
+      "电脑和手机都可以用。"
+     ],
+     "answer": 2,
+     "explanation": "A 和 B 都 + V."
+    },
+    {
+     "prompt": "「功能」 là:",
+     "options": [
+      "khách hàng",
+      "chức năng",
+      "giá cả"
+     ],
+     "answer": 1,
+     "explanation": "功能 = chức năng."
+    },
+    {
+     "prompt": "「方便」 nghĩa là:",
+     "options": [
+      "tiện lợi",
+      "đắt",
+      "khó"
+     ],
+     "answer": 0,
+     "explanation": "方便 = tiện."
+    },
+    {
+     "prompt": "「方便」 có nghĩa là gì?",
+     "options": [
+      "chức năng",
+      "ứng dụng",
+      "tiện lợi"
+     ],
+     "answer": 2,
+     "explanation": "「方便」 [fāngbiàn] = tiện lợi."
+    },
+    {
+     "prompt": "「功能」 đọc là gì?",
+     "options": [
+      "fēnxiǎng",
+      "yìngyòng",
+      "gōngnéng"
+     ],
+     "answer": 2,
+     "explanation": "「功能」 đọc là [gōngnéng], nghĩa là chức năng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 用起来很＿＿＿。  (Dùng rất tiện.)",
+     "options": [
+      "应用",
+      "功能",
+      "方便"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「方便」 (tiện lợi). Câu đầy đủ: 用起来很方便。"
+    },
+    {
+     "prompt": "「应用」 có nghĩa là gì?",
+     "options": [
+      "ứng dụng",
+      "thao tác",
+      "chia sẻ"
+     ],
+     "answer": 0,
+     "explanation": "「应用」 [yìngyòng] = ứng dụng."
+    },
+    {
+     "prompt": "「应用」 đọc là gì?",
+     "options": [
+      "cāozuò",
+      "yìngyòng",
+      "fēnxiǎng"
+     ],
+     "answer": 1,
+     "explanation": "「应用」 đọc là [yìngyòng], nghĩa là ứng dụng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 下载这个＿＿＿。  (Tải ứng dụng này.)",
+     "options": [
+      "分享",
+      "应用",
+      "操作"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「应用」 (ứng dụng). Câu đầy đủ: 下载这个应用。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b1-1",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Review code và góp ý kỹ thuật",
+   "objective": "Đưa ra nhận xét code lịch sự và giải thích lý do.",
+   "reading": "师兄: 你的代码我看了,整体写得不错。\n师兄: 不过这个函数太长了,最好拆分一下。\n小明: 明白了。需要加单元测试吗?\n师兄: 需要,特别是边界情况,有了测试大家都放心。",
+   "dialogue": [
+    {
+     "speaker": "师兄",
+     "text": "你的代码我看了,整体写得不错。",
+     "phonetic": "Nǐ de dàimǎ wǒ kàn le, zhěngtǐ xiě de búcuò.",
+     "translation": "Code của em anh xem rồi, nhìn chung viết tốt."
+    },
+    {
+     "speaker": "师兄",
+     "text": "不过这个函数太长了,最好拆分一下。",
+     "phonetic": "Búguò zhège hánshù tài cháng le, zuìhǎo chāifēn yíxià.",
+     "translation": "Có điều hàm này dài quá, tốt nhất nên tách ra."
+    },
+    {
+     "speaker": "小明",
+     "text": "明白了。需要加单元测试吗?",
+     "phonetic": "Míngbai le. Xūyào jiā dānyuán cèshì ma?",
+     "translation": "Em hiểu rồi. Có cần thêm unit test không ạ?"
+    },
+    {
+     "speaker": "师兄",
+     "text": "需要,特别是边界情况,有了测试大家都放心。",
+     "phonetic": "Xūyào, tèbié shì biānjiè qíngkuàng, yǒu le cèshì dàjiā dōu fàngxīn.",
+     "translation": "Cần, nhất là trường hợp biên, có test thì mọi người đều yên tâm."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "代码",
+     "reading": "dàimǎ",
+     "definition": "mã nguồn, code",
+     "example": "请检查一下代码。 (Xin kiểm tra code.)"
+    },
+    {
+     "term": "函数",
+     "reading": "hánshù",
+     "definition": "hàm",
+     "example": "这个函数有问题。 (Hàm này có vấn đề.)"
+    },
+    {
+     "term": "拆分",
+     "reading": "chāifēn",
+     "definition": "tách ra",
+     "example": "把功能拆分成两部分。 (Tách chức năng thành hai phần.)"
+    },
+    {
+     "term": "整体",
+     "reading": "zhěngtǐ",
+     "definition": "tổng thể, nhìn chung",
+     "example": "整体效果很好。 (Hiệu quả tổng thể rất tốt.)"
+    },
+    {
+     "term": "放心",
+     "reading": "fàngxīn",
+     "definition": "yên tâm",
+     "example": "你放心吧。 (Bạn cứ yên tâm.)"
+    }
+   ],
+   "grammar": {
+    "title": "太……了 / 不过 / 最好",
+    "explanation": "Quá: 太 + tính từ + 了. Chuyển ý sau lời khen: 不过. Góp ý: 最好 + V (tốt nhất nên). Đánh giá: V + 得 + tính từ.",
+    "examples": [
+     "变量名太短了,不好理解。[biànliàngmíng tài duǎn le, bù hǎo lǐjiě] (Tên biến ngắn quá, khó hiểu.)",
+     "最好加上注释。[zuìhǎo jiāshang zhùshì] (Tốt nhất nên thêm chú thích.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm h và f",
+    "tip": "函数 hánshù, 放心 fàngxīn: h phát âm từ họng nhẹ, khác kh tiếng Việt.",
+    "words": [
+     "代码",
+     "函数",
+     "拆分",
+     "放心"
+    ]
+   },
+   "speakingTasks": [
+    "Nhận xét một đoạn code: khen một điểm, góp ý một điểm.",
+    "Trả lời góp ý review của thầy/cô một cách cầu thị."
+   ],
+   "questions": [
+    {
+     "prompt": "Góp ý “nên tách hàm”:",
+     "options": [
+      "最好拆分一下这个函数。",
+      "不要拆分函数。",
+      "你必须拆分!"
+     ],
+     "answer": 0,
+     "explanation": "最好 + V."
+    },
+    {
+     "prompt": "“Quá dài” là:",
+     "options": [
+      "太长了",
+      "长太了",
+      "很太长"
+     ],
+     "answer": 0,
+     "explanation": "太 + Adj + 了."
+    },
+    {
+     "prompt": "Từ chuyển ý sau lời khen:",
+     "options": [
+      "所以",
+      "不过",
+      "而且"
+     ],
+     "answer": 1,
+     "explanation": "不过 = có điều."
+    },
+    {
+     "prompt": "「代码」 nghĩa là:",
+     "options": [
+      "tài liệu",
+      "mã nguồn",
+      "mật khẩu"
+     ],
+     "answer": 1,
+     "explanation": "代码 = code."
+    },
+    {
+     "prompt": "「函数」 có nghĩa là gì?",
+     "options": [
+      "tổng thể, nhìn chung",
+      "hàm",
+      "tách ra"
+     ],
+     "answer": 1,
+     "explanation": "「函数」 [hánshù] = hàm."
+    },
+    {
+     "prompt": "「代码」 đọc là gì?",
+     "options": [
+      "dàimǎ",
+      "fàngxīn",
+      "chāifēn"
+     ],
+     "answer": 0,
+     "explanation": "「代码」 đọc là [dàimǎ], nghĩa là mã nguồn, code."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 你＿＿＿吧。  (Bạn cứ yên tâm.)",
+     "options": [
+      "放心",
+      "函数",
+      "拆分"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「放心」 (yên tâm). Câu đầy đủ: 你放心吧。"
+    },
+    {
+     "prompt": "「整体」 có nghĩa là gì?",
+     "options": [
+      "tổng thể, nhìn chung",
+      "mã nguồn, code",
+      "hàm"
+     ],
+     "answer": 0,
+     "explanation": "「整体」 [zhěngtǐ] = tổng thể, nhìn chung."
+    },
+    {
+     "prompt": "「拆分」 đọc là gì?",
+     "options": [
+      "zhěngtǐ",
+      "hánshù",
+      "chāifēn"
+     ],
+     "answer": 2,
+     "explanation": "「拆分」 đọc là [chāifēn], nghĩa là tách ra."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿效果很好。  (Hiệu quả tổng thể rất tốt.)",
+     "options": [
+      "代码",
+      "函数",
+      "整体"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「整体」 (tổng thể, nhìn chung). Câu đầy đủ: 整体效果很好。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b1-2",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Phỏng vấn kỹ thuật",
+   "objective": "Trình bày dự án, vai trò và cách giải quyết khó khăn.",
+   "reading": "面试官: 请介绍一下你负责过的项目。\n小明: 我负责过一个电商网站的后端开发。\n面试官: 遇到的最大困难是什么?\n小明: 访问量突然增加。后来我们通过引入缓存解决了这个问题。",
+   "dialogue": [
+    {
+     "speaker": "面试官",
+     "text": "请介绍一下你负责过的项目。",
+     "phonetic": "Qǐng jièshào yíxià nǐ fùzé guo de xiàngmù.",
+     "translation": "Xin giới thiệu dự án bạn từng phụ trách."
+    },
+    {
+     "speaker": "小明",
+     "text": "我负责过一个电商网站的后端开发。",
+     "phonetic": "Wǒ fùzé guo yí gè diànshāng wǎngzhàn de hòuduān kāifā.",
+     "translation": "Tôi từng phụ trách phát triển backend cho một trang thương mại điện tử."
+    },
+    {
+     "speaker": "面试官",
+     "text": "遇到的最大困难是什么?",
+     "phonetic": "Yùdào de zuì dà kùnnán shì shénme?",
+     "translation": "Khó khăn lớn nhất gặp phải là gì?"
+    },
+    {
+     "speaker": "小明",
+     "text": "访问量突然增加。后来我们通过引入缓存解决了这个问题。",
+     "phonetic": "Fǎngwènliàng tūrán zēngjiā. Hòulái wǒmen tōngguò yǐnrù huǎncún jiějué le zhège wèntí.",
+     "translation": "Lượng truy cập tăng đột ngột. Sau đó chúng tôi giải quyết bằng cách đưa cache vào."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "负责",
+     "reading": "fùzé",
+     "definition": "phụ trách",
+     "example": "我负责测试。 (Tôi phụ trách kiểm thử.)"
+    },
+    {
+     "term": "项目",
+     "reading": "xiàngmù",
+     "definition": "dự án",
+     "example": "这个项目很大。 (Dự án này rất lớn.)"
+    },
+    {
+     "term": "困难",
+     "reading": "kùnnán",
+     "definition": "khó khăn",
+     "example": "我们遇到了困难。 (Chúng tôi gặp khó khăn.)"
+    },
+    {
+     "term": "通过",
+     "reading": "tōngguò",
+     "definition": "thông qua, bằng cách",
+     "example": "通过学习提高能力。 (Nâng cao năng lực bằng cách học.)"
+    },
+    {
+     "term": "解决",
+     "reading": "jiějué",
+     "definition": "giải quyết",
+     "example": "问题解决了。 (Vấn đề đã được giải quyết.)"
+    }
+   ],
+   "grammar": {
+    "title": "V 过 / 通过……解决",
+    "explanation": "Kinh nghiệm: V + 过 (负责过). Cách thức: 通过 + phương pháp + V. Định ngữ: 遇到的最大困难.",
+    "examples": [
+     "我们通过优化数据库提高了速度。[wǒmen tōngguò yōuhuà shùjùkù tígāo le sùdù] (Chúng tôi tăng tốc độ bằng cách tối ưu cơ sở dữ liệu.)",
+     "我参加过三个项目。[wǒ cānjiā guo sān gè xiàngmù] (Tôi đã tham gia ba dự án.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Trình bày mạch lạc",
+    "tip": "Dùng cấu trúc STAR, ngắt hơi sau mỗi ý. Âm 负责 fùzé (z thẳng lưỡi), 解决 jiějué (ü).",
+    "words": [
+     "负责",
+     "项目",
+     "困难",
+     "解决"
+    ]
+   },
+   "speakingTasks": [
+    "Giới thiệu một dự án bạn từng làm và vai trò của bạn.",
+    "Kể khó khăn lớn nhất trong dự án và cách bạn giải quyết."
+   ],
+   "questions": [
+    {
+     "prompt": "“Tôi từng phụ trách backend.”",
+     "options": [
+      "我过负责后端开发。",
+      "我负责后端过了开发。",
+      "我负责过后端开发。"
+     ],
+     "answer": 2,
+     "explanation": "V + 过."
+    },
+    {
+     "prompt": "“Giải quyết bằng cách thêm cache”:",
+     "options": [
+      "缓存通过解决引入",
+      "通过引入缓存解决",
+      "因为缓存解决了"
+     ],
+     "answer": 1,
+     "explanation": "通过 + phương pháp."
+    },
+    {
+     "prompt": "「项目」 nghĩa là:",
+     "options": [
+      "câu hỏi",
+      "dự án",
+      "phòng ban"
+     ],
+     "answer": 1,
+     "explanation": "项目 = project."
+    },
+    {
+     "prompt": "「困难」 là:",
+     "options": [
+      "khó khăn",
+      "tiền lương",
+      "thành công"
+     ],
+     "answer": 0,
+     "explanation": "困难 = khó khăn."
+    },
+    {
+     "prompt": "「通过」 có nghĩa là gì?",
+     "options": [
+      "giải quyết",
+      "phụ trách",
+      "thông qua, bằng cách"
+     ],
+     "answer": 2,
+     "explanation": "「通过」 [tōngguò] = thông qua, bằng cách."
+    },
+    {
+     "prompt": "「项目」 đọc là gì?",
+     "options": [
+      "jiějué",
+      "kùnnán",
+      "xiàngmù"
+     ],
+     "answer": 2,
+     "explanation": "「项目」 đọc là [xiàngmù], nghĩa là dự án."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 问题＿＿＿了。  (Vấn đề đã được giải quyết.)",
+     "options": [
+      "解决",
+      "项目",
+      "通过"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「解决」 (giải quyết). Câu đầy đủ: 问题解决了。"
+    },
+    {
+     "prompt": "「解决」 có nghĩa là gì?",
+     "options": [
+      "dự án",
+      "giải quyết",
+      "thông qua, bằng cách"
+     ],
+     "answer": 1,
+     "explanation": "「解决」 [jiějué] = giải quyết."
+    },
+    {
+     "prompt": "「通过」 đọc là gì?",
+     "options": [
+      "tōngguò",
+      "jiějué",
+      "fùzé"
+     ],
+     "answer": 0,
+     "explanation": "「通过」 đọc là [tōngguò], nghĩa là thông qua, bằng cách."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿学习提高能力。  (Nâng cao năng lực bằng cách học.)",
+     "options": [
+      "负责",
+      "解决",
+      "通过"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「通过」 (thông qua, bằng cách). Câu đầy đủ: 通过学习提高能力。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b1-3",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Bảo mật và dữ liệu",
+   "objective": "Giải thích quy tắc bảo mật và cách xử lý dữ liệu cá nhân.",
+   "reading": "组长: 处理个人信息的时候,一定要遵守规定。\n小明: 具体应该注意什么?\n组长: 数据要加密,密码不能告诉别人。\n小明: 如果收到可疑邮件,我会马上报告。",
+   "dialogue": [
+    {
+     "speaker": "组长",
+     "text": "处理个人信息的时候,一定要遵守规定。",
+     "phonetic": "Chǔlǐ gèrén xìnxī de shíhou, yídìng yào zūnshǒu guīdìng.",
+     "translation": "Khi xử lý thông tin cá nhân, nhất định phải tuân thủ quy định."
+    },
+    {
+     "speaker": "小明",
+     "text": "具体应该注意什么?",
+     "phonetic": "Jùtǐ yīnggāi zhùyì shénme?",
+     "translation": "Cụ thể nên chú ý gì ạ?"
+    },
+    {
+     "speaker": "组长",
+     "text": "数据要加密,密码不能告诉别人。",
+     "phonetic": "Shùjù yào jiāmì, mìmǎ bù néng gàosu biérén.",
+     "translation": "Dữ liệu phải mã hóa, không được nói mật khẩu cho người khác."
+    },
+    {
+     "speaker": "小明",
+     "text": "如果收到可疑邮件,我会马上报告。",
+     "phonetic": "Rúguǒ shōudào kěyí yóujiàn, wǒ huì mǎshàng bàogào.",
+     "translation": "Nếu nhận email đáng ngờ, tôi sẽ báo cáo ngay."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "个人信息",
+     "reading": "gèrén xìnxī",
+     "definition": "thông tin cá nhân",
+     "example": "保护个人信息。 (Bảo vệ thông tin cá nhân.)"
+    },
+    {
+     "term": "加密",
+     "reading": "jiāmì",
+     "definition": "mã hóa",
+     "example": "文件已经加密了。 (Tệp đã được mã hóa.)"
+    },
+    {
+     "term": "可疑",
+     "reading": "kěyí",
+     "definition": "đáng ngờ",
+     "example": "不要打开可疑链接。 (Đừng mở liên kết đáng ngờ.)"
+    },
+    {
+     "term": "遵守",
+     "reading": "zūnshǒu",
+     "definition": "tuân thủ",
+     "example": "请遵守规定。 (Xin tuân thủ quy định.)"
+    },
+    {
+     "term": "报告",
+     "reading": "bàogào",
+     "definition": "báo cáo",
+     "example": "我马上报告。 (Tôi báo cáo ngay.)"
+    }
+   ],
+   "grammar": {
+    "title": "一定要 / 不能 / 如果……会……",
+    "explanation": "Bắt buộc: 一定要 + V. Cấm: 不能 + V. Giả định và hành động: 如果……,我会…….",
+    "examples": [
+     "一定要定期备份。[yídìng yào dìngqī bèifèn] (Nhất định phải sao lưu định kỳ.)",
+     "不能把U盘带出公司。[bù néng bǎ U pán dàichū gōngsī] (Không được mang USB ra khỏi công ty.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm x và z",
+    "tip": "信息 xìnxī, 遵守 zūnshǒu: x đầu lưỡi phẳng, z thẳng lưỡi, sh cuốn lưỡi.",
+    "words": [
+     "个人信息",
+     "加密",
+     "可疑",
+     "遵守"
+    ]
+   },
+   "speakingTasks": [
+    "Nêu 3 quy tắc bảo mật ở công ty bạn.",
+    "Giải thích cho thầy/cô cách nhận biết email lừa đảo."
+   ],
+   "questions": [
+    {
+     "prompt": "“Nhất định phải tuân thủ quy định.”",
+     "options": [
+      "要一定规定遵守。",
+      "一定要遵守规定。",
+      "一定遵守要规定。"
+     ],
+     "answer": 1,
+     "explanation": "一定要 + V."
+    },
+    {
+     "prompt": "Quy tắc “không được nói mật khẩu cho người khác”:",
+     "options": [
+      "密码要告诉别人。",
+      "密码可以告诉别人。",
+      "密码不能告诉别人。"
+     ],
+     "answer": 2,
+     "explanation": "不能 = không được."
+    },
+    {
+     "prompt": "「加密」 là:",
+     "options": [
+      "sao lưu",
+      "xóa",
+      "mã hóa"
+     ],
+     "answer": 2,
+     "explanation": "加密 = encrypt."
+    },
+    {
+     "prompt": "“Nếu nhận email lạ sẽ báo ngay.”",
+     "options": [
+      "因为收到邮件,所以不报告。",
+      "收到邮件如果报告会我。",
+      "如果收到可疑邮件,我会马上报告。"
+     ],
+     "answer": 2,
+     "explanation": "如果……会……."
+    },
+    {
+     "prompt": "「遵守」 có nghĩa là gì?",
+     "options": [
+      "mã hóa",
+      "thông tin cá nhân",
+      "tuân thủ"
+     ],
+     "answer": 2,
+     "explanation": "「遵守」 [zūnshǒu] = tuân thủ."
+    },
+    {
+     "prompt": "「报告」 đọc là gì?",
+     "options": [
+      "bàogào",
+      "gèrén xìnxī",
+      "jiāmì"
+     ],
+     "answer": 0,
+     "explanation": "「报告」 đọc là [bàogào], nghĩa là báo cáo."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 不要打开＿＿＿链接。  (Đừng mở liên kết đáng ngờ.)",
+     "options": [
+      "可疑",
+      "报告",
+      "遵守"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「可疑」 (đáng ngờ). Câu đầy đủ: 不要打开可疑链接。"
+    },
+    {
+     "prompt": "「个人信息」 có nghĩa là gì?",
+     "options": [
+      "tuân thủ",
+      "thông tin cá nhân",
+      "đáng ngờ"
+     ],
+     "answer": 1,
+     "explanation": "「个人信息」 [gèrén xìnxī] = thông tin cá nhân."
+    },
+    {
+     "prompt": "「可疑」 đọc là gì?",
+     "options": [
+      "zūnshǒu",
+      "bàogào",
+      "kěyí"
+     ],
+     "answer": 2,
+     "explanation": "「可疑」 đọc là [kěyí], nghĩa là đáng ngờ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请＿＿＿规定。  (Xin tuân thủ quy định.)",
+     "options": [
+      "个人信息",
+      "加密",
+      "遵守"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「遵守」 (tuân thủ). Câu đầy đủ: 请遵守规定。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b2-1",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Thuyết trình giải pháp kỹ thuật",
+   "objective": "Trình bày vấn đề, đề xuất giải pháp và so sánh phương án.",
+   "reading": "小明: 今天我想就提高系统处理速度提出一个方案。\n小明: 目前在高峰期,响应时间超过三秒。\n小明: 方案A成本低,但效果有限;方案B虽然前期投入大,但从长远来看更划算。\n经理: 有道理,就按方案B执行吧。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "今天我想就提高系统处理速度提出一个方案。",
+     "phonetic": "Jīntiān wǒ xiǎng jiù tígāo xìtǒng chǔlǐ sùdù tíchū yí gè fāng'àn.",
+     "translation": "Hôm nay tôi muốn đưa ra một phương án về việc nâng tốc độ xử lý của hệ thống."
+    },
+    {
+     "speaker": "小明",
+     "text": "目前在高峰期,响应时间超过三秒。",
+     "phonetic": "Mùqián zài gāofēngqī, xiǎngyìng shíjiān chāoguò sān miǎo.",
+     "translation": "Hiện tại vào giờ cao điểm, thời gian phản hồi vượt quá 3 giây."
+    },
+    {
+     "speaker": "小明",
+     "text": "方案A成本低,但效果有限;方案B虽然前期投入大,但从长远来看更划算。",
+     "phonetic": "Fāng'àn A chéngběn dī, dàn xiàoguǒ yǒuxiàn; fāng'àn B suīrán qiánqī tóurù dà, dàn cóng chángyuǎn lái kàn gèng huásuàn.",
+     "translation": "Phương án A chi phí thấp nhưng hiệu quả hạn chế; phương án B tuy đầu tư ban đầu lớn nhưng về lâu dài có lợi hơn."
+    },
+    {
+     "speaker": "经理",
+     "text": "有道理,就按方案B执行吧。",
+     "phonetic": "Yǒu dàolǐ, jiù àn fāng'àn B zhíxíng ba.",
+     "translation": "Có lý, cứ theo phương án B mà làm."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "方案",
+     "reading": "fāng'àn",
+     "definition": "phương án",
+     "example": "我们有两个方案。 (Chúng ta có hai phương án.)"
+    },
+    {
+     "term": "提高",
+     "reading": "tígāo",
+     "definition": "nâng cao",
+     "example": "提高效率。 (Nâng cao hiệu suất.)"
+    },
+    {
+     "term": "响应",
+     "reading": "xiǎngyìng",
+     "definition": "phản hồi",
+     "example": "系统响应很慢。 (Hệ thống phản hồi rất chậm.)"
+    },
+    {
+     "term": "成本",
+     "reading": "chéngběn",
+     "definition": "chi phí",
+     "example": "成本太高了。 (Chi phí quá cao.)"
+    },
+    {
+     "term": "执行",
+     "reading": "zhíxíng",
+     "definition": "thực hiện",
+     "example": "按计划执行。 (Thực hiện theo kế hoạch.)"
+    }
+   ],
+   "grammar": {
+    "title": "就……提出 / 虽然……但…… / 从……来看",
+    "explanation": "就 + chủ đề + 提出 + N: đưa ra ~ về chủ đề. Tuy…nhưng: 虽然……但……. Xét từ góc độ: 从……来看. Theo: 按 + N.",
+    "examples": [
+     "从长远来看,这个投资是值得的。[cóng chángyuǎn lái kàn, zhège tóuzī shì zhíde de] (Về lâu dài, khoản đầu tư này là đáng.)",
+     "虽然方便,但是费用难以控制。[suīrán fāngbiàn, dànshì fèiyòng nányǐ kòngzhì] (Tuy tiện nhưng chi phí khó kiểm soát.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng thuyết trình",
+    "tip": "Nói chậm, nhấn vào số liệu và từ khóa (方案, 成本). Âm 执行 zhíxíng (zh + x), 响应 xiǎngyìng.",
+    "words": [
+     "方案",
+     "响应",
+     "成本",
+     "执行"
+    ]
+   },
+   "speakingTasks": [
+    "Thuyết trình 1 phút: vấn đề – 2 phương án – đề xuất.",
+    "Thầy/cô làm trưởng phòng, hãy thuyết phục chọn phương án của bạn."
+   ],
+   "questions": [
+    {
+     "prompt": "Mở đầu thuyết trình về một chủ đề:",
+     "options": [
+      "我们随便聊。",
+      "我要说你听。",
+      "我想就……提出一个方案。"
+     ],
+     "answer": 2,
+     "explanation": "就……提出……"
+    },
+    {
+     "prompt": "「从长远来看」 nghĩa là:",
+     "options": [
+      "trong quá khứ",
+      "về lâu dài",
+      "trước mắt"
+     ],
+     "answer": 1,
+     "explanation": "长远 = lâu dài."
+    },
+    {
+     "prompt": "“Tuy đầu tư lớn nhưng có lợi hơn”:",
+     "options": [
+      "如果投入大,就划算",
+      "虽然投入大,但更划算",
+      "因为投入大,所以划算"
+     ],
+     "answer": 1,
+     "explanation": "虽然……但……"
+    },
+    {
+     "prompt": "「执行」 là:",
+     "options": [
+      "trì hoãn",
+      "hủy bỏ",
+      "thực hiện"
+     ],
+     "answer": 2,
+     "explanation": "执行 = execute."
+    },
+    {
+     "prompt": "「方案」 có nghĩa là gì?",
+     "options": [
+      "thực hiện",
+      "phương án",
+      "nâng cao"
+     ],
+     "answer": 1,
+     "explanation": "「方案」 [fāng'àn] = phương án."
+    },
+    {
+     "prompt": "「提高」 đọc là gì?",
+     "options": [
+      "tígāo",
+      "zhíxíng",
+      "fāng'àn"
+     ],
+     "answer": 0,
+     "explanation": "「提高」 đọc là [tígāo], nghĩa là nâng cao."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿效率。  (Nâng cao hiệu suất.)",
+     "options": [
+      "提高",
+      "执行",
+      "方案"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「提高」 (nâng cao). Câu đầy đủ: 提高效率。"
+    },
+    {
+     "prompt": "「响应」 có nghĩa là gì?",
+     "options": [
+      "phản hồi",
+      "phương án",
+      "chi phí"
+     ],
+     "answer": 0,
+     "explanation": "「响应」 [xiǎngyìng] = phản hồi."
+    },
+    {
+     "prompt": "「成本」 đọc là gì?",
+     "options": [
+      "fāng'àn",
+      "zhíxíng",
+      "chéngběn"
+     ],
+     "answer": 2,
+     "explanation": "「成本」 đọc là [chéngběn], nghĩa là chi phí."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 系统＿＿＿很慢。  (Hệ thống phản hồi rất chậm.)",
+     "options": [
+      "成本",
+      "方案",
+      "响应"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「响应」 (phản hồi). Câu đầy đủ: 系统响应很慢。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b2-2",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Xử lý sự cố hệ thống (incident)",
+   "objective": "Báo cáo sự cố khẩn, nguyên nhân, biện pháp và phòng ngừa tái phát.",
+   "reading": "小明: 紧急汇报:生产服务器出现故障。\n经理: 影响范围有多大?\n小明: 所有用户都无法登录。初步判断是配置错误导致的。\n小明: 一旦恢复配置,我会立即整理防止再次发生的措施。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "紧急汇报:生产服务器出现故障。",
+     "phonetic": "Jǐnjí huìbào: shēngchǎn fúwùqì chūxiàn gùzhàng.",
+     "translation": "Báo cáo khẩn: máy chủ production gặp sự cố."
+    },
+    {
+     "speaker": "经理",
+     "text": "影响范围有多大?",
+     "phonetic": "Yǐngxiǎng fànwéi yǒu duō dà?",
+     "translation": "Phạm vi ảnh hưởng lớn cỡ nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "所有用户都无法登录。初步判断是配置错误导致的。",
+     "phonetic": "Suǒyǒu yònghù dōu wúfǎ dēnglù. Chūbù pànduàn shì pèizhì cuòwù dǎozhì de.",
+     "translation": "Toàn bộ người dùng không đăng nhập được. Phán đoán ban đầu là do lỗi cấu hình gây ra."
+    },
+    {
+     "speaker": "小明",
+     "text": "一旦恢复配置,我会立即整理防止再次发生的措施。",
+     "phonetic": "Yídàn huīfù pèizhì, wǒ huì lìjí zhěnglǐ fángzhǐ zàicì fāshēng de cuòshī.",
+     "translation": "Một khi khôi phục cấu hình, tôi sẽ lập tức tổng hợp biện pháp chống tái phát."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "故障",
+     "reading": "gùzhàng",
+     "definition": "sự cố, hỏng hóc",
+     "example": "服务器出现故障。 (Máy chủ gặp sự cố.)"
+    },
+    {
+     "term": "影响",
+     "reading": "yǐngxiǎng",
+     "definition": "ảnh hưởng",
+     "example": "对用户没有影响。 (Không ảnh hưởng người dùng.)"
+    },
+    {
+     "term": "导致",
+     "reading": "dǎozhì",
+     "definition": "dẫn đến, gây ra",
+     "example": "错误导致系统崩溃。 (Lỗi khiến hệ thống sập.)"
+    },
+    {
+     "term": "恢复",
+     "reading": "huīfù",
+     "definition": "khôi phục",
+     "example": "系统已经恢复。 (Hệ thống đã khôi phục.)"
+    },
+    {
+     "term": "措施",
+     "reading": "cuòshī",
+     "definition": "biện pháp",
+     "example": "我们采取了措施。 (Chúng tôi đã áp dụng biện pháp.)"
+    }
+   ],
+   "grammar": {
+    "title": "一旦……就/会…… / ……导致的 / 初步判断",
+    "explanation": "Một khi: 一旦 + điều kiện, 就/会 + hành động. Nguyên nhân gây ra: 是 + N + 导致的. Nhận định thận trọng: 初步判断 / 可能是.",
+    "examples": [
+     "一旦恢复,我会立即通知您。[yídàn huīfù, wǒ huì lìjí tōngzhī nín] (Một khi khôi phục, tôi sẽ thông báo ngay.)",
+     "初步判断是网络问题。[chūbù pànduàn shì wǎngluò wèntí] (Phán đoán ban đầu là vấn đề mạng.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Báo cáo khẩn rõ ràng",
+    "tip": "Nói ngắn theo 3 ý: hiện trạng – ảnh hưởng – hành động. Âm 故障 gùzhàng, 措施 cuòshī (c + sh).",
+    "words": [
+     "故障",
+     "导致",
+     "恢复",
+     "措施"
+    ]
+   },
+   "speakingTasks": [
+    "Báo cáo khẩn một sự cố hệ thống theo 3 ý: hiện trạng, ảnh hưởng, hành động.",
+    "Trình bày biện pháp phòng ngừa tái phát cho thầy/cô."
+   ],
+   "questions": [
+    {
+     "prompt": "“Một khi khôi phục, tôi sẽ báo ngay.”",
+     "options": [
+      "恢复一旦,通知我会。",
+      "一旦恢复,我会立即通知您。",
+      "虽然恢复,但通知。"
+     ],
+     "answer": 1,
+     "explanation": "一旦……会……"
+    },
+    {
+     "prompt": "Nêu nguyên nhân thận trọng:",
+     "options": [
+      "肯定是你的错。",
+      "我不知道。",
+      "初步判断是配置错误导致的。"
+     ],
+     "answer": 2,
+     "explanation": "初步判断 = phán đoán ban đầu."
+    },
+    {
+     "prompt": "「影响范围」 là:",
+     "options": [
+      "thời gian khôi phục",
+      "phạm vi ảnh hưởng",
+      "người phụ trách"
+     ],
+     "answer": 1,
+     "explanation": "范围 = phạm vi."
+    },
+    {
+     "prompt": "「措施」 nghĩa là:",
+     "options": [
+      "biện pháp",
+      "nguyên nhân",
+      "kết quả"
+     ],
+     "answer": 0,
+     "explanation": "措施 = measure."
+    },
+    {
+     "prompt": "「措施」 có nghĩa là gì?",
+     "options": [
+      "ảnh hưởng",
+      "biện pháp",
+      "khôi phục"
+     ],
+     "answer": 1,
+     "explanation": "「措施」 [cuòshī] = biện pháp."
+    },
+    {
+     "prompt": "「影响」 đọc là gì?",
+     "options": [
+      "gùzhàng",
+      "huīfù",
+      "yǐngxiǎng"
+     ],
+     "answer": 2,
+     "explanation": "「影响」 đọc là [yǐngxiǎng], nghĩa là ảnh hưởng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 系统已经＿＿＿。  (Hệ thống đã khôi phục.)",
+     "options": [
+      "恢复",
+      "影响",
+      "故障"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「恢复」 (khôi phục). Câu đầy đủ: 系统已经恢复。"
+    },
+    {
+     "prompt": "「恢复」 có nghĩa là gì?",
+     "options": [
+      "ảnh hưởng",
+      "khôi phục",
+      "sự cố, hỏng hóc"
+     ],
+     "answer": 1,
+     "explanation": "「恢复」 [huīfù] = khôi phục."
+    },
+    {
+     "prompt": "「故障」 đọc là gì?",
+     "options": [
+      "huīfù",
+      "dǎozhì",
+      "gùzhàng"
+     ],
+     "answer": 2,
+     "explanation": "「故障」 đọc là [gùzhàng], nghĩa là sự cố, hỏng hóc."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 错误＿＿＿系统崩溃。  (Lỗi khiến hệ thống sập.)",
+     "options": [
+      "恢复",
+      "导致",
+      "措施"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「导致」 (dẫn đến, gây ra). Câu đầy đủ: 错误导致系统崩溃。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "technology-b2-3",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 3",
+   "category": "Thảo luận",
+   "title": "AI và xu hướng công nghệ",
+   "objective": "Thảo luận lợi ích, rủi ro của AI và nêu quan điểm.",
+   "reading": "同事: 随着生成式AI的普及,你觉得我们的工作会发生什么变化?\n小明: 简单重复的工作会减少,与此同时,熟练使用AI的能力会越来越重要。\n同事: 那信息的准确性呢?\n小明: 我们不能盲目相信AI的答案,必须由人来核实。",
+   "dialogue": [
+    {
+     "speaker": "同事",
+     "text": "随着生成式AI的普及,你觉得我们的工作会发生什么变化?",
+     "phonetic": "Suízhe shēngchéngshì AI de pǔjí, nǐ juéde wǒmen de gōngzuò huì fāshēng shénme biànhuà?",
+     "translation": "Cùng với sự phổ biến của AI tạo sinh, bạn nghĩ công việc của chúng ta sẽ thay đổi thế nào?"
+    },
+    {
+     "speaker": "小明",
+     "text": "简单重复的工作会减少,与此同时,熟练使用AI的能力会越来越重要。",
+     "phonetic": "Jiǎndān chóngfù de gōngzuò huì jiǎnshǎo, yǔ cǐ tóngshí, shúliàn shǐyòng AI de nénglì huì yuèláiyuè zhòngyào.",
+     "translation": "Công việc đơn giản lặp lại sẽ giảm, đồng thời năng lực dùng thành thạo AI sẽ ngày càng quan trọng."
+    },
+    {
+     "speaker": "同事",
+     "text": "那信息的准确性呢?",
+     "phonetic": "Nà xìnxī de zhǔnquèxìng ne?",
+     "translation": "Vậy còn độ chính xác của thông tin?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我们不能盲目相信AI的答案,必须由人来核实。",
+     "phonetic": "Wǒmen bù néng mángmù xiāngxìn AI de dá'àn, bìxū yóu rén lái héshí.",
+     "translation": "Chúng ta không thể tin mù quáng câu trả lời của AI, bắt buộc phải do con người kiểm chứng."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "普及",
+     "reading": "pǔjí",
+     "definition": "phổ biến",
+     "example": "智能手机已经普及了。 (Điện thoại thông minh đã phổ biến.)"
+    },
+    {
+     "term": "减少",
+     "reading": "jiǎnshǎo",
+     "definition": "giảm bớt",
+     "example": "成本减少了。 (Chi phí đã giảm.)"
+    },
+    {
+     "term": "准确",
+     "reading": "zhǔnquè",
+     "definition": "chính xác",
+     "example": "数据很准确。 (Dữ liệu rất chính xác.)"
+    },
+    {
+     "term": "盲目",
+     "reading": "mángmù",
+     "definition": "mù quáng",
+     "example": "不要盲目相信。 (Đừng tin mù quáng.)"
+    },
+    {
+     "term": "核实",
+     "reading": "héshí",
+     "definition": "kiểm chứng",
+     "example": "请核实一下信息。 (Xin kiểm chứng thông tin.)"
+    }
+   ],
+   "grammar": {
+    "title": "随着 / 与此同时 / 越来越 / 必须由……",
+    "explanation": "Cùng với: 随着 + N. Đồng thời: 与此同时. Ngày càng: 越来越 + Adj. Phải do ai làm: 必须由 + người + 来 + V.",
+    "examples": [
+     "随着技术的发展,生活越来越方便。[suízhe jìshù de fāzhǎn, shēnghuó yuèláiyuè fāngbiàn] (Cùng với sự phát triển kỹ thuật, cuộc sống ngày càng tiện.)",
+     "这件事必须由经理来决定。[zhè jiàn shì bìxū yóu jīnglǐ lái juédìng] (Việc này phải do giám đốc quyết định.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nêu quan điểm thuyết phục",
+    "tip": "Nhấn vào 必须, 越来越. Âm 准确 zhǔnquè (zh + q ü), 核实 héshí.",
+    "words": [
+     "普及",
+     "准确",
+     "盲目",
+     "核实"
+    ]
+   },
+   "speakingTasks": [
+    "Nêu quan điểm của bạn về AI trong công việc (lợi ích và rủi ro).",
+    "Tranh luận với thầy/cô: AI có thay thế lập trình viên không?"
+   ],
+   "questions": [
+    {
+     "prompt": "「与此同时」 nghĩa là:",
+     "options": [
+      "đồng thời",
+      "trước đó",
+      "vì vậy"
+     ],
+     "answer": 0,
+     "explanation": "与此同时 = cùng lúc đó."
+    },
+    {
+     "prompt": "“Ngày càng quan trọng”:",
+     "options": [
+      "很越来重要",
+      "越重要来越",
+      "越来越重要"
+     ],
+     "answer": 2,
+     "explanation": "越来越 + Adj."
+    },
+    {
+     "prompt": "「盲目相信」 nghĩa là:",
+     "options": [
+      "nghi ngờ",
+      "kiểm tra kỹ",
+      "tin mù quáng"
+     ],
+     "answer": 2,
+     "explanation": "盲目 = mù quáng."
+    },
+    {
+     "prompt": "“Phải do con người kiểm chứng.”",
+     "options": [
+      "可以不用核实。",
+      "必须由人来核实。",
+      "由AI来核实就行。"
+     ],
+     "answer": 1,
+     "explanation": "必须由……来……."
+    },
+    {
+     "prompt": "「准确」 có nghĩa là gì?",
+     "options": [
+      "mù quáng",
+      "giảm bớt",
+      "chính xác"
+     ],
+     "answer": 2,
+     "explanation": "「准确」 [zhǔnquè] = chính xác."
+    },
+    {
+     "prompt": "「减少」 đọc là gì?",
+     "options": [
+      "mángmù",
+      "jiǎnshǎo",
+      "zhǔnquè"
+     ],
+     "answer": 1,
+     "explanation": "「减少」 đọc là [jiǎnshǎo], nghĩa là giảm bớt."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请＿＿＿一下信息。  (Xin kiểm chứng thông tin.)",
+     "options": [
+      "普及",
+      "核实",
+      "准确"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「核实」 (kiểm chứng). Câu đầy đủ: 请核实一下信息。"
+    },
+    {
+     "prompt": "「盲目」 có nghĩa là gì?",
+     "options": [
+      "phổ biến",
+      "mù quáng",
+      "kiểm chứng"
+     ],
+     "answer": 1,
+     "explanation": "「盲目」 [mángmù] = mù quáng."
+    },
+    {
+     "prompt": "「核实」 đọc là gì?",
+     "options": [
+      "héshí",
+      "pǔjí",
+      "zhǔnquè"
+     ],
+     "answer": 0,
+     "explanation": "「核实」 đọc là [héshí], nghĩa là kiểm chứng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 数据很＿＿＿。  (Dữ liệu rất chính xác.)",
+     "options": [
+      "盲目",
+      "准确",
+      "减少"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「准确」 (chính xác). Câu đầy đủ: 数据很准确。"
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
+}

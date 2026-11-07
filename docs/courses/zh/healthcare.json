@@ -1,0 +1,2333 @@
+{
+ "id": "healthcare",
+ "title": "Tiếng Trung chuyên ngành y khoa",
+ "version": "1.1.0",
+ "framework": "HSK 1–5",
+ "overview": "12 bài từ HSK 1 đến HSK 5 cho nhân viên y tế: bộ phận cơ thể, tiếp nhận, hướng dẫn khi khám, hỏi bệnh sử, dùng thuốc, trấn an, giải thích thủ thuật, bàn giao ca, tư vấn bệnh mạn tính, thông báo tin xấu, trình bày ca bệnh và an toàn người bệnh.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI, phân cấp theo HSK/CEFR",
+ "references": [
+  {
+   "title": "Chinese Proficiency Grading Standards for International Chinese Language Education",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Khung tham chiếu năng lực tiếng Trung theo HSK (chỉ dùng để phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "HSK – Hanyu Shuiping Kaoshi",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Tham khảo cấp độ HSK 1–5 (không sao chép đề thi)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "healthcare-a1-1",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 1",
+   "category": "Từ vựng",
+   "title": "Các bộ phận cơ thể",
+   "objective": "Gọi tên bộ phận cơ thể và hỏi đau ở đâu.",
+   "reading": "护士: 您哪儿疼?\n病人: 我头疼,肚子也疼。\n护士: 腿怎么样?\n病人: 腿没事。",
+   "dialogue": [
+    {
+     "speaker": "护士",
+     "text": "您哪儿疼?",
+     "phonetic": "Nín nǎr téng?",
+     "translation": "Bác đau ở đâu ạ?"
+    },
+    {
+     "speaker": "病人",
+     "text": "我头疼,肚子也疼。",
+     "phonetic": "Wǒ tóu téng, dùzi yě téng.",
+     "translation": "Tôi đau đầu, bụng cũng đau."
+    },
+    {
+     "speaker": "护士",
+     "text": "腿怎么样?",
+     "phonetic": "Tuǐ zěnmeyàng?",
+     "translation": "Chân thì sao ạ?"
+    },
+    {
+     "speaker": "病人",
+     "text": "腿没事。",
+     "phonetic": "Tuǐ méi shì.",
+     "translation": "Chân không sao."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "头",
+     "reading": "tóu",
+     "definition": "đầu",
+     "example": "我头疼。 (Tôi đau đầu.)"
+    },
+    {
+     "term": "肚子",
+     "reading": "dùzi",
+     "definition": "bụng",
+     "example": "我肚子疼。 (Tôi đau bụng.)"
+    },
+    {
+     "term": "腿",
+     "reading": "tuǐ",
+     "definition": "chân",
+     "example": "我的腿很疼。 (Chân tôi rất đau.)"
+    },
+    {
+     "term": "手",
+     "reading": "shǒu",
+     "definition": "tay",
+     "example": "请洗手。 (Xin rửa tay.)"
+    },
+    {
+     "term": "疼",
+     "reading": "téng",
+     "definition": "đau",
+     "example": "哪儿疼?(Đau ở đâu?)"
+    }
+   ],
+   "grammar": {
+    "title": "Bộ phận + 疼",
+    "explanation": "Nói đau: bộ phận + 疼 (头疼, 肚子疼). Hỏi: 哪儿疼? Hỏi thăm: ……怎么样? Không sao: 没事.",
+    "examples": [
+     "我嗓子疼。[wǒ sǎngzi téng] (Tôi đau họng.)",
+     "眼睛怎么样?[yǎnjing zěnmeyàng] (Mắt thế nào?)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Thanh điệu từ cơ thể",
+    "tip": "头 tóu (2), 腿 tuǐ (3), 手 shǒu (3), 疼 téng (2). Đọc sai thanh dễ thành từ khác.",
+    "words": [
+     "头",
+     "肚子",
+     "腿",
+     "疼"
+    ]
+   },
+   "speakingTasks": [
+    "Chỉ và nói tên 5 bộ phận cơ thể.",
+    "Đóng vai điều dưỡng hỏi bệnh nhân đau ở đâu."
+   ],
+   "questions": [
+    {
+     "prompt": "Hỏi bệnh nhân “Đau ở đâu?”",
+     "options": [
+      "您疼哪儿是?",
+      "哪儿您疼了吗?",
+      "您哪儿疼?"
+     ],
+     "answer": 2,
+     "explanation": "哪儿 + 疼."
+    },
+    {
+     "prompt": "“Tôi đau bụng.”",
+     "options": [
+      "我肚子疼。",
+      "肚子我疼了的。",
+      "我疼肚子是。"
+     ],
+     "answer": 0,
+     "explanation": "Bộ phận + 疼."
+    },
+    {
+     "prompt": "「腿」 là:",
+     "options": [
+      "chân",
+      "đầu",
+      "tay"
+     ],
+     "answer": 0,
+     "explanation": "腿 = chân."
+    },
+    {
+     "prompt": "“Không sao.” là:",
+     "options": [
+      "不事。",
+      "没事。",
+      "没有疼是。"
+     ],
+     "answer": 1,
+     "explanation": "没事 = không sao."
+    },
+    {
+     "prompt": "「腿」 có nghĩa là gì?",
+     "options": [
+      "đau",
+      "chân",
+      "bụng"
+     ],
+     "answer": 1,
+     "explanation": "「腿」 [tuǐ] = chân."
+    },
+    {
+     "prompt": "「腿」 đọc là gì?",
+     "options": [
+      "téng",
+      "tuǐ",
+      "dùzi"
+     ],
+     "answer": 1,
+     "explanation": "「腿」 đọc là [tuǐ], nghĩa là chân."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 哪儿＿＿＿?  (Đau ở đâu?)",
+     "options": [
+      "疼",
+      "肚子",
+      "手"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「疼」 (đau). Câu đầy đủ: 哪儿疼?"
+    },
+    {
+     "prompt": "「疼」 có nghĩa là gì?",
+     "options": [
+      "tay",
+      "bụng",
+      "đau"
+     ],
+     "answer": 2,
+     "explanation": "「疼」 [téng] = đau."
+    },
+    {
+     "prompt": "「手」 đọc là gì?",
+     "options": [
+      "tóu",
+      "téng",
+      "shǒu"
+     ],
+     "answer": 2,
+     "explanation": "「手」 đọc là [shǒu], nghĩa là tay."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我＿＿＿疼。  (Tôi đau đầu.)",
+     "options": [
+      "头",
+      "腿",
+      "肚子"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「头」 (đầu). Câu đầy đủ: 我头疼。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a1-2",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Tiếp nhận bệnh nhân",
+   "objective": "Hỏi tên, ngày sinh, thẻ bảo hiểm và hướng dẫn chờ.",
+   "reading": "挂号处: 您好,请问您叫什么名字?\n病人: 我叫李华。\n挂号处: 请出示您的医保卡。\n病人: 给您。\n挂号处: 好的,请在那边等一下。",
+   "dialogue": [
+    {
+     "speaker": "挂号处",
+     "text": "您好,请问您叫什么名字?",
+     "phonetic": "Nín hǎo, qǐngwèn nín jiào shénme míngzi?",
+     "translation": "Xin chào, xin hỏi tên ngài là gì?"
+    },
+    {
+     "speaker": "病人",
+     "text": "我叫李华。",
+     "phonetic": "Wǒ jiào Lǐ Huá.",
+     "translation": "Tôi tên Lý Hoa."
+    },
+    {
+     "speaker": "挂号处",
+     "text": "请出示您的医保卡。",
+     "phonetic": "Qǐng chūshì nín de yībǎokǎ.",
+     "translation": "Xin xuất trình thẻ bảo hiểm y tế."
+    },
+    {
+     "speaker": "病人",
+     "text": "给您。",
+     "phonetic": "Gěi nín.",
+     "translation": "Đây ạ."
+    },
+    {
+     "speaker": "挂号处",
+     "text": "好的,请在那边等一下。",
+     "phonetic": "Hǎo de, qǐng zài nàbiān děng yíxià.",
+     "translation": "Vâng, xin chờ một chút ở đằng kia."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "名字",
+     "reading": "míngzi",
+     "definition": "tên",
+     "example": "您的名字是什么?(Tên của ngài là gì?)"
+    },
+    {
+     "term": "医保卡",
+     "reading": "yībǎokǎ",
+     "definition": "thẻ bảo hiểm y tế",
+     "example": "请带医保卡。 (Xin mang thẻ bảo hiểm.)"
+    },
+    {
+     "term": "出生日期",
+     "reading": "chūshēng rìqī",
+     "definition": "ngày sinh",
+     "example": "请写出生日期。 (Xin ghi ngày sinh.)"
+    },
+    {
+     "term": "等",
+     "reading": "děng",
+     "definition": "chờ",
+     "example": "请等一下。 (Xin chờ một chút.)"
+    },
+    {
+     "term": "挂号",
+     "reading": "guàhào",
+     "definition": "đăng ký khám",
+     "example": "先去挂号。 (Đi đăng ký khám trước.)"
+    }
+   ],
+   "grammar": {
+    "title": "请 + V / 在……等",
+    "explanation": "Lời mời lịch sự: 请 + động từ. Chờ ở đâu: 在 + nơi + 等. Dùng 您 với bệnh nhân.",
+    "examples": [
+     "请坐这儿。[qǐng zuò zhèr] (Mời ngồi đây.)",
+     "请在这儿签字。[qǐng zài zhèr qiānzì] (Xin ký vào đây.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm r trong 日期",
+    "tip": "出生日期 chūshēng rìqī: ch, sh, r cuốn lưỡi; q bật hơi. Nói chậm với người cao tuổi.",
+    "words": [
+     "名字",
+     "医保卡",
+     "出生日期",
+     "挂号"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai lễ tân tiếp nhận một bệnh nhân mới.",
+    "Hướng dẫn bệnh nhân điền phiếu và ngồi chờ."
+   ],
+   "questions": [
+    {
+     "prompt": "Mời bệnh nhân chờ lịch sự:",
+     "options": [
+      "你等那边吗。",
+      "那边等!",
+      "请在那边等一下。"
+     ],
+     "answer": 2,
+     "explanation": "请 + 在 + nơi + V."
+    },
+    {
+     "prompt": "「医保卡」 là:",
+     "options": [
+      "phiếu khám",
+      "đơn thuốc",
+      "thẻ bảo hiểm y tế"
+     ],
+     "answer": 2,
+     "explanation": "医保 = bảo hiểm y tế."
+    },
+    {
+     "prompt": "Hỏi tên lịch sự:",
+     "options": [
+      "你谁?",
+      "名字你?",
+      "请问您叫什么名字?"
+     ],
+     "answer": 2,
+     "explanation": "请问 + 您……"
+    },
+    {
+     "prompt": "「挂号」 nghĩa là:",
+     "options": [
+      "tiêm thuốc",
+      "xuất viện",
+      "đăng ký khám"
+     ],
+     "answer": 2,
+     "explanation": "挂号 = lấy số khám."
+    },
+    {
+     "prompt": "「名字」 có nghĩa là gì?",
+     "options": [
+      "tên",
+      "ngày sinh",
+      "đăng ký khám"
+     ],
+     "answer": 0,
+     "explanation": "「名字」 [míngzi] = tên."
+    },
+    {
+     "prompt": "「等」 đọc là gì?",
+     "options": [
+      "míngzi",
+      "chūshēng rìqī",
+      "děng"
+     ],
+     "answer": 2,
+     "explanation": "「等」 đọc là [děng], nghĩa là chờ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请带＿＿＿。  (Xin mang thẻ bảo hiểm.)",
+     "options": [
+      "挂号",
+      "医保卡",
+      "等"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「医保卡」 (thẻ bảo hiểm y tế). Câu đầy đủ: 请带医保卡。"
+    },
+    {
+     "prompt": "「出生日期」 có nghĩa là gì?",
+     "options": [
+      "tên",
+      "thẻ bảo hiểm y tế",
+      "ngày sinh"
+     ],
+     "answer": 2,
+     "explanation": "「出生日期」 [chūshēng rìqī] = ngày sinh."
+    },
+    {
+     "prompt": "「名字」 đọc là gì?",
+     "options": [
+      "guàhào",
+      "míngzi",
+      "chūshēng rìqī"
+     ],
+     "answer": 1,
+     "explanation": "「名字」 đọc là [míngzi], nghĩa là tên."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 先去＿＿＿。  (Đi đăng ký khám trước.)",
+     "options": [
+      "名字",
+      "出生日期",
+      "挂号"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「挂号」 (đăng ký khám). Câu đầy đủ: 先去挂号。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a1-3",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Hướng dẫn bệnh nhân trong khi khám",
+   "objective": "Đưa ra chỉ dẫn ngắn: ngồi, nằm, hít thở, cởi áo.",
+   "reading": "护士: 请坐这儿。\n护士: 请把外套脱下来。\n医生: 深呼吸……好,呼气。\n护士: 现在请躺在床上。",
+   "dialogue": [
+    {
+     "speaker": "护士",
+     "text": "请坐这儿。",
+     "phonetic": "Qǐng zuò zhèr.",
+     "translation": "Mời ngồi đây."
+    },
+    {
+     "speaker": "护士",
+     "text": "请把外套脱下来。",
+     "phonetic": "Qǐng bǎ wàitào tuō xiàlái.",
+     "translation": "Xin cởi áo khoác ra."
+    },
+    {
+     "speaker": "医生",
+     "text": "深呼吸……好,呼气。",
+     "phonetic": "Shēn hūxī… hǎo, hūqì.",
+     "translation": "Hít sâu… được, thở ra."
+    },
+    {
+     "speaker": "护士",
+     "text": "现在请躺在床上。",
+     "phonetic": "Xiànzài qǐng tǎng zài chuáng shang.",
+     "translation": "Bây giờ xin nằm lên giường."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "坐",
+     "reading": "zuò",
+     "definition": "ngồi",
+     "example": "请坐。 (Mời ngồi.)"
+    },
+    {
+     "term": "脱",
+     "reading": "tuō",
+     "definition": "cởi",
+     "example": "请脱鞋。 (Xin cởi giày.)"
+    },
+    {
+     "term": "呼吸",
+     "reading": "hūxī",
+     "definition": "hô hấp, thở",
+     "example": "深呼吸。 (Hít thở sâu.)"
+    },
+    {
+     "term": "躺",
+     "reading": "tǎng",
+     "definition": "nằm",
+     "example": "请躺下。 (Xin nằm xuống.)"
+    },
+    {
+     "term": "张开",
+     "reading": "zhāngkāi",
+     "definition": "mở ra, há",
+     "example": "请张开嘴。 (Xin há miệng.)"
+    }
+   ],
+   "grammar": {
+    "title": "请 + V / 请把……V 下来",
+    "explanation": "Chỉ dẫn lịch sự: 请 + V. Câu 把 với bổ ngữ hướng: 把外套脱下来. Nằm ở đâu: 躺在 + nơi.",
+    "examples": [
+     "请把袖子卷起来。[qǐng bǎ xiùzi juǎn qǐlái] (Xin xắn tay áo lên.)",
+     "请抬起手。[qǐng táiqǐ shǒu] (Xin giơ tay lên.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nói nhẹ nhàng, chậm",
+    "tip": "Khi hướng dẫn, nói chậm, giọng mềm. 呼吸 hūxī: h họng nhẹ, x đầu lưỡi.",
+    "words": [
+     "呼吸",
+     "躺下",
+     "张开",
+     "脱"
+    ]
+   },
+   "speakingTasks": [
+    "Hướng dẫn bệnh nhân 4 bước khi đo huyết áp.",
+    "Đọc chỉ dẫn khám phổi cho thầy/cô làm theo."
+   ],
+   "questions": [
+    {
+     "prompt": "“Xin nằm lên giường.”",
+     "options": [
+      "躺请在床。",
+      "请躺在床上。",
+      "请床上躺在。"
+     ],
+     "answer": 1,
+     "explanation": "躺在 + nơi."
+    },
+    {
+     "prompt": "“Hít sâu” là:",
+     "options": [
+      "呼气深",
+      "吸深呼",
+      "深呼吸"
+     ],
+     "answer": 2,
+     "explanation": "深呼吸 = hít thở sâu."
+    },
+    {
+     "prompt": "“Xin cởi áo khoác ra.”",
+     "options": [
+      "脱请外套把下来。",
+      "请把外套脱下来。",
+      "请外套把脱。"
+     ],
+     "answer": 1,
+     "explanation": "把 + O + V + 下来."
+    },
+    {
+     "prompt": "「张开嘴」 nghĩa là:",
+     "options": [
+      "giơ tay",
+      "nhắm mắt",
+      "há miệng"
+     ],
+     "answer": 2,
+     "explanation": "张开 = mở ra."
+    },
+    {
+     "prompt": "「躺」 có nghĩa là gì?",
+     "options": [
+      "ngồi",
+      "nằm",
+      "cởi"
+     ],
+     "answer": 1,
+     "explanation": "「躺」 [tǎng] = nằm."
+    },
+    {
+     "prompt": "「张开」 đọc là gì?",
+     "options": [
+      "hūxī",
+      "zhāngkāi",
+      "zuò"
+     ],
+     "answer": 1,
+     "explanation": "「张开」 đọc là [zhāngkāi], nghĩa là mở ra, há."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 深＿＿＿。  (Hít thở sâu.)",
+     "options": [
+      "张开",
+      "呼吸",
+      "坐"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「呼吸」 (hô hấp, thở). Câu đầy đủ: 深呼吸。"
+    },
+    {
+     "prompt": "「张开」 có nghĩa là gì?",
+     "options": [
+      "hô hấp, thở",
+      "ngồi",
+      "mở ra, há"
+     ],
+     "answer": 2,
+     "explanation": "「张开」 [zhāngkāi] = mở ra, há."
+    },
+    {
+     "prompt": "「躺」 đọc là gì?",
+     "options": [
+      "tǎng",
+      "tuō",
+      "zuò"
+     ],
+     "answer": 0,
+     "explanation": "「躺」 đọc là [tǎng], nghĩa là nằm."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请＿＿＿下。  (Xin nằm xuống.)",
+     "options": [
+      "脱",
+      "躺",
+      "坐"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「躺」 (nằm). Câu đầy đủ: 请躺下。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a2-1",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Hỏi bệnh sử",
+   "objective": "Hỏi triệu chứng, thời gian, bệnh nền và dị ứng.",
+   "reading": "医生: 您从什么时候开始发烧?\n病人: 从前天开始。\n医生: 以前得过什么大病吗?\n病人: 没有。不过我对青霉素过敏。",
+   "dialogue": [
+    {
+     "speaker": "医生",
+     "text": "您从什么时候开始发烧?",
+     "phonetic": "Nín cóng shénme shíhou kāishǐ fāshāo?",
+     "translation": "Ngài bắt đầu sốt từ khi nào?"
+    },
+    {
+     "speaker": "病人",
+     "text": "从前天开始。",
+     "phonetic": "Cóng qiántiān kāishǐ.",
+     "translation": "Từ hôm kia."
+    },
+    {
+     "speaker": "医生",
+     "text": "以前得过什么大病吗?",
+     "phonetic": "Yǐqián dé guo shénme dà bìng ma?",
+     "translation": "Trước đây từng mắc bệnh nặng gì chưa?"
+    },
+    {
+     "speaker": "病人",
+     "text": "没有。不过我对青霉素过敏。",
+     "phonetic": "Méiyǒu. Búguò wǒ duì qīngméisù guòmǐn.",
+     "translation": "Chưa. Nhưng tôi dị ứng penicillin."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "发烧",
+     "reading": "fāshāo",
+     "definition": "sốt",
+     "example": "孩子发烧了。 (Đứa trẻ bị sốt rồi.)"
+    },
+    {
+     "term": "开始",
+     "reading": "kāishǐ",
+     "definition": "bắt đầu",
+     "example": "从昨天开始疼。 (Bắt đầu đau từ hôm qua.)"
+    },
+    {
+     "term": "病",
+     "reading": "bìng",
+     "definition": "bệnh",
+     "example": "他得了一场大病。 (Anh ấy mắc một trận bệnh nặng.)"
+    },
+    {
+     "term": "过敏",
+     "reading": "guòmǐn",
+     "definition": "dị ứng",
+     "example": "我对海鲜过敏。 (Tôi dị ứng hải sản.)"
+    },
+    {
+     "term": "咳嗽",
+     "reading": "késou",
+     "definition": "ho",
+     "example": "我咳嗽了三天。 (Tôi ho ba ngày rồi.)"
+    }
+   ],
+   "grammar": {
+    "title": "从……开始 / V 过 / 对……过敏",
+    "explanation": "Hỏi thời điểm: 从什么时候开始? Tiền sử: 得过 + bệnh. Dị ứng: 对 + chất + 过敏. Thời lượng triệu chứng: V + 了 + thời lượng.",
+    "examples": [
+     "您做过手术吗?[nín zuò guo shǒushù ma] (Ngài đã từng phẫu thuật chưa?)",
+     "我咳嗽了一个星期。[wǒ késou le yí gè xīngqī] (Tôi ho một tuần rồi.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm f, sh và thanh nhẹ",
+    "tip": "发烧 fāshāo, 咳嗽 késou (sou thanh nhẹ), 过敏 guòmǐn.",
+    "words": [
+     "发烧",
+     "咳嗽",
+     "过敏",
+     "开始"
+    ]
+   },
+   "speakingTasks": [
+    "Hỏi bệnh sử một bệnh nhân bị sốt (thời gian, triệu chứng, dị ứng).",
+    "Trả lời câu hỏi bệnh sử của thầy/cô với vai bệnh nhân."
+   ],
+   "questions": [
+    {
+     "prompt": "Hỏi “Sốt từ khi nào?”",
+     "options": [
+      "发烧开始什么从?",
+      "什么时候发烧从?",
+      "从什么时候开始发烧?"
+     ],
+     "answer": 2,
+     "explanation": "从什么时候开始 + V."
+    },
+    {
+     "prompt": "Hỏi tiền sử bệnh:",
+     "options": [
+      "以前得什么大病过吗?",
+      "大病以前过吗?",
+      "以前得过什么大病吗?"
+     ],
+     "answer": 2,
+     "explanation": "V + 过."
+    },
+    {
+     "prompt": "“Tôi dị ứng hải sản.”",
+     "options": [
+      "我对海鲜过敏。",
+      "海鲜我对过敏了吗。",
+      "我过敏对海鲜。"
+     ],
+     "answer": 0,
+     "explanation": "对 + N + 过敏."
+    },
+    {
+     "prompt": "「咳嗽」 là:",
+     "options": [
+      "chóng mặt",
+      "ho",
+      "sốt"
+     ],
+     "answer": 1,
+     "explanation": "咳嗽 = ho."
+    },
+    {
+     "prompt": "「过敏」 có nghĩa là gì?",
+     "options": [
+      "bắt đầu",
+      "ho",
+      "dị ứng"
+     ],
+     "answer": 2,
+     "explanation": "「过敏」 [guòmǐn] = dị ứng."
+    },
+    {
+     "prompt": "「过敏」 đọc là gì?",
+     "options": [
+      "kāishǐ",
+      "guòmǐn",
+      "késou"
+     ],
+     "answer": 1,
+     "explanation": "「过敏」 đọc là [guòmǐn], nghĩa là dị ứng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 孩子＿＿＿了。  (Đứa trẻ bị sốt rồi.)",
+     "options": [
+      "发烧",
+      "过敏",
+      "病"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「发烧」 (sốt). Câu đầy đủ: 孩子发烧了。"
+    },
+    {
+     "prompt": "「开始」 có nghĩa là gì?",
+     "options": [
+      "bắt đầu",
+      "ho",
+      "sốt"
+     ],
+     "answer": 0,
+     "explanation": "「开始」 [kāishǐ] = bắt đầu."
+    },
+    {
+     "prompt": "「病」 đọc là gì?",
+     "options": [
+      "guòmǐn",
+      "bìng",
+      "fāshāo"
+     ],
+     "answer": 1,
+     "explanation": "「病」 đọc là [bìng], nghĩa là bệnh."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 从昨天＿＿＿疼。  (Bắt đầu đau từ hôm qua.)",
+     "options": [
+      "咳嗽",
+      "发烧",
+      "开始"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「开始」 (bắt đầu). Câu đầy đủ: 从昨天开始疼。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a2-2",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Hướng dẫn dùng thuốc",
+   "objective": "Giải thích liều dùng, thời điểm uống và tác dụng phụ.",
+   "reading": "药师: 这个药一天三次,饭后吃。\n病人: 一次吃几片?\n药师: 两片。吃了可能会犯困,所以别开车。\n病人: 明白了,谢谢。",
+   "dialogue": [
+    {
+     "speaker": "药师",
+     "text": "这个药一天三次,饭后吃。",
+     "phonetic": "Zhège yào yì tiān sān cì, fàn hòu chī.",
+     "translation": "Thuốc này ngày 3 lần, uống sau bữa ăn."
+    },
+    {
+     "speaker": "病人",
+     "text": "一次吃几片?",
+     "phonetic": "Yí cì chī jǐ piàn?",
+     "translation": "Mỗi lần mấy viên?"
+    },
+    {
+     "speaker": "药师",
+     "text": "两片。吃了可能会犯困,所以别开车。",
+     "phonetic": "Liǎng piàn. Chī le kěnéng huì fàn kùn, suǒyǐ bié kāichē.",
+     "translation": "Hai viên. Uống xong có thể buồn ngủ nên đừng lái xe."
+    },
+    {
+     "speaker": "病人",
+     "text": "明白了,谢谢。",
+     "phonetic": "Míngbai le, xièxie.",
+     "translation": "Hiểu rồi, cảm ơn."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "药",
+     "reading": "yào",
+     "definition": "thuốc",
+     "example": "按时吃药。 (Uống thuốc đúng giờ.)"
+    },
+    {
+     "term": "饭后",
+     "reading": "fàn hòu",
+     "definition": "sau bữa ăn",
+     "example": "饭后吃药。 (Uống thuốc sau ăn.)"
+    },
+    {
+     "term": "片",
+     "reading": "piàn",
+     "definition": "viên (thuốc)",
+     "example": "一次两片。 (Mỗi lần hai viên.)"
+    },
+    {
+     "term": "犯困",
+     "reading": "fàn kùn",
+     "definition": "buồn ngủ",
+     "example": "吃药以后犯困。 (Uống thuốc xong buồn ngủ.)"
+    },
+    {
+     "term": "副作用",
+     "reading": "fùzuòyòng",
+     "definition": "tác dụng phụ",
+     "example": "这个药有副作用吗?(Thuốc này có tác dụng phụ không?)"
+    }
+   ],
+   "grammar": {
+    "title": "别 + V / 可能会",
+    "explanation": "Cấm đoán: 别 / 不要 + V. Có thể xảy ra: 可能会 + V. Tần suất: 一天 + số + 次. Thời điểm: 饭前, 饭后, 睡前.",
+    "examples": [
+     "吃药期间别喝酒。[chī yào qījiān bié hē jiǔ] (Trong thời gian uống thuốc đừng uống rượu.)",
+     "睡前吃一片。[shuì qián chī yí piàn] (Trước khi ngủ uống một viên.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Số lần và lượng từ",
+    "tip": "一次 yí cì (一 trước thanh 4 → yí), 两片 liǎng piàn. 副作用 fùzuòyòng.",
+    "words": [
+     "饭后",
+     "两片",
+     "副作用",
+     "犯困"
+    ]
+   },
+   "speakingTasks": [
+    "Hướng dẫn bệnh nhân cách dùng một loại thuốc và lưu ý.",
+    "Hỏi thầy/cô (dược sĩ) về tác dụng phụ của thuốc."
+   ],
+   "questions": [
+    {
+     "prompt": "“Uống sau bữa ăn”:",
+     "options": [
+      "饭后吃",
+      "吃后饭",
+      "饭前吃不"
+     ],
+     "answer": 0,
+     "explanation": "饭后 = sau ăn."
+    },
+    {
+     "prompt": "“Đừng lái xe.”",
+     "options": [
+      "别开车。",
+      "开车别。",
+      "不别开车。"
+     ],
+     "answer": 0,
+     "explanation": "别 + V."
+    },
+    {
+     "prompt": "「副作用」 là:",
+     "options": [
+      "tác dụng phụ",
+      "đơn thuốc",
+      "liều dùng"
+     ],
+     "answer": 0,
+     "explanation": "副作用 = side effect."
+    },
+    {
+     "prompt": "Hỏi “Mỗi lần mấy viên?”",
+     "options": [
+      "片几一次?",
+      "几次一片吃?",
+      "一次吃几片?"
+     ],
+     "answer": 2,
+     "explanation": "一次 + V + 几片."
+    },
+    {
+     "prompt": "「副作用」 có nghĩa là gì?",
+     "options": [
+      "sau bữa ăn",
+      "tác dụng phụ",
+      "buồn ngủ"
+     ],
+     "answer": 1,
+     "explanation": "「副作用」 [fùzuòyòng] = tác dụng phụ."
+    },
+    {
+     "prompt": "「副作用」 đọc là gì?",
+     "options": [
+      "fàn kùn",
+      "fàn hòu",
+      "fùzuòyòng"
+     ],
+     "answer": 2,
+     "explanation": "「副作用」 đọc là [fùzuòyòng], nghĩa là tác dụng phụ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿吃药。  (Uống thuốc sau ăn.)",
+     "options": [
+      "副作用",
+      "饭后",
+      "片"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「饭后」 (sau bữa ăn). Câu đầy đủ: 饭后吃药。"
+    },
+    {
+     "prompt": "「药」 có nghĩa là gì?",
+     "options": [
+      "thuốc",
+      "viên (thuốc)",
+      "buồn ngủ"
+     ],
+     "answer": 0,
+     "explanation": "「药」 [yào] = thuốc."
+    },
+    {
+     "prompt": "「犯困」 đọc là gì?",
+     "options": [
+      "yào",
+      "fàn kùn",
+      "fùzuòyòng"
+     ],
+     "answer": 1,
+     "explanation": "「犯困」 đọc là [fàn kùn], nghĩa là buồn ngủ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 这个药有＿＿＿吗?  (Thuốc này có tác dụng phụ không?)",
+     "options": [
+      "饭后",
+      "副作用",
+      "犯困"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「副作用」 (tác dụng phụ). Câu đầy đủ: 这个药有副作用吗?"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-a2-3",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Trấn an bệnh nhân",
+   "objective": "Dùng lời nói động viên, giải thích nhẹ nhàng.",
+   "reading": "病人: 我很怕做检查。\n护士: 别担心,很快就好了。\n护士: 如果疼的话,您就举一下手。\n病人: 谢谢你,我放心多了。",
+   "dialogue": [
+    {
+     "speaker": "病人",
+     "text": "我很怕做检查。",
+     "phonetic": "Wǒ hěn pà zuò jiǎnchá.",
+     "translation": "Tôi rất sợ làm xét nghiệm."
+    },
+    {
+     "speaker": "护士",
+     "text": "别担心,很快就好了。",
+     "phonetic": "Bié dānxīn, hěn kuài jiù hǎo le.",
+     "translation": "Đừng lo, nhanh thôi là xong."
+    },
+    {
+     "speaker": "护士",
+     "text": "如果疼的话,您就举一下手。",
+     "phonetic": "Rúguǒ téng de huà, nín jiù jǔ yíxià shǒu.",
+     "translation": "Nếu đau thì bác giơ tay lên nhé."
+    },
+    {
+     "speaker": "病人",
+     "text": "谢谢你,我放心多了。",
+     "phonetic": "Xièxie nǐ, wǒ fàngxīn duō le.",
+     "translation": "Cảm ơn cô, tôi yên tâm hơn nhiều rồi."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "检查",
+     "reading": "jiǎnchá",
+     "definition": "kiểm tra, xét nghiệm",
+     "example": "明天做血液检查。 (Mai làm xét nghiệm máu.)"
+    },
+    {
+     "term": "怕",
+     "reading": "pà",
+     "definition": "sợ",
+     "example": "我怕打针。 (Tôi sợ tiêm.)"
+    },
+    {
+     "term": "担心",
+     "reading": "dānxīn",
+     "definition": "lo lắng",
+     "example": "别担心。 (Đừng lo.)"
+    },
+    {
+     "term": "放心",
+     "reading": "fàngxīn",
+     "definition": "yên tâm",
+     "example": "请放心。 (Xin yên tâm.)"
+    },
+    {
+     "term": "很快",
+     "reading": "hěn kuài",
+     "definition": "rất nhanh",
+     "example": "很快就结束了。 (Sẽ kết thúc rất nhanh.)"
+    }
+   ],
+   "grammar": {
+    "title": "别担心 / 如果……的话,就…… / Adj + 多了",
+    "explanation": "Trấn an: 别担心, 请放心. Nếu…thì: 如果……的话,就……. So với trước: tính từ + 多了 (放心多了).",
+    "examples": [
+     "有什么不舒服,就叫我。[yǒu shénme bù shūfu, jiù jiào wǒ] (Có gì khó chịu thì gọi tôi.)",
+     "医生马上来,请放心。[yīshēng mǎshàng lái, qǐng fàngxīn] (Bác sĩ đến ngay, xin yên tâm.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng ấm áp",
+    "tip": "Nói chậm, giọng thấp và mềm. 担心 dānxīn, 放心 fàngxīn: vần -in rõ.",
+    "words": [
+     "担心",
+     "放心",
+     "检查",
+     "很快"
+    ]
+   },
+   "speakingTasks": [
+    "Trấn an một bệnh nhân sợ tiêm.",
+    "Thầy/cô làm bệnh nhân lo lắng, hãy giải thích nhẹ nhàng."
+   ],
+   "questions": [
+    {
+     "prompt": "Trấn an “Đừng lo.”",
+     "options": [
+      "不知道。",
+      "快点儿!",
+      "别担心。"
+     ],
+     "answer": 2,
+     "explanation": "别担心 = đừng lo."
+    },
+    {
+     "prompt": "“Nếu đau thì giơ tay.”",
+     "options": [
+      "因为疼,所以举手了。",
+      "疼如果举手就。",
+      "如果疼的话,就举手。"
+     ],
+     "answer": 2,
+     "explanation": "如果……的话,就……"
+    },
+    {
+     "prompt": "「放心多了」 nghĩa là:",
+     "options": [
+      "yên tâm hơn nhiều",
+      "rất mệt",
+      "lo hơn nhiều"
+     ],
+     "answer": 0,
+     "explanation": "Adj + 多了."
+    },
+    {
+     "prompt": "「怕」 là:",
+     "options": [
+      "vui",
+      "sợ",
+      "mệt"
+     ],
+     "answer": 1,
+     "explanation": "怕 = sợ."
+    },
+    {
+     "prompt": "「担心」 có nghĩa là gì?",
+     "options": [
+      "sợ",
+      "lo lắng",
+      "yên tâm"
+     ],
+     "answer": 1,
+     "explanation": "「担心」 [dānxīn] = lo lắng."
+    },
+    {
+     "prompt": "「怕」 đọc là gì?",
+     "options": [
+      "dānxīn",
+      "pà",
+      "jiǎnchá"
+     ],
+     "answer": 1,
+     "explanation": "「怕」 đọc là [pà], nghĩa là sợ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿就结束了。  (Sẽ kết thúc rất nhanh.)",
+     "options": [
+      "很快",
+      "怕",
+      "检查"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「很快」 (rất nhanh). Câu đầy đủ: 很快就结束了。"
+    },
+    {
+     "prompt": "「检查」 có nghĩa là gì?",
+     "options": [
+      "yên tâm",
+      "kiểm tra, xét nghiệm",
+      "rất nhanh"
+     ],
+     "answer": 1,
+     "explanation": "「检查」 [jiǎnchá] = kiểm tra, xét nghiệm."
+    },
+    {
+     "prompt": "「检查」 đọc là gì?",
+     "options": [
+      "fàngxīn",
+      "jiǎnchá",
+      "hěn kuài"
+     ],
+     "answer": 1,
+     "explanation": "「检查」 đọc là [jiǎnchá], nghĩa là kiểm tra, xét nghiệm."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 明天做血液＿＿＿。  (Mai làm xét nghiệm máu.)",
+     "options": [
+      "放心",
+      "检查",
+      "很快"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「检查」 (kiểm tra, xét nghiệm). Câu đầy đủ: 明天做血液检查。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b1-1",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Giải thích thủ thuật và xin đồng ý",
+   "objective": "Giải thích mục đích, quy trình, rủi ro và xin chữ ký đồng ý.",
+   "reading": "医生: 我来给您介绍一下明天的胃镜检查。\n医生: 这个检查是为了仔细观察胃里的情况,大约需要十五分钟。\n病人: 有危险吗?\n医生: 极少数情况下会出血。如果您理解了,请在同意书上签字。",
+   "dialogue": [
+    {
+     "speaker": "医生",
+     "text": "我来给您介绍一下明天的胃镜检查。",
+     "phonetic": "Wǒ lái gěi nín jièshào yíxià míngtiān de wèijìng jiǎnchá.",
+     "translation": "Tôi xin giới thiệu về nội soi dạ dày ngày mai."
+    },
+    {
+     "speaker": "医生",
+     "text": "这个检查是为了仔细观察胃里的情况,大约需要十五分钟。",
+     "phonetic": "Zhège jiǎnchá shì wèile zǐxì guānchá wèi lǐ de qíngkuàng, dàyuē xūyào shíwǔ fēnzhōng.",
+     "translation": "Xét nghiệm này nhằm quan sát kỹ tình trạng trong dạ dày, mất khoảng 15 phút."
+    },
+    {
+     "speaker": "病人",
+     "text": "有危险吗?",
+     "phonetic": "Yǒu wēixiǎn ma?",
+     "translation": "Có nguy hiểm không?"
+    },
+    {
+     "speaker": "医生",
+     "text": "极少数情况下会出血。如果您理解了,请在同意书上签字。",
+     "phonetic": "Jí shǎoshù qíngkuàng xià huì chūxuè. Rúguǒ nín lǐjiě le, qǐng zài tóngyìshū shang qiānzì.",
+     "translation": "Rất ít trường hợp có chảy máu. Nếu ngài đã hiểu, xin ký vào giấy đồng ý."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "介绍",
+     "reading": "jièshào",
+     "definition": "giới thiệu, giải thích",
+     "example": "我介绍一下流程。 (Tôi giới thiệu quy trình.)"
+    },
+    {
+     "term": "仔细",
+     "reading": "zǐxì",
+     "definition": "kỹ lưỡng",
+     "example": "请仔细看。 (Xin xem kỹ.)"
+    },
+    {
+     "term": "危险",
+     "reading": "wēixiǎn",
+     "definition": "nguy hiểm",
+     "example": "这个手术不危险。 (Ca mổ này không nguy hiểm.)"
+    },
+    {
+     "term": "出血",
+     "reading": "chūxuè",
+     "definition": "chảy máu",
+     "example": "伤口出血了。 (Vết thương chảy máu.)"
+    },
+    {
+     "term": "签字",
+     "reading": "qiānzì",
+     "definition": "ký tên",
+     "example": "请在这里签字。 (Xin ký vào đây.)"
+    }
+   ],
+   "grammar": {
+    "title": "是为了…… / 大约 / 在……上签字",
+    "explanation": "Mục đích: 是为了 + V. Khoảng: 大约 + số. Ký vào: 在 + giấy + 上签字. Rủi ro hiếm: 极少数情况下…….",
+    "examples": [
+     "这个药是为了降血压。[zhège yào shì wèile jiàng xuèyā] (Thuốc này để hạ huyết áp.)",
+     "大约需要半个小时。[dàyuē xūyào bàn gè xiǎoshí] (Khoảng nửa tiếng.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đa âm tự 血",
+    "tip": "血 đọc xuè (văn viết, 出血 chūxuè) hoặc xiě (khẩu ngữ, 流血了 liú xiě le). Đọc rõ cho bệnh nhân hiểu.",
+    "words": [
+     "出血",
+     "胃镜",
+     "签字",
+     "危险"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích một xét nghiệm: mục đích, thời gian, rủi ro.",
+    "Xin bệnh nhân (thầy/cô) ký giấy đồng ý."
+   ],
+   "questions": [
+    {
+     "prompt": "“Thuốc này để hạ huyết áp.”",
+     "options": [
+      "这个药是为了降血压。",
+      "降血压这个药为了。",
+      "这个药为了是降血压。"
+     ],
+     "answer": 0,
+     "explanation": "是为了 + V."
+    },
+    {
+     "prompt": "“Khoảng 15 phút”:",
+     "options": [
+      "大约十五分钟",
+      "十五大约分钟",
+      "分钟十五大约"
+     ],
+     "answer": 0,
+     "explanation": "大约 + số."
+    },
+    {
+     "prompt": "Xin ký lịch sự:",
+     "options": [
+      "请在同意书上签字。",
+      "你签!",
+      "签字同意书请上。"
+     ],
+     "answer": 0,
+     "explanation": "请在……上签字."
+    },
+    {
+     "prompt": "「出血」 là:",
+     "options": [
+      "sốt",
+      "ngất",
+      "chảy máu"
+     ],
+     "answer": 2,
+     "explanation": "出血 = chảy máu."
+    },
+    {
+     "prompt": "「出血」 có nghĩa là gì?",
+     "options": [
+      "giới thiệu, giải thích",
+      "chảy máu",
+      "ký tên"
+     ],
+     "answer": 1,
+     "explanation": "「出血」 [chūxuè] = chảy máu."
+    },
+    {
+     "prompt": "「危险」 đọc là gì?",
+     "options": [
+      "jièshào",
+      "wēixiǎn",
+      "zǐxì"
+     ],
+     "answer": 1,
+     "explanation": "「危险」 đọc là [wēixiǎn], nghĩa là nguy hiểm."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 请在这里＿＿＿。  (Xin ký vào đây.)",
+     "options": [
+      "危险",
+      "签字",
+      "出血"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「签字」 (ký tên). Câu đầy đủ: 请在这里签字。"
+    },
+    {
+     "prompt": "「签字」 có nghĩa là gì?",
+     "options": [
+      "nguy hiểm",
+      "chảy máu",
+      "ký tên"
+     ],
+     "answer": 2,
+     "explanation": "「签字」 [qiānzì] = ký tên."
+    },
+    {
+     "prompt": "「签字」 đọc là gì?",
+     "options": [
+      "chūxuè",
+      "qiānzì",
+      "wēixiǎn"
+     ],
+     "answer": 1,
+     "explanation": "「签字」 đọc là [qiānzì], nghĩa là ký tên."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我＿＿＿一下流程。  (Tôi giới thiệu quy trình.)",
+     "options": [
+      "介绍",
+      "出血",
+      "危险"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「介绍」 (giới thiệu, giải thích). Câu đầy đủ: 我介绍一下流程。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b1-2",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Bàn giao ca (交班)",
+   "objective": "Bàn giao tình trạng bệnh nhân rõ ràng, đủ ý.",
+   "reading": "小明: 我来交班。三零二床的张先生。\n小明: 夜里体温升到三十八度,所以给了退烧药。\n小明: 现在已经降到三十七度了。\n同事: 好的,我会继续观察。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "我来交班。三零二床的张先生。",
+     "phonetic": "Wǒ lái jiāobān. Sān líng èr chuáng de Zhāng xiānsheng.",
+     "translation": "Tôi bàn giao ca. Ông Trương giường 302."
+    },
+    {
+     "speaker": "小明",
+     "text": "夜里体温升到三十八度,所以给了退烧药。",
+     "phonetic": "Yèlǐ tǐwēn shēng dào sānshíbā dù, suǒyǐ gěi le tuìshāoyào.",
+     "translation": "Ban đêm thân nhiệt lên 38 độ nên đã cho thuốc hạ sốt."
+    },
+    {
+     "speaker": "小明",
+     "text": "现在已经降到三十七度了。",
+     "phonetic": "Xiànzài yǐjīng jiàng dào sānshíqī dù le.",
+     "translation": "Bây giờ đã hạ xuống 37 độ."
+    },
+    {
+     "speaker": "同事",
+     "text": "好的,我会继续观察。",
+     "phonetic": "Hǎo de, wǒ huì jìxù guānchá.",
+     "translation": "Được, tôi sẽ tiếp tục theo dõi."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "交班",
+     "reading": "jiāobān",
+     "definition": "bàn giao ca",
+     "example": "我们八点交班。 (Chúng ta bàn giao ca lúc 8 giờ.)"
+    },
+    {
+     "term": "体温",
+     "reading": "tǐwēn",
+     "definition": "thân nhiệt",
+     "example": "量一下体温。 (Đo thân nhiệt.)"
+    },
+    {
+     "term": "退烧药",
+     "reading": "tuìshāoyào",
+     "definition": "thuốc hạ sốt",
+     "example": "吃了退烧药。 (Đã uống thuốc hạ sốt.)"
+    },
+    {
+     "term": "观察",
+     "reading": "guānchá",
+     "definition": "theo dõi, quan sát",
+     "example": "需要继续观察。 (Cần tiếp tục theo dõi.)"
+    },
+    {
+     "term": "继续",
+     "reading": "jìxù",
+     "definition": "tiếp tục",
+     "example": "请继续休息。 (Xin tiếp tục nghỉ ngơi.)"
+    }
+   ],
+   "grammar": {
+    "title": "升到 / 降到 / 所以 / 已经……了",
+    "explanation": "Mức thay đổi: 升到/降到 + số. Nguyên nhân – xử trí: ……,所以……. Trạng thái hiện tại: 已经……了. Thứ tự: tình trạng → xử trí → hiện tại → cần theo dõi.",
+    "examples": [
+     "血压降到一百二了。[xuèyā jiàng dào yìbǎi'èr le] (Huyết áp đã hạ xuống 120.)",
+     "因为疼得厉害,所以用了止痛药。[yīnwèi téng de lìhai, suǒyǐ yòng le zhǐtòngyào] (Vì đau nhiều nên đã dùng thuốc giảm đau.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc số đo",
+    "tip": "三十八度 sānshíbā dù; giường 302 đọc sān líng èr. Đọc rõ số để tránh nhầm.",
+    "words": [
+     "交班",
+     "体温",
+     "退烧药",
+     "观察"
+    ]
+   },
+   "speakingTasks": [
+    "Bàn giao ca về một bệnh nhân: tình trạng, xử trí, hiện tại.",
+    "Nghe thầy/cô bàn giao và hỏi lại một điểm chưa rõ."
+   ],
+   "questions": [
+    {
+     "prompt": "“Đã hạ xuống 37 độ.”",
+     "options": [
+      "已经降到三十七度了。",
+      "已经三十七度降了到。",
+      "降已经到三十七。"
+     ],
+     "answer": 0,
+     "explanation": "降到 + số."
+    },
+    {
+     "prompt": "Nêu nguyên nhân và xử trí:",
+     "options": [
+      "所以体温,给药升高。",
+      "体温升高,所以给了退烧药。",
+      "体温升高,但是不给药了吗。"
+     ],
+     "answer": 1,
+     "explanation": "……,所以……"
+    },
+    {
+     "prompt": "「观察」 nghĩa là:",
+     "options": [
+      "xuất viện",
+      "theo dõi",
+      "phẫu thuật"
+     ],
+     "answer": 1,
+     "explanation": "观察 = quan sát."
+    },
+    {
+     "prompt": "「交班」 là:",
+     "options": [
+      "nhập viện",
+      "bàn giao ca",
+      "đơn thuốc"
+     ],
+     "answer": 1,
+     "explanation": "交班 = handover."
+    },
+    {
+     "prompt": "「观察」 có nghĩa là gì?",
+     "options": [
+      "tiếp tục",
+      "theo dõi, quan sát",
+      "thuốc hạ sốt"
+     ],
+     "answer": 1,
+     "explanation": "「观察」 [guānchá] = theo dõi, quan sát."
+    },
+    {
+     "prompt": "「继续」 đọc là gì?",
+     "options": [
+      "jiāobān",
+      "tuìshāoyào",
+      "jìxù"
+     ],
+     "answer": 2,
+     "explanation": "「继续」 đọc là [jìxù], nghĩa là tiếp tục."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 量一下＿＿＿。  (Đo thân nhiệt.)",
+     "options": [
+      "观察",
+      "继续",
+      "体温"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「体温」 (thân nhiệt). Câu đầy đủ: 量一下体温。"
+    },
+    {
+     "prompt": "「退烧药」 có nghĩa là gì?",
+     "options": [
+      "theo dõi, quan sát",
+      "thuốc hạ sốt",
+      "bàn giao ca"
+     ],
+     "answer": 1,
+     "explanation": "「退烧药」 [tuìshāoyào] = thuốc hạ sốt."
+    },
+    {
+     "prompt": "「退烧药」 đọc là gì?",
+     "options": [
+      "guānchá",
+      "tuìshāoyào",
+      "jiāobān"
+     ],
+     "answer": 1,
+     "explanation": "「退烧药」 đọc là [tuìshāoyào], nghĩa là thuốc hạ sốt."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我们八点＿＿＿。  (Chúng ta bàn giao ca lúc 8 giờ.)",
+     "options": [
+      "交班",
+      "体温",
+      "退烧药"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「交班」 (bàn giao ca). Câu đầy đủ: 我们八点交班。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b1-3",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Tư vấn lối sống cho bệnh nhân mạn tính",
+   "objective": "Khuyên về ăn uống, vận động và theo dõi chỉ số.",
+   "reading": "护士: 您的血糖有点儿高,饮食上要注意。\n病人: 我特别爱吃甜的,很难戒掉。\n护士: 不用一下子戒掉,可以慢慢减少。\n护士: 另外,每天散步半个小时对身体很好。",
+   "dialogue": [
+    {
+     "speaker": "护士",
+     "text": "您的血糖有点儿高,饮食上要注意。",
+     "phonetic": "Nín de xuètáng yǒudiǎnr gāo, yǐnshí shang yào zhùyì.",
+     "translation": "Đường huyết của bác hơi cao, cần chú ý ăn uống."
+    },
+    {
+     "speaker": "病人",
+     "text": "我特别爱吃甜的,很难戒掉。",
+     "phonetic": "Wǒ tèbié ài chī tián de, hěn nán jièdiào.",
+     "translation": "Tôi rất thích ăn ngọt, khó bỏ lắm."
+    },
+    {
+     "speaker": "护士",
+     "text": "不用一下子戒掉,可以慢慢减少。",
+     "phonetic": "Búyòng yíxiàzi jièdiào, kěyǐ mànman jiǎnshǎo.",
+     "translation": "Không cần bỏ ngay một lúc, có thể giảm dần."
+    },
+    {
+     "speaker": "护士",
+     "text": "另外,每天散步半个小时对身体很好。",
+     "phonetic": "Lìngwài, měi tiān sànbù bàn gè xiǎoshí duì shēntǐ hěn hǎo.",
+     "translation": "Ngoài ra, mỗi ngày đi bộ nửa tiếng rất tốt cho sức khỏe."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "血糖",
+     "reading": "xuètáng",
+     "definition": "đường huyết",
+     "example": "定期测血糖。 (Đo đường huyết định kỳ.)"
+    },
+    {
+     "term": "饮食",
+     "reading": "yǐnshí",
+     "definition": "ăn uống",
+     "example": "饮食要清淡。 (Ăn uống nên thanh đạm.)"
+    },
+    {
+     "term": "减少",
+     "reading": "jiǎnshǎo",
+     "definition": "giảm bớt",
+     "example": "减少吃盐。 (Giảm ăn muối.)"
+    },
+    {
+     "term": "慢慢",
+     "reading": "mànman",
+     "definition": "từ từ",
+     "example": "慢慢来。 (Cứ từ từ.)"
+    },
+    {
+     "term": "运动",
+     "reading": "yùndòng",
+     "definition": "vận động",
+     "example": "每天运动。 (Vận động mỗi ngày.)"
+    }
+   ],
+   "grammar": {
+    "title": "不用 / 慢慢 + V / 对……很好",
+    "explanation": "Không cần: 不用 + V. Từ từ: 慢慢 + V. Có lợi cho: 对 + N + 很好. Ngoài ra: 另外.",
+    "examples": [
+     "您不用每天测。[nín búyòng měi tiān cè] (Bác không cần đo mỗi ngày.)",
+     "多吃蔬菜对身体好。[duō chī shūcài duì shēntǐ hǎo] (Ăn nhiều rau tốt cho cơ thể.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm x và ü",
+    "tip": "血糖 xuètáng (xue = x + üe), 运动 yùndòng (yun = ün).",
+    "words": [
+     "血糖",
+     "饮食",
+     "减少",
+     "运动"
+    ]
+   },
+   "speakingTasks": [
+    "Tư vấn một bệnh nhân tăng huyết áp về ăn uống và vận động.",
+    "Thầy/cô làm bệnh nhân khó bỏ thói quen, hãy khuyên nhẹ nhàng."
+   ],
+   "questions": [
+    {
+     "prompt": "“Có thể giảm dần.”",
+     "options": [
+      "可以减少慢慢。",
+      "慢慢可以了减少。",
+      "可以慢慢减少。"
+     ],
+     "answer": 2,
+     "explanation": "慢慢 + V."
+    },
+    {
+     "prompt": "“Không cần bỏ ngay.”",
+     "options": [
+      "一定要戒掉吧。",
+      "必须马上戒掉。",
+      "不用一下子戒掉。"
+     ],
+     "answer": 2,
+     "explanation": "不用 = không cần."
+    },
+    {
+     "prompt": "“Đi bộ tốt cho sức khỏe.”",
+     "options": [
+      "对散步好身体。",
+      "散步身体对好很。",
+      "散步对身体很好。"
+     ],
+     "answer": 2,
+     "explanation": "对 + N + 很好."
+    },
+    {
+     "prompt": "「血糖」 là:",
+     "options": [
+      "cân nặng",
+      "huyết áp",
+      "đường huyết"
+     ],
+     "answer": 2,
+     "explanation": "血糖 = blood sugar."
+    },
+    {
+     "prompt": "「血糖」 có nghĩa là gì?",
+     "options": [
+      "đường huyết",
+      "ăn uống",
+      "vận động"
+     ],
+     "answer": 0,
+     "explanation": "「血糖」 [xuètáng] = đường huyết."
+    },
+    {
+     "prompt": "「减少」 đọc là gì?",
+     "options": [
+      "xuètáng",
+      "jiǎnshǎo",
+      "mànman"
+     ],
+     "answer": 1,
+     "explanation": "「减少」 đọc là [jiǎnshǎo], nghĩa là giảm bớt."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿来。  (Cứ từ từ.)",
+     "options": [
+      "减少",
+      "血糖",
+      "慢慢"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「慢慢」 (từ từ). Câu đầy đủ: 慢慢来。"
+    },
+    {
+     "prompt": "「减少」 có nghĩa là gì?",
+     "options": [
+      "giảm bớt",
+      "đường huyết",
+      "từ từ"
+     ],
+     "answer": 0,
+     "explanation": "「减少」 [jiǎnshǎo] = giảm bớt."
+    },
+    {
+     "prompt": "「饮食」 đọc là gì?",
+     "options": [
+      "jiǎnshǎo",
+      "mànman",
+      "yǐnshí"
+     ],
+     "answer": 2,
+     "explanation": "「饮食」 đọc là [yǐnshí], nghĩa là ăn uống."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿吃盐。  (Giảm ăn muối.)",
+     "options": [
+      "慢慢",
+      "减少",
+      "血糖"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「减少」 (giảm bớt). Câu đầy đủ: 减少吃盐。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b2-1",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 1",
+   "category": "Giao tiếp",
+   "title": "Thông báo tin xấu",
+   "objective": "Thông báo kết quả nghiêm trọng một cách tế nhị và đồng cảm.",
+   "reading": "医生: 关于检查结果,我想跟您谈一谈,现在方便吗?\n病人: 好……您说吧。\n医生: 很遗憾,检查发现了肿瘤。不过,幸好发现得早,治疗的选择还是很多的。\n医生: 如果您有什么担心,随时可以告诉我,我们一起想办法。",
+   "dialogue": [
+    {
+     "speaker": "医生",
+     "text": "关于检查结果,我想跟您谈一谈,现在方便吗?",
+     "phonetic": "Guānyú jiǎnchá jiéguǒ, wǒ xiǎng gēn nín tán yi tán, xiànzài fāngbiàn ma?",
+     "translation": "Về kết quả xét nghiệm, tôi muốn nói chuyện với ông/bà, giờ có tiện không ạ?"
+    },
+    {
+     "speaker": "病人",
+     "text": "好……您说吧。",
+     "phonetic": "Hǎo… nín shuō ba.",
+     "translation": "Vâng… bác sĩ cứ nói."
+    },
+    {
+     "speaker": "医生",
+     "text": "很遗憾,检查发现了肿瘤。不过,幸好发现得早,治疗的选择还是很多的。",
+     "phonetic": "Hěn yíhàn, jiǎnchá fāxiàn le zhǒngliú. Búguò, xìnghǎo fāxiàn de zǎo, zhìliáo de xuǎnzé háishi hěn duō de.",
+     "translation": "Rất tiếc, xét nghiệm đã phát hiện khối u. Tuy nhiên, may là phát hiện sớm, lựa chọn điều trị vẫn còn nhiều."
+    },
+    {
+     "speaker": "医生",
+     "text": "如果您有什么担心,随时可以告诉我,我们一起想办法。",
+     "phonetic": "Rúguǒ nín yǒu shénme dānxīn, suíshí kěyǐ gàosu wǒ, wǒmen yìqǐ xiǎng bànfǎ.",
+     "translation": "Nếu có điều gì lo lắng, ông/bà cứ nói với tôi bất cứ lúc nào, chúng ta cùng tìm cách."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "结果",
+     "reading": "jiéguǒ",
+     "definition": "kết quả",
+     "example": "结果出来了。 (Đã có kết quả.)"
+    },
+    {
+     "term": "遗憾",
+     "reading": "yíhàn",
+     "definition": "đáng tiếc",
+     "example": "很遗憾,手术没有成功。 (Rất tiếc, ca mổ không thành công.)"
+    },
+    {
+     "term": "幸好",
+     "reading": "xìnghǎo",
+     "definition": "may mà",
+     "example": "幸好发现得早。 (May mà phát hiện sớm.)"
+    },
+    {
+     "term": "治疗",
+     "reading": "zhìliáo",
+     "definition": "điều trị",
+     "example": "开始治疗。 (Bắt đầu điều trị.)"
+    },
+    {
+     "term": "随时",
+     "reading": "suíshí",
+     "definition": "bất cứ lúc nào",
+     "example": "有问题随时问我。 (Có vấn đề cứ hỏi tôi bất cứ lúc nào.)"
+    }
+   ],
+   "grammar": {
+    "title": "很遗憾 / 不过,幸好 / 关于",
+    "explanation": "Báo tin xấu: 很遗憾,……. Chuyển sang hy vọng: 不过,幸好……. Về chủ đề: 关于 + N. Đồng cảm: 我能理解您的心情.",
+    "examples": [
+     "很遗憾,需要做手术。[hěn yíhàn, xūyào zuò shǒushù] (Rất tiếc, cần phẫu thuật.)",
+     "我能理解您的心情。[wǒ néng lǐjiě nín de xīnqíng] (Tôi hiểu tâm trạng của ông/bà.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nhịp chậm, khoảng lặng",
+    "tip": "Nói chậm, có khoảng lặng sau câu quan trọng, giọng thấp. Âm 遗憾 yíhàn, 治疗 zhìliáo.",
+    "words": [
+     "遗憾",
+     "幸好",
+     "治疗",
+     "随时"
+    ]
+   },
+   "speakingTasks": [
+    "Đóng vai bác sĩ thông báo kết quả cần phẫu thuật một cách đồng cảm.",
+    "Trả lời một bệnh nhân hoảng sợ (thầy/cô) bằng lời trấn an phù hợp."
+   ],
+   "questions": [
+    {
+     "prompt": "Mở đầu báo tin xấu tế nhị:",
+     "options": [
+      "顺便说一下,……",
+      "很遗憾,……",
+      "恭喜你,……"
+     ],
+     "answer": 1,
+     "explanation": "很遗憾 = rất tiếc."
+    },
+    {
+     "prompt": "Chuyển sang thông tin tích cực:",
+     "options": [
+      "而且,更糟糕了。",
+      "不过,幸好发现得早……",
+      "所以,没有办法了。"
+     ],
+     "answer": 1,
+     "explanation": "不过,幸好 = tuy nhiên, may là."
+    },
+    {
+     "prompt": "Thể hiện đồng cảm:",
+     "options": [
+      "我能理解您的心情。",
+      "这不关我的事。",
+      "你别哭了。"
+     ],
+     "answer": 0,
+     "explanation": "理解 = thấu hiểu."
+    },
+    {
+     "prompt": "「随时」 nghĩa là:",
+     "options": [
+      "không bao giờ",
+      "ngày mai",
+      "bất cứ lúc nào"
+     ],
+     "answer": 2,
+     "explanation": "随时 = anytime."
+    },
+    {
+     "prompt": "「随时」 có nghĩa là gì?",
+     "options": [
+      "bất cứ lúc nào",
+      "điều trị",
+      "may mà"
+     ],
+     "answer": 0,
+     "explanation": "「随时」 [suíshí] = bất cứ lúc nào."
+    },
+    {
+     "prompt": "「幸好」 đọc là gì?",
+     "options": [
+      "jiéguǒ",
+      "zhìliáo",
+      "xìnghǎo"
+     ],
+     "answer": 2,
+     "explanation": "「幸好」 đọc là [xìnghǎo], nghĩa là may mà."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 开始＿＿＿。  (Bắt đầu điều trị.)",
+     "options": [
+      "幸好",
+      "治疗",
+      "随时"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「治疗」 (điều trị). Câu đầy đủ: 开始治疗。"
+    },
+    {
+     "prompt": "「治疗」 có nghĩa là gì?",
+     "options": [
+      "bất cứ lúc nào",
+      "điều trị",
+      "may mà"
+     ],
+     "answer": 1,
+     "explanation": "「治疗」 [zhìliáo] = điều trị."
+    },
+    {
+     "prompt": "「结果」 đọc là gì?",
+     "options": [
+      "jiéguǒ",
+      "yíhàn",
+      "suíshí"
+     ],
+     "answer": 0,
+     "explanation": "「结果」 đọc là [jiéguǒ], nghĩa là kết quả."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿出来了。  (Đã có kết quả.)",
+     "options": [
+      "结果",
+      "遗憾",
+      "随时"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「结果」 (kết quả). Câu đầy đủ: 结果出来了。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b2-2",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Trình bày ca bệnh",
+   "objective": "Trình bày ca bệnh ngắn gọn theo trình tự chuyên môn.",
+   "reading": "小明: 患者男性,七十五岁,主诉三天前开始呼吸困难。\n小明: 既往有高血压和糖尿病病史。\n小明: 胸片提示肺炎,已开始抗生素治疗。\n主任: 目前病情怎么样?",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "患者男性,七十五岁,主诉三天前开始呼吸困难。",
+     "phonetic": "Huànzhě nánxìng, qīshíwǔ suì, zhǔsù sān tiān qián kāishǐ hūxī kùnnan.",
+     "translation": "Bệnh nhân nam, 75 tuổi, lý do chính là khó thở từ 3 ngày trước."
+    },
+    {
+     "speaker": "小明",
+     "text": "既往有高血压和糖尿病病史。",
+     "phonetic": "Jìwǎng yǒu gāoxuèyā hé tángniàobìng bìngshǐ.",
+     "translation": "Tiền sử có tăng huyết áp và đái tháo đường."
+    },
+    {
+     "speaker": "小明",
+     "text": "胸片提示肺炎,已开始抗生素治疗。",
+     "phonetic": "Xiōngpiàn tíshì fèiyán, yǐ kāishǐ kàngshēngsù zhìliáo.",
+     "translation": "X-quang ngực gợi ý viêm phổi, đã bắt đầu điều trị kháng sinh."
+    },
+    {
+     "speaker": "主任",
+     "text": "目前病情怎么样?",
+     "phonetic": "Mùqián bìngqíng zěnmeyàng?",
+     "translation": "Hiện bệnh tình thế nào?"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "主诉",
+     "reading": "zhǔsù",
+     "definition": "lý do khám chính",
+     "example": "主诉是胸痛。 (Lý do chính là đau ngực.)"
+    },
+    {
+     "term": "病史",
+     "reading": "bìngshǐ",
+     "definition": "tiền sử bệnh",
+     "example": "没有特殊病史。 (Không có tiền sử đặc biệt.)"
+    },
+    {
+     "term": "提示",
+     "reading": "tíshì",
+     "definition": "gợi ý, cho thấy",
+     "example": "检查提示骨折。 (Xét nghiệm cho thấy gãy xương.)"
+    },
+    {
+     "term": "抗生素",
+     "reading": "kàngshēngsù",
+     "definition": "kháng sinh",
+     "example": "使用抗生素。 (Dùng kháng sinh.)"
+    },
+    {
+     "term": "病情",
+     "reading": "bìngqíng",
+     "definition": "bệnh tình",
+     "example": "病情稳定。 (Bệnh tình ổn định.)"
+    }
+   ],
+   "grammar": {
+    "title": "Cấu trúc trình bày ca bệnh",
+    "explanation": "Tuổi giới → 主诉 → 现病史 → 既往史 → 检查 → 诊断 → 治疗计划. Văn phong ngắn gọn: 已 + V (đã), ……提示…… (gợi ý).",
+    "examples": [
+     "主诉昨晚开始胸痛。[zhǔsù zuówǎn kāishǐ xiōngtòng] (Lý do chính là đau ngực từ tối qua.)",
+     "病情稳定,预计下周出院。[bìngqíng wěndìng, yùjì xià zhōu chūyuàn] (Bệnh ổn định, dự kiến xuất viện tuần sau.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Thuật ngữ y khoa",
+    "tip": "糖尿病 tángniàobìng, 抗生素 kàngshēngsù (sh + s), 肺炎 fèiyán. Đọc chậm và rõ.",
+    "words": [
+     "主诉",
+     "病史",
+     "抗生素",
+     "病情"
+    ]
+   },
+   "speakingTasks": [
+    "Trình bày một ca bệnh 5 câu theo đúng trình tự.",
+    "Trả lời câu hỏi của bác sĩ trưởng khoa (thầy/cô) về kế hoạch điều trị."
+   ],
+   "questions": [
+    {
+     "prompt": "「主诉」 là:",
+     "options": [
+      "tiền sử gia đình",
+      "kết quả xét nghiệm",
+      "lý do khám chính"
+     ],
+     "answer": 2,
+     "explanation": "主诉 = chief complaint."
+    },
+    {
+     "prompt": "「病史」 là:",
+     "options": [
+      "liều thuốc",
+      "diễn tiến",
+      "tiền sử bệnh"
+     ],
+     "answer": 2,
+     "explanation": "病史 = medical history."
+    },
+    {
+     "prompt": "“X-quang gợi ý viêm phổi”:",
+     "options": [
+      "胸片提示肺炎",
+      "肺炎提示胸片",
+      "胸片肺炎提"
+     ],
+     "answer": 0,
+     "explanation": "A 提示 B."
+    },
+    {
+     "prompt": "「病情稳定」 nghĩa là:",
+     "options": [
+      "cần mổ gấp",
+      "bệnh tình ổn định",
+      "không rõ nguyên nhân"
+     ],
+     "answer": 1,
+     "explanation": "稳定 = ổn định."
+    },
+    {
+     "prompt": "「病史」 có nghĩa là gì?",
+     "options": [
+      "tiền sử bệnh",
+      "lý do khám chính",
+      "kháng sinh"
+     ],
+     "answer": 0,
+     "explanation": "「病史」 [bìngshǐ] = tiền sử bệnh."
+    },
+    {
+     "prompt": "「抗生素」 đọc là gì?",
+     "options": [
+      "kàngshēngsù",
+      "bìngshǐ",
+      "bìngqíng"
+     ],
+     "answer": 0,
+     "explanation": "「抗生素」 đọc là [kàngshēngsù], nghĩa là kháng sinh."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 没有特殊＿＿＿。  (Không có tiền sử đặc biệt.)",
+     "options": [
+      "病史",
+      "主诉",
+      "抗生素"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「病史」 (tiền sử bệnh). Câu đầy đủ: 没有特殊病史。"
+    },
+    {
+     "prompt": "「提示」 có nghĩa là gì?",
+     "options": [
+      "bệnh tình",
+      "lý do khám chính",
+      "gợi ý, cho thấy"
+     ],
+     "answer": 2,
+     "explanation": "「提示」 [tíshì] = gợi ý, cho thấy."
+    },
+    {
+     "prompt": "「病史」 đọc là gì?",
+     "options": [
+      "zhǔsù",
+      "kàngshēngsù",
+      "bìngshǐ"
+     ],
+     "answer": 2,
+     "explanation": "「病史」 đọc là [bìngshǐ], nghĩa là tiền sử bệnh."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿稳定。  (Bệnh tình ổn định.)",
+     "options": [
+      "主诉",
+      "提示",
+      "病情"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「病情」 (bệnh tình). Câu đầy đủ: 病情稳定。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "healthcare-b2-3",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 3",
+   "category": "Thảo luận",
+   "title": "Đạo đức y khoa và an toàn người bệnh",
+   "objective": "Thảo luận về sai sót, báo cáo sự cố và bảo mật thông tin.",
+   "reading": "护士长: 发生了差错或者险些出错的情况,一定要上报。\n小明: 小错误也需要报告吗?\n护士长: 需要。目的不是追究个人责任,而是防止再次发生。\n小明: 另外,病人的信息绝对不能泄露。",
+   "dialogue": [
+    {
+     "speaker": "护士长",
+     "text": "发生了差错或者险些出错的情况,一定要上报。",
+     "phonetic": "Fāshēng le chācuò huòzhě xiǎnxiē chūcuò de qíngkuàng, yídìng yào shàngbào.",
+     "translation": "Khi xảy ra sai sót hoặc suýt sai sót, nhất định phải báo cáo."
+    },
+    {
+     "speaker": "小明",
+     "text": "小错误也需要报告吗?",
+     "phonetic": "Xiǎo cuòwù yě xūyào bàogào ma?",
+     "translation": "Lỗi nhỏ cũng cần báo cáo ạ?"
+    },
+    {
+     "speaker": "护士长",
+     "text": "需要。目的不是追究个人责任,而是防止再次发生。",
+     "phonetic": "Xūyào. Mùdì bú shì zhuījiū gèrén zérèn, ér shì fángzhǐ zàicì fāshēng.",
+     "translation": "Cần. Mục đích không phải truy cứu trách nhiệm cá nhân mà là ngăn tái phát."
+    },
+    {
+     "speaker": "小明",
+     "text": "另外,病人的信息绝对不能泄露。",
+     "phonetic": "Lìngwài, bìngrén de xìnxī juéduì bù néng xièlòu.",
+     "translation": "Ngoài ra, thông tin bệnh nhân tuyệt đối không được để lộ."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "差错",
+     "reading": "chācuò",
+     "definition": "sai sót",
+     "example": "工作中出现差错。 (Trong công việc xảy ra sai sót.)"
+    },
+    {
+     "term": "上报",
+     "reading": "shàngbào",
+     "definition": "báo cáo lên trên",
+     "example": "及时上报。 (Báo cáo kịp thời.)"
+    },
+    {
+     "term": "责任",
+     "reading": "zérèn",
+     "definition": "trách nhiệm",
+     "example": "这是我的责任。 (Đây là trách nhiệm của tôi.)"
+    },
+    {
+     "term": "防止",
+     "reading": "fángzhǐ",
+     "definition": "phòng ngừa",
+     "example": "防止感染。 (Phòng ngừa nhiễm trùng.)"
+    },
+    {
+     "term": "泄露",
+     "reading": "xièlòu",
+     "definition": "tiết lộ, rò rỉ",
+     "example": "不能泄露隐私。 (Không được tiết lộ đời tư.)"
+    }
+   ],
+   "grammar": {
+    "title": "不是……而是…… / 绝对不能",
+    "explanation": "Phủ định để nhấn mục đích thật: 不是 A,而是 B. Tuyệt đối không: 绝对不能 + V. Hoặc: 或者.",
+    "examples": [
+     "我们不是为了批评,而是为了学习。[wǒmen bú shì wèile pīpíng, ér shì wèile xuéxí] (Không phải để phê bình mà để học hỏi.)",
+     "绝对不能放弃。[juéduì bù néng fàngqì] (Tuyệt đối không được bỏ cuộc.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng nghiêm túc, rõ ràng",
+    "tip": "Nhấn vào 一定, 绝对. Âm 责任 zérèn (z + r), 泄露 xièlòu.",
+    "words": [
+     "差错",
+     "上报",
+     "责任",
+     "泄露"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích vì sao cần báo cáo cả lỗi nhỏ.",
+    "Thảo luận với thầy/cô một tình huống bảo mật thông tin bệnh nhân."
+   ],
+   "questions": [
+    {
+     "prompt": "Mục đích báo cáo sự cố:",
+     "options": [
+      "惩罚员工",
+      "追究个人责任",
+      "防止再次发生"
+     ],
+     "answer": 2,
+     "explanation": "Để ngăn tái phát."
+    },
+    {
+     "prompt": "“Tuyệt đối không được làm lộ.”",
+     "options": [
+      "绝对可以泄露。",
+      "绝对不能泄露。",
+      "必须泄露。"
+     ],
+     "answer": 1,
+     "explanation": "绝对不能 + V."
+    },
+    {
+     "prompt": "「不是……而是……」 diễn tả:",
+     "options": [
+      "không phải A mà là B",
+      "vừa A vừa B",
+      "nếu A thì B"
+     ],
+     "answer": 0,
+     "explanation": "Phủ định A, khẳng định B."
+    },
+    {
+     "prompt": "「差错」 là:",
+     "options": [
+      "phần thưởng",
+      "thành tích",
+      "sai sót"
+     ],
+     "answer": 2,
+     "explanation": "差错 = lỗi, sai sót."
+    },
+    {
+     "prompt": "「上报」 có nghĩa là gì?",
+     "options": [
+      "tiết lộ, rò rỉ",
+      "sai sót",
+      "báo cáo lên trên"
+     ],
+     "answer": 2,
+     "explanation": "「上报」 [shàngbào] = báo cáo lên trên."
+    },
+    {
+     "prompt": "「差错」 đọc là gì?",
+     "options": [
+      "chācuò",
+      "zérèn",
+      "xièlòu"
+     ],
+     "answer": 0,
+     "explanation": "「差错」 đọc là [chācuò], nghĩa là sai sót."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 工作中出现＿＿＿。  (Trong công việc xảy ra sai sót.)",
+     "options": [
+      "差错",
+      "责任",
+      "泄露"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「差错」 (sai sót). Câu đầy đủ: 工作中出现差错。"
+    },
+    {
+     "prompt": "「差错」 có nghĩa là gì?",
+     "options": [
+      "tiết lộ, rò rỉ",
+      "trách nhiệm",
+      "sai sót"
+     ],
+     "answer": 2,
+     "explanation": "「差错」 [chācuò] = sai sót."
+    },
+    {
+     "prompt": "「泄露」 đọc là gì?",
+     "options": [
+      "xièlòu",
+      "shàngbào",
+      "zérèn"
+     ],
+     "answer": 0,
+     "explanation": "「泄露」 đọc là [xièlòu], nghĩa là tiết lộ, rò rỉ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 不能＿＿＿隐私。  (Không được tiết lộ đời tư.)",
+     "options": [
+      "责任",
+      "泄露",
+      "上报"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「泄露」 (tiết lộ, rò rỉ). Câu đầy đủ: 不能泄露隐私。"
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
+}

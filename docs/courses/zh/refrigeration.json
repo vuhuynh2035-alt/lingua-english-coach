@@ -1,0 +1,2339 @@
+{
+ "id": "refrigeration",
+ "title": "Tiếng Trung kỹ thuật điện lạnh công nghiệp",
+ "version": "1.1.0",
+ "framework": "HSK 1–5",
+ "overview": "12 bài từ HSK 1 đến HSK 5 cho kỹ thuật viên điện lạnh công nghiệp: dụng cụ và linh kiện, nhận yêu cầu sửa chữa, an toàn lao động, đọc nhiệt độ – áp suất, chẩn đoán lỗi, bảo trì định kỳ, kho lạnh và hệ thống amoniac, báo cáo dịch vụ, giải thích cho khách hàng, xử lý sự cố khẩn cấp, hợp đồng bảo trì và tiết kiệm năng lượng.",
+ "contentLicense": "Nội dung biên soạn riêng cho Teacher AI, phân cấp theo HSK/CEFR",
+ "references": [
+  {
+   "title": "Chinese Proficiency Grading Standards for International Chinese Language Education",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Khung tham chiếu năng lực tiếng Trung theo HSK (chỉ dùng để phân cấp, không sao chép nội dung)"
+  },
+  {
+   "title": "HSK – Hanyu Shuiping Kaoshi",
+   "url": "https://www.chinesetest.cn/",
+   "license": "Tham khảo cấp độ HSK 1–5 (không sao chép đề thi)"
+  }
+ ],
+ "lessons": [
+  {
+   "id": "refrigeration-a1-1",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 1",
+   "category": "Từ vựng",
+   "title": "Dụng cụ và linh kiện cơ bản",
+   "objective": "Gọi tên dụng cụ, linh kiện chính của hệ thống lạnh.",
+   "reading": "师傅: 这是什么?\n小明: 这是压缩机,它压缩制冷剂。\n师傅: 那个呢?\n小明: 那是冷凝器。旁边的是压力表。",
+   "dialogue": [
+    {
+     "speaker": "师傅",
+     "text": "这是什么?",
+     "phonetic": "Zhè shì shénme?",
+     "translation": "Đây là cái gì?"
+    },
+    {
+     "speaker": "小明",
+     "text": "这是压缩机,它压缩制冷剂。",
+     "phonetic": "Zhè shì yāsuōjī, tā yāsuō zhìlěngjì.",
+     "translation": "Đây là máy nén, nó nén môi chất lạnh."
+    },
+    {
+     "speaker": "师傅",
+     "text": "那个呢?",
+     "phonetic": "Nàge ne?",
+     "translation": "Còn cái kia?"
+    },
+    {
+     "speaker": "小明",
+     "text": "那是冷凝器。旁边的是压力表。",
+     "phonetic": "Nà shì lěngníngqì. Pángbiān de shì yālìbiǎo.",
+     "translation": "Đó là dàn ngưng. Cái bên cạnh là đồng hồ áp suất."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "压缩机",
+     "reading": "yāsuōjī",
+     "definition": "máy nén",
+     "example": "压缩机停了。 (Máy nén đã dừng.)"
+    },
+    {
+     "term": "制冷剂",
+     "reading": "zhìlěngjì",
+     "definition": "môi chất lạnh",
+     "example": "制冷剂不够。 (Môi chất lạnh không đủ.)"
+    },
+    {
+     "term": "冷凝器",
+     "reading": "lěngníngqì",
+     "definition": "dàn ngưng",
+     "example": "清洗冷凝器。 (Vệ sinh dàn ngưng.)"
+    },
+    {
+     "term": "蒸发器",
+     "reading": "zhēngfāqì",
+     "definition": "dàn bay hơi",
+     "example": "蒸发器结霜了。 (Dàn bay hơi bị đóng tuyết.)"
+    },
+    {
+     "term": "膨胀阀",
+     "reading": "péngzhàngfá",
+     "definition": "van tiết lưu",
+     "example": "调整膨胀阀。 (Điều chỉnh van tiết lưu.)"
+    }
+   ],
+   "grammar": {
+    "title": "这/那是…… và ……的是……",
+    "explanation": "Chỉ vật: 这是 / 那是 + N. Nhấn vật được nói đến: 旁边的是 + N (cái bên cạnh là N). Hỏi: ……呢? (còn … thì sao?).",
+    "examples": [
+     "那是螺丝刀。[nà shì luósīdāo] (Đó là tua vít.)",
+     "右边的是扳手。[yòubiān de shì bānshou] (Cái bên phải là cờ lê.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm z/zh, l/n",
+    "tip": "制冷剂 zhìlěngjì (zh), 压缩机 yāsuōjī (s), 冷凝器 lěngníngqì (l và n — đừng lẫn).",
+    "words": [
+     "压缩机",
+     "制冷剂",
+     "冷凝器",
+     "膨胀阀"
+    ]
+   },
+   "speakingTasks": [
+    "Gọi tên 5 bộ phận chính của chu trình lạnh và chức năng của nó.",
+    "Hỏi thầy/cô tên một dụng cụ bạn hay dùng."
+   ],
+   "questions": [
+    {
+     "prompt": "「压缩机」 là:",
+     "options": [
+      "quạt",
+      "dàn ngưng",
+      "máy nén"
+     ],
+     "answer": 2,
+     "explanation": "压缩 = nén."
+    },
+    {
+     "prompt": "Bộ phận hấp thụ nhiệt trong kho là:",
+     "options": [
+      "蒸发器",
+      "压缩机",
+      "冷凝器"
+     ],
+     "answer": 0,
+     "explanation": "蒸发器 = dàn bay hơi."
+    },
+    {
+     "prompt": "「膨胀阀」 là:",
+     "options": [
+      "van an toàn",
+      "van tiết lưu",
+      "van một chiều"
+     ],
+     "answer": 1,
+     "explanation": "膨胀 = giãn nở."
+    },
+    {
+     "prompt": "“Môi chất lạnh không đủ.”",
+     "options": [
+      "制冷剂不够。",
+      "不够制冷剂是。",
+      "制冷剂没够了。"
+     ],
+     "answer": 0,
+     "explanation": "N + 不够."
+    },
+    {
+     "prompt": "「膨胀阀」 có nghĩa là gì?",
+     "options": [
+      "van tiết lưu",
+      "môi chất lạnh",
+      "dàn ngưng"
+     ],
+     "answer": 0,
+     "explanation": "「膨胀阀」 [péngzhàngfá] = van tiết lưu."
+    },
+    {
+     "prompt": "「压缩机」 đọc là gì?",
+     "options": [
+      "lěngníngqì",
+      "péngzhàngfá",
+      "yāsuōjī"
+     ],
+     "answer": 2,
+     "explanation": "「压缩机」 đọc là [yāsuōjī], nghĩa là máy nén."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿结霜了。  (Dàn bay hơi bị đóng tuyết.)",
+     "options": [
+      "蒸发器",
+      "制冷剂",
+      "冷凝器"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「蒸发器」 (dàn bay hơi). Câu đầy đủ: 蒸发器结霜了。"
+    },
+    {
+     "prompt": "「冷凝器」 có nghĩa là gì?",
+     "options": [
+      "dàn bay hơi",
+      "dàn ngưng",
+      "môi chất lạnh"
+     ],
+     "answer": 1,
+     "explanation": "「冷凝器」 [lěngníngqì] = dàn ngưng."
+    },
+    {
+     "prompt": "「膨胀阀」 đọc là gì?",
+     "options": [
+      "péngzhàngfá",
+      "lěngníngqì",
+      "zhìlěngjì"
+     ],
+     "answer": 0,
+     "explanation": "「膨胀阀」 đọc là [péngzhàngfá], nghĩa là van tiết lưu."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿不够。  (Môi chất lạnh không đủ.)",
+     "options": [
+      "制冷剂",
+      "冷凝器",
+      "膨胀阀"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「制冷剂」 (môi chất lạnh). Câu đầy đủ: 制冷剂不够。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-a1-2",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Nhận yêu cầu sửa chữa qua điện thoại",
+   "objective": "Hỏi tên khách, địa chỉ, thiết bị và triệu chứng.",
+   "reading": "小明: 您好,这里是制冷维修公司。\n客户: 我们仓库的冷库不制冷了。\n小明: 现在库里温度是多少度?\n客户: 零下五度。平时是零下二十度。\n小明: 明白了。请告诉我地址,我们马上过去。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "您好,这里是制冷维修公司。",
+     "phonetic": "Nín hǎo, zhèlǐ shì zhìlěng wéixiū gōngsī.",
+     "translation": "Xin chào, đây là công ty sửa chữa điện lạnh."
+    },
+    {
+     "speaker": "客户",
+     "text": "我们仓库的冷库不制冷了。",
+     "phonetic": "Wǒmen cāngkù de lěngkù bú zhìlěng le.",
+     "translation": "Kho lạnh trong nhà kho của chúng tôi không làm lạnh nữa."
+    },
+    {
+     "speaker": "小明",
+     "text": "现在库里温度是多少度?",
+     "phonetic": "Xiànzài kù lǐ wēndù shì duōshao dù?",
+     "translation": "Hiện nhiệt độ trong kho là bao nhiêu độ?"
+    },
+    {
+     "speaker": "客户",
+     "text": "零下五度。平时是零下二十度。",
+     "phonetic": "Língxià wǔ dù. Píngshí shì língxià èrshí dù.",
+     "translation": "Âm 5 độ. Bình thường là âm 20 độ."
+    },
+    {
+     "speaker": "小明",
+     "text": "明白了。请告诉我地址,我们马上过去。",
+     "phonetic": "Míngbai le. Qǐng gàosu wǒ dìzhǐ, wǒmen mǎshàng guòqù.",
+     "translation": "Tôi hiểu rồi. Xin cho biết địa chỉ, chúng tôi đến ngay."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "冷库",
+     "reading": "lěngkù",
+     "definition": "kho lạnh",
+     "example": "检查冷库。 (Kiểm tra kho lạnh.)"
+    },
+    {
+     "term": "制冷",
+     "reading": "zhìlěng",
+     "definition": "làm lạnh",
+     "example": "空调不制冷。 (Điều hòa không làm lạnh.)"
+    },
+    {
+     "term": "温度",
+     "reading": "wēndù",
+     "definition": "nhiệt độ",
+     "example": "温度太高了。 (Nhiệt độ quá cao.)"
+    },
+    {
+     "term": "零下",
+     "reading": "língxià",
+     "definition": "dưới 0 độ, âm",
+     "example": "零下十八度。 (Âm 18 độ.)"
+    },
+    {
+     "term": "地址",
+     "reading": "dìzhǐ",
+     "definition": "địa chỉ",
+     "example": "请说一下地址。 (Xin nói địa chỉ.)"
+    }
+   ],
+   "grammar": {
+    "title": "多少度 / 零下 / 不……了",
+    "explanation": "Hỏi nhiệt độ: 多少度? Âm độ: 零下 + số + 度. Không còn ~ nữa: 不 + V + 了. Đến ngay: 马上过去.",
+    "examples": [
+     "现在多少度?[xiànzài duōshao dù] (Bây giờ bao nhiêu độ?)",
+     "机器不转了。[jīqì bú zhuàn le] (Máy không quay nữa.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc nhiệt độ",
+    "tip": "零下二十度 língxià èrshí dù. 温度 wēndù. 冷库 lěngkù (l).",
+    "words": [
+     "冷库",
+     "温度",
+     "零下",
+     "地址"
+    ]
+   },
+   "speakingTasks": [
+    "Nhận cuộc gọi báo hỏng kho lạnh: hỏi 4 thông tin cần thiết.",
+    "Thầy/cô là khách, hãy hỏi triệu chứng và hẹn giờ đến."
+   ],
+   "questions": [
+    {
+     "prompt": "Hỏi nhiệt độ trong kho:",
+     "options": [
+      "库里温度是多少度?",
+      "库里温度在哪儿?",
+      "温度库里几个?"
+     ],
+     "answer": 0,
+     "explanation": "多少度."
+    },
+    {
+     "prompt": "「不制冷了」 nghĩa là:",
+     "options": [
+      "không làm lạnh nữa",
+      "bị đóng băng",
+      "quá lạnh"
+     ],
+     "answer": 0,
+     "explanation": "不……了 = không … nữa."
+    },
+    {
+     "prompt": "“Âm 20 độ” là:",
+     "options": [
+      "下零二十",
+      "零下二十度",
+      "二十零下度"
+     ],
+     "answer": 1,
+     "explanation": "零下 + số + 度."
+    },
+    {
+     "prompt": "“Chúng tôi đến ngay.”",
+     "options": [
+      "我们过去马上。",
+      "我们马上过去。",
+      "马上我们去过。"
+     ],
+     "answer": 1,
+     "explanation": "马上 + V."
+    },
+    {
+     "prompt": "「冷库」 có nghĩa là gì?",
+     "options": [
+      "kho lạnh",
+      "nhiệt độ",
+      "địa chỉ"
+     ],
+     "answer": 0,
+     "explanation": "「冷库」 [lěngkù] = kho lạnh."
+    },
+    {
+     "prompt": "「制冷」 đọc là gì?",
+     "options": [
+      "zhìlěng",
+      "dìzhǐ",
+      "lěngkù"
+     ],
+     "answer": 0,
+     "explanation": "「制冷」 đọc là [zhìlěng], nghĩa là làm lạnh."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 空调不＿＿＿。  (Điều hòa không làm lạnh.)",
+     "options": [
+      "制冷",
+      "冷库",
+      "地址"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「制冷」 (làm lạnh). Câu đầy đủ: 空调不制冷。"
+    },
+    {
+     "prompt": "「温度」 có nghĩa là gì?",
+     "options": [
+      "nhiệt độ",
+      "làm lạnh",
+      "dưới 0 độ, âm"
+     ],
+     "answer": 0,
+     "explanation": "「温度」 [wēndù] = nhiệt độ."
+    },
+    {
+     "prompt": "「地址」 đọc là gì?",
+     "options": [
+      "língxià",
+      "dìzhǐ",
+      "wēndù"
+     ],
+     "answer": 1,
+     "explanation": "「地址」 đọc là [dìzhǐ], nghĩa là địa chỉ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿太高了。  (Nhiệt độ quá cao.)",
+     "options": [
+      "温度",
+      "零下",
+      "制冷"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「温度」 (nhiệt độ). Câu đầy đủ: 温度太高了。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-a1-3",
+   "level": "A1",
+   "unit": "HSK 1-2 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "An toàn lao động",
+   "objective": "Nhắc các quy tắc an toàn: đồ bảo hộ, ngắt điện, khóa thẻ.",
+   "reading": "班长: 工作以前,一定要先断电。\n小明: 好的。我在开关上挂锁和警示牌。\n班长: 还要戴手套和护目镜。\n小明: 明白,安全第一。",
+   "dialogue": [
+    {
+     "speaker": "班长",
+     "text": "工作以前,一定要先断电。",
+     "phonetic": "Gōngzuò yǐqián, yídìng yào xiān duàn diàn.",
+     "translation": "Trước khi làm, nhất định phải ngắt điện trước."
+    },
+    {
+     "speaker": "小明",
+     "text": "好的。我在开关上挂锁和警示牌。",
+     "phonetic": "Hǎo de. Wǒ zài kāiguān shang guà suǒ hé jǐngshìpái.",
+     "translation": "Vâng. Tôi treo khóa và biển cảnh báo ở công tắc."
+    },
+    {
+     "speaker": "班长",
+     "text": "还要戴手套和护目镜。",
+     "phonetic": "Hái yào dài shǒutào hé hùmùjìng.",
+     "translation": "Còn phải đeo găng tay và kính bảo hộ."
+    },
+    {
+     "speaker": "小明",
+     "text": "明白,安全第一。",
+     "phonetic": "Míngbai, ānquán dì-yī.",
+     "translation": "Hiểu rồi, an toàn là trên hết."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "断电",
+     "reading": "duàn diàn",
+     "definition": "ngắt điện",
+     "example": "维修前要断电。 (Trước khi sửa phải ngắt điện.)"
+    },
+    {
+     "term": "手套",
+     "reading": "shǒutào",
+     "definition": "găng tay",
+     "example": "请戴手套。 (Xin đeo găng tay.)"
+    },
+    {
+     "term": "护目镜",
+     "reading": "hùmùjìng",
+     "definition": "kính bảo hộ",
+     "example": "戴上护目镜。 (Đeo kính bảo hộ.)"
+    },
+    {
+     "term": "安全",
+     "reading": "ānquán",
+     "definition": "an toàn",
+     "example": "注意安全。 (Chú ý an toàn.)"
+    },
+    {
+     "term": "开关",
+     "reading": "kāiguān",
+     "definition": "công tắc, cầu dao",
+     "example": "关掉开关。 (Tắt cầu dao.)"
+    }
+   ],
+   "grammar": {
+    "title": "……以前 / 一定要先…… / 戴",
+    "explanation": "Trước khi: V + 以前. Bắt buộc làm trước: 一定要先 + V. Đeo đồ bảo hộ: 戴 (手套, 护目镜, 安全帽).",
+    "examples": [
+     "进冷库以前,要穿防寒服。[jìn lěngkù yǐqián, yào chuān fánghánfú] (Trước khi vào kho lạnh phải mặc đồ chống rét.)",
+     "一定要戴安全帽。[yídìng yào dài ānquánmào] (Nhất định phải đội mũ bảo hộ.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Lời nhắc rõ ràng",
+    "tip": "Nói to, rõ, dứt khoát. 安全第一 ānquán dì-yī. 断电 duàn diàn.",
+    "words": [
+     "断电",
+     "手套",
+     "护目镜",
+     "安全"
+    ]
+   },
+   "speakingTasks": [
+    "Nêu 4 quy tắc an toàn trước khi sửa máy lạnh công nghiệp.",
+    "Nhắc nhở đồng nghiệp (thầy/cô) đeo đồ bảo hộ."
+   ],
+   "questions": [
+    {
+     "prompt": "“Trước khi làm, ngắt điện.”",
+     "options": [
+      "工作以后,开电。",
+      "断电工作在以前。",
+      "工作以前,先断电。"
+     ],
+     "answer": 2,
+     "explanation": "V + 以前."
+    },
+    {
+     "prompt": "「手套」 là:",
+     "options": [
+      "mũ bảo hộ",
+      "ủng",
+      "găng tay"
+     ],
+     "answer": 2,
+     "explanation": "手套 = găng tay."
+    },
+    {
+     "prompt": "「安全第一」 nghĩa là:",
+     "options": [
+      "Rẻ nhất",
+      "Nhanh là số một",
+      "An toàn là trên hết"
+     ],
+     "answer": 2,
+     "explanation": "第一 = số một."
+    },
+    {
+     "prompt": "Treo khóa và biển ở cầu dao là để:",
+     "options": [
+      "Tiết kiệm điện",
+      "Làm đẹp",
+      "Không ai bật điện khi đang sửa"
+     ],
+     "answer": 2,
+     "explanation": "Lockout/Tagout."
+    },
+    {
+     "prompt": "「手套」 có nghĩa là gì?",
+     "options": [
+      "an toàn",
+      "găng tay",
+      "công tắc, cầu dao"
+     ],
+     "answer": 1,
+     "explanation": "「手套」 [shǒutào] = găng tay."
+    },
+    {
+     "prompt": "「护目镜」 đọc là gì?",
+     "options": [
+      "shǒutào",
+      "ānquán",
+      "hùmùjìng"
+     ],
+     "answer": 2,
+     "explanation": "「护目镜」 đọc là [hùmùjìng], nghĩa là kính bảo hộ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 注意＿＿＿。  (Chú ý an toàn.)",
+     "options": [
+      "断电",
+      "安全",
+      "护目镜"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「安全」 (an toàn). Câu đầy đủ: 注意安全。"
+    },
+    {
+     "prompt": "「断电」 có nghĩa là gì?",
+     "options": [
+      "găng tay",
+      "ngắt điện",
+      "công tắc, cầu dao"
+     ],
+     "answer": 1,
+     "explanation": "「断电」 [duàn diàn] = ngắt điện."
+    },
+    {
+     "prompt": "「断电」 đọc là gì?",
+     "options": [
+      "shǒutào",
+      "duàn diàn",
+      "kāiguān"
+     ],
+     "answer": 1,
+     "explanation": "「断电」 đọc là [duàn diàn], nghĩa là ngắt điện."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 戴上＿＿＿。  (Đeo kính bảo hộ.)",
+     "options": [
+      "手套",
+      "安全",
+      "护目镜"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「护目镜」 (kính bảo hộ). Câu đầy đủ: 戴上护目镜。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-a2-1",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Đọc thông số: nhiệt độ và áp suất",
+   "objective": "Đọc và báo cáo áp suất hút, áp suất đẩy, độ quá nhiệt.",
+   "reading": "师傅: 你看一下压力表的读数。\n小明: 低压是零点二兆帕,高压是一点六兆帕。\n师傅: 吸气温度呢?\n小明: 过热度是十二度,好像有点儿高。",
+   "dialogue": [
+    {
+     "speaker": "师傅",
+     "text": "你看一下压力表的读数。",
+     "phonetic": "Nǐ kàn yíxià yālìbiǎo de dúshù.",
+     "translation": "Em xem số đọc trên đồng hồ áp suất đi."
+    },
+    {
+     "speaker": "小明",
+     "text": "低压是零点二兆帕,高压是一点六兆帕。",
+     "phonetic": "Dīyā shì líng diǎn èr zhàopà, gāoyā shì yī diǎn liù zhàopà.",
+     "translation": "Áp thấp 0,2 MPa, áp cao 1,6 MPa."
+    },
+    {
+     "speaker": "师傅",
+     "text": "吸气温度呢?",
+     "phonetic": "Xīqì wēndù ne?",
+     "translation": "Còn nhiệt độ hơi hút?"
+    },
+    {
+     "speaker": "小明",
+     "text": "过热度是十二度,好像有点儿高。",
+     "phonetic": "Guòrèdù shì shí'èr dù, hǎoxiàng yǒudiǎnr gāo.",
+     "translation": "Độ quá nhiệt là 12 độ, hình như hơi cao."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "低压",
+     "reading": "dīyā",
+     "definition": "áp thấp (áp hút)",
+     "example": "低压在下降。 (Áp thấp đang giảm.)"
+    },
+    {
+     "term": "高压",
+     "reading": "gāoyā",
+     "definition": "áp cao (áp đẩy)",
+     "example": "高压太高了。 (Áp cao quá cao.)"
+    },
+    {
+     "term": "读数",
+     "reading": "dúshù",
+     "definition": "số đọc",
+     "example": "记录读数。 (Ghi lại số đọc.)"
+    },
+    {
+     "term": "过热度",
+     "reading": "guòrèdù",
+     "definition": "độ quá nhiệt",
+     "example": "调整过热度。 (Điều chỉnh độ quá nhiệt.)"
+    },
+    {
+     "term": "好像",
+     "reading": "hǎoxiàng",
+     "definition": "hình như, có vẻ",
+     "example": "好像缺制冷剂。 (Hình như thiếu môi chất.)"
+    }
+   ],
+   "grammar": {
+    "title": "好像…… / 有点儿 + Adj / 太……了",
+    "explanation": "Phán đoán: 好像 + mệnh đề. Hơi (tiêu cực): 有点儿 + Adj. Quá: 太 + Adj + 了. Đơn vị: 兆帕 (MPa).",
+    "examples": [
+     "好像制冷剂不够。[hǎoxiàng zhìlěngjì bú gòu] (Hình như môi chất không đủ.)",
+     "温度太低了。[wēndù tài dī le] (Nhiệt độ quá thấp.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc số thập phân",
+    "tip": "0.2 líng diǎn èr; 1.6 yī diǎn liù. 兆帕 zhàopà (zh + p bật hơi).",
+    "words": [
+     "低压",
+     "高压",
+     "过热度",
+     "兆帕"
+    ]
+   },
+   "speakingTasks": [
+    "Đọc và báo cáo 4 thông số của một máy lạnh đang chạy.",
+    "Nhận xét thông số bất thường với thầy/cô bằng 好像."
+   ],
+   "questions": [
+    {
+     "prompt": "「高压」 trong hệ thống lạnh là:",
+     "options": [
+      "áp suất phía đẩy",
+      "áp suất phía hút",
+      "điện áp cao"
+     ],
+     "answer": 0,
+     "explanation": "高压 = áp cao."
+    },
+    {
+     "prompt": "“Hình như thiếu môi chất.”",
+     "options": [
+      "缺好像制冷剂。",
+      "好像制冷剂缺是。",
+      "好像缺制冷剂。"
+     ],
+     "answer": 2,
+     "explanation": "好像 + mệnh đề."
+    },
+    {
+     "prompt": "1.6 đọc là:",
+     "options": [
+      "六点一",
+      "一六",
+      "一点六"
+     ],
+     "answer": 2,
+     "explanation": "点 = dấu thập phân."
+    },
+    {
+     "prompt": "「过热度」 là:",
+     "options": [
+      "độ quá nhiệt",
+      "nhiệt độ ngưng tụ",
+      "độ quá lạnh"
+     ],
+     "answer": 0,
+     "explanation": "Superheat."
+    },
+    {
+     "prompt": "「高压」 có nghĩa là gì?",
+     "options": [
+      "áp thấp (áp hút)",
+      "áp cao (áp đẩy)",
+      "hình như, có vẻ"
+     ],
+     "answer": 1,
+     "explanation": "「高压」 [gāoyā] = áp cao (áp đẩy)."
+    },
+    {
+     "prompt": "「高压」 đọc là gì?",
+     "options": [
+      "hǎoxiàng",
+      "dīyā",
+      "gāoyā"
+     ],
+     "answer": 2,
+     "explanation": "「高压」 đọc là [gāoyā], nghĩa là áp cao (áp đẩy)."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿太高了。  (Áp cao quá cao.)",
+     "options": [
+      "低压",
+      "好像",
+      "高压"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「高压」 (áp cao (áp đẩy)). Câu đầy đủ: 高压太高了。"
+    },
+    {
+     "prompt": "「读数」 có nghĩa là gì?",
+     "options": [
+      "hình như, có vẻ",
+      "áp cao (áp đẩy)",
+      "số đọc"
+     ],
+     "answer": 2,
+     "explanation": "「读数」 [dúshù] = số đọc."
+    },
+    {
+     "prompt": "「好像」 đọc là gì?",
+     "options": [
+      "hǎoxiàng",
+      "guòrèdù",
+      "gāoyā"
+     ],
+     "answer": 0,
+     "explanation": "「好像」 đọc là [hǎoxiàng], nghĩa là hình như, có vẻ."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 记录＿＿＿。  (Ghi lại số đọc.)",
+     "options": [
+      "读数",
+      "好像",
+      "高压"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「读数」 (số đọc). Câu đầy đủ: 记录读数。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-a2-2",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Chẩn đoán lỗi cơ bản",
+   "objective": "Hỏi triệu chứng, kiểm tra và nêu nguyên nhân có thể.",
+   "reading": "客户: 制冷机有奇怪的声音。\n小明: 从什么时候开始的?\n客户: 从昨天开始。而且结了很多霜。\n小明: 可能是风机电机坏了,也可能是化霜加热器有问题。我检查一下。",
+   "dialogue": [
+    {
+     "speaker": "客户",
+     "text": "制冷机有奇怪的声音。",
+     "phonetic": "Zhìlěngjī yǒu qíguài de shēngyīn.",
+     "translation": "Máy lạnh có tiếng kêu lạ."
+    },
+    {
+     "speaker": "小明",
+     "text": "从什么时候开始的?",
+     "phonetic": "Cóng shénme shíhou kāishǐ de?",
+     "translation": "Bắt đầu từ khi nào ạ?"
+    },
+    {
+     "speaker": "客户",
+     "text": "从昨天开始。而且结了很多霜。",
+     "phonetic": "Cóng zuótiān kāishǐ. Érqiě jié le hěn duō shuāng.",
+     "translation": "Từ hôm qua. Hơn nữa bị đóng tuyết rất nhiều."
+    },
+    {
+     "speaker": "小明",
+     "text": "可能是风机电机坏了,也可能是化霜加热器有问题。我检查一下。",
+     "phonetic": "Kěnéng shì fēngjī diànjī huài le, yě kěnéng shì huàshuāng jiārèqì yǒu wèntí. Wǒ jiǎnchá yíxià.",
+     "translation": "Có thể mô-tơ quạt hỏng, cũng có thể điện trở xả đá có vấn đề. Tôi kiểm tra chút."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "声音",
+     "reading": "shēngyīn",
+     "definition": "âm thanh",
+     "example": "声音很大。 (Tiếng rất to.)"
+    },
+    {
+     "term": "霜",
+     "reading": "shuāng",
+     "definition": "tuyết bám, sương giá",
+     "example": "蒸发器上有霜。 (Trên dàn bay hơi có tuyết.)"
+    },
+    {
+     "term": "化霜",
+     "reading": "huàshuāng",
+     "definition": "xả đá",
+     "example": "化霜不正常。 (Xả đá không bình thường.)"
+    },
+    {
+     "term": "坏",
+     "reading": "huài",
+     "definition": "hỏng",
+     "example": "电机坏了。 (Mô-tơ hỏng rồi.)"
+    },
+    {
+     "term": "检查",
+     "reading": "jiǎnchá",
+     "definition": "kiểm tra",
+     "example": "我先检查一下。 (Tôi kiểm tra trước.)"
+    }
+   ],
+   "grammar": {
+    "title": "可能是……,也可能是…… / 从……开始的",
+    "explanation": "Phỏng đoán nhiều khả năng: 可能是 A,也可能是 B. Hỏi thời điểm bắt đầu: 从什么时候开始的? Hỏng: V/N + 坏了.",
+    "examples": [
+     "有一股烧焦的味道。[yǒu yì gǔ shāojiāo de wèidao] (Có mùi khét.)",
+     "可能是传感器坏了。[kěnéng shì chuángǎnqì huài le] (Có thể cảm biến hỏng.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm sh và h",
+    "tip": "霜 shuāng (sh cuốn lưỡi), 化霜 huàshuāng, 坏 huài (h họng nhẹ).",
+    "words": [
+     "声音",
+     "霜",
+     "化霜",
+     "检查"
+    ]
+   },
+   "speakingTasks": [
+    "Hỏi khách 3 câu về triệu chứng và đưa ra 2 nguyên nhân có thể.",
+    "Thầy/cô mô tả lỗi, bạn chẩn đoán bằng 可能是……"
+   ],
+   "questions": [
+    {
+     "prompt": "“Có tiếng kêu lạ.”",
+     "options": [
+      "有奇怪的声音。",
+      "奇怪有声音了的。",
+      "声音有奇怪是。"
+     ],
+     "answer": 0,
+     "explanation": "有 + N."
+    },
+    {
+     "prompt": "Phỏng đoán “có thể cảm biến hỏng”:",
+     "options": [
+      "一定是传感器坏了吧!",
+      "传感器坏可能。",
+      "可能是传感器坏了。"
+     ],
+     "answer": 2,
+     "explanation": "可能是……"
+    },
+    {
+     "prompt": "「化霜」 là:",
+     "options": [
+      "nạp gas",
+      "xả đá",
+      "thay dầu"
+     ],
+     "answer": 1,
+     "explanation": "化霜 = defrost."
+    },
+    {
+     "prompt": "“Tôi kiểm tra chút.”",
+     "options": [
+      "我检查一下。",
+      "检查我一下了。",
+      "我一下检查。"
+     ],
+     "answer": 0,
+     "explanation": "V + 一下."
+    },
+    {
+     "prompt": "「检查」 có nghĩa là gì?",
+     "options": [
+      "âm thanh",
+      "hỏng",
+      "kiểm tra"
+     ],
+     "answer": 2,
+     "explanation": "「检查」 [jiǎnchá] = kiểm tra."
+    },
+    {
+     "prompt": "「坏」 đọc là gì?",
+     "options": [
+      "shēngyīn",
+      "huàshuāng",
+      "huài"
+     ],
+     "answer": 2,
+     "explanation": "「坏」 đọc là [huài], nghĩa là hỏng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 蒸发器上有＿＿＿。  (Trên dàn bay hơi có tuyết.)",
+     "options": [
+      "检查",
+      "坏",
+      "霜"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「霜」 (tuyết bám, sương giá). Câu đầy đủ: 蒸发器上有霜。"
+    },
+    {
+     "prompt": "「坏」 có nghĩa là gì?",
+     "options": [
+      "âm thanh",
+      "xả đá",
+      "hỏng"
+     ],
+     "answer": 2,
+     "explanation": "「坏」 [huài] = hỏng."
+    },
+    {
+     "prompt": "「霜」 đọc là gì?",
+     "options": [
+      "jiǎnchá",
+      "huài",
+      "shuāng"
+     ],
+     "answer": 2,
+     "explanation": "「霜」 đọc là [shuāng], nghĩa là tuyết bám, sương giá."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 我先＿＿＿一下。  (Tôi kiểm tra trước.)",
+     "options": [
+      "声音",
+      "检查",
+      "坏"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「检查」 (kiểm tra). Câu đầy đủ: 我先检查一下。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-a2-3",
+   "level": "A2",
+   "unit": "HSK 3 · Bài 3",
+   "category": "Kỹ năng",
+   "title": "Bảo trì định kỳ",
+   "objective": "Mô tả các bước bảo trì và ghi chép kết quả kiểm tra.",
+   "reading": "小明: 今天来做每月的例行保养。\n客户: 要做什么?\n小明: 先清洗过滤网,再检查皮带松紧,然后测一下油位。\n小明: 做完以后,我会把结果记在保养表上。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "今天来做每月的例行保养。",
+     "phonetic": "Jīntiān lái zuò měi yuè de lìxíng bǎoyǎng.",
+     "translation": "Hôm nay tôi đến bảo dưỡng định kỳ hằng tháng."
+    },
+    {
+     "speaker": "客户",
+     "text": "要做什么?",
+     "phonetic": "Yào zuò shénme?",
+     "translation": "Sẽ làm những gì?"
+    },
+    {
+     "speaker": "小明",
+     "text": "先清洗过滤网,再检查皮带松紧,然后测一下油位。",
+     "phonetic": "Xiān qīngxǐ guòlǜwǎng, zài jiǎnchá pídài sōngjǐn, ránhòu cè yíxià yóuwèi.",
+     "translation": "Trước tiên vệ sinh lưới lọc, rồi kiểm tra độ căng dây đai, sau đó đo mức dầu."
+    },
+    {
+     "speaker": "小明",
+     "text": "做完以后,我会把结果记在保养表上。",
+     "phonetic": "Zuò wán yǐhòu, wǒ huì bǎ jiéguǒ jì zài bǎoyǎngbiǎo shang.",
+     "translation": "Làm xong, tôi sẽ ghi kết quả vào phiếu bảo dưỡng."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "保养",
+     "reading": "bǎoyǎng",
+     "definition": "bảo dưỡng",
+     "example": "定期保养很重要。 (Bảo dưỡng định kỳ rất quan trọng.)"
+    },
+    {
+     "term": "清洗",
+     "reading": "qīngxǐ",
+     "definition": "vệ sinh, rửa",
+     "example": "清洗冷凝器。 (Vệ sinh dàn ngưng.)"
+    },
+    {
+     "term": "油位",
+     "reading": "yóuwèi",
+     "definition": "mức dầu",
+     "example": "油位正常。 (Mức dầu bình thường.)"
+    },
+    {
+     "term": "记",
+     "reading": "jì",
+     "definition": "ghi chép",
+     "example": "把数据记下来。 (Ghi số liệu lại.)"
+    },
+    {
+     "term": "更换",
+     "reading": "gēnghuàn",
+     "definition": "thay thế",
+     "example": "更换皮带。 (Thay dây đai.)"
+    }
+   ],
+   "grammar": {
+    "title": "先……再……然后…… / V 完以后 / 把……记在……上",
+    "explanation": "Thứ tự bước: 先 → 再 → 然后. Làm xong: V + 完以后. Câu 把: 把 + kết quả + 记在 + nơi + 上.",
+    "examples": [
+     "我先准备好零件。[wǒ xiān zhǔnbèi hǎo língjiàn] (Tôi chuẩn bị sẵn linh kiện trước.)",
+     "检查完以后,我会报告。[jiǎnchá wán yǐhòu, wǒ huì bàogào] (Kiểm tra xong tôi sẽ báo cáo.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm q và x",
+    "tip": "清洗 qīngxǐ: q bật hơi, x không bật hơi. 保养 bǎoyǎng (3-3 → 2-3).",
+    "words": [
+     "保养",
+     "清洗",
+     "油位",
+     "更换"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích cho khách 4 bước bảo trì định kỳ máy lạnh công nghiệp.",
+    "Đọc kết quả kiểm tra cho thầy/cô ghi vào phiếu."
+   ],
+   "questions": [
+    {
+     "prompt": "“Làm xong tôi sẽ ghi vào phiếu.”",
+     "options": [
+      "做完以后,我会把结果记在表上。",
+      "做以后完,记表上结果。",
+      "我记表做完把。"
+     ],
+     "answer": 0,
+     "explanation": "V完以后 + 把……记在……上."
+    },
+    {
+     "prompt": "「清洗」 nghĩa là:",
+     "options": [
+      "thay thế",
+      "vệ sinh",
+      "đo lường"
+     ],
+     "answer": 1,
+     "explanation": "清洗 = làm sạch."
+    },
+    {
+     "prompt": "「更换」 nghĩa là:",
+     "options": [
+      "thay thế",
+      "sửa chữa",
+      "kiểm tra"
+     ],
+     "answer": 0,
+     "explanation": "更换 = replace."
+    },
+    {
+     "prompt": "Thứ tự đúng:",
+     "options": [
+      "然后……先……再……",
+      "先……再……然后……",
+      "再……然后……先……"
+     ],
+     "answer": 1,
+     "explanation": "Trước tiên → rồi → sau đó."
+    },
+    {
+     "prompt": "「保养」 có nghĩa là gì?",
+     "options": [
+      "thay thế",
+      "bảo dưỡng",
+      "mức dầu"
+     ],
+     "answer": 1,
+     "explanation": "「保养」 [bǎoyǎng] = bảo dưỡng."
+    },
+    {
+     "prompt": "「保养」 đọc là gì?",
+     "options": [
+      "bǎoyǎng",
+      "gēnghuàn",
+      "yóuwèi"
+     ],
+     "answer": 0,
+     "explanation": "「保养」 đọc là [bǎoyǎng], nghĩa là bảo dưỡng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿冷凝器。  (Vệ sinh dàn ngưng.)",
+     "options": [
+      "保养",
+      "清洗",
+      "记"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「清洗」 (vệ sinh, rửa). Câu đầy đủ: 清洗冷凝器。"
+    },
+    {
+     "prompt": "「更换」 có nghĩa là gì?",
+     "options": [
+      "thay thế",
+      "vệ sinh, rửa",
+      "ghi chép"
+     ],
+     "answer": 0,
+     "explanation": "「更换」 [gēnghuàn] = thay thế."
+    },
+    {
+     "prompt": "「油位」 đọc là gì?",
+     "options": [
+      "bǎoyǎng",
+      "yóuwèi",
+      "jì"
+     ],
+     "answer": 1,
+     "explanation": "「油位」 đọc là [yóuwèi], nghĩa là mức dầu."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 定期＿＿＿很重要。  (Bảo dưỡng định kỳ rất quan trọng.)",
+     "options": [
+      "保养",
+      "油位",
+      "更换"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「保养」 (bảo dưỡng). Câu đầy đủ: 定期保养很重要。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-b1-1",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Kho lạnh và hệ thống amoniac (NH3)",
+   "objective": "Giải thích cấu tạo hệ thống NH3, nguy hiểm và biện pháp an toàn.",
+   "reading": "厂长: 我们工厂用的是氨制冷系统。\n小明: 氨的效率很高,但是有毒,所以必须特别注意泄漏。\n厂长: 万一泄漏了,怎么办?\n小明: 先让大家撤离,戴上防毒面具以后,再关闭总阀门。",
+   "dialogue": [
+    {
+     "speaker": "厂长",
+     "text": "我们工厂用的是氨制冷系统。",
+     "phonetic": "Wǒmen gōngchǎng yòng de shì ān zhìlěng xìtǒng.",
+     "translation": "Nhà máy chúng tôi dùng hệ thống lạnh amoniac."
+    },
+    {
+     "speaker": "小明",
+     "text": "氨的效率很高,但是有毒,所以必须特别注意泄漏。",
+     "phonetic": "Ān de xiàolǜ hěn gāo, dànshì yǒu dú, suǒyǐ bìxū tèbié zhùyì xièlòu.",
+     "translation": "Amoniac hiệu suất cao nhưng có độc, nên bắt buộc phải đặc biệt chú ý rò rỉ."
+    },
+    {
+     "speaker": "厂长",
+     "text": "万一泄漏了,怎么办?",
+     "phonetic": "Wànyī xièlòu le, zěnme bàn?",
+     "translation": "Lỡ rò rỉ thì làm sao?"
+    },
+    {
+     "speaker": "小明",
+     "text": "先让大家撤离,戴上防毒面具以后,再关闭总阀门。",
+     "phonetic": "Xiān ràng dàjiā chèlí, dài shang fángdú miànjù yǐhòu, zài guānbì zǒng fámén.",
+     "translation": "Trước tiên cho mọi người sơ tán, đeo mặt nạ phòng độc rồi mới đóng van tổng."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "氨",
+     "reading": "ān",
+     "definition": "amoniac (NH3)",
+     "example": "这里有氨的味道。 (Ở đây có mùi amoniac.)"
+    },
+    {
+     "term": "效率",
+     "reading": "xiàolǜ",
+     "definition": "hiệu suất",
+     "example": "效率提高了。 (Hiệu suất đã tăng.)"
+    },
+    {
+     "term": "泄漏",
+     "reading": "xièlòu",
+     "definition": "rò rỉ",
+     "example": "检查有没有泄漏。 (Kiểm tra có rò rỉ không.)"
+    },
+    {
+     "term": "撤离",
+     "reading": "chèlí",
+     "definition": "sơ tán",
+     "example": "请马上撤离。 (Xin sơ tán ngay.)"
+    },
+    {
+     "term": "阀门",
+     "reading": "fámén",
+     "definition": "van",
+     "example": "关闭阀门。 (Đóng van.)"
+    }
+   ],
+   "grammar": {
+    "title": "必须 / 万一……怎么办 / 先……以后,再……",
+    "explanation": "Bắt buộc: 必须 + V. Lỡ như: 万一……,怎么办? Làm A xong mới B: 先 A……以后,再 B. Sai khiến: 让 + người + V.",
+    "examples": [
+     "检测仪必须每年校准。[jiǎncèyí bìxū měi nián jiàozhǔn] (Máy dò phải hiệu chuẩn hằng năm.)",
+     "戴好面具以后,再进去。[dài hǎo miànjù yǐhòu, zài jìnqù] (Đeo mặt nạ xong rồi mới vào.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Âm x và ch",
+    "tip": "泄漏 xièlòu (x), 撤离 chèlí (ch bật hơi cuốn lưỡi), 效率 xiàolǜ (ü).",
+    "words": [
+     "泄漏",
+     "撤离",
+     "阀门",
+     "效率"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích ưu, nhược điểm của hệ thống NH3.",
+    "Trình bày quy trình khẩn cấp khi rò rỉ amoniac."
+   ],
+   "questions": [
+    {
+     "prompt": "Nhược điểm chính của NH3 là:",
+     "options": [
+      "quá đắt",
+      "có độc",
+      "hiệu suất kém"
+     ],
+     "answer": 1,
+     "explanation": "有毒 = có độc."
+    },
+    {
+     "prompt": "“Phải chú ý rò rỉ.”",
+     "options": [
+      "不用注意泄漏。",
+      "泄漏注意必须不。",
+      "必须注意泄漏。"
+     ],
+     "answer": 2,
+     "explanation": "必须 + V."
+    },
+    {
+     "prompt": "Thứ tự đúng khi rò rỉ NH3:",
+     "options": [
+      "Sơ tán → đeo mặt nạ → đóng van tổng",
+      "Đóng van → bỏ chạy → báo cáo",
+      "Mở cửa → ngửi thử → đóng van"
+     ],
+     "answer": 0,
+     "explanation": "An toàn người trước."
+    },
+    {
+     "prompt": "「总阀门」 là:",
+     "options": [
+      "van tổng",
+      "van an toàn",
+      "van xả"
+     ],
+     "answer": 0,
+     "explanation": "总 = tổng."
+    },
+    {
+     "prompt": "「泄漏」 có nghĩa là gì?",
+     "options": [
+      "rò rỉ",
+      "amoniac (NH3)",
+      "hiệu suất"
+     ],
+     "answer": 0,
+     "explanation": "「泄漏」 [xièlòu] = rò rỉ."
+    },
+    {
+     "prompt": "「氨」 đọc là gì?",
+     "options": [
+      "ān",
+      "xièlòu",
+      "chèlí"
+     ],
+     "answer": 0,
+     "explanation": "「氨」 đọc là [ān], nghĩa là amoniac (NH3)."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 这里有＿＿＿的味道。  (Ở đây có mùi amoniac.)",
+     "options": [
+      "氨",
+      "撤离",
+      "泄漏"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「氨」 (amoniac (NH3)). Câu đầy đủ: 这里有氨的味道。"
+    },
+    {
+     "prompt": "「氨」 có nghĩa là gì?",
+     "options": [
+      "amoniac (NH3)",
+      "rò rỉ",
+      "sơ tán"
+     ],
+     "answer": 0,
+     "explanation": "「氨」 [ān] = amoniac (NH3)."
+    },
+    {
+     "prompt": "「效率」 đọc là gì?",
+     "options": [
+      "xiàolǜ",
+      "chèlí",
+      "xièlòu"
+     ],
+     "answer": 0,
+     "explanation": "「效率」 đọc là [xiàolǜ], nghĩa là hiệu suất."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 关闭＿＿＿。  (Đóng van.)",
+     "options": [
+      "氨",
+      "阀门",
+      "泄漏"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「阀门」 (van). Câu đầy đủ: 关闭阀门。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-b1-2",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 2",
+   "category": "Kỹ năng",
+   "title": "Viết báo cáo dịch vụ",
+   "objective": "Ghi rõ hiện trạng, nguyên nhân, công việc đã làm và đề xuất.",
+   "reading": "小明: 维修报告写好了,请您看一下。\n小明: 故障现象:库温降不到设定值。\n小明: 原因:膨胀阀堵塞,导致制冷剂不足。处理:更换膨胀阀并补充制冷剂。\n主管: 写得很清楚,再加上以后的建议吧。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "维修报告写好了,请您看一下。",
+     "phonetic": "Wéixiū bàogào xiě hǎo le, qǐng nín kàn yíxià.",
+     "translation": "Báo cáo sửa chữa đã viết xong, xin anh xem."
+    },
+    {
+     "speaker": "小明",
+     "text": "故障现象:库温降不到设定值。",
+     "phonetic": "Gùzhàng xiànxiàng: kùwēn jiàng bu dào shèdìngzhí.",
+     "translation": "Hiện tượng: nhiệt độ kho không hạ xuống giá trị cài đặt."
+    },
+    {
+     "speaker": "小明",
+     "text": "原因:膨胀阀堵塞,导致制冷剂不足。处理:更换膨胀阀并补充制冷剂。",
+     "phonetic": "Yuányīn: péngzhàngfá dǔsè, dǎozhì zhìlěngjì bùzú. Chǔlǐ: gēnghuàn péngzhàngfá bìng bǔchōng zhìlěngjì.",
+     "translation": "Nguyên nhân: van tiết lưu tắc dẫn đến thiếu môi chất. Xử lý: thay van tiết lưu và nạp bổ sung môi chất."
+    },
+    {
+     "speaker": "主管",
+     "text": "写得很清楚,再加上以后的建议吧。",
+     "phonetic": "Xiě de hěn qīngchu, zài jiā shang yǐhòu de jiànyì ba.",
+     "translation": "Viết rất rõ, thêm đề xuất cho sau này nhé."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "报告",
+     "reading": "bàogào",
+     "definition": "báo cáo",
+     "example": "写维修报告。 (Viết báo cáo sửa chữa.)"
+    },
+    {
+     "term": "现象",
+     "reading": "xiànxiàng",
+     "definition": "hiện tượng",
+     "example": "故障现象很明显。 (Hiện tượng lỗi rất rõ.)"
+    },
+    {
+     "term": "堵塞",
+     "reading": "dǔsè",
+     "definition": "tắc nghẽn",
+     "example": "管道堵塞了。 (Đường ống bị tắc.)"
+    },
+    {
+     "term": "处理",
+     "reading": "chǔlǐ",
+     "definition": "xử lý",
+     "example": "问题已经处理了。 (Vấn đề đã được xử lý.)"
+    },
+    {
+     "term": "补充",
+     "reading": "bǔchōng",
+     "definition": "bổ sung, nạp thêm",
+     "example": "补充制冷剂。 (Nạp thêm môi chất lạnh.)"
+    }
+   ],
+   "grammar": {
+    "title": "Văn phong báo cáo / 导致 / 并",
+    "explanation": "Báo cáo kỹ thuật dùng câu ngắn, có đề mục: 现象、原因、处理、建议. Nguyên nhân dẫn đến: A 导致 B. Và (trang trọng): 并.",
+    "examples": [
+     "管道堵塞导致压力下降。[guǎndào dǔsè dǎozhì yālì xiàjiàng] (Tắc ống khiến áp suất giảm.)",
+     "更换零件并试运行。[gēnghuàn língjiàn bìng shì yùnxíng] (Thay linh kiện và chạy thử.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Đọc báo cáo rõ mạch",
+    "tip": "Đọc đề mục rồi ngắt nhịp. Âm 堵塞 dǔsè (s), 处理 chǔlǐ (ch).",
+    "words": [
+     "报告",
+     "现象",
+     "堵塞",
+     "补充"
+    ]
+   },
+   "speakingTasks": [
+    "Viết báo cáo dịch vụ 4 mục cho một lần sửa kho lạnh.",
+    "Đọc báo cáo của bạn cho thầy/cô và nhận góp ý."
+   ],
+   "questions": [
+    {
+     "prompt": "Thứ tự mục trong báo cáo dịch vụ:",
+     "options": [
+      "建议 → 处理 → 现象",
+      "现象 → 原因 → 处理 → 建议",
+      "原因 → 建议 → 现象"
+     ],
+     "answer": 1,
+     "explanation": "Hiện tượng, nguyên nhân, xử lý, đề xuất."
+    },
+    {
+     "prompt": "「堵塞」 nghĩa là:",
+     "options": [
+      "quá nhiệt",
+      "rò rỉ",
+      "tắc nghẽn"
+     ],
+     "answer": 2,
+     "explanation": "堵塞 = blocked."
+    },
+    {
+     "prompt": "“Tắc van dẫn đến thiếu môi chất”:",
+     "options": [
+      "膨胀阀堵塞导致制冷剂不足",
+      "不足导致膨胀阀",
+      "制冷剂导致堵塞膨胀阀"
+     ],
+     "answer": 0,
+     "explanation": "A 导致 B."
+    },
+    {
+     "prompt": "「补充」 là:",
+     "options": [
+      "thải bỏ",
+      "đo đạc",
+      "bổ sung, nạp thêm"
+     ],
+     "answer": 2,
+     "explanation": "补充 = refill."
+    },
+    {
+     "prompt": "「现象」 có nghĩa là gì?",
+     "options": [
+      "xử lý",
+      "bổ sung, nạp thêm",
+      "hiện tượng"
+     ],
+     "answer": 2,
+     "explanation": "「现象」 [xiànxiàng] = hiện tượng."
+    },
+    {
+     "prompt": "「报告」 đọc là gì?",
+     "options": [
+      "bàogào",
+      "xiànxiàng",
+      "dǔsè"
+     ],
+     "answer": 0,
+     "explanation": "「报告」 đọc là [bàogào], nghĩa là báo cáo."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 管道＿＿＿了。  (Đường ống bị tắc.)",
+     "options": [
+      "处理",
+      "补充",
+      "堵塞"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「堵塞」 (tắc nghẽn). Câu đầy đủ: 管道堵塞了。"
+    },
+    {
+     "prompt": "「堵塞」 có nghĩa là gì?",
+     "options": [
+      "bổ sung, nạp thêm",
+      "tắc nghẽn",
+      "xử lý"
+     ],
+     "answer": 1,
+     "explanation": "「堵塞」 [dǔsè] = tắc nghẽn."
+    },
+    {
+     "prompt": "「现象」 đọc là gì?",
+     "options": [
+      "xiànxiàng",
+      "chǔlǐ",
+      "bǔchōng"
+     ],
+     "answer": 0,
+     "explanation": "「现象」 đọc là [xiànxiàng], nghĩa là hiện tượng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 写维修＿＿＿。  (Viết báo cáo sửa chữa.)",
+     "options": [
+      "报告",
+      "现象",
+      "堵塞"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「报告」 (báo cáo). Câu đầy đủ: 写维修报告。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-b1-3",
+   "level": "B1",
+   "unit": "HSK 4 · Bài 3",
+   "category": "Giao tiếp",
+   "title": "Giải thích sự cố cho khách hàng",
+   "objective": "Giải thích nguyên nhân bằng lời dễ hiểu, báo chi phí và thời gian.",
+   "reading": "客户: 到底是什么原因?\n小明: 简单地说,就是用来制冷的气体变少了。\n小明: 管道焊接的地方有一点儿漏。\n客户: 修好要多长时间?\n小明: 零件一到,半天就能修好。费用我会把报价单发给您。",
+   "dialogue": [
+    {
+     "speaker": "客户",
+     "text": "到底是什么原因?",
+     "phonetic": "Dàodǐ shì shénme yuányīn?",
+     "translation": "Rốt cuộc là nguyên nhân gì?"
+    },
+    {
+     "speaker": "小明",
+     "text": "简单地说,就是用来制冷的气体变少了。",
+     "phonetic": "Jiǎndān de shuō, jiù shì yònglái zhìlěng de qìtǐ biàn shǎo le.",
+     "translation": "Nói đơn giản, là khí dùng để làm lạnh đã bị ít đi."
+    },
+    {
+     "speaker": "小明",
+     "text": "管道焊接的地方有一点儿漏。",
+     "phonetic": "Guǎndào hànjiē de dìfang yǒu yìdiǎnr lòu.",
+     "translation": "Chỗ hàn của đường ống bị rò một chút."
+    },
+    {
+     "speaker": "客户",
+     "text": "修好要多长时间?",
+     "phonetic": "Xiū hǎo yào duō cháng shíjiān?",
+     "translation": "Sửa xong mất bao lâu?"
+    },
+    {
+     "speaker": "小明",
+     "text": "零件一到,半天就能修好。费用我会把报价单发给您。",
+     "phonetic": "Língjiàn yí dào, bàn tiān jiù néng xiū hǎo. Fèiyòng wǒ huì bǎ bàojiàdān fā gěi nín.",
+     "translation": "Linh kiện vừa tới là nửa ngày sửa xong. Chi phí tôi sẽ gửi bảng báo giá cho anh."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "原因",
+     "reading": "yuányīn",
+     "definition": "nguyên nhân",
+     "example": "找到原因了。 (Đã tìm ra nguyên nhân.)"
+    },
+    {
+     "term": "管道",
+     "reading": "guǎndào",
+     "definition": "đường ống",
+     "example": "更换管道。 (Thay đường ống.)"
+    },
+    {
+     "term": "焊接",
+     "reading": "hànjiē",
+     "definition": "hàn",
+     "example": "焊接的地方漏了。 (Chỗ hàn bị rò.)"
+    },
+    {
+     "term": "报价单",
+     "reading": "bàojiàdān",
+     "definition": "bảng báo giá",
+     "example": "请把报价单发给我。 (Xin gửi bảng báo giá cho tôi.)"
+    },
+    {
+     "term": "零件",
+     "reading": "língjiàn",
+     "definition": "linh kiện",
+     "example": "零件到了。 (Linh kiện đã tới.)"
+    }
+   ],
+   "grammar": {
+    "title": "简单地说 / 一……就…… / 把……发给……",
+    "explanation": "Diễn giải dễ hiểu: 简单地说. Vừa … là …: 一 + V, 就 + V. Gửi cho ai: 把 + N + 发给 + người.",
+    "examples": [
+     "简单地说,零件老化了。[jiǎndān de shuō, língjiàn lǎohuà le] (Nói đơn giản, linh kiện đã lão hóa.)",
+     "一确认,我就通知您。[yí quèrèn, wǒ jiù tōngzhī nín] (Vừa xác nhận là tôi báo ngay.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Nói với người không chuyên",
+    "tip": "Tránh thuật ngữ khó; nếu dùng thì giải thích ngay. Âm 焊接 hànjiē, 报价单 bàojiàdān.",
+    "words": [
+     "管道",
+     "焊接",
+     "报价单",
+     "零件"
+    ]
+   },
+   "speakingTasks": [
+    "Giải thích nguyên nhân sự cố cho chủ kho lạnh bằng lời dễ hiểu.",
+    "Trả lời câu hỏi về chi phí và thời gian sửa của thầy/cô."
+   ],
+   "questions": [
+    {
+     "prompt": "Mở đầu diễn giải đơn giản:",
+     "options": [
+      "专业地讲,……",
+      "简单地说,……",
+      "反正,……"
+     ],
+     "answer": 1,
+     "explanation": "简单地说 = nói đơn giản."
+    },
+    {
+     "prompt": "“Linh kiện vừa tới là sửa xong”:",
+     "options": [
+      "零件一到,就能修好",
+      "零件到一,修就好",
+      "一零件就到修"
+     ],
+     "answer": 0,
+     "explanation": "一……就……"
+    },
+    {
+     "prompt": "「报价单」 là:",
+     "options": [
+      "hợp đồng",
+      "hóa đơn",
+      "bảng báo giá"
+     ],
+     "answer": 2,
+     "explanation": "报价 = báo giá."
+    },
+    {
+     "prompt": "「焊接」 nghĩa là:",
+     "options": [
+      "cắt",
+      "hàn",
+      "sơn"
+     ],
+     "answer": 1,
+     "explanation": "焊接 = welding."
+    },
+    {
+     "prompt": "「原因」 có nghĩa là gì?",
+     "options": [
+      "hàn",
+      "linh kiện",
+      "nguyên nhân"
+     ],
+     "answer": 2,
+     "explanation": "「原因」 [yuányīn] = nguyên nhân."
+    },
+    {
+     "prompt": "「报价单」 đọc là gì?",
+     "options": [
+      "bàojiàdān",
+      "guǎndào",
+      "hànjiē"
+     ],
+     "answer": 0,
+     "explanation": "「报价单」 đọc là [bàojiàdān], nghĩa là bảng báo giá."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 更换＿＿＿。  (Thay đường ống.)",
+     "options": [
+      "管道",
+      "焊接",
+      "报价单"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「管道」 (đường ống). Câu đầy đủ: 更换管道。"
+    },
+    {
+     "prompt": "「报价单」 có nghĩa là gì?",
+     "options": [
+      "hàn",
+      "bảng báo giá",
+      "đường ống"
+     ],
+     "answer": 1,
+     "explanation": "「报价单」 [bàojiàdān] = bảng báo giá."
+    },
+    {
+     "prompt": "「零件」 đọc là gì?",
+     "options": [
+      "guǎndào",
+      "língjiàn",
+      "bàojiàdān"
+     ],
+     "answer": 1,
+     "explanation": "「零件」 đọc là [língjiàn], nghĩa là linh kiện."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿到了。  (Linh kiện đã tới.)",
+     "options": [
+      "管道",
+      "报价单",
+      "零件"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「零件」 (linh kiện). Câu đầy đủ: 零件到了。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-b2-1",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 1",
+   "category": "Kỹ năng",
+   "title": "Xử lý sự cố hệ thống lạnh công nghiệp",
+   "objective": "Điều phối xử lý sự cố khẩn: dừng máy, phân tích, khôi phục, phòng ngừa.",
+   "reading": "小明: 二号机组因高压报警停机,冷冻库温度正在逐渐上升。\n厂长: 对产品有影响吗?\n小明: 我们已经把一号机组切换为备用运行,短期内应该不会有问题。\n小明: 初步判断是冷却塔水量不足引起的。恢复以后,我会提交防止再次发生的方案。",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "二号机组因高压报警停机,冷冻库温度正在逐渐上升。",
+     "phonetic": "Èr hào jīzǔ yīn gāoyā bàojǐng tíngjī, lěngdòngkù wēndù zhèngzài zhújiàn shàngshēng.",
+     "translation": "Tổ máy số 2 dừng do báo động áp cao, nhiệt độ kho đông đang tăng dần."
+    },
+    {
+     "speaker": "厂长",
+     "text": "对产品有影响吗?",
+     "phonetic": "Duì chǎnpǐn yǒu yǐngxiǎng ma?",
+     "translation": "Có ảnh hưởng đến sản phẩm không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "我们已经把一号机组切换为备用运行,短期内应该不会有问题。",
+     "phonetic": "Wǒmen yǐjīng bǎ yī hào jīzǔ qiēhuàn wéi bèiyòng yùnxíng, duǎnqī nèi yīnggāi bú huì yǒu wèntí.",
+     "translation": "Chúng tôi đã chuyển tổ máy số 1 sang chạy dự phòng, trong ngắn hạn chắc sẽ không có vấn đề."
+    },
+    {
+     "speaker": "小明",
+     "text": "初步判断是冷却塔水量不足引起的。恢复以后,我会提交防止再次发生的方案。",
+     "phonetic": "Chūbù pànduàn shì lěngquètǎ shuǐliàng bùzú yǐnqǐ de. Huīfù yǐhòu, wǒ huì tíjiāo fángzhǐ zàicì fāshēng de fāng'àn.",
+     "translation": "Phán đoán ban đầu là do thiếu nước ở tháp giải nhiệt. Sau khi khôi phục, tôi sẽ nộp phương án chống tái phát."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "报警",
+     "reading": "bàojǐng",
+     "definition": "báo động",
+     "example": "系统报警了。 (Hệ thống đã báo động.)"
+    },
+    {
+     "term": "停机",
+     "reading": "tíngjī",
+     "definition": "dừng máy",
+     "example": "压缩机停机了。 (Máy nén đã dừng.)"
+    },
+    {
+     "term": "切换",
+     "reading": "qiēhuàn",
+     "definition": "chuyển đổi",
+     "example": "切换到备用机。 (Chuyển sang máy dự phòng.)"
+    },
+    {
+     "term": "冷却塔",
+     "reading": "lěngquètǎ",
+     "definition": "tháp giải nhiệt",
+     "example": "检查冷却塔。 (Kiểm tra tháp giải nhiệt.)"
+    },
+    {
+     "term": "恢复",
+     "reading": "huīfù",
+     "definition": "khôi phục",
+     "example": "系统恢复正常。 (Hệ thống trở lại bình thường.)"
+    }
+   ],
+   "grammar": {
+    "title": "因……而 / 正在逐渐 / ……引起的",
+    "explanation": "Do … mà: 因 + nguyên nhân + V (因高压报警停机). Đang dần: 正在逐渐 + V. Gây ra bởi: 是……引起的. Chuyển thành: 把 A 切换为 B.",
+    "examples": [
+     "压力正在逐渐恢复。[yālì zhèngzài zhújiàn huīfù] (Áp suất đang dần phục hồi.)",
+     "这是传感器故障引起的。[zhè shì chuángǎnqì gùzhàng yǐnqǐ de] (Đây là do cảm biến hỏng gây ra.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Báo cáo khẩn trong nhà máy",
+    "tip": "Thứ tự: hiện tượng → ảnh hưởng → biện pháp tạm thời → nguyên nhân → phòng ngừa. Âm 报警 bàojǐng, 冷却塔 lěngquètǎ (q + ü).",
+    "words": [
+     "报警",
+     "停机",
+     "切换",
+     "冷却塔"
+    ]
+   },
+   "speakingTasks": [
+    "Báo cáo khẩn sự cố máy nén dừng do áp cao theo 5 bước.",
+    "Thầy/cô là giám đốc nhà máy, trả lời các câu hỏi về ảnh hưởng sản phẩm."
+   ],
+   "questions": [
+    {
+     "prompt": "「因高压报警停机」 nghĩa là:",
+     "options": [
+      "áp thấp bình thường",
+      "chạy với áp cao",
+      "dừng do báo động áp cao"
+     ],
+     "answer": 2,
+     "explanation": "因 = do."
+    },
+    {
+     "prompt": "“Nhiệt độ đang tăng dần.”",
+     "options": [
+      "上升温度正在。",
+      "温度逐渐正在了上升。",
+      "温度正在逐渐上升。"
+     ],
+     "answer": 2,
+     "explanation": "正在逐渐 + V."
+    },
+    {
+     "prompt": "Nhận định nguyên nhân thận trọng:",
+     "options": [
+      "我不管。",
+      "肯定就是这个!",
+      "初步判断是……引起的"
+     ],
+     "answer": 2,
+     "explanation": "初步判断 = phán đoán ban đầu."
+    },
+    {
+     "prompt": "「冷却塔」 là:",
+     "options": [
+      "bình chứa cao áp",
+      "dàn bay hơi",
+      "tháp giải nhiệt"
+     ],
+     "answer": 2,
+     "explanation": "Cooling tower."
+    },
+    {
+     "prompt": "「恢复」 có nghĩa là gì?",
+     "options": [
+      "khôi phục",
+      "báo động",
+      "dừng máy"
+     ],
+     "answer": 0,
+     "explanation": "「恢复」 [huīfù] = khôi phục."
+    },
+    {
+     "prompt": "「冷却塔」 đọc là gì?",
+     "options": [
+      "qiēhuàn",
+      "lěngquètǎ",
+      "tíngjī"
+     ],
+     "answer": 1,
+     "explanation": "「冷却塔」 đọc là [lěngquètǎ], nghĩa là tháp giải nhiệt."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 系统＿＿＿正常。  (Hệ thống trở lại bình thường.)",
+     "options": [
+      "报警",
+      "恢复",
+      "停机"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「恢复」 (khôi phục). Câu đầy đủ: 系统恢复正常。"
+    },
+    {
+     "prompt": "「停机」 có nghĩa là gì?",
+     "options": [
+      "dừng máy",
+      "chuyển đổi",
+      "khôi phục"
+     ],
+     "answer": 0,
+     "explanation": "「停机」 [tíngjī] = dừng máy."
+    },
+    {
+     "prompt": "「停机」 đọc là gì?",
+     "options": [
+      "huīfù",
+      "tíngjī",
+      "qiēhuàn"
+     ],
+     "answer": 1,
+     "explanation": "「停机」 đọc là [tíngjī], nghĩa là dừng máy."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 压缩机＿＿＿了。  (Máy nén đã dừng.)",
+     "options": [
+      "恢复",
+      "切换",
+      "停机"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「停机」 (dừng máy). Câu đầy đủ: 压缩机停机了。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-b2-2",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 2",
+   "category": "Giao tiếp",
+   "title": "Đàm phán hợp đồng bảo trì",
+   "objective": "Đề xuất gói bảo trì, thương lượng giá và phạm vi dịch vụ.",
+   "reading": "小明: 我们建议签一份年度维保合同,包括每月一次巡检和二十四小时紧急服务。\n客户: 价格能不能再低一点?\n小明: 如果改成两个月巡检一次,可以便宜百分之十。不过,设备出故障的风险也会增加。\n客户: 那保持每月一次,零件费打个折,怎么样?",
+   "dialogue": [
+    {
+     "speaker": "小明",
+     "text": "我们建议签一份年度维保合同,包括每月一次巡检和二十四小时紧急服务。",
+     "phonetic": "Wǒmen jiànyì qiān yí fèn niándù wéibǎo hétong, bāokuò měi yuè yí cì xúnjiǎn hé èrshísì xiǎoshí jǐnjí fúwù.",
+     "translation": "Chúng tôi đề nghị ký hợp đồng bảo trì năm, gồm kiểm tra mỗi tháng một lần và dịch vụ khẩn cấp 24 giờ."
+    },
+    {
+     "speaker": "客户",
+     "text": "价格能不能再低一点?",
+     "phonetic": "Jiàgé néng bu néng zài dī yìdiǎn?",
+     "translation": "Giá có thể thấp hơn chút không?"
+    },
+    {
+     "speaker": "小明",
+     "text": "如果改成两个月巡检一次,可以便宜百分之十。不过,设备出故障的风险也会增加。",
+     "phonetic": "Rúguǒ gǎi chéng liǎng gè yuè xúnjiǎn yí cì, kěyǐ piányi bǎi fēn zhī shí. Búguò, shèbèi chū gùzhàng de fēngxiǎn yě huì zēngjiā.",
+     "translation": "Nếu đổi thành hai tháng kiểm tra một lần thì rẻ hơn 10%. Tuy nhiên, rủi ro thiết bị hỏng cũng sẽ tăng."
+    },
+    {
+     "speaker": "客户",
+     "text": "那保持每月一次,零件费打个折,怎么样?",
+     "phonetic": "Nà bǎochí měi yuè yí cì, língjiànfèi dǎ gè zhé, zěnmeyàng?",
+     "translation": "Vậy giữ mỗi tháng một lần, giảm giá tiền linh kiện, thế nào?"
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "合同",
+     "reading": "hétong",
+     "definition": "hợp đồng",
+     "example": "签合同。 (Ký hợp đồng.)"
+    },
+    {
+     "term": "维保",
+     "reading": "wéibǎo",
+     "definition": "bảo trì bảo dưỡng",
+     "example": "维保费用。 (Phí bảo trì.)"
+    },
+    {
+     "term": "巡检",
+     "reading": "xúnjiǎn",
+     "definition": "kiểm tra định kỳ (đi tuần)",
+     "example": "每周巡检一次。 (Mỗi tuần kiểm tra một lần.)"
+    },
+    {
+     "term": "紧急",
+     "reading": "jǐnjí",
+     "definition": "khẩn cấp",
+     "example": "紧急情况请打电话。 (Trường hợp khẩn cấp xin gọi điện.)"
+    },
+    {
+     "term": "打折",
+     "reading": "dǎzhé",
+     "definition": "giảm giá",
+     "example": "能打折吗?(Có giảm giá không?)"
+    }
+   ],
+   "grammar": {
+    "title": "包括 / 如果……可以…… / 不过……也会……",
+    "explanation": "Bao gồm: 包括 + N. Điều kiện để nhượng bộ: 如果……,可以……. Cảnh báo rủi ro: 不过,……也会增加. Đề xuất mềm: ……,怎么样?",
+    "examples": [
+     "签三年合同的话,可以打折。[qiān sān nián hétong de huà, kěyǐ dǎzhé] (Nếu ký hợp đồng 3 năm thì có thể giảm giá.)",
+     "不及时维修,可能会造成大事故。[bù jíshí wéixiū, kěnéng huì zàochéng dà shìgù] (Không sửa kịp thời có thể gây tai nạn lớn.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Giọng đàm phán chuyên nghiệp",
+    "tip": "Nhấn vào điều kiện (如果) và rủi ro (风险). Âm 合同 hétong (thanh nhẹ), 巡检 xúnjiǎn (x + ü).",
+    "words": [
+     "合同",
+     "维保",
+     "巡检",
+     "紧急"
+    ]
+   },
+   "speakingTasks": [
+    "Đề xuất một gói bảo trì kho lạnh và thương lượng với khách.",
+    "Thầy/cô là khách khó tính, hãy đưa ra nhượng bộ có điều kiện."
+   ],
+   "questions": [
+    {
+     "prompt": "Cảnh báo rủi ro khi giảm tần suất:",
+     "options": [
+      "设备出故障的风险也会增加",
+      "设备永远不会坏",
+      "价格会更贵"
+     ],
+     "answer": 0,
+     "explanation": "Rủi ro tăng."
+    },
+    {
+     "prompt": "“Nếu 2 tháng/lần thì rẻ hơn 10%”:",
+     "options": [
+      "两个月一次,不打折",
+      "如果两个月一次,可以便宜百分之十",
+      "因为两个月一次,所以贵"
+     ],
+     "answer": 1,
+     "explanation": "如果……可以……"
+    },
+    {
+     "prompt": "Đề xuất mềm mỏng:",
+     "options": [
+      "……,怎么样?",
+      "就这样吧,不谈了。",
+      "你必须同意!"
+     ],
+     "answer": 0,
+     "explanation": "怎么样 = thế nào."
+    },
+    {
+     "prompt": "「维保合同」 là:",
+     "options": [
+      "hợp đồng lao động",
+      "hợp đồng mua bán",
+      "hợp đồng bảo trì"
+     ],
+     "answer": 2,
+     "explanation": "维保 = bảo trì."
+    },
+    {
+     "prompt": "「巡检」 có nghĩa là gì?",
+     "options": [
+      "khẩn cấp",
+      "hợp đồng",
+      "kiểm tra định kỳ (đi tuần)"
+     ],
+     "answer": 2,
+     "explanation": "「巡检」 [xúnjiǎn] = kiểm tra định kỳ (đi tuần)."
+    },
+    {
+     "prompt": "「巡检」 đọc là gì?",
+     "options": [
+      "hétong",
+      "xúnjiǎn",
+      "jǐnjí"
+     ],
+     "answer": 1,
+     "explanation": "「巡检」 đọc là [xúnjiǎn], nghĩa là kiểm tra định kỳ (đi tuần)."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 每周＿＿＿一次。  (Mỗi tuần kiểm tra một lần.)",
+     "options": [
+      "紧急",
+      "巡检",
+      "合同"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「巡检」 (kiểm tra định kỳ (đi tuần)). Câu đầy đủ: 每周巡检一次。"
+    },
+    {
+     "prompt": "「合同」 có nghĩa là gì?",
+     "options": [
+      "khẩn cấp",
+      "hợp đồng",
+      "giảm giá"
+     ],
+     "answer": 1,
+     "explanation": "「合同」 [hétong] = hợp đồng."
+    },
+    {
+     "prompt": "「维保」 đọc là gì?",
+     "options": [
+      "hétong",
+      "wéibǎo",
+      "xúnjiǎn"
+     ],
+     "answer": 1,
+     "explanation": "「维保」 đọc là [wéibǎo], nghĩa là bảo trì bảo dưỡng."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: ＿＿＿情况请打电话。  (Trường hợp khẩn cấp xin gọi điện.)",
+     "options": [
+      "打折",
+      "合同",
+      "紧急"
+     ],
+     "answer": 2,
+     "explanation": "Đáp án: 「紧急」 (khẩn cấp). Câu đầy đủ: 紧急情况请打电话。"
+    }
+   ],
+   "audioIds": []
+  },
+  {
+   "id": "refrigeration-b2-3",
+   "level": "B2",
+   "unit": "HSK 5 · Bài 3",
+   "category": "Thảo luận",
+   "title": "Hiệu quả năng lượng và môi chất tự nhiên",
+   "objective": "Thảo luận biến tần, thu hồi nhiệt, môi chất CO2/NH3 và quy định môi trường.",
+   "reading": "厂长: 电费每年都在涨,我们得想想办法。\n小明: 如果给压缩机加装变频器,就可以根据负荷调节转速,预计能节能百分之二十左右。\n厂长: 制冷剂也要换吗?\n小明: 随着氟利昂限制越来越严,改用二氧化碳等天然制冷剂值得考虑。",
+   "dialogue": [
+    {
+     "speaker": "厂长",
+     "text": "电费每年都在涨,我们得想想办法。",
+     "phonetic": "Diànfèi měi nián dōu zài zhǎng, wǒmen děi xiǎngxiang bànfǎ.",
+     "translation": "Tiền điện năm nào cũng tăng, chúng ta phải nghĩ cách."
+    },
+    {
+     "speaker": "小明",
+     "text": "如果给压缩机加装变频器,就可以根据负荷调节转速,预计能节能百分之二十左右。",
+     "phonetic": "Rúguǒ gěi yāsuōjī jiāzhuāng biànpínqì, jiù kěyǐ gēnjù fùhè tiáojié zhuànsù, yùjì néng jiénéng bǎi fēn zhī èrshí zuǒyòu.",
+     "translation": "Nếu lắp thêm biến tần cho máy nén, có thể điều chỉnh tốc độ theo tải, dự kiến tiết kiệm khoảng 20% năng lượng."
+    },
+    {
+     "speaker": "厂长",
+     "text": "制冷剂也要换吗?",
+     "phonetic": "Zhìlěngjì yě yào huàn ma?",
+     "translation": "Môi chất lạnh cũng phải đổi à?"
+    },
+    {
+     "speaker": "小明",
+     "text": "随着氟利昂限制越来越严,改用二氧化碳等天然制冷剂值得考虑。",
+     "phonetic": "Suízhe fúlì'áng xiànzhì yuèláiyuè yán, gǎiyòng èryǎnghuàtàn děng tiānrán zhìlěngjì zhíde kǎolǜ.",
+     "translation": "Cùng với việc hạn chế freon ngày càng nghiêm, chuyển sang môi chất tự nhiên như CO2 rất đáng cân nhắc."
+    }
+   ],
+   "vocabulary": [
+    {
+     "term": "节能",
+     "reading": "jiénéng",
+     "definition": "tiết kiệm năng lượng",
+     "example": "这台机器很节能。 (Máy này rất tiết kiệm năng lượng.)"
+    },
+    {
+     "term": "变频器",
+     "reading": "biànpínqì",
+     "definition": "biến tần",
+     "example": "安装变频器。 (Lắp biến tần.)"
+    },
+    {
+     "term": "负荷",
+     "reading": "fùhè",
+     "definition": "tải",
+     "example": "负荷太大。 (Tải quá lớn.)"
+    },
+    {
+     "term": "限制",
+     "reading": "xiànzhì",
+     "definition": "hạn chế, quy định",
+     "example": "政府加强了限制。 (Chính phủ đã tăng cường hạn chế.)"
+    },
+    {
+     "term": "天然制冷剂",
+     "reading": "tiānrán zhìlěngjì",
+     "definition": "môi chất lạnh tự nhiên",
+     "example": "使用天然制冷剂。 (Dùng môi chất lạnh tự nhiên.)"
+    }
+   ],
+   "grammar": {
+    "title": "根据 / 预计 / 值得 + V / 随着……越来越……",
+    "explanation": "Căn cứ vào: 根据 + N. Dự kiến: 预计 + V. Đáng để: 值得 + V. Cùng với … ngày càng: 随着……越来越…….",
+    "examples": [
+     "根据季节调整温度。[gēnjù jìjié tiáozhěng wēndù] (Điều chỉnh nhiệt độ theo mùa.)",
+     "回收余热很值得。[huíshōu yúrè hěn zhíde] (Thu hồi nhiệt thải rất đáng.)"
+    ]
+   },
+   "pronunciation": {
+    "focus": "Thuyết phục bằng số liệu",
+    "tip": "Nhấn vào con số (百分之二十) và lợi ích. Âm 变频器 biànpínqì, 负荷 fùhè, 二氧化碳 èryǎnghuàtàn.",
+    "words": [
+     "节能",
+     "变频器",
+     "负荷",
+     "二氧化碳"
+    ]
+   },
+   "speakingTasks": [
+    "Đề xuất 3 biện pháp tiết kiệm năng lượng cho một kho lạnh.",
+    "Tranh luận với thầy/cô về việc chuyển sang môi chất CO2."
+   ],
+   "questions": [
+    {
+     "prompt": "Lợi ích của biến tần cho máy nén:",
+     "options": [
+      "điều chỉnh tốc độ theo tải, tiết kiệm điện",
+      "tăng áp suất tối đa",
+      "không cần bảo trì"
+     ],
+     "answer": 0,
+     "explanation": "根据负荷调节转速."
+    },
+    {
+     "prompt": "「根据」 nghĩa là:",
+     "options": [
+      "căn cứ vào, tùy theo",
+      "bất chấp",
+      "trước khi"
+     ],
+     "answer": 0,
+     "explanation": "根据 = based on."
+    },
+    {
+     "prompt": "“Rất đáng cân nhắc.”",
+     "options": [
+      "考虑值得不。",
+      "值考虑得。",
+      "值得考虑。"
+     ],
+     "answer": 2,
+     "explanation": "值得 + V."
+    },
+    {
+     "prompt": "Ví dụ môi chất lạnh tự nhiên:",
+     "options": [
+      "R134a",
+      "R22, R404A",
+      "CO2, NH3"
+     ],
+     "answer": 2,
+     "explanation": "CO2 và amoniac là môi chất tự nhiên."
+    },
+    {
+     "prompt": "「限制」 có nghĩa là gì?",
+     "options": [
+      "hạn chế, quy định",
+      "tiết kiệm năng lượng",
+      "biến tần"
+     ],
+     "answer": 0,
+     "explanation": "「限制」 [xiànzhì] = hạn chế, quy định."
+    },
+    {
+     "prompt": "「变频器」 đọc là gì?",
+     "options": [
+      "biànpínqì",
+      "jiénéng",
+      "xiànzhì"
+     ],
+     "answer": 0,
+     "explanation": "「变频器」 đọc là [biànpínqì], nghĩa là biến tần."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 这台机器很＿＿＿。  (Máy này rất tiết kiệm năng lượng.)",
+     "options": [
+      "节能",
+      "变频器",
+      "限制"
+     ],
+     "answer": 0,
+     "explanation": "Đáp án: 「节能」 (tiết kiệm năng lượng). Câu đầy đủ: 这台机器很节能。"
+    },
+    {
+     "prompt": "「负荷」 có nghĩa là gì?",
+     "options": [
+      "biến tần",
+      "tải",
+      "môi chất lạnh tự nhiên"
+     ],
+     "answer": 1,
+     "explanation": "「负荷」 [fùhè] = tải."
+    },
+    {
+     "prompt": "「负荷」 đọc là gì?",
+     "options": [
+      "tiānrán zhìlěngjì",
+      "fùhè",
+      "biànpínqì"
+     ],
+     "answer": 1,
+     "explanation": "「负荷」 đọc là [fùhè], nghĩa là tải."
+    },
+    {
+     "prompt": "Điền từ thích hợp vào chỗ trống: 政府加强了＿＿＿。  (Chính phủ đã tăng cường hạn chế.)",
+     "options": [
+      "节能",
+      "限制",
+      "变频器"
+     ],
+     "answer": 1,
+     "explanation": "Đáp án: 「限制」 (hạn chế, quy định). Câu đầy đủ: 政府加强了限制。"
+    }
+   ],
+   "audioIds": []
+  }
+ ],
+ "audio": []
+}
