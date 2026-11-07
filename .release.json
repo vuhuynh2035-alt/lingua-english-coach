@@ -1,0 +1,49 @@
+{
+  "name": "Teacher AI",
+  "branch": "main",
+  "remote": "origin",
+  "tagPrefix": "v",
+  "versionFloor": "2.17.10",
+  "version": {
+    "source": "package.json",
+    "files": [
+      {
+        "path": "package.json",
+        "type": "json",
+        "key": "version"
+      },
+      {
+        "path": "public/version.json",
+        "type": "json",
+        "key": "version"
+      }
+    ]
+  },
+  "generatedFiles": [
+    "tsconfig.tsbuildinfo"
+  ],
+  "liveVersions": [],
+  "actions": {
+    "deploy-pages": {
+      "label": "Xuất bản GitHub Pages (docs/)",
+      "kind": "deploy",
+      "bump": true,
+      "checks": [
+        {
+          "type": "node_modules"
+        }
+      ],
+      "steps": [
+        {
+          "cwd": ".",
+          "run": "npm run publish:pages"
+        },
+        {
+          "cwd": ".",
+          "run": "git add -A docs && (git diff --cached --quiet || git commit -q -m \"Xuất bản GitHub Pages {tag}\") && git push origin HEAD:refs/heads/main"
+        }
+      ]
+    }
+  },
+  "releaseAction": "deploy-pages"
+}
