@@ -3266,7 +3266,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     void usageTick;
     const info: Record<ServiceId, { title: string; link: string; linkText: string; placeholder: string }> = {
       gemini: { title: "Gemini (Google AI Studio)", link: "https://aistudio.google.com/app/apikey", linkText: "Tạo key ở Google AI Studio ↗", placeholder: "Dán API key Gemini (AIza…)" },
-      gcloud: { title: "Google Cloud Text-to-Speech", link: "https://console.cloud.google.com/apis/library/texttospeech.googleapis.com", linkText: "Bật Cloud Text-to-Speech API rồi tạo key ở Credentials ↗", placeholder: "Dán API key Google Cloud (AIza…)" },
+      gcloud: { title: "Google Cloud Text-to-Speech", link: "https://console.cloud.google.com/apis/credentials", linkText: "Mở trang Credentials để tạo API key ↗", placeholder: "Dán API key Google Cloud (AIza…)" },
       openai: { title: "ChatGPT (OpenAI API)", link: "https://platform.openai.com/api-keys", linkText: "Tạo key ở platform.openai.com ↗", placeholder: "Dán API key OpenAI (sk-…)" },
     };
     const price = (service: ServiceId, field: string, label: string, unit: string) => {
@@ -3350,6 +3350,18 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               )}
               {keyMessages[service] && <small className={keyMessages[service].ok ? "api-key-success" : "error-message"}>{keyMessages[service].text}</small>}
               <a href={info[service].link} target="_blank" rel="noreferrer" className="settings-hint">{info[service].linkText}</a>
+              {service === "gcloud" && (
+                <details className="usage-prices">
+                  <summary>Hướng dẫn tạo key Google Cloud (từng bước)</summary>
+                  <ol className="settings-hint">
+                    <li>Đăng nhập tài khoản Google, mở nút <strong>“Mở trang Credentials”</strong> ở trên. Nếu được hỏi, chọn hoặc tạo một <strong>dự án (project)</strong> và bật <strong>thanh toán (billing)</strong> — Google yêu cầu có thẻ nhưng vẫn có 1 triệu ký tự miễn phí mỗi tháng.</li>
+                    <li>Bật API: mở <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" target="_blank" rel="noreferrer">Cloud Text-to-Speech API ↗</a>, bấm <strong>Enable</strong> (nếu đã thấy <strong>Manage</strong>/“Enabled” thì đã bật rồi, bỏ qua).</li>
+                    <li>Quay lại trang Credentials, bấm <strong>+ Create credentials</strong> (Tạo thông tin xác thực) → <strong>API key</strong>.</li>
+                    <li>Hộp thoại hiện ra một dãy bắt đầu bằng <strong>AIza…</strong> → bấm biểu tượng sao chép. Nên bấm <strong>Edit API key</strong> → <em>API restrictions</em> → chọn <strong>Cloud Text-to-Speech API</strong> để key không bị dùng vào việc khác.</li>
+                    <li>Quay lại đây, dán key vào ô phía trên rồi bấm <strong>Thêm key</strong>.</li>
+                  </ol>
+                </details>
+              )}
 
               {provider && (
                 <label className="manual-picks">
