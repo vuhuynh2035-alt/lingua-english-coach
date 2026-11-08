@@ -334,6 +334,7 @@ function recordPractice(current: LearningProgress, minutes: number, newSession: 
 
 type TutorPersona = "maya" | "david" | "alex";
 const LazyDictionaryPanel = lazy(() => import("@/components/dictionary-panel"));
+const LazyBackupPanel = lazy(() => import("@/components/backup-panel"));
 
 const TUTOR_PERSONAS: Record<TutorPersona, {
   id: TutorPersona;
@@ -3929,6 +3930,16 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           </summary>
           <div className="settings-group-content">
             {renderServicesSettings()}
+          </div>
+        </details>
+        <details name="settings-groups" className="settings-group" onToggle={scrollGroupToTop}>
+          <summary className="settings-group-summary">
+            <span className="settings-icon" aria-hidden="true">💾</span>
+            <span><strong>Sao lưu & chuyển dữ liệu</strong><small>Lưu hoặc khôi phục tiến độ, huy chương, cài đặt</small></span>
+            <span className="settings-group-chevron" aria-hidden="true">⌄</span>
+          </summary>
+          <div className="settings-group-content">
+            <Suspense fallback={null}><LazyBackupPanel appVersion={APP_VERSION} /></Suspense>
           </div>
         </details>
       </>
