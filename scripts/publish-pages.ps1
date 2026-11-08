@@ -1,4 +1,4 @@
-param([string]$BasePath = "/teacher-ai")
+﻿param([string]$BasePath = "/lingua-english-coach")
 
 $ErrorActionPreference = "Stop"
 
