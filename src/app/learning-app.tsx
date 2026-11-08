@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, lazy, Suspense, useEffect, useRef, useState } from "react";
 import packageJson from "../../package.json";
 import { getAudioData } from "@/lib/gemini";
 import { playThroughContext, stopContextPlayback } from "@/lib/lipsync";
@@ -30,7 +30,6 @@ import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeak
 import { keyEnabled, keyTier, MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, usesDefaultModels, type Candidate, type ServiceId, type UsageSettings } from "@/lib/usage";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
-import { PACK_INFO, downloadPack, installedPacks, isReady, lookup, packsFor, removePack, type DictHit, type PackId } from "@/lib/dictionary";
 import { LANGUAGES, switchLanguage } from "@/lib/language-meta";
 
 import { IllustrationIcon } from "@/components/illustration-icon";
@@ -334,6 +333,7 @@ function recordPractice(current: LearningProgress, minutes: number, newSession: 
 }
 
 type TutorPersona = "maya" | "david" | "alex";
+const LazyDictionaryPanel = lazy(() => import("@/components/dictionary-panel"));
 
 const TUTOR_PERSONAS: Record<TutorPersona, {
   id: TutorPersona;
@@ -547,19 +547,8 @@ function Spot({ hint, active = true, children }: { hint: string; active?: boolea
 export default function Home() {
   const [section, setSection] = useState<Section>("home");
   const [setupStep, setSetupStep] = useState(0);
-  const [dictPacks, setDictPacks] = useState<PackId[]>([]);
-  const [dictBusy, setDictBusy] = useState("");
-  const [dictError, setDictError] = useState("");
-  const [dictText, setDictText] = useState({ target: "", vi: "" });
-  const [dictSide, setDictSide] = useState<"target" | "vi">("target");
-  const [dictHits, setDictHits] = useState<DictHit[]>([]);
-  const [dictSearching, setDictSearching] = useState(false);
-  const [dictAi, setDictAi] = useState("");
-  const [dictMore, setDictMore] = useState(false);
-  const [dictListening, setDictListening] = useState<"target" | "vi" | null>(null);
-  const [dictVoiceNote, setDictVoiceNote] = useState("");
-  const dictRecognitionRef = useRef<SpeechRecognitionInstance | null>(null);
-  const [dictAiBusy, setDictAiBusy] = useState(false);
+  const [dictionaryOpened, setDictionaryOpened] = useState(false);
+  const [dictionaryReady, setDictionaryReady] = useState(false);
   const firstRunChecked = useRef(false);
   // Tutor Persona
   const [tutorPersona, setTutorPersona] = useState<TutorPersona>("maya");
@@ -826,34 +815,9 @@ export default function Home() {
   }, [apiKeys]);
 
   useEffect(() => {
-    if (section !== "dictionary") return;
-    void installedPacks().then(setDictPacks);
-  }, [section]);
-
-  useEffect(() => () => { dictRecognitionRef.current?.stop(); }, []);
-
-  useEffect(() => {
     if (speakingLine === null) return;
     document.querySelector(`[data-line="${speakingLine}"]`)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [speakingLine]);
-
-  const dictSource = dictSide === "target" ? dictText.target : dictText.vi;
-  useEffect(() => {
-    if (section !== "dictionary" || !isReady(LANG.id, dictPacks)) return;
-    let cancelled = false;
-    const timer = window.setTimeout(() => {
-      setDictSearching(true);
-      void lookup(LANG.id, dictSide, dictSource).then((result) => {
-        if (cancelled) return;
-        setDictHits(result.hits);
-        setDictText((current) => {
-          const other = dictSide === "target" ? "vi" : "target";
-          return dictSource.trim() && current[other] !== result.summary ? { ...current, [other]: result.summary } : (dictSource.trim() ? current : { ...current, [other]: "" });
-        });
-      }).finally(() => { if (!cancelled) setDictSearching(false); });
-    }, 300);
-    return () => { cancelled = true; window.clearTimeout(timer); };
-  }, [section, dictPacks, dictSide, dictSource]);
 
   /** Which setup steps are already done on this device, so the guide skips them. */
   function setupDoneFlags(): boolean[] {
@@ -883,6 +847,7 @@ export default function Home() {
 
   function navigateToSection(nextSection: Section) {
     if (nextSection === section) return;
+    if (nextSection === "dictionary") setDictionaryOpened(true);
     sectionHistoryRef.current.push(section);
     setSection(nextSection);
   }
@@ -4625,240 +4590,18 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
     );
   }
 
-  // ---------------------------------------------------------------- dictionary
-  async function refreshDictPacks() {
-    setDictPacks(await installedPacks());
-  }
-
-  async function downloadDictionary(ids: PackId[]) {
-    setDictError("");
-    try {
-      for (const id of ids) {
-        setDictBusy(`Đang tải ${PACK_INFO[id].label}…`);
-        await downloadPack(id, (done, total) => setDictBusy(`Đang tải ${PACK_INFO[id].label}… ${Math.round((done / total) * 100)}%`));
-      }
-      await refreshDictPacks();
-    } catch (error) {
-      setDictError(error instanceof Error ? error.message : "Không tải được từ điển. Hãy kiểm tra kết nối mạng rồi thử lại.");
-    } finally {
-      setDictBusy("");
-    }
-  }
-
-  async function deleteDictionary(id: PackId) {
-    try { await removePack(id); } catch {}
-    await refreshDictPacks();
-  }
-
-  /** Speak instead of typing: the words go straight into the box and are looked up as they arrive. */
-  function startDictVoice(side: "target" | "vi") {
-    if (dictRecognitionRef.current) {
-      dictRecognitionRef.current.stop(); // a second tap on the microphone stops listening
-      return;
-    }
-    const speechWindow = window as Window & {
-      SpeechRecognition?: SpeechRecognitionConstructor;
-      webkitSpeechRecognition?: SpeechRecognitionConstructor;
-    };
-    const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
-    if (!Recognition) {
-      setDictVoiceNote("Trình duyệt này chưa hỗ trợ nhập bằng giọng nói. Hãy mở bằng Chrome, hoặc dùng biểu tượng micro ngay trên bàn phím điện thoại.");
-      return;
-    }
-    setDictVoiceNote("");
-    const recognition = new Recognition();
-    recognition.lang = side === "vi" ? "vi-VN" : LANG.speechLang;
-    recognition.interimResults = true;
-    recognition.onresult = (event) => {
-      const transcript = Array.from(event.results).map((result) => result[0].transcript).join(" ").trim();
-      setDictSide(side);
-      setDictAi("");
-      setDictMore(false);
-      setDictText((current) => ({ ...current, [side]: transcript }));
-    };
-    recognition.onerror = (event) => {
-      setDictVoiceNote(event.error === "not-allowed" || event.error === "service-not-allowed"
-        ? "Chưa được phép dùng micro. Hãy cho phép micro cho trang này trong cài đặt trình duyệt rồi thử lại."
-        : event.error === "no-speech" ? "Không nghe thấy tiếng nói, hãy nói gần micro hơn rồi thử lại."
-        : `Micro bị lỗi (${event.error}). Hãy thử lại.`);
-    };
-    recognition.onend = () => { dictRecognitionRef.current = null; setDictListening(null); };
-    dictRecognitionRef.current = recognition;
-    setDictListening(side);
-    try { recognition.start(); } catch { dictRecognitionRef.current = null; setDictListening(null); }
-  }
-
-  function dictLangCode(side: "target" | "vi"): string {
-    return side === "vi" ? "vi" : LANG.id === "zh" ? "zh-CN" : LANG.id;
-  }
-
   /** Online fallback: the browser's own translator when it has one, otherwise the AI of the learner's key. */
-  async function searchDictionaryOnline() {
-    const side = dictSide;
-    const text = (side === "target" ? dictText.target : dictText.vi).trim();
-    if (!text) return;
-    setDictAiBusy(true);
-    setDictAi("");
+  async function searchDictionaryOnline(text: string): Promise<string> {
     try {
-      const translator = (window as unknown as { Translator?: { availability(o: { sourceLanguage: string; targetLanguage: string }): Promise<string>; create(o: { sourceLanguage: string; targetLanguage: string }): Promise<{ translate(t: string): Promise<string> }> } }).Translator;
-      if (translator) {
-        try {
-          const options = { sourceLanguage: side === "target" ? LANG.id : "vi", targetLanguage: side === "target" ? "vi" : LANG.id };
-          if ((await translator.availability(options)) !== "unavailable") {
-            const result = await (await translator.create(options)).translate(text);
-            if (result.trim()) { setDictAi(`${result}\n\n(Dịch bằng bộ dịch của trình duyệt.)`); return; }
-          }
-        } catch {}
-      }
       if (!apiKey) {
-        setDictAi("Chưa có API key để tìm mở rộng bằng AI. Mở “Hướng dẫn cài đặt” để thêm key (một lần), hoặc dùng nút Google Dịch bên dưới.");
-        return;
+        return "Chưa có API key để tìm mở rộng bằng AI. Mở “Hướng dẫn cài đặt” để thêm key (một lần), hoặc dùng nút Google Dịch bên dưới.";
       }
       const system = `You are a precise bilingual dictionary between ${LANG.nameEn} and Vietnamese for a Vietnamese learner. The user sends a word, phrase or sentence. If it is ${LANG.nameEn}: give the Vietnamese meaning(s)${LANG.phoneticName ? `, its ${LANG.phoneticName}` : ""}${LANG.id === "en" ? "" : ", and for each kanji/hanzi its Sino-Vietnamese (Hán-Việt) reading when useful"}, and one short example sentence with Vietnamese translation. If it is Vietnamese: give the best ${LANG.nameEn} equivalent(s)${LANG.phoneticName ? ` with ${LANG.phoneticName}` : ""} and one short example. Answer compactly in Vietnamese, plain text, no markdown asterisks.`;
       const reply = await withAvailableApiKey((key, model, provider) => streamChat(provider, key, model, system, [{ role: "user", content: text }], () => {}, 500));
-      setDictAi(cleanSpeechText(reply).length ? reply.replace(/\*+/g, "") : "AI chưa trả lời được. Hãy thử lại.");
+      return cleanSpeechText(reply).length ? reply.replace(/\*+/g, "") : "AI chưa trả lời được. Hãy thử lại.";
     } catch (error) {
-      setDictAi(friendlyError(error, "Không tìm được trực tuyến lúc này."));
-    } finally {
-      setDictAiBusy(false);
+      return friendlyError(error, "Không tìm được trực tuyến lúc này.");
     }
-  }
-
-  function renderDictionary() {
-    const ready = isReady(LANG.id, dictPacks);
-    const need = packsFor(LANG.id).filter((id) => !dictPacks.includes(id));
-    const totalMb = need.reduce((sum, id) => sum + PACK_INFO[id].mb, 0);
-    const sourceText = dictSide === "target" ? dictText.target : dictText.vi;
-    const googleLink = `https://translate.google.com/?sl=${dictLangCode(dictSide)}&tl=${dictLangCode(dictSide === "target" ? "vi" : "target")}&text=${encodeURIComponent(sourceText)}&op=translate`;
-    const visibleHits = dictMore ? dictHits : dictHits.slice(0, 4);
-    // English has no reading to add: when the only result repeats what is already in the box, show nothing extra.
-    const repeatsBox = LANG.id === "en" && dictHits.length === 1 && dictHits[0].head.toLowerCase() === dictText.target.trim().toLowerCase();
-    const details = sourceText.trim() && dictHits.length > 0 && !repeatsBox ? (
-      <ul className="dict-details">
-        {visibleHits.map((hit, index) => (
-          <li key={`${hit.head}-${hit.reading}-${index}`}>
-            <div className="dict-detail-main">
-              <strong lang={LANG.speechLang}>{hit.head}</strong>
-              {hit.alt && <span className="dict-alt" lang={LANG.speechLang}>{hit.alt}</span>}
-              {hit.reading && <span className="dict-reading">{hit.reading}</span>}
-              {hit.hanviet && <span className="dict-hanviet" title="Âm đọc tiếng Việt của chữ (Hán-Việt hoặc Nôm, theo Unicode Unihan)">{hit.hanviet}</span>}
-              <button type="button" className="vocab-mini-btn" aria-label={`Nghe ${hit.head}`} onClick={() => toggleSpeech(`dict:${hit.head}`, () => playPracticePhrase(hit.head))}>{speakerIcon(`dict:${hit.head}`)}</button>
-              <button type="button" className="vocab-mini-btn" aria-label={`Chép ${hit.head} vào khung`} title="Chép vào khung nhập" onClick={() => { setDictSide("target"); setDictText({ target: hit.head, vi: "" }); }}>📋</button>
-            </div>
-            <small className="dict-detail-mean">{hit.vietnamese.length > 0 && <b>{hit.vietnamese.join(" · ")} — </b>}{hit.english}</small>
-          </li>
-        ))}
-        {dictHits.length > 4 && (
-          <li><button type="button" className="text-button" onClick={() => setDictMore((value) => !value)}>{dictMore ? "Thu gọn" : `Xem thêm ${dictHits.length - 4} kết quả`}</button></li>
-        )}
-      </ul>
-    ) : null;
-    return (
-      <section className="dict-wrap" aria-labelledby="dict-title">
-        <div className="page-intro">
-          <span className="eyebrow">TỪ ĐIỂN</span>
-          <h2 id="dict-title">Từ điển {LANG.viName} ↔ Tiếng Việt</h2>
-          <p>Gõ hoặc nhấn 🎤 để nói vào khung nào cũng được, khung còn lại sẽ hiện nghĩa. Nhấn 🔊 để nghe phát âm từng khung.</p>
-        </div>
-
-        {LANG.id !== "en" && (
-          <details className="dict-typing">
-            <summary>⌨ Chưa có bàn phím {LANG.viName}? Cách nhập chữ</summary>
-            <ul>
-              {LANG.id === "ja" ? (
-                <>
-                  <li><b>Không cần cài gì:</b> gõ chữ Latinh (romaji), ví dụ <b>reizouko</b>, app tự tra từ <b>れいぞうこ</b> (冷蔵庫).</li>
-                  <li><b>Muốn gõ thẳng chữ Nhật:</b> Android (Gboard): Cài đặt → Hệ thống → Bàn phím → Gboard → Ngôn ngữ → Thêm bàn phím → Tiếng Nhật. iPhone: Cài đặt → Cài đặt chung → Bàn phím → Bàn phím → Thêm bàn phím mới → Tiếng Nhật (Romaji hoặc Kana). Windows: Cài đặt → Thời gian &amp; ngôn ngữ → Ngôn ngữ → Thêm Nhật Bản.</li>
-                  <li><b>Chữ lạ chưa biết đọc:</b> dùng bàn phím <b>viết tay</b> (Gboard có “Nhật – viết tay”), hoặc gõ nghĩa tiếng Việt vào khung dưới để app gợi ý chữ rồi nhấn 📋 chép.</li>
-                </>
-              ) : (
-                <>
-                  <li><b>Không cần cài gì:</b> gõ <b>pinyin</b> không dấu, ví dụ <b>ya suo ji</b> hoặc <b>yasuoji</b>, app tìm ra 压缩机.</li>
-                  <li><b>Muốn gõ thẳng chữ Hán:</b> Android (Gboard): Cài đặt → Hệ thống → Bàn phím → Gboard → Ngôn ngữ → Thêm bàn phím → Trung Quốc (Pinyin). iPhone: Cài đặt → Cài đặt chung → Bàn phím → Thêm bàn phím mới → Tiếng Trung giản thể (Pinyin). Windows: Thêm ngôn ngữ Trung Quốc (giản thể).</li>
-                  <li><b>Chữ lạ chưa biết đọc:</b> dùng bàn phím <b>viết tay</b> (Gboard có “Trung – viết tay”), hoặc gõ nghĩa tiếng Việt vào khung dưới để app gợi ý chữ rồi nhấn 📋 chép.</li>
-                </>
-              )}
-            </ul>
-          </details>
-        )}
-        {!ready && (
-          <div className="dict-download">
-            <strong>Tải từ điển về máy để dùng offline</strong>
-            <p>Gồm: {need.map((id) => PACK_INFO[id].label).join(", ")}. Dung lượng khoảng {totalMb.toFixed(1)} MB, chỉ tải một lần.</p>
-            <Spot hint="Nhấn để tải">
-              <button type="button" className="button button-primary sg-big" disabled={!!dictBusy} onClick={() => { void downloadDictionary(need); }}>
-                {dictBusy || `⬇ Tải từ điển (${totalMb.toFixed(1)} MB)`}
-              </button>
-            </Spot>
-            {dictError && <p className="error-message" role="alert">{dictError}</p>}
-            <small>Chưa tải vẫn dùng được nút tìm mở rộng online bên dưới.</small>
-          </div>
-        )}
-
-        <div className="dict-boxes">
-          <div className="dict-box">
-            <div className="dict-box-head">
-              <strong><span aria-hidden="true">{LANG.flag}</span> {LANG.nameNative}</strong>
-              <span className="dict-tools">
-                <button type="button" className={dictListening === "target" ? "vocab-mini-btn listening" : "vocab-mini-btn"} aria-label="Nói để nhập" title="Nói để nhập" onClick={() => startDictVoice("target")}>🎤</button>
-                <button type="button" className="vocab-mini-btn" aria-label="Nghe phát âm" disabled={!dictText.target.trim() || speechBusy} onClick={() => playPracticePhrase(dictText.target)}>🔊</button>
-                <button type="button" className="vocab-mini-btn" aria-label="Xóa" disabled={!dictText.target} onClick={() => { setDictText({ target: "", vi: "" }); setDictHits([]); setDictAi(""); }}>✕</button>
-              </span>
-            </div>
-            <textarea className="dict-input" rows={3} value={dictText.target} lang={LANG.speechLang} placeholder={LANG.id === "en" ? "Nhập từ hoặc câu tiếng Anh…" : `Nhập ${LANG.viName}${LANG.id === "zh" ? " (chữ Hán hoặc pinyin không dấu)" : " (kanji hoặc kana)"}…`}
-              onChange={(event) => { setDictSide("target"); setDictAi(""); setDictMore(false); setDictText((current) => ({ ...current, target: event.target.value })); }} />
-            {details}
-          </div>
-          <div className="dict-arrow" aria-hidden="true">⇅</div>
-          <div className="dict-box">
-            <div className="dict-box-head">
-              <strong><span aria-hidden="true">🇻🇳</span> Tiếng Việt</strong>
-              <span className="dict-tools">
-                <button type="button" className={dictListening === "vi" ? "vocab-mini-btn listening" : "vocab-mini-btn"} aria-label="Nói để nhập" title="Nói để nhập" onClick={() => startDictVoice("vi")}>🎤</button>
-                <button type="button" className="vocab-mini-btn" aria-label="Nghe tiếng Việt" disabled={!dictText.vi.trim()} onClick={() => { void playVietnamese(dictText.vi); }}>🔊</button>
-                <button type="button" className="vocab-mini-btn" aria-label="Xóa" disabled={!dictText.vi} onClick={() => { setDictText({ target: "", vi: "" }); setDictHits([]); setDictAi(""); }}>✕</button>
-              </span>
-            </div>
-            <textarea className="dict-input" rows={3} value={dictText.vi} lang="vi" placeholder="Nhập từ tiếng Việt (có dấu hoặc không dấu)…"
-              onChange={(event) => { setDictSide("vi"); setDictAi(""); setDictMore(false); setDictText((current) => ({ ...current, vi: event.target.value })); }} />
-          </div>
-        </div>
-
-        {dictListening && <p className="dict-listening" role="status">🎤 Đang nghe… hãy nói {dictListening === "vi" ? "tiếng Việt" : LANG.viName}. Nhấn micro lần nữa để dừng.</p>}
-        {dictVoiceNote && <p className="error-message" role="alert">{dictVoiceNote}</p>}
-        {ready && sourceText.trim() && !dictHits.length && !dictSearching && (
-          <p className="dict-empty">Không tìm thấy trong từ điển offline. Hãy thử tìm mở rộng online ở bên dưới.</p>
-        )}
-        {ready && LANG.id !== "en" && !dictHits.some((hit) => hit.vietnamese.length) && dictHits.length > 0 && (
-          <p className="dict-note">Nghĩa tiếng Việt chưa có sẵn cho từ này, bạn xem nghĩa tiếng Anh ở trên hoặc dùng tìm mở rộng online.</p>
-        )}
-
-        <div className="dict-online">
-          <strong>Không tìm được? Tìm mở rộng online</strong>
-          <div className="dict-online-actions">
-            <button type="button" className="button button-primary" disabled={!sourceText.trim() || dictAiBusy} onClick={() => { void searchDictionaryOnline(); }}>
-              {dictAiBusy ? "Đang tìm…" : "🔎 Tìm bằng AI / bộ dịch trình duyệt"}
-            </button>
-            <a className={`button button-outline${sourceText.trim() ? "" : " disabled"}`} href={sourceText.trim() ? googleLink : undefined} target="_blank" rel="noreferrer">🌐 Mở bằng Google Dịch ↗</a>
-          </div>
-          {dictAi && <pre className="dict-ai" role="status">{dictAi}</pre>}
-          <small>Trên Android, nút Google Dịch thường mở thẳng ứng dụng Google Dịch nếu máy đã cài. Dữ liệu offline của ứng dụng đó không dùng chung được với web app.</small>
-        </div>
-
-        {dictPacks.length > 0 && (
-          <details className="dict-manage">
-            <summary>Quản lý dữ liệu từ điển trên máy</summary>
-            <ul>
-              {dictPacks.map((id) => (
-                <li key={id}><span>{PACK_INFO[id].label} · ~{PACK_INFO[id].mb} MB</span><button type="button" className="remove-key-button" onClick={() => { void deleteDictionary(id); }}>Xóa</button></li>
-              ))}
-            </ul>
-            {dictError && <p className="error-message" role="alert">{dictError}</p>}
-            <small>Nguồn dữ liệu: CC-CEDICT, JMdict (EDRDG), Wiktionary, Unicode Unihan, theo giấy phép CC BY-SA.</small>
-          </details>
-        )}
-      </section>
-    );
   }
 
   function renderHome() {
@@ -4990,7 +4733,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
             <span className="wz-mode-icon"><IllustrationIcon name="books" /></span>
             <strong>Từ điển</strong>
             <span>Tra từ hai chiều {LANG.viName} ↔ tiếng Việt, có loa phát âm. Dữ liệu tải về chạy offline.</span>
-            <em className={isReady(LANG.id, dictPacks) ? "ok" : "warn"}>{isReady(LANG.id, dictPacks) ? "Đã có trên máy" : "Tải một lần để dùng offline"}</em>
+            <em className={dictionaryReady ? "ok" : "warn"}>{dictionaryReady ? "Đã có trên máy" : "Tải một lần để dùng offline"}</em>
           </button>
         </div>
       </section>
@@ -5648,7 +5391,23 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           {section === "library" && renderPersonalLibrary()}
           {section === "settings" && renderSettings()}
           {section === "setup" && renderSetupGuide()}
-          {section === "dictionary" && renderDictionary()}
+          {dictionaryOpened && (
+            <div hidden={section !== "dictionary"}>
+              <Suspense fallback={<div className="lc-loading" aria-busy="true"><p>Đang tải từ điển…</p></div>}>
+                <LazyDictionaryPanel
+                  language={LANG}
+                  visible={section === "dictionary"}
+                  speechBusy={speechBusy}
+                  onReadyChange={setDictionaryReady}
+                  onSearchOnline={searchDictionaryOnline}
+                  onPlayTarget={(text) => { void playPracticePhrase(text); }}
+                  onPlayVietnamese={(text) => { void playVietnamese(text); }}
+                  onPlayHit={(key, text) => toggleSpeech(key, () => playPracticePhrase(text))}
+                  speakerIcon={speakerIcon}
+                />
+              </Suspense>
+            </div>
+          )}
         </div>
         <footer className="site-footer">Dành cho khoảnh khắc bạn nghĩ: “Mình làm được!” <span>✦</span> <span className="site-version">v{APP_VERSION}</span></footer>
       </section>
