@@ -1,14 +1,17 @@
 /**
- * Backup / restore of everything the app keeps in this browser's localStorage: progress, badges,
- * scores, chat history and settings of all languages. Used to move data between two addresses
- * (for example GitHub Pages and the home server), because each address has its own storage.
+ * Backup / restore of what the app keeps in this browser's localStorage, in three independent parts:
+ *  - data: progress, badges, scores, chat history (all languages)
+ *  - settings: theme, font, voices, AI provider/model, cost limits ... (no API keys)
+ *  - keys: API keys only
+ * Used to move data between two addresses (GitHub Pages / home server) or to hand a ready-made
+ * setup (with the owner's keys) to family members.
  */
 
 const FORMAT = "teacher-ai-backup";
-const FORMAT_VERSION = 1;
+const FORMAT_VERSION = 2;
 const PREFIX = "lingua-";
 
-/** Flags that only describe this device or this address (downloaded voice packs, install banners). */
+/** Flags and counters that only describe this device or this address. */
 const DEVICE_ONLY = new Set([
   "lingua-install-ready",
   "lingua-inapp-dismissed",
@@ -16,21 +19,25 @@ const DEVICE_ONLY = new Set([
   "lingua-en-pack",
   "lingua-tts-no-direction",
   "lingua-gcloud-no-chirp",
+  "lingua-usage-ledger", // money already spent on this device, must not be inherited
 ]);
 
 const SECRET_KEYS = /^lingua-(gemini-api-key|gcloud-tts-key.*)$/;
 const AI_SETTINGS = "lingua-ai-settings";
+const AI_SECRET_FIELDS = ["keys", "activeKeyIds"] as const;
+/** Names (after the language prefix) of the learning data. */
+const DATA_NAMES = /^lingua-(ja-|zh-)?(progress|messages-.*|grammar-scores|course-progress-v2|course-lesson-scores-v2|lesson-view)$/;
+
+export type BackupParts = { data: boolean; settings: boolean; keys: boolean };
 
 export type BackupFile = {
   format: typeof FORMAT;
   version: number;
   appVersion: string;
   createdAt: string;
-  includesKeys: boolean;
-  data: Record<string, string>;
+  parts: BackupParts;
+  entries: Record<string, string>;
 };
-
-export type BackupSummary = { entries: number; createdAt: string; appVersion: string; includesKeys: boolean };
 
 function parseObject(text: string | null): Record<string, unknown> | null {
   if (!text) return null;
@@ -42,65 +49,84 @@ function parseObject(text: string | null): Record<string, unknown> | null {
   }
 }
 
-export function createBackup(appVersion: string, includeKeys: boolean): BackupFile {
-  const data: Record<string, string> = {};
+function splitAiSettings(value: string): { plain: Record<string, unknown>; secret: Record<string, unknown> } | null {
+  const all = parseObject(value);
+  if (!all) return null;
+  const plain: Record<string, unknown> = {};
+  const secret: Record<string, unknown> = {};
+  for (const [name, field] of Object.entries(all)) {
+    ((AI_SECRET_FIELDS as readonly string[]).includes(name) ? secret : plain)[name] = field;
+  }
+  return { plain, secret };
+}
+
+export function createBackup(appVersion: string, parts: BackupParts): BackupFile {
+  const entries: Record<string, string> = {};
   for (let index = 0; index < localStorage.length; index += 1) {
     const key = localStorage.key(index);
     if (!key || !key.startsWith(PREFIX) || DEVICE_ONLY.has(key)) continue;
     const value = localStorage.getItem(key);
     if (value === null) continue;
-    if (!includeKeys && SECRET_KEYS.test(key)) continue;
-    if (!includeKeys && key === AI_SETTINGS) {
-      const settings = parseObject(value);
-      if (!settings) continue;
-      const { keys: _keys, activeKeyIds: _active, ...rest } = settings;
-      void _keys; void _active;
-      data[key] = JSON.stringify(rest);
-      continue;
+    if (SECRET_KEYS.test(key)) {
+      if (parts.keys) entries[key] = value;
+    } else if (key === AI_SETTINGS) {
+      const split = splitAiSettings(value);
+      if (!split) continue;
+      const chosen = { ...(parts.settings ? split.plain : {}), ...(parts.keys ? split.secret : {}) };
+      if (Object.keys(chosen).length > 0) entries[key] = JSON.stringify(chosen);
+    } else if (DATA_NAMES.test(key)) {
+      if (parts.data) entries[key] = value;
+    } else if (parts.settings) {
+      entries[key] = value;
     }
-    data[key] = value;
   }
-  return { format: FORMAT, version: FORMAT_VERSION, appVersion, createdAt: new Date().toISOString(), includesKeys: includeKeys, data };
+  return { format: FORMAT, version: FORMAT_VERSION, appVersion, createdAt: new Date().toISOString(), parts, entries };
 }
 
 export function readBackup(text: string): BackupFile {
   let parsed: unknown;
   try { parsed = JSON.parse(text); } catch { throw new Error("Tệp không phải bản sao lưu của Teacher AI."); }
-  const file = parsed as Partial<BackupFile> | null;
-  if (!file || file.format !== FORMAT || typeof file.data !== "object" || file.data === null) {
-    throw new Error("Tệp không phải bản sao lưu của Teacher AI.");
-  }
+  const file = parsed as (Partial<BackupFile> & { data?: unknown; includesKeys?: unknown }) | null;
+  if (!file || file.format !== FORMAT) throw new Error("Tệp không phải bản sao lưu của Teacher AI.");
   if (typeof file.version !== "number" || file.version > FORMAT_VERSION) {
     throw new Error("Bản sao lưu này tạo bởi phiên bản mới hơn. Hãy cập nhật ứng dụng rồi thử lại.");
   }
-  const data: Record<string, string> = {};
-  for (const [key, value] of Object.entries(file.data)) {
-    if (key.startsWith(PREFIX) && !DEVICE_ONLY.has(key) && typeof value === "string") data[key] = value;
+  // Version 1 (2.17.12 first release) kept everything under "data" and flagged keys with includesKeys.
+  const source = file.version === 1 ? file.data : file.entries;
+  if (typeof source !== "object" || source === null) throw new Error("Tệp không phải bản sao lưu của Teacher AI.");
+  const entries: Record<string, string> = {};
+  for (const [key, value] of Object.entries(source)) {
+    if (key.startsWith(PREFIX) && !DEVICE_ONLY.has(key) && typeof value === "string") entries[key] = value;
   }
-  if (Object.keys(data).length === 0) throw new Error("Bản sao lưu không có dữ liệu nào.");
+  if (Object.keys(entries).length === 0) throw new Error("Bản sao lưu không có dữ liệu nào.");
+  const keyLike = (key: string) => SECRET_KEYS.test(key) || (key === AI_SETTINGS && AI_SECRET_FIELDS.some((f) => f in (parseObject(entries[key]) ?? {})));
+  const parts: BackupParts = file.version === 1
+    ? { data: true, settings: true, keys: file.includesKeys === true }
+    : {
+        data: file.parts?.data === true,
+        settings: file.parts?.settings === true,
+        keys: file.parts?.keys === true || Object.keys(entries).some(keyLike),
+      };
   return {
     format: FORMAT,
     version: file.version,
     appVersion: typeof file.appVersion === "string" ? file.appVersion : "?",
     createdAt: typeof file.createdAt === "string" ? file.createdAt : "",
-    includesKeys: file.includesKeys === true,
-    data,
+    parts,
+    entries,
   };
 }
 
-export function summarize(file: BackupFile): BackupSummary {
-  return { entries: Object.keys(file.data).length, createdAt: file.createdAt, appVersion: file.appVersion, includesKeys: file.includesKeys };
-}
-
-/** Writes the backup into localStorage. Keys on this device are kept when the file has none. */
+/** Writes the backup into localStorage. AI settings are merged, so keys already on this device
+ * survive a backup that has none. Returns how many entries were written. */
 export function applyBackup(file: BackupFile): number {
   let written = 0;
-  for (const [key, value] of Object.entries(file.data)) {
+  for (const [key, value] of Object.entries(file.entries)) {
     let next = value;
-    if (key === AI_SETTINGS && !file.includesKeys) {
+    if (key === AI_SETTINGS) {
       const incoming = parseObject(value) ?? {};
       const current = parseObject(localStorage.getItem(AI_SETTINGS)) ?? {};
-      next = JSON.stringify({ ...incoming, keys: current.keys, activeKeyIds: current.activeKeyIds });
+      next = JSON.stringify({ ...current, ...incoming });
     }
     localStorage.setItem(key, next);
     written += 1;
@@ -108,8 +134,9 @@ export function applyBackup(file: BackupFile): number {
   return written;
 }
 
-export function backupFileName(): string {
+export function backupFileName(parts: BackupParts): string {
   const now = new Date();
   const pad = (n: number) => String(n).padStart(2, "0");
-  return `teacher-ai-backup-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}.json`;
+  const kind = [parts.data && "du-lieu", parts.settings && "cai-dat", parts.keys && "api-key"].filter(Boolean).join("+");
+  return `teacher-ai-${kind}-${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}.json`;
 }
