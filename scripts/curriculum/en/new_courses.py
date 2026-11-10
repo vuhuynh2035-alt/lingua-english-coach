@@ -12,9 +12,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from nails_c1 import C1  # noqa: E402  (advanced nails lessons live in their own files)
 from nails_c2 import C2  # noqa: E402
+from nails_b_more import B_MORE  # noqa: E402
+from nails_c_more import C1_MORE, C2_MORE  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "2.1.0"  # must equal CURRICULUM_VERSIONS.en in src/lib/course-library.ts
+VERSION = "2.2.0"  # must equal CURRICULUM_VERSIONS.en in src/lib/course-library.ts
 REFERENCES = [
     {"title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)", "url": "https://www.coe.int/en/web/common-european-framework-reference-languages", "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"},
     {"title": "British Council / EAQUALS – Core Inventory for General English", "url": "https://www.teachingenglish.org.uk/article/british-council-eaquals-core-inventory-general-english", "license": "Tham khảo danh mục chức năng, ngữ pháp, chủ đề theo level (không sao chép nội dung)"},
@@ -247,7 +249,8 @@ NAILS = [
 ]
 
 # Levels above B2: nine C1 and nine C2 lessons for the nails course.
-NAILS += [L(*lesson) for lesson in C1 + C2]
+# Extra B1/B2 lessons and the C1/C2 lessons are appended in order, so ids of existing lessons never change.
+NAILS += [L(*lesson) for lesson in B_MORE + C1 + C1_MORE + C2 + C2_MORE]
 
 # ---------------------------------------------------------------- FACIAL / SPA
 FACIAL = [
@@ -710,7 +713,12 @@ def vocab_questions(lesson_id, vocab):
     return out
 
 
+LEVEL_ORDER = {"A1": 0, "A2": 1, "B1": 2, "B2": 3, "C1": 4, "C2": 5}
+
+
 def build(course_id, title, overview, lessons):
+    # Stable sort: lessons of a level keep their order (so ids stay), and levels are listed A1 -> C2.
+    lessons = sorted(lessons, key=lambda lesson: LEVEL_ORDER[lesson["level"]])
     counters = {}
     out = []
     for lesson in lessons:
@@ -747,6 +755,6 @@ def build(course_id, title, overview, lessons):
     print(course_id, len(out), "lessons", sum(len(l["questions"]) for l in out), "questions")
 
 
-build("nails", "Tiếng Anh ngành nails", "30 bài từ A1 đến C2 cho thợ làm móng: dụng cụ, đặt lịch, màu và kiểu móng, vệ sinh an toàn, tư vấn dịch vụ, xử lý khiếu nại, phỏng vấn và quản lý tiệm (B2); nâng cao C1–C2: tư vấn tình trạng móng, dị ứng và sự cố, chính sách, đào tạo, thương hiệu, nhà cung cấp, quy định, thuyết phục khách, khiếu nại, đầu tư, hợp đồng, họp nhóm, truyền thông khủng hoảng, sản phẩm xanh, workshop và thuê mặt bằng.", NAILS)
+build("nails", "Tiếng Anh ngành nails", "50 bài từ A1 đến C2 cho thợ làm móng: dụng cụ, đặt lịch, màu và kiểu móng, vệ sinh an toàn, tư vấn dịch vụ, xử lý khiếu nại, pedicure, nhóm và tiệc cưới, thanh toán, ca làm, xu hướng mùa, chăm sóc tại nhà, báo cáo doanh thu, phỏng vấn và quản lý tiệm (đến B2); nâng cao C1–C2: tư vấn tình trạng móng, dị ứng và sự cố, chính sách, đào tạo, thương hiệu, nhà cung cấp, quy định, thuyết phục khách, khiếu nại, đầu tư, hợp đồng, họp nhóm, truyền thông khủng hoảng, sản phẩm xanh, workshop và thuê mặt bằng.", NAILS)
 build("facial", "Tiếng Anh ngành spa & chăm sóc da", "12 bài từ A1 đến B2 cho kỹ thuật viên spa: loại da, đón khách, hướng dẫn khi làm, phân tích da, sản phẩm, xử lý kích ứng, liệu trình chuyên sâu và vận hành spa.", FACIAL)
 build("garment", "Tiếng Anh ngành may mặc", "12 bài từ A1 đến B2 cho công nhân, tổ trưởng và nhân viên văn phòng xưởng may: dụng cụ, chuyền may, size và số đo, QC, an toàn, buyer, đóng gói, đàm phán và kiểm toán.", GARMENT)
