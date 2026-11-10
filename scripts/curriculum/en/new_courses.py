@@ -6,10 +6,15 @@ Each lesson has 5 hand-written questions; 5 vocabulary questions are added from 
 """
 import json
 import random
+import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from nails_c1 import C1  # noqa: E402  (advanced nails lessons live in their own files)
+from nails_c2 import C2  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "2.0.0"  # must equal CURRICULUM_VERSIONS.en in src/lib/course-library.ts
+VERSION = "2.1.0"  # must equal CURRICULUM_VERSIONS.en in src/lib/course-library.ts
 REFERENCES = [
     {"title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)", "url": "https://www.coe.int/en/web/common-european-framework-reference-languages", "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"},
     {"title": "British Council / EAQUALS – Core Inventory for General English", "url": "https://www.teachingenglish.org.uk/article/british-council-eaquals-core-inventory-general-english", "license": "Tham khảo danh mục chức năng, ngữ pháp, chủ đề theo level (không sao chép nội dung)"},
@@ -240,6 +245,9 @@ NAILS = [
        ("What has the salon changed?", ["Its prices", "Its booking system", "Its name"], 1, "'adjusted our booking system'."),
        ("Which sentence shows a completed improvement?", ["We will adjust maybe.", "We've adjusted our system.", "We adjusting our system."], 1, "Hiện tại hoàn thành: đã làm, kết quả còn.")]),
 ]
+
+# Levels above B2: nine C1 and nine C2 lessons for the nails course.
+NAILS += [L(*lesson) for lesson in C1 + C2]
 
 # ---------------------------------------------------------------- FACIAL / SPA
 FACIAL = [
@@ -729,8 +737,9 @@ def build(course_id, title, overview, lessons):
             "questions": hand + vocab_questions(lesson_id, lesson["vocab"]),
             "audioIds": [],
         })
-    assert len(out) == 12, course_id
-    pack = {"id": course_id, "title": title, "version": VERSION, "framework": "CEFR A1–B2", "overview": overview,
+    assert len(out) == len(lessons), course_id
+    top = "C2" if any(l["level"] == "C2" for l in lessons) else "C1" if any(l["level"] == "C1" for l in lessons) else "B2"
+    pack = {"id": course_id, "title": title, "version": VERSION, "framework": f"CEFR A1–{top}", "overview": overview,
             "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR", "references": REFERENCES,
             "lessons": out, "audio": []}
     path = ROOT / "public" / "courses" / "en" / f"{course_id}.json"
@@ -738,6 +747,6 @@ def build(course_id, title, overview, lessons):
     print(course_id, len(out), "lessons", sum(len(l["questions"]) for l in out), "questions")
 
 
-build("nails", "Tiếng Anh ngành nails", "12 bài từ A1 đến B2 cho thợ làm móng: dụng cụ, đặt lịch, màu và kiểu móng, vệ sinh an toàn, tư vấn dịch vụ, xử lý khiếu nại, phỏng vấn và quản lý tiệm.", NAILS)
+build("nails", "Tiếng Anh ngành nails", "30 bài từ A1 đến C2 cho thợ làm móng: dụng cụ, đặt lịch, màu và kiểu móng, vệ sinh an toàn, tư vấn dịch vụ, xử lý khiếu nại, phỏng vấn và quản lý tiệm (B2); nâng cao C1–C2: tư vấn tình trạng móng, dị ứng và sự cố, chính sách, đào tạo, thương hiệu, nhà cung cấp, quy định, thuyết phục khách, khiếu nại, đầu tư, hợp đồng, họp nhóm, truyền thông khủng hoảng, sản phẩm xanh, workshop và thuê mặt bằng.", NAILS)
 build("facial", "Tiếng Anh ngành spa & chăm sóc da", "12 bài từ A1 đến B2 cho kỹ thuật viên spa: loại da, đón khách, hướng dẫn khi làm, phân tích da, sản phẩm, xử lý kích ứng, liệu trình chuyên sâu và vận hành spa.", FACIAL)
 build("garment", "Tiếng Anh ngành may mặc", "12 bài từ A1 đến B2 cho công nhân, tổ trưởng và nhân viên văn phòng xưởng may: dụng cụ, chuyền may, size và số đo, QC, an toàn, buyer, đóng gói, đàm phán và kiểm toán.", GARMENT)

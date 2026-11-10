@@ -9,7 +9,7 @@ export type CourseQuestion = {
 
 export type CourseLesson = {
   id: string;
-  level: "A1" | "A2" | "B1" | "B2";
+  level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
   unit: string;
   /** Lesson focus shown as a tag, e.g. "Giao tiếp", "Ngữ pháp". Packs before 2.0 have none. */
   category?: string;
@@ -29,7 +29,7 @@ export type CourseLesson = {
 
 /** Bundled curriculum version; a stored pack with another version is re-downloaded. */
 /** Bump a language's version when its course files change, so devices download them again. */
-const CURRICULUM_VERSIONS = { en: "2.0.0", ja: "1.1.0", zh: "1.1.0" } as const;
+const CURRICULUM_VERSIONS = { en: "2.1.0", ja: "1.1.0", zh: "1.1.0" } as const;
 export const CURRICULUM_VERSION: string = CURRICULUM_VERSIONS[LANG.id];
 /** A lesson is passed with at least this share of correct answers (8/10). */
 export const LESSON_PASS_RATIO = 0.8;
@@ -99,7 +99,7 @@ function isCourseQuestion(value: unknown): value is CourseQuestion {
 
 function isCourseLesson(value: unknown): value is CourseLesson {
   return isRecord(value) && typeof value.id === "string" &&
-    ["A1", "A2", "B1", "B2"].includes(String(value.level)) &&
+    ["A1", "A2", "B1", "B2", "C1", "C2"].includes(String(value.level)) &&
     typeof value.unit === "string" && typeof value.title === "string" &&
     typeof value.objective === "string" && typeof value.reading === "string" &&
     Array.isArray(value.vocabulary) && value.vocabulary.every((word: unknown) =>

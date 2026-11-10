@@ -84,14 +84,19 @@ import {
 } from "@/lib/personal-library";
 
 type Section = "home" | "choose" | "mode" | "lessons" | "practice" | "progress" | "placement" | "grammar" | "library" | "settings" | "setup" | "dictionary";
-type CourseLevel = "A1" | "A2" | "B1" | "B2";
-const COURSE_LEVELS: CourseLevel[] = ["A1", "A2", "B1", "B2"];
+type CourseLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+/** The four levels of the learner's own level (placement test, tutor, grammar). */
+const BASE_LEVELS: CourseLevel[] = ["A1", "A2", "B1", "B2"];
+/** A course can add C1 and C2 groups on top (only some English courses do). */
+const COURSE_LEVELS: CourseLevel[] = [...BASE_LEVELS, "C1", "C2"];
 /** The medal for passing every lesson of one level group of a course, from easiest to hardest. */
 const MEDALS: Record<CourseLevel, { icon: string; name: string }> = {
   A1: { icon: "🥉", name: "Huân chương Đồng" },
   A2: { icon: "🥈", name: "Huân chương Bạc" },
   B1: { icon: "🥇", name: "Huân chương Vàng" },
   B2: { icon: "🏆", name: "Cúp Kim cương" },
+  C1: { icon: "💎", name: "Huân chương Bạch kim" },
+  C2: { icon: "👑", name: "Vương miện Bậc thầy" },
 };
 type HelpContent = { title: string; description: string; steps: string[] };
 type ApiKeyEntry = { id: string; label: string; value: string };
@@ -1512,7 +1517,7 @@ export default function Home() {
     const persona = TUTOR_PERSONAS[tutorPersona];
     const name = persona.name;
     const self = persona.kind === "man" ? "thầy" : persona.kind === "woman" ? "cô" : name;
-    const level = COURSE_LEVELS.includes(progress.level as CourseLevel) ? progress.level as CourseLevel : LANG.defaults.level;
+    const level = (BASE_LEVELS.includes(progress.level as CourseLevel) ? progress.level : LANG.defaults.level) as keyof typeof LEVEL_PEDAGOGY;
     const levelName = `${LANG.levelSystem} ${levelLabel(level)}`;
     const lesson = tutorLesson();
     const lessonBlock = lesson
@@ -1568,7 +1573,7 @@ RULES:
       if (!tag) break;
       const value = tag[2].toLowerCase();
       if (tag[1].toLowerCase() === "mood" && ["neutral", "happy", "cheer", "thinking", "surprised"].includes(value)) mood = value as AvatarEmotion;
-      if (tag[1].toLowerCase() === "level" && COURSE_LEVELS.includes(value.toUpperCase() as CourseLevel)) level = value.toUpperCase() as CourseLevel;
+      if (tag[1].toLowerCase() === "level" && BASE_LEVELS.includes(value.toUpperCase() as CourseLevel)) level = value.toUpperCase() as CourseLevel;
       rest = rest.slice(tag[0].length);
     }
     // A tag still streaming in must not flash on screen.
@@ -3659,12 +3664,12 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         setNewMedal({ course: course.title, level: groupLevel });
       }
       // Finishing every lesson of the learner's current level moves them up one level.
-      const levelIndex = COURSE_LEVELS.findIndex((level) => level === progress.level);
-      const currentLevel = COURSE_LEVELS[Math.max(levelIndex, 0)];
+      const levelIndex = BASE_LEVELS.findIndex((level) => level === progress.level);
+      const currentLevel = BASE_LEVELS[Math.max(levelIndex, 0)];
       const levelLessons = course.lessons.filter((item) => item.level === currentLevel);
       if (levelLessons.length && levelLessons.every((item) => updatedProgress[course.id].includes(item.id)) &&
-          levelIndex < COURSE_LEVELS.length - 1) {
-        setProgress((current) => ({ ...current, level: COURSE_LEVELS[Math.max(levelIndex, 0) + 1] }));
+          levelIndex < BASE_LEVELS.length - 1) {
+        setProgress((current) => ({ ...current, level: BASE_LEVELS[Math.max(levelIndex, 0) + 1] }));
       }
     }
     try {
@@ -5241,7 +5246,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <div><strong>{totalTicks}</strong><span>bài đã đạt ✓</span></div>
           <div><strong>{totalMedals}</strong><span>huân chương</span></div>
         </div>
-        <p className="medal-hint">Mỗi giáo trình chia 4 nhóm từ dễ đến khó. Đạt hết các bài trong một nhóm để nhận huân chương: 🥉 {levelLabel("A1")} · 🥈 {levelLabel("A2")} · 🥇 {levelLabel("B1")} · 🏆 {levelLabel("B2")}.</p>
+        <p className="medal-hint">Mỗi giáo trình chia nhóm từ dễ đến khó. Đạt hết các bài trong một nhóm để nhận huân chương: 🥉 {levelLabel("A1")} · 🥈 {levelLabel("A2")} · 🥇 {levelLabel("B1")} · 🏆 {levelLabel("B2")}{LANG.id === "en" ? " · 💎 C1 · 👑 C2 (chỉ một số giáo trình có thêm hai nhóm nâng cao này)" : ""}.</p>
         <div className="medal-courses">
           {[...profiles].sort((a, b) => {
             // Courses being studied come first.
@@ -5257,7 +5262,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                   <small>{course ? `${passedCount(course)}/${course.lessons.length} bài` : "Chưa tải"}</small>
                 </div>
                 <div className="medal-row">
-                  {COURSE_LEVELS.map((level) => (
+                  {COURSE_LEVELS.filter((level) => course ? course.lessons.some((item) => item.level === level) : BASE_LEVELS.includes(level)).map((level) => (
                     <span key={level} className={earned.includes(level) ? "medal earned" : "medal"} title={`${MEDALS[level].name} · ${levelLabel(level)}`}>
                       <i aria-hidden="true">{MEDALS[level].icon}</i><small>{levelLabel(level)}</small>
                     </span>
