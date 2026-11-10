@@ -737,6 +737,8 @@ export default function Home() {
   /** When the last Google speech requests started, per key and model: each pair allows about 10 a minute. */
   const cloudSpeechPauseRef = useRef<Record<"google" | "openai" | "gcloud", { until: number; reason: string }>>({ google: { until: 0, reason: "" }, openai: { until: 0, reason: "" }, gcloud: { until: 0, reason: "" } });
   const courseSyncRef = useRef<string | null>(null);
+  /** Packs already synced since this page opened (a stale answer must not trigger endless re-downloads). */
+  const syncTriedRef = useRef<Set<string>>(new Set());
   const speechPlayerRef = useRef<HTMLAudioElement | null>(null);
   const speechPlayerUnlockedRef = useRef(false);
   const pendingLessonStartRef = useRef(false);
@@ -1302,10 +1304,12 @@ export default function Home() {
   useEffect(() => {
     if (section !== "lessons" && section !== "practice") return;
     const course = coursePacks.find((item) => item.id === progress.profile);
-    if (course?.version !== CURRICULUM_VERSION) {
+    if (course?.version !== CURRICULUM_VERSION && !syncTriedRef.current.has(progress.profile)) {
       void syncCourse(progress.profile);
       return;
     }
+    // Already tried this time: use the pack on the device (even an older one) instead of trying again and again.
+    if (!course) return;
     if (section === "lessons" && !selectedCourseId) openDownloadedCourse(course.id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [section, coursePacks, progress.profile]);
@@ -3580,9 +3584,12 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
 
   /** Quietly stores the bundled pack for a profile (or refreshes an older version). */
   /** `quiet`: a background prefetch that shows nothing and reports no error. */
-  async function syncCourse(courseId: string, quiet = false) {
+  async function syncCourse(courseId: string, quiet = false, force = false) {
     const stored = coursePacks.find((item) => item.id === courseId);
     if (stored?.version === CURRICULUM_VERSION) return;
+    // One automatic try per pack and page load; the "Tải lại" button forces another.
+    if (!force && syncTriedRef.current.has(courseId)) return;
+    syncTriedRef.current.add(courseId);
     if (courseSyncRef.current === courseId) {
       // Already downloading in the background: just show the learner it is on its way.
       if (!quiet) setCourseSyncing(true);
@@ -4808,7 +4815,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
           <>
             <p className="error-message" role="alert">{courseError || "Chưa tải được giáo trình."} Lần đầu cần kết nối mạng; sau đó có thể học offline.</p>
             <div className="cr-connect-actions">
-              <button type="button" className="button button-primary" onClick={() => { void syncCourse(progress.profile); }}>↻ Tải lại</button>
+              <button type="button" className="button button-primary" onClick={() => { void syncCourse(progress.profile, false, true); }}>↻ Tải lại</button>
               <button type="button" className="button button-outline" onClick={goBack}>← Chọn cách học khác</button>
             </div>
           </>

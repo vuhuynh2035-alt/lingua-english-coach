@@ -200,7 +200,8 @@ export async function downloadCoursePackage(
   basePath: string,
   onProgress: (completed: number, total: number) => void,
 ): Promise<CoursePackage> {
-  const packageResponse = await fetch(`${basePath}/courses/${LANG.id}/${encodeURIComponent(courseId)}.json`);
+  // The version in the address bypasses a stale copy kept by the browser or the host right after a release.
+  const packageResponse = await fetch(`${basePath}/courses/${LANG.id}/${encodeURIComponent(courseId)}.json?v=${CURRICULUM_VERSION}`, { cache: "no-cache" });
   if (!packageResponse.ok) {
     throw new Error(`Unable to download this course package (HTTP ${packageResponse.status}).`);
   }
