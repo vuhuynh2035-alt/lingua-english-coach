@@ -1,0 +1,63 @@
+"""Vietnamese translations of nails C1 lessons 9 - 15."""
+
+VI = {
+    "nails-c1-9": [
+        "Thanh tra: Chào buổi sáng. Tôi đến để kiểm tra định kỳ. Tôi xem giấy phép hành nghề và nhật ký vệ sinh của quý vị được không?",
+        "Chủ tiệm: Dĩ nhiên. Giấy phép của tất cả thợ được treo tại từng vị trí làm việc, và hồ sơ tiệt trùng của chúng tôi nằm trong cuốn sổ này.",
+        "Thanh tra: Cảm ơn. Tôi thấy các bồn ngâm chân lần cuối được khử trùng cách đây hai ngày. Quy định nêu rõ chúng phải được vệ sinh và ghi lại sau mỗi khách.",
+        "Chủ tiệm: Ông nói đúng; mục đó đã bị bỏ sót. Thợ mới của chúng tôi không biết về yêu cầu này. Tôi sẽ bảo đảm hôm nay mọi người đều được phổ biến.",
+        "Thanh tra: Tôi sẽ ghi nhận đây là vi phạm nhẹ. Quý vị có mười bốn ngày để chứng minh đã tuân thủ, nếu không có thể bị phạt.",
+        "Chủ tiệm: Tôi hiểu. Chúng tôi sẽ gửi cho ông nhật ký cập nhật trước hạn chót từ rất sớm.",
+    ],
+    "nails-c1-10": [
+        "Thợ nail: Trước khi bắt đầu, tôi luôn hỏi khách về các tình trạng sức khỏe. Bạn có điều gì chúng tôi cần biết không?",
+        "Khách: Tôi bị tiểu đường, và tôi đang dùng thuốc ảnh hưởng đến tuần hoàn máu.",
+        "Thợ nail: Cảm ơn bạn đã cho tôi biết. Vậy thì chúng tôi sẽ có thêm các biện pháp phòng ngừa. Vì vết thương có thể lành chậm, tôi sẽ không cắt da quanh móng và sẽ không dùng bất kỳ dụng cụ kim loại nào có thể làm rách da.",
+        "Khách: Làm móng chân có còn an toàn không?",
+        "Thợ nail: Nhìn chung là có, miễn là làm nhẹ nhàng và dụng cụ vô trùng. Tôi khuyên bạn thường xuyên kiểm tra bàn chân, và đi khám bác sĩ ngay nếu thấy đỏ, loét hoặc sưng.",
+        "Khách: Tôi rất trân trọng sự cẩn thận của bạn.",
+        "Thợ nail: An toàn của bạn là trên hết. Nếu lúc nào bạn thấy khó chịu, xin cho tôi biết ngay.",
+    ],
+    "nails-c1-11": [
+        "Khách: Sao móng tôi cứ bong thành từng lớp vậy? Thật bực mình.",
+        "Thợ nail: Điều bạn mô tả gọi là móng tách lớp. Móng được cấu tạo từ keratin, một loại protein xếp thành các lớp xếp sát nhau. Khi các lớp tách ra, chúng bong.",
+        "Khách: Nguyên nhân là gì?",
+        "Thợ nail: Thường là do ướt rồi khô lặp đi lặp lại, các sản phẩm mạnh, hoặc chấn thương như dùng móng làm công cụ. Dinh dưỡng cũng có thể đóng một vai trò, dù bằng chứng về thực phẩm bổ sung còn chưa thống nhất.",
+        "Khách: Vậy không có thuốc thần kỳ sao?",
+        "Thợ nail: Tiếc là không. Biện pháp đáng tin cậy nhất là bảo vệ móng: dưỡng ẩm, đeo găng tay và giữ móng ngắn trong lúc móng hồi phục. Móng mọc chậm — một móng tay mất khoảng sáu tháng để mọc hết — nên kiên nhẫn là điều thiết yếu.",
+    ],
+    "nails-c1-12": [
+        "Chủ tiệm: Cảm ơn bạn đã đến. Tôi muốn bắt đầu với kinh nghiệm của bạn. Điều gì thu hút bạn đến với nghề làm móng?",
+        "Ứng viên: Tôi luôn quan tâm đến khía cạnh nghệ thuật, nhưng theo thời gian tôi càng trân trọng mối quan hệ với khách hàng hơn.",
+        "Chủ tiệm: Hãy kể cho tôi nghe về một lần bạn xử lý tình huống khó với khách hàng.",
+        "Ứng viên: Có một khách hàng từng khẳng định bộ gel của chị ấy làm sai. Thay vì tỏ ra phòng thủ, tôi nhờ chị ấy chỉ cho tôi chỗ chị không hài lòng, xin lỗi vì sự bất tiện, và làm lại các móng bị ảnh hưởng miễn phí.",
+        "Chủ tiệm: Và bạn cập nhật các kỹ thuật mới bằng cách nào?",
+        "Ứng viên: Tôi tham dự ít nhất hai buổi workshop mỗi năm, và theo dõi vài giảng viên uy tín trên mạng.",
+        "Chủ tiệm: Cuối cùng, ba năm nữa bạn thấy mình ở đâu?",
+        "Ứng viên: Lý tưởng nhất là dẫn dắt một nhóm nhỏ và kèm cặp các thợ mới.",
+    ],
+    "nails-c1-13": [
+        "Quản lý: Chúng ta cùng xem các chỉ số hiệu suất chính của em trong quý. Tỷ lệ giữ chân khách của em rất xuất sắc, đạt tám mươi hai phần trăm, cao hơn nhiều mức trung bình của nhóm.",
+        "Thợ nail: Cảm ơn chị. Em luôn cố gắng hẹn lại khách trước khi họ ra về.",
+        "Quản lý: Điều đó thể hiện rõ. Mặt khác, thời gian phục vụ trung bình của em đang vượt mục tiêu khoảng mười phút, ảnh hưởng đến công suất của tiệm.",
+        "Thợ nail: Em nghĩ đó là vì em dành nhiều sự chăm chút cho các mẫu vẽ chi tiết.",
+        "Quản lý: Điều đó dễ hiểu, và chất lượng rất xuất sắc. Có lẽ chúng ta có thể tính giá riêng cho các thiết kế phức tạp hơn, để thời gian tăng thêm được phản ánh trong giá.",
+        "Thợ nail: Như vậy là hợp lý. Em cũng mong được đào tạo thêm về các kỹ thuật làm nhanh.",
+        "Quản lý: Chị sẽ sắp xếp. Chúng ta họp lại sau sáu tuần để xem số liệu thế nào.",
+    ],
+    "nails-c1-14": [
+        "Đánh giá: 'Giá đắt và làm vội. Thợ gần như không nói chuyện với tôi và một móng bị mẻ ngay trong ngày. Không khuyên dùng.'",
+        "Bản nháp phản hồi: 'Kính gửi chị Carter, cảm ơn chị đã góp ý, và tôi xin lỗi vì lần ghé tiệm của chị không đạt như kỳ vọng. Mục tiêu của chúng tôi là mọi khách hàng đều cảm thấy được trân trọng, nên tôi rất tiếc khi nghe chị cảm thấy bị làm vội. Móng bị mẻ trong vòng một ngày không phải là tiêu chuẩn chúng tôi giữ; tôi rất mong có cơ hội sửa lại miễn phí. Nếu chị sẵn lòng liên hệ trực tiếp với tiệm, tôi sẽ đích thân bảo đảm vấn đề được giải quyết.'",
+        "Chủ tiệm: Như vậy có quá trang trọng không?",
+        "Chuyên gia tư vấn: Rất lịch sự, nhưng tôi sẽ làm mềm đi một chút. Tránh tự bào chữa nơi công khai; hãy ghi nhận, xin lỗi và chuyển cuộc trao đổi sang kênh riêng. Ngoài ra, tuyệt đối không tiết lộ thông tin cá nhân của khách hàng.",
+    ],
+    "nails-c1-15": [
+        "Chủ tiệm: Từ hôm nay, mọi dịch vụ sẽ tuân theo một quy trình vận hành chuẩn. Lúc đầu có thể thấy hơi cứng nhắc, nhưng sự nhất quán là điều bảo vệ cả khách hàng lẫn uy tín của chúng ta.",
+        "Thợ nail: Bảng kiểm tra gồm những gì ạ?",
+        "Chủ tiệm: Mọi thứ, từ chào đón và tư vấn đến vệ sinh khử khuẩn vị trí làm việc giữa các khách. Mỗi bước có một ô xác nhận, và người giám sát sẽ kiểm tra ngẫu nhiên mười phần trăm số dịch vụ mỗi tuần.",
+        "Thợ nail: Nếu bỏ sót một bước thì sao ạ?",
+        "Chủ tiệm: Chúng ta xem đó là cơ hội học hỏi chứ không phải hình phạt, trừ khi liên quan đến vi phạm an toàn. Trong trường hợp đó, chúng ta sẽ báo cáo lên cấp cao hơn ngay lập tức.",
+        "Thợ nail: Nghe công bằng đấy ạ. Bảng kiểm tra có bản bằng các ngôn ngữ khác cho nhân viên mới không ạ?",
+        "Chủ tiệm: Ý hay đấy. Chúng ta sẽ dịch sang tiếng Việt và tiếng Tây Ban Nha.",
+    ],
+}

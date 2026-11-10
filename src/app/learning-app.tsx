@@ -29,6 +29,7 @@ import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
 import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeaker, isOfflineClip, packFlag as voicePackFlag, packInstalled as voicePackInstalled, packMB as voicePackMB, removePack as removeVoicePack, synthesize, warmVoice, type PackId as VoicePackId } from "@/lib/offline-tts";
 import { keyEnabled, keyTier, MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentThisMonth, usesDefaultModels, type Candidate, type ServiceId, type UsageSettings } from "@/lib/usage";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
+import type { AskKind } from "@/components/sentence-helper";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { LANGUAGES, switchLanguage } from "@/lib/language-meta";
 
@@ -340,6 +341,7 @@ function recordPractice(current: LearningProgress, minutes: number, newSession: 
 type TutorPersona = "maya" | "david" | "alex";
 const LazyDictionaryPanel = lazy(() => import("@/components/dictionary-panel"));
 const LazyBackupPanel = lazy(() => import("@/components/backup-panel"));
+const LazySentenceHelper = lazy(() => import("@/components/sentence-helper"));
 
 const TUTOR_PERSONAS: Record<TutorPersona, {
   id: TutorPersona;
@@ -648,6 +650,8 @@ export default function Home() {
   const [recordingPrefs, setRecordingPrefs] = useState<RecordingPrefs>(DEFAULT_RECORDING_PREFS);
   /** Reading aid (romaji / pinyin) and Vietnamese translation under each dialogue line. */
   const [lessonView, setLessonView] = useState({ phonetic: true, translation: true });
+  /** The sentence of the open lesson the learner tapped to see its meaning, grammar or words. */
+  const [tappedLine, setTappedLine] = useState<{ lessonId: string; index: number } | null>(null);
   const [messages, setMessages] = useState<Message[]>([initialMessage]);
   const [draft, setDraft] = useState("");
   const [connection, setConnection] = useState<{ status: "idle" | "checking" | "ok" | "error"; message: string; ms?: number; details?: string[] }>({ status: "idle", message: "" });
@@ -907,6 +911,9 @@ export default function Home() {
       if (typeof view === "object" && view !== null) {
         const value = view as { phonetic?: unknown; translation?: unknown };
         setLessonView({ phonetic: value.phonetic !== false, translation: value.translation !== false });
+      } else if (LANG.id === "en") {
+        // English lessons keep the Vietnamese under each sentence hidden: tap a sentence to see it
+        setLessonView({ phonetic: true, translation: false });
       }
     } catch {}
     try {
@@ -1752,6 +1759,20 @@ RULES:
     }
     const error = lastAiErrorRef.current as AiError | null;
     setConnection({ status: "error", message: error?.message ?? "Chưa kết nối được với gia sư AI.", details: error?.details });
+  }
+
+  /** One short AI answer about a lesson sentence: its Vietnamese meaning or its grammar. */
+  async function askAboutSentence(kind: AskKind, sentence: string, lessonTitle: string, word?: string): Promise<string> {
+    if (apiKeys.google.length + apiKeys.openai.length === 0) {
+      throw new Error("Chưa có API key để nhờ AI. Hãy thêm key trong Cài đặt → Dịch vụ AI, hoặc xem điểm ngữ pháp của bài ở phần 3 bên dưới.");
+    }
+    const language = LANG.nameEn;
+    const system = kind === "translate"
+      ? `You are a ${language} tutor for Vietnamese learners. Translate the sentence the learner sends into natural Vietnamese. Reply with the Vietnamese translation only: no quotes, no notes. It comes from a lesson called "${lessonTitle}".`
+      : kind === "word"
+      ? `You are a ${language} tutor for Vietnamese learners. The learner does not know the word "${word ?? ""}" in the sentence they send (from a lesson called "${lessonTitle}"). Answer in Vietnamese, plain text with no markdown symbols, in at most two short lines: the part of speech and the meaning of that word as it is used in the sentence, then one short ${language} example with its Vietnamese meaning.`
+      : `You are a patient ${language} grammar tutor for Vietnamese learners at ${LANG.levelSystem} level. The learner sends ONE ${language} sentence from a lesson called "${lessonTitle}". Answer in Vietnamese, as plain text with no markdown symbols (no ** or #), at most 110 words, with exactly these four short parts, each starting on its own line: "Nghĩa:" the natural meaning; "Cấu trúc:" the sentence pattern and the tenses or structures it uses, named in Vietnamese with the ${language} term in brackets; "Lưu ý:" one useful note about word choice, a common phrase or a typical mistake; "Ví dụ:" one similar ${language} sentence with its Vietnamese meaning.`;
+    return withAvailableApiKey((key, model, provider) => streamChat(provider, key, model, system, [{ role: "user", content: sentence }], () => {}, 600));
   }
 
   function updateLessonView(patch: Partial<{ phonetic: boolean; translation: boolean }>) {
@@ -4926,6 +4947,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                 <div className="lesson-learn">
                   <section className="lesson-block">
                     <h4>1 · Hội thoại</h4>
+                    <p className="lesson-tap-hint">Chạm vào một câu để xem nghĩa tiếng Việt, ngữ pháp hoặc tra từng từ.</p>
                     {lesson.dialogue?.length ? (
                       <>
                         <div className="lesson-toggles">
@@ -4937,30 +4959,32 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                           )}
                         </div>
                         <div className="lesson-dialogue">
-                          {lesson.dialogue.map((line, lineIndex) => (
-                            <div className={`dialogue-line${speakingLine === lineIndex ? " speaking" : ""}`} data-line={lineIndex} key={lineIndex}>
+                          {lesson.dialogue.map((line, lineIndex) => { const tapped = tappedLine?.lessonId === lesson.id && tappedLine.index === lineIndex; return (
+                            <div className={`dialogue-line${speakingLine === lineIndex ? " speaking" : ""}${tapped ? " tapped" : ""}`} data-line={lineIndex} key={lineIndex}>
                               <div className="dialogue-main">
                                 {line.speaker && <b className="dialogue-speaker">{line.speaker}</b>}
-                                <span className="dialogue-text">{line.text}</span>
+                                <button type="button" className="dialogue-text dialogue-tap" aria-expanded={tapped} onClick={() => setTappedLine(tapped ? null : { lessonId: lesson.id, index: lineIndex })}>{line.text}</button>
                                 <button type="button" className="vocab-mini-btn" onClick={() => toggleSpeech(`line:${lineIndex}`, () => { const spoken = lessonSpoken(lesson); if (isConversation(spoken)) speakDialogue(spoken, lineIndex); else void playPracticePhrase(line.text); })} aria-label={`Nghe: ${line.text}`}>{speakerIcon(`line:${lineIndex}`)}</button>
                               </div>
                               {lessonView.phonetic && line.phonetic && <small className="dialogue-phonetic">{line.phonetic}</small>}
-                              {lessonView.translation && line.translation && <small className="dialogue-translation">{line.translation}</small>}
+                              {lessonView.translation && line.translation && !tapped && <small className="dialogue-translation">{line.translation}</small>}
+                              {tapped && <Suspense fallback={null}><LazySentenceHelper key={`${lesson.id}-${lineIndex}`} text={line.text} translation={line.translation} context={lesson.title} lang={LANG.id} ask={askAboutSentence} onClose={() => setTappedLine(null)} /></Suspense>}
                             </div>
-                          ))}
+                          ); })}
                         </div>
                       </>
                     ) : isConversation(lessonSpoken(lesson)) ? (
                       <div className="lesson-dialogue">
-                        {lessonSpoken(lesson).map((line, lineIndex) => (
-                          <div className={`dialogue-line${speakingLine === lineIndex ? " speaking" : ""}`} data-line={lineIndex} key={lineIndex}>
+                        {lessonSpoken(lesson).map((line, lineIndex) => { const tapped = tappedLine?.lessonId === lesson.id && tappedLine.index === lineIndex; return (
+                          <div className={`dialogue-line${speakingLine === lineIndex ? " speaking" : ""}${tapped ? " tapped" : ""}`} data-line={lineIndex} key={lineIndex}>
                             <div className="dialogue-main">
                               {line.speaker && <b className="dialogue-speaker">{line.speaker}</b>}
-                              <span className="dialogue-text">{line.text}</span>
+                              <button type="button" className="dialogue-text dialogue-tap" aria-expanded={tapped} onClick={() => setTappedLine(tapped ? null : { lessonId: lesson.id, index: lineIndex })}>{line.text}</button>
                               <button type="button" className="vocab-mini-btn" onClick={() => toggleSpeech(`line:${lineIndex}`, () => speakDialogue(lessonSpoken(lesson), lineIndex))} aria-label={`Nghe: ${line.text}`}>{speakerIcon(`line:${lineIndex}`)}</button>
                             </div>
+                            {tapped && <Suspense fallback={null}><LazySentenceHelper key={`${lesson.id}-${lineIndex}`} text={line.text} context={lesson.title} lang={LANG.id} ask={askAboutSentence} onClose={() => setTappedLine(null)} /></Suspense>}
                           </div>
-                        ))}
+                        ); })}
                       </div>
                     ) : (
                       <div className="course-reading">{lesson.reading}</div>

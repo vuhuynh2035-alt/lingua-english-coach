@@ -31,4 +31,6 @@
 - Giọng đọc: giọng AI (Gemini / Google Cloud TTS / OpenAI, chọn tay hoặc Tự động theo `src/lib/usage.ts`) → giọng tải về trong app (Piper; tệp tải từ Hugging Face + jsDelivr, chỉ `public/tts/vi/worker.js` nằm trong app) → giọng của máy.
 - Chi phí AI: `src/lib/usage.ts` đếm lượt/ký tự/tiền theo key, trần USD, đơn giá, mô hình được phép.
 - `npm run build` tự chạy `scripts/optimize-css.mjs` (PurgeCSS + csso) sau khi build; kiểm tra giao diện bằng so ảnh trước/sau nếu đổi danh sách safelist.
+- Chạm vào một câu của bài học để xem **Nghĩa / Ngữ pháp (AI) / Từng từ (từ điển offline)**: `src/components/sentence-helper.tsx`, gắn trong `learning-app.tsx` (`askAboutSentence`). Cả 3 ngôn ngữ dùng chung; kết quả AI lưu ở `lingua-line-ai-v1` (không đưa vào sao lưu).
+- Giáo trình tiếng Anh sinh bằng script: `python scripts/curriculum/en/new_courses.py` (nails/facial/garment) rồi `python scripts/curriculum/en/apply_dialogue.py` (thêm `dialogue` + bản dịch từ `scripts/curriculum/en/vi/vi_*.py` cho cả 10 gói, đặt `CURRICULUM_VERSION`). Đổi nội dung thì nâng `CURRICULUM_VERSION` ở `apply_dialogue.py` **và** `CURRICULUM_VERSIONS.en` ở `src/lib/course-library.ts` (mọi gói cùng một số, nếu lệch app tải lại liên tục).
 - Từ điển offline chia mảnh trong IndexedDB (`src/lib/dictionary.ts`, `public/dict`).

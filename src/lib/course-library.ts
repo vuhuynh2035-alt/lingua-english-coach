@@ -29,7 +29,7 @@ export type CourseLesson = {
 
 /** Bundled curriculum version; a stored pack with another version is re-downloaded. */
 /** Bump a language's version when its course files change, so devices download them again. */
-const CURRICULUM_VERSIONS = { en: "2.2.0", ja: "1.1.0", zh: "1.1.0" } as const;
+const CURRICULUM_VERSIONS = { en: "2.3.0", ja: "1.1.0", zh: "1.1.0" } as const;
 export const CURRICULUM_VERSION: string = CURRICULUM_VERSIONS[LANG.id];
 /** A lesson is passed with at least this share of correct answers (8/10). */
 export const LESSON_PASS_RATIO = 0.8;

@@ -20,6 +20,7 @@ const DEVICE_ONLY = new Set([
   "lingua-tts-no-direction",
   "lingua-gcloud-no-chirp",
   "lingua-usage-ledger", // money already spent on this device, must not be inherited
+  "lingua-line-ai-v1", // cached AI answers about lesson sentences, rebuilt on demand
 ]);
 
 const SECRET_KEYS = /^lingua-(gemini-api-key|gcloud-tts-key.*)$/;

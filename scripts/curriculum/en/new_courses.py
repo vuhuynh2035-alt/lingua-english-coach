@@ -12,11 +12,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from nails_c1 import C1  # noqa: E402  (advanced nails lessons live in their own files)
 from nails_c2 import C2  # noqa: E402
+from apply_dialogue import CURRICULUM_VERSION, add_dialogue  # noqa: E402
 from nails_b_more import B_MORE  # noqa: E402
 from nails_c_more import C1_MORE, C2_MORE  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[3]
-VERSION = "2.2.0"  # must equal CURRICULUM_VERSIONS.en in src/lib/course-library.ts
+VERSION = CURRICULUM_VERSION  # must equal CURRICULUM_VERSIONS.en in src/lib/course-library.ts
 REFERENCES = [
     {"title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)", "url": "https://www.coe.int/en/web/common-european-framework-reference-languages", "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"},
     {"title": "British Council / EAQUALS – Core Inventory for General English", "url": "https://www.teachingenglish.org.uk/article/british-council-eaquals-core-inventory-general-english", "license": "Tham khảo danh mục chức năng, ngữ pháp, chủ đề theo level (không sao chép nội dung)"},
@@ -750,6 +751,7 @@ def build(course_id, title, overview, lessons):
     pack = {"id": course_id, "title": title, "version": VERSION, "framework": f"CEFR A1–{top}", "overview": overview,
             "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR", "references": REFERENCES,
             "lessons": out, "audio": []}
+    add_dialogue(pack)  # line-by-line dialogue with Vietnamese translations (the tap-a-sentence helper)
     path = ROOT / "public" / "courses" / "en" / f"{course_id}.json"
     path.write_text(json.dumps(pack, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(course_id, len(out), "lessons", sum(len(l["questions"]) for l in out), "questions")
