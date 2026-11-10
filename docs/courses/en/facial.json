@@ -1,7 +1,7 @@
 {
   "id": "facial",
   "title": "Tiếng Anh ngành spa & chăm sóc da",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "framework": "CEFR A1–B2",
   "overview": "12 bài từ A1 đến B2 cho kỹ thuật viên spa: loại da, đón khách, hướng dẫn khi làm, phân tích da, sản phẩm, xử lý kích ứng, liệu trình chuyên sâu và vận hành spa.",
   "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
@@ -26,6 +26,24 @@
       "title": "Các loại da và sản phẩm cơ bản",
       "objective": "Gọi tên loại da và sản phẩm chăm sóc da.",
       "reading": "There are different skin types: dry, oily, combination and sensitive. In a basic facial, I use a cleanser to wash the face, a toner to balance the skin and a moisturiser to keep it soft. Sunscreen protects the skin from the sun. I also use a face mask once a week.",
+      "dialogue": [
+        {
+          "text": "There are different skin types: dry, oily, combination and sensitive.",
+          "translation": "Có nhiều loại da khác nhau: da khô, da dầu, da hỗn hợp và da nhạy cảm."
+        },
+        {
+          "text": "In a basic facial, I use a cleanser to wash the face, a toner to balance the skin and a moisturiser to keep it soft.",
+          "translation": "Trong một liệu trình facial cơ bản, tôi dùng sữa rửa mặt để làm sạch, nước cân bằng da để cân bằng da và kem dưỡng ẩm để giữ da mềm mại."
+        },
+        {
+          "text": "Sunscreen protects the skin from the sun.",
+          "translation": "Kem chống nắng bảo vệ da khỏi ánh nắng."
+        },
+        {
+          "text": "I also use a face mask once a week.",
+          "translation": "Tôi cũng đắp mặt nạ một lần mỗi tuần."
+        }
+      ],
       "vocabulary": [
         {
           "term": "skin type",
@@ -193,6 +211,48 @@
       "title": "Đón khách và hỏi thông tin",
       "objective": "Chào khách ở spa và điền phiếu thông tin.",
       "reading": "Receptionist: Good afternoon. Welcome to Lotus Spa. Do you have an appointment?\nClient: Yes, at two o'clock. My name is Anna.\nReceptionist: Thank you, Anna. Is this your first visit?\nClient: Yes, it is.\nReceptionist: Could you fill in this form, please? It asks about your skin and any allergies.\nClient: Sure.\nReceptionist: Would you like some water or tea while you wait?\nClient: Tea, please.",
+      "dialogue": [
+        {
+          "speaker": "Receptionist",
+          "text": "Good afternoon. Welcome to Lotus Spa. Do you have an appointment?",
+          "translation": "Chào buổi chiều. Chào mừng bạn đến với Lotus Spa. Bạn có đặt lịch hẹn không ạ?"
+        },
+        {
+          "speaker": "Client",
+          "text": "Yes, at two o'clock. My name is Anna.",
+          "translation": "Có, lúc hai giờ. Tôi tên là Anna."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Thank you, Anna. Is this your first visit?",
+          "translation": "Cảm ơn chị Anna. Đây là lần đầu chị đến ạ?"
+        },
+        {
+          "speaker": "Client",
+          "text": "Yes, it is.",
+          "translation": "Vâng, đúng vậy."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Could you fill in this form, please? It asks about your skin and any allergies.",
+          "translation": "Chị vui lòng điền vào biểu mẫu này nhé? Biểu mẫu hỏi về làn da và các dị ứng của chị."
+        },
+        {
+          "speaker": "Client",
+          "text": "Sure.",
+          "translation": "Được thôi."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Would you like some water or tea while you wait?",
+          "translation": "Chị có muốn dùng nước hoặc trà trong lúc chờ không ạ?"
+        },
+        {
+          "speaker": "Client",
+          "text": "Tea, please.",
+          "translation": "Cho tôi trà, làm ơn."
+        }
+      ],
       "vocabulary": [
         {
           "term": "first visit",
@@ -360,6 +420,44 @@
       "title": "Hướng dẫn khách trong khi làm",
       "objective": "Đưa chỉ dẫn ngắn: nằm, nhắm mắt, thả lỏng.",
       "reading": "Esthetician: Please lie down on your back. Here's a towel. Close your eyes and relax. First I'm going to cleanse your face. This might feel a little cold. Now I'm going to steam your skin to open the pores. Tell me if it's too hot. Breathe slowly. Great, now turn your head to the left, please.",
+      "dialogue": [
+        {
+          "text": "Esthetician: Please lie down on your back.",
+          "translation": "Chuyên viên: Xin mời chị nằm ngửa."
+        },
+        {
+          "text": "Here's a towel.",
+          "translation": "Đây là khăn của chị."
+        },
+        {
+          "text": "Close your eyes and relax.",
+          "translation": "Chị nhắm mắt lại và thư giãn nhé."
+        },
+        {
+          "text": "First I'm going to cleanse your face.",
+          "translation": "Trước tiên tôi sẽ làm sạch mặt cho chị."
+        },
+        {
+          "text": "This might feel a little cold.",
+          "translation": "Chỗ này có thể hơi lạnh một chút."
+        },
+        {
+          "text": "Now I'm going to steam your skin to open the pores.",
+          "translation": "Bây giờ tôi sẽ xông hơi cho da để mở lỗ chân lông."
+        },
+        {
+          "text": "Tell me if it's too hot.",
+          "translation": "Nếu nóng quá thì chị nói với tôi nhé."
+        },
+        {
+          "text": "Breathe slowly.",
+          "translation": "Chị thở chậm thôi."
+        },
+        {
+          "text": "Great, now turn your head to the left, please.",
+          "translation": "Tốt lắm, bây giờ chị quay đầu sang trái giúp tôi."
+        }
+      ],
       "vocabulary": [
         {
           "term": "lie down",
@@ -527,6 +625,33 @@
       "title": "Phân tích da và tư vấn liệu trình",
       "objective": "Mô tả tình trạng da và gợi ý liệu trình phù hợp.",
       "reading": "Esthetician: Let me have a look at your skin. Your T-zone is a bit oily, but your cheeks are dry. You have some blackheads on your nose and a few dark spots.\nClient: Yes, the spots bother me.\nEsthetician: I'd suggest a deep cleansing facial today, and then a brightening treatment with vitamin C. You'll see the best results after four to six sessions.\nClient: How often should I come?\nEsthetician: Every two weeks is ideal.",
+      "dialogue": [
+        {
+          "speaker": "Esthetician",
+          "text": "Let me have a look at your skin. Your T-zone is a bit oily, but your cheeks are dry. You have some blackheads on your nose and a few dark spots.",
+          "translation": "Để tôi xem làn da của chị. Vùng chữ T hơi dầu, nhưng hai má lại khô. Chị có vài mụn đầu đen ở mũi và một ít đốm sậm màu."
+        },
+        {
+          "speaker": "Client",
+          "text": "Yes, the spots bother me.",
+          "translation": "Vâng, mấy đốm đó làm tôi khó chịu."
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "I'd suggest a deep cleansing facial today, and then a brightening treatment with vitamin C. You'll see the best results after four to six sessions.",
+          "translation": "Hôm nay tôi gợi ý chị làm facial làm sạch sâu, sau đó là liệu trình làm sáng da với vitamin C. Chị sẽ thấy kết quả tốt nhất sau bốn đến sáu buổi."
+        },
+        {
+          "speaker": "Client",
+          "text": "How often should I come?",
+          "translation": "Tôi nên đến bao lâu một lần?"
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "Every two weeks is ideal.",
+          "translation": "Hai tuần một lần là lý tưởng."
+        }
+      ],
       "vocabulary": [
         {
           "term": "T-zone",
@@ -694,6 +819,43 @@
       "title": "Massage mặt và hỏi cảm giác của khách",
       "objective": "Hỏi về lực massage, nhiệt độ và sự thoải mái.",
       "reading": "Esthetician: Now I'm going to give you a facial massage. Is the pressure okay?\nClient: Could you press a bit harder on my shoulders?\nEsthetician: Of course. How's that?\nClient: Perfect.\nEsthetician: Is the room temperature comfortable? I can give you another blanket.\nClient: I'm a little cold, actually.\nEsthetician: Here you go. Just let me know if you need anything.",
+      "dialogue": [
+        {
+          "speaker": "Esthetician",
+          "text": "Now I'm going to give you a facial massage. Is the pressure okay?",
+          "translation": "Bây giờ tôi sẽ massage mặt cho chị. Lực này ổn không ạ?"
+        },
+        {
+          "speaker": "Client",
+          "text": "Could you press a bit harder on my shoulders?",
+          "translation": "Bạn ấn mạnh hơn một chút ở vai tôi được không?"
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "Of course. How's that?",
+          "translation": "Được chứ. Như vậy thế nào ạ?"
+        },
+        {
+          "speaker": "Client",
+          "text": "Perfect.",
+          "translation": "Hoàn hảo."
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "Is the room temperature comfortable? I can give you another blanket.",
+          "translation": "Nhiệt độ trong phòng có thoải mái không ạ? Tôi có thể lấy thêm chăn cho chị."
+        },
+        {
+          "speaker": "Client",
+          "text": "I'm a little cold, actually.",
+          "translation": "Thật ra tôi hơi lạnh."
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "Here you go. Just let me know if you need anything.",
+          "translation": "Của chị đây. Cần gì chị cứ nói với tôi nhé."
+        }
+      ],
       "vocabulary": [
         {
           "term": "pressure",
@@ -861,6 +1023,32 @@
       "title": "Chăm sóc sau facial",
       "objective": "Dặn khách cách chăm sóc da sau liệu trình.",
       "reading": "Your skin might be a little red for a few hours. That's normal. For the next 24 hours, please don't wear makeup and avoid hot showers, saunas and the gym. Don't touch or pick your skin. Use a gentle cleanser and apply sunscreen every morning because your skin is more sensitive to the sun. Drink plenty of water.",
+      "dialogue": [
+        {
+          "text": "Your skin might be a little red for a few hours.",
+          "translation": "Da của bạn có thể hơi đỏ trong vài giờ."
+        },
+        {
+          "text": "That's normal.",
+          "translation": "Điều đó là bình thường."
+        },
+        {
+          "text": "For the next 24 hours, please don't wear makeup and avoid hot showers, saunas and the gym.",
+          "translation": "Trong 24 giờ tới, xin đừng trang điểm và tránh tắm nước nóng, xông hơi và tập gym."
+        },
+        {
+          "text": "Don't touch or pick your skin.",
+          "translation": "Đừng chạm hay cậy da."
+        },
+        {
+          "text": "Use a gentle cleanser and apply sunscreen every morning because your skin is more sensitive to the sun.",
+          "translation": "Hãy dùng sữa rửa mặt dịu nhẹ và thoa kem chống nắng mỗi sáng vì da bạn nhạy cảm hơn với ánh nắng."
+        },
+        {
+          "text": "Drink plenty of water.",
+          "translation": "Hãy uống nhiều nước."
+        }
+      ],
       "vocabulary": [
         {
           "term": "redness",
@@ -1028,6 +1216,33 @@
       "title": "Giới thiệu sản phẩm cho khách",
       "objective": "Giải thích thành phần, công dụng và giá sản phẩm.",
       "reading": "Client: Which serum did you use today? My skin feels amazing.\nEsthetician: It's our hyaluronic acid serum. It holds moisture in the skin, so it's great for dry and dehydrated skin. It's also suitable for sensitive skin because it's fragrance-free.\nClient: How much is it?\nEsthetician: Forty-five dollars for a thirty-millilitre bottle. It should last about two months if you use two drops morning and night.\nClient: I'll take one.",
+      "dialogue": [
+        {
+          "speaker": "Client",
+          "text": "Which serum did you use today? My skin feels amazing.",
+          "translation": "Hôm nay bạn dùng loại serum nào vậy? Da tôi cảm giác tuyệt lắm."
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "It's our hyaluronic acid serum. It holds moisture in the skin, so it's great for dry and dehydrated skin. It's also suitable for sensitive skin because it's fragrance-free.",
+          "translation": "Đó là serum hyaluronic acid của chúng tôi. Nó giữ ẩm cho da, nên rất tốt cho da khô và da thiếu nước. Nó cũng phù hợp với da nhạy cảm vì không chứa hương liệu."
+        },
+        {
+          "speaker": "Client",
+          "text": "How much is it?",
+          "translation": "Giá bao nhiêu vậy?"
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "Forty-five dollars for a thirty-millilitre bottle. It should last about two months if you use two drops morning and night.",
+          "translation": "Bốn mươi lăm đô cho chai ba mươi mililit. Nếu chị dùng hai giọt mỗi sáng và tối thì dùng được khoảng hai tháng."
+        },
+        {
+          "speaker": "Client",
+          "text": "I'll take one.",
+          "translation": "Tôi lấy một chai."
+        }
+      ],
       "vocabulary": [
         {
           "term": "serum",
@@ -1195,6 +1410,28 @@
       "title": "Xử lý phản ứng da và khiếu nại",
       "objective": "Bình tĩnh xử lý khi khách bị kích ứng sau liệu trình.",
       "reading": "Client: Hi, I had a peel here yesterday and today my skin is really red and itchy.\nEsthetician: I'm sorry to hear that. Is there any swelling or burning?\nClient: A little burning, no swelling.\nEsthetician: Mild redness can be a normal reaction to a peel, but it shouldn't be itchy. Please stop using any active products and apply a cold compress. Can you come in this afternoon so I can take a look? If it gets worse or you notice swelling, please see a doctor straight away.",
+      "dialogue": [
+        {
+          "speaker": "Client",
+          "text": "Hi, I had a peel here yesterday and today my skin is really red and itchy.",
+          "translation": "Chào bạn, hôm qua tôi lột da hóa học ở đây và hôm nay da tôi đỏ và ngứa lắm."
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "I'm sorry to hear that. Is there any swelling or burning?",
+          "translation": "Tôi rất tiếc khi nghe điều đó. Chị có bị sưng hay rát không?"
+        },
+        {
+          "speaker": "Client",
+          "text": "A little burning, no swelling.",
+          "translation": "Hơi rát một chút, không sưng."
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "Mild redness can be a normal reaction to a peel, but it shouldn't be itchy. Please stop using any active products and apply a cold compress. Can you come in this afternoon so I can take a look? If it gets worse or you notice swelling, please see a doctor straight away.",
+          "translation": "Đỏ nhẹ có thể là phản ứng bình thường sau khi lột da, nhưng không nên bị ngứa. Chị hãy ngừng dùng mọi sản phẩm có hoạt chất và chườm lạnh. Chiều nay chị đến được không để tôi xem trực tiếp? Nếu tình trạng nặng hơn hoặc chị thấy sưng, hãy đi khám bác sĩ ngay."
+        }
+      ],
       "vocabulary": [
         {
           "term": "peel",
@@ -1362,6 +1599,28 @@
       "title": "Liệu trình chuyên sâu",
       "objective": "Mô tả các liệu trình: peel, microdermabrasion, LED.",
       "reading": "We offer several advanced treatments. A chemical peel uses acids to remove the top layer of dead skin cells. Microdermabrasion gently exfoliates the skin with tiny crystals. LED light therapy uses red light to boost collagen and blue light to treat acne. Most clients need a course of treatments to see lasting results, and we always do a patch test first.",
+      "dialogue": [
+        {
+          "text": "We offer several advanced treatments.",
+          "translation": "Chúng tôi cung cấp nhiều liệu trình chuyên sâu."
+        },
+        {
+          "text": "A chemical peel uses acids to remove the top layer of dead skin cells.",
+          "translation": "Lột da hóa học dùng các loại axit để loại bỏ lớp tế bào chết trên cùng."
+        },
+        {
+          "text": "Microdermabrasion gently exfoliates the skin with tiny crystals.",
+          "translation": "Microdermabrasion tẩy tế bào chết nhẹ nhàng cho da bằng các tinh thể rất nhỏ."
+        },
+        {
+          "text": "LED light therapy uses red light to boost collagen and blue light to treat acne.",
+          "translation": "Liệu pháp ánh sáng LED dùng ánh sáng đỏ để tăng collagen và ánh sáng xanh để điều trị mụn."
+        },
+        {
+          "text": "Most clients need a course of treatments to see lasting results, and we always do a patch test first.",
+          "translation": "Hầu hết khách hàng cần một liệu trình nhiều buổi để thấy kết quả lâu dài, và chúng tôi luôn thử phản ứng da trước."
+        }
+      ],
       "vocabulary": [
         {
           "term": "exfoliate",
@@ -1529,6 +1788,28 @@
       "title": "Tư vấn chống lão hóa chuyên sâu",
       "objective": "Tư vấn kế hoạch chăm sóc dài hạn, quản lý kỳ vọng của khách.",
       "reading": "Client: I'm forty-five and I'm worried about fine lines and loss of firmness. What would you recommend?\nEsthetician: It's great that you're thinking long term. Realistically, facials can improve texture and firmness, but they won't erase deep wrinkles. I'd recommend a course of six microcurrent sessions, combined with a home routine: a retinol serum at night and a broad-spectrum SPF fifty every morning.\nClient: Retinol sounds strong.\nEsthetician: It can be, so we'd start with a low concentration twice a week and build up gradually.",
+      "dialogue": [
+        {
+          "speaker": "Client",
+          "text": "I'm forty-five and I'm worried about fine lines and loss of firmness. What would you recommend?",
+          "translation": "Tôi bốn mươi lăm tuổi và đang lo lắng về nếp nhăn nhỏ và da kém săn chắc. Bạn khuyên tôi nên làm gì?"
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "It's great that you're thinking long term. Realistically, facials can improve texture and firmness, but they won't erase deep wrinkles. I'd recommend a course of six microcurrent sessions, combined with a home routine: a retinol serum at night and a broad-spectrum SPF fifty every morning.",
+          "translation": "Chị nghĩ đến chuyện lâu dài là rất tốt. Thực tế thì facial có thể cải thiện kết cấu và độ săn chắc của da, nhưng không xóa được nếp nhăn sâu. Tôi khuyên chị làm một liệu trình sáu buổi microcurrent, kết hợp với quy trình chăm sóc tại nhà: serum retinol vào ban đêm và kem chống nắng phổ rộng SPF năm mươi mỗi sáng."
+        },
+        {
+          "speaker": "Client",
+          "text": "Retinol sounds strong.",
+          "translation": "Retinol nghe có vẻ mạnh."
+        },
+        {
+          "speaker": "Esthetician",
+          "text": "It can be, so we'd start with a low concentration twice a week and build up gradually.",
+          "translation": "Đúng là có thể mạnh, nên chúng ta sẽ bắt đầu với nồng độ thấp hai lần mỗi tuần và tăng dần."
+        }
+      ],
       "vocabulary": [
         {
           "term": "fine lines",
@@ -1696,6 +1977,28 @@
       "title": "Phỏng vấn làm kỹ thuật viên spa",
       "objective": "Trình bày chuyên môn, xử lý tình huống khi phỏng vấn.",
       "reading": "Manager: What attracted you to this position?\nApplicant: Your spa is known for its holistic approach, and that matches the way I like to work. I've been an esthetician for six years, and I'm certified in microdermabrasion and LED therapy.\nManager: Tell me about a time you had to deal with an unhappy client.\nApplicant: A client was unhappy because her skin was still congested after a facial. I explained that extractions can cause temporary breakouts, offered a follow-up treatment and adjusted her home routine. She's been a regular client ever since.",
+      "dialogue": [
+        {
+          "speaker": "Manager",
+          "text": "What attracted you to this position?",
+          "translation": "Điều gì thu hút bạn đến với vị trí này?"
+        },
+        {
+          "speaker": "Applicant",
+          "text": "Your spa is known for its holistic approach, and that matches the way I like to work. I've been an esthetician for six years, and I'm certified in microdermabrasion and LED therapy.",
+          "translation": "Spa của quý vị nổi tiếng với cách tiếp cận toàn diện, và điều đó phù hợp với cách tôi muốn làm việc. Tôi đã làm chuyên viên chăm sóc da sáu năm, và tôi có chứng chỉ về microdermabrasion và liệu pháp LED."
+        },
+        {
+          "speaker": "Manager",
+          "text": "Tell me about a time you had to deal with an unhappy client.",
+          "translation": "Hãy kể cho tôi nghe về một lần bạn phải xử lý một khách hàng không hài lòng."
+        },
+        {
+          "speaker": "Applicant",
+          "text": "A client was unhappy because her skin was still congested after a facial. I explained that extractions can cause temporary breakouts, offered a follow-up treatment and adjusted her home routine. She's been a regular client ever since.",
+          "translation": "Có một khách hàng không hài lòng vì da chị ấy vẫn bị bít tắc sau khi làm facial. Tôi giải thích rằng việc nặn mụn có thể gây nổi mụn tạm thời, đề xuất một buổi tái khám và điều chỉnh quy trình chăm sóc tại nhà của chị ấy. Từ đó chị ấy trở thành khách quen."
+        }
+      ],
       "vocabulary": [
         {
           "term": "position",
@@ -1863,6 +2166,28 @@
       "title": "Vận hành spa: quy trình và chất lượng",
       "objective": "Trình bày quy trình chuẩn, kiểm soát vệ sinh và đào tạo nhân viên.",
       "reading": "To maintain consistent quality, every therapist follows the same standard operating procedure. Treatment rooms are sanitised between clients, and linens are changed every time. Products are labelled with the opening date and discarded once they expire. We hold monthly training sessions, and client feedback is reviewed every week. If a recurring complaint comes up, we update the procedure and retrain the team.",
+      "dialogue": [
+        {
+          "text": "To maintain consistent quality, every therapist follows the same standard operating procedure.",
+          "translation": "Để duy trì chất lượng đồng đều, mọi kỹ thuật viên đều tuân theo cùng một quy trình chuẩn."
+        },
+        {
+          "text": "Treatment rooms are sanitised between clients, and linens are changed every time.",
+          "translation": "Phòng trị liệu được vệ sinh khử khuẩn giữa các khách, và khăn ga được thay mỗi lần."
+        },
+        {
+          "text": "Products are labelled with the opening date and discarded once they expire.",
+          "translation": "Sản phẩm được dán nhãn ngày mở nắp và bị loại bỏ khi hết hạn."
+        },
+        {
+          "text": "We hold monthly training sessions, and client feedback is reviewed every week.",
+          "translation": "Chúng tôi tổ chức các buổi đào tạo hằng tháng, và phản hồi của khách được xem xét mỗi tuần."
+        },
+        {
+          "text": "If a recurring complaint comes up, we update the procedure and retrain the team.",
+          "translation": "Nếu có một khiếu nại lặp lại, chúng tôi cập nhật quy trình và đào tạo lại đội ngũ."
+        }
+      ],
       "vocabulary": [
         {
           "term": "consistent",

@@ -1,7 +1,7 @@
 {
   "id": "garment",
   "title": "Tiếng Anh ngành may mặc",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "framework": "CEFR A1–B2",
   "overview": "12 bài từ A1 đến B2 cho công nhân, tổ trưởng và nhân viên văn phòng xưởng may: dụng cụ, chuyền may, size và số đo, QC, an toàn, buyer, đóng gói, đàm phán và kiểm toán.",
   "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
@@ -26,6 +26,32 @@
       "title": "Vải, máy may và dụng cụ",
       "objective": "Gọi tên vải, máy và dụng cụ cơ bản trong xưởng may.",
       "reading": "This is our sewing workshop. We use cotton, polyester and denim. Each worker has a sewing machine. We use scissors and a cutting machine to cut the fabric. A tape measure is for measuring, and we use thread, needles, buttons and zippers. At the end, the iron makes the garments look neat.",
+      "dialogue": [
+        {
+          "text": "This is our sewing workshop.",
+          "translation": "Đây là xưởng may của chúng tôi."
+        },
+        {
+          "text": "We use cotton, polyester and denim.",
+          "translation": "Chúng tôi dùng vải cotton, polyester và denim."
+        },
+        {
+          "text": "Each worker has a sewing machine.",
+          "translation": "Mỗi công nhân có một máy may."
+        },
+        {
+          "text": "We use scissors and a cutting machine to cut the fabric.",
+          "translation": "Chúng tôi dùng kéo và máy cắt để cắt vải."
+        },
+        {
+          "text": "A tape measure is for measuring, and we use thread, needles, buttons and zippers.",
+          "translation": "Thước dây dùng để đo, và chúng tôi dùng chỉ, kim, nút và khóa kéo."
+        },
+        {
+          "text": "At the end, the iron makes the garments look neat.",
+          "translation": "Cuối cùng, bàn ủi làm cho sản phẩm trông gọn gàng."
+        }
+      ],
       "vocabulary": [
         {
           "term": "fabric",
@@ -193,6 +219,43 @@
       "title": "Giao tiếp trên chuyền may",
       "objective": "Hỏi và trả lời đơn giản với tổ trưởng và đồng nghiệp.",
       "reading": "Supervisor: Good morning, Linh. Are you ready?\nWorker: Yes. What do I do today?\nSupervisor: Today you sew the sleeves. Here is the sample.\nWorker: How many pieces?\nSupervisor: Two hundred pieces before lunch.\nWorker: Okay. My machine is making a noise.\nSupervisor: I'll call the mechanic. Use machine number twelve for now.",
+      "dialogue": [
+        {
+          "speaker": "Supervisor",
+          "text": "Good morning, Linh. Are you ready?",
+          "translation": "Chào buổi sáng, Linh. Em sẵn sàng chưa?"
+        },
+        {
+          "speaker": "Worker",
+          "text": "Yes. What do I do today?",
+          "translation": "Rồi ạ. Hôm nay em làm gì ạ?"
+        },
+        {
+          "speaker": "Supervisor",
+          "text": "Today you sew the sleeves. Here is the sample.",
+          "translation": "Hôm nay em may tay áo. Đây là hàng mẫu."
+        },
+        {
+          "speaker": "Worker",
+          "text": "How many pieces?",
+          "translation": "Bao nhiêu cái ạ?"
+        },
+        {
+          "speaker": "Supervisor",
+          "text": "Two hundred pieces before lunch.",
+          "translation": "Hai trăm cái trước giờ ăn trưa."
+        },
+        {
+          "speaker": "Worker",
+          "text": "Okay. My machine is making a noise.",
+          "translation": "Vâng. Máy của em đang kêu."
+        },
+        {
+          "speaker": "Supervisor",
+          "text": "I'll call the mechanic. Use machine number twelve for now.",
+          "translation": "Chị sẽ gọi thợ máy. Tạm thời em dùng máy số mười hai nhé."
+        }
+      ],
       "vocabulary": [
         {
           "term": "supervisor",
@@ -360,6 +423,24 @@
       "title": "Kích cỡ, màu sắc và số đo",
       "objective": "Đọc kích cỡ, màu và số đo trên phiếu kỹ thuật.",
       "reading": "The order is for T-shirts in four sizes: small, medium, large and extra large. The colours are white, navy and grey. For size medium, the chest is fifty-two centimetres, the length is seventy centimetres and the sleeve is twenty centimetres. Please check every measurement carefully.",
+      "dialogue": [
+        {
+          "text": "The order is for T-shirts in four sizes: small, medium, large and extra large.",
+          "translation": "Đơn hàng là áo thun với bốn cỡ: nhỏ, vừa, lớn và rất lớn."
+        },
+        {
+          "text": "The colours are white, navy and grey.",
+          "translation": "Các màu là trắng, xanh navy và xám."
+        },
+        {
+          "text": "For size medium, the chest is fifty-two centimetres, the length is seventy centimetres and the sleeve is twenty centimetres.",
+          "translation": "Với cỡ vừa, ngực rộng năm mươi hai xăng-ti-mét, dài bảy mươi xăng-ti-mét và tay dài hai mươi xăng-ti-mét."
+        },
+        {
+          "text": "Please check every measurement carefully.",
+          "translation": "Xin hãy kiểm tra từng số đo thật cẩn thận."
+        }
+      ],
       "vocabulary": [
         {
           "term": "size",
@@ -527,6 +608,28 @@
       "title": "Kiểm tra chất lượng (QC)",
       "objective": "Mô tả lỗi sản phẩm và báo cáo cho tổ trưởng.",
       "reading": "QC inspector: I've checked this box and found some problems. On five shirts, the stitches are uneven. Two shirts have a stain on the front, and one has a hole near the collar. Also, some threads aren't trimmed.\nSupervisor: How many pieces did you check?\nQC inspector: Fifty. So the defect rate is sixteen percent. That's too high.\nSupervisor: Okay, we'll stop the line and fix it now.",
+      "dialogue": [
+        {
+          "speaker": "QC inspector",
+          "text": "I've checked this box and found some problems. On five shirts, the stitches are uneven. Two shirts have a stain on the front, and one has a hole near the collar. Also, some threads aren't trimmed.",
+          "translation": "Tôi đã kiểm tra thùng này và thấy một số lỗi. Có năm cái áo bị đường chỉ không đều. Hai cái áo có vết bẩn ở phía trước, và một cái bị thủng gần cổ áo. Ngoài ra, một số đầu chỉ chưa được cắt."
+        },
+        {
+          "speaker": "Supervisor",
+          "text": "How many pieces did you check?",
+          "translation": "Chị kiểm tra bao nhiêu cái?"
+        },
+        {
+          "speaker": "QC inspector",
+          "text": "Fifty. So the defect rate is sixteen percent. That's too high.",
+          "translation": "Năm mươi cái. Vậy tỷ lệ lỗi là mười sáu phần trăm. Như vậy là quá cao."
+        },
+        {
+          "speaker": "Supervisor",
+          "text": "Okay, we'll stop the line and fix it now.",
+          "translation": "Được rồi, chúng tôi sẽ dừng chuyền và sửa ngay bây giờ."
+        }
+      ],
       "vocabulary": [
         {
           "term": "stitch",
@@ -694,6 +797,32 @@
       "title": "An toàn lao động trong xưởng may",
       "objective": "Hiểu và nhắc nhở quy định an toàn.",
       "reading": "Safety is very important in our factory. Always keep your fingers away from the needle and use the finger guard. Tie back long hair. Don't wear loose clothes near the cutting machine. Know where the emergency exits and fire extinguishers are. If there's a fire alarm, stop working, leave your things and go to the assembly point.",
+      "dialogue": [
+        {
+          "text": "Safety is very important in our factory.",
+          "translation": "An toàn rất quan trọng trong nhà máy của chúng ta."
+        },
+        {
+          "text": "Always keep your fingers away from the needle and use the finger guard.",
+          "translation": "Luôn để ngón tay tránh xa mũi kim và dùng tấm chắn bảo vệ ngón tay."
+        },
+        {
+          "text": "Tie back long hair.",
+          "translation": "Buộc gọn tóc dài."
+        },
+        {
+          "text": "Don't wear loose clothes near the cutting machine.",
+          "translation": "Không mặc quần áo rộng gần máy cắt."
+        },
+        {
+          "text": "Know where the emergency exits and fire extinguishers are.",
+          "translation": "Hãy biết lối thoát hiểm và bình chữa cháy ở đâu."
+        },
+        {
+          "text": "If there's a fire alarm, stop working, leave your things and go to the assembly point.",
+          "translation": "Nếu có chuông báo cháy, hãy ngừng làm việc, bỏ lại đồ đạc và đi đến điểm tập trung."
+        }
+      ],
       "vocabulary": [
         {
           "term": "finger guard",
@@ -861,6 +990,38 @@
       "title": "Báo cáo sản lượng và tiến độ",
       "objective": "Báo cáo số lượng đã làm, còn lại và vấn đề trong ngày.",
       "reading": "Supervisor: How's the line doing today?\nLine leader: We've finished four hundred pieces so far. Our target is six hundred.\nSupervisor: Will you reach the target?\nLine leader: I think so, but we're a little behind because two workers are absent and one machine was broken for an hour.\nSupervisor: Can you ask two people from line five to help?\nLine leader: Yes, good idea. Then we can finish by five o'clock.",
+      "dialogue": [
+        {
+          "speaker": "Supervisor",
+          "text": "How's the line doing today?",
+          "translation": "Hôm nay chuyền làm thế nào rồi?"
+        },
+        {
+          "speaker": "Line leader",
+          "text": "We've finished four hundred pieces so far. Our target is six hundred.",
+          "translation": "Cho đến giờ chúng tôi đã hoàn thành bốn trăm cái. Mục tiêu của chúng tôi là sáu trăm."
+        },
+        {
+          "speaker": "Supervisor",
+          "text": "Will you reach the target?",
+          "translation": "Các bạn có đạt mục tiêu không?"
+        },
+        {
+          "speaker": "Line leader",
+          "text": "I think so, but we're a little behind because two workers are absent and one machine was broken for an hour.",
+          "translation": "Tôi nghĩ là có, nhưng chúng tôi hơi chậm vì hai công nhân vắng mặt và một máy bị hỏng mất một tiếng."
+        },
+        {
+          "speaker": "Supervisor",
+          "text": "Can you ask two people from line five to help?",
+          "translation": "Bạn nhờ hai người ở chuyền năm sang giúp được không?"
+        },
+        {
+          "speaker": "Line leader",
+          "text": "Yes, good idea. Then we can finish by five o'clock.",
+          "translation": "Vâng, ý hay đấy. Vậy chúng tôi có thể xong trước năm giờ."
+        }
+      ],
       "vocabulary": [
         {
           "term": "target",
@@ -1028,6 +1189,33 @@
       "title": "Làm việc với khách hàng (buyer)",
       "objective": "Trao đổi với buyer về mẫu, chỉnh sửa và duyệt mẫu.",
       "reading": "Buyer: We've received the pre-production sample. Overall it looks good, but there are a few comments.\nMerchandiser: Sure, please go ahead.\nBuyer: The colour of the fabric is slightly darker than the approved lab dip, and the pocket is two centimetres too low.\nMerchandiser: I understand. We'll adjust the pocket position and ask the mill to match the lab dip. We can send a revised sample by next Friday.\nBuyer: Great. Once it's approved, you can start bulk production.",
+      "dialogue": [
+        {
+          "speaker": "Buyer",
+          "text": "We've received the pre-production sample. Overall it looks good, but there are a few comments.",
+          "translation": "Chúng tôi đã nhận được mẫu tiền sản xuất. Nhìn chung trông tốt, nhưng có vài nhận xét."
+        },
+        {
+          "speaker": "Merchandiser",
+          "text": "Sure, please go ahead.",
+          "translation": "Vâng, mời anh nói."
+        },
+        {
+          "speaker": "Buyer",
+          "text": "The colour of the fabric is slightly darker than the approved lab dip, and the pocket is two centimetres too low.",
+          "translation": "Màu vải đậm hơn một chút so với lab dip đã duyệt, và túi áo thấp hơn hai xăng-ti-mét."
+        },
+        {
+          "speaker": "Merchandiser",
+          "text": "I understand. We'll adjust the pocket position and ask the mill to match the lab dip. We can send a revised sample by next Friday.",
+          "translation": "Tôi hiểu. Chúng tôi sẽ điều chỉnh vị trí túi và yêu cầu nhà máy dệt khớp màu với lab dip. Chúng tôi có thể gửi mẫu chỉnh sửa trước thứ Sáu tuần sau."
+        },
+        {
+          "speaker": "Buyer",
+          "text": "Great. Once it's approved, you can start bulk production.",
+          "translation": "Tốt. Khi mẫu được duyệt, các bạn có thể bắt đầu sản xuất hàng loạt."
+        }
+      ],
       "vocabulary": [
         {
           "term": "buyer",
@@ -1195,6 +1383,24 @@
       "title": "Đóng gói, giao hàng và chứng từ",
       "objective": "Hiểu yêu cầu đóng gói, nhãn mác và lịch giao hàng.",
       "reading": "Each garment must be folded, put in a polybag with a size sticker, and packed twelve pieces to a carton. The carton label shows the order number, style, colour, size breakdown and gross weight. The goods must be ready for shipment by the fifteenth so the container can leave on the twentieth. Please send the packing list and commercial invoice to the buyer two days before shipping.",
+      "dialogue": [
+        {
+          "text": "Each garment must be folded, put in a polybag with a size sticker, and packed twelve pieces to a carton.",
+          "translation": "Mỗi sản phẩm phải được gấp, cho vào túi nhựa có nhãn dán cỡ, và đóng mười hai cái vào một thùng."
+        },
+        {
+          "text": "The carton label shows the order number, style, colour, size breakdown and gross weight.",
+          "translation": "Nhãn thùng ghi số đơn hàng, mã hàng, màu, bảng chia cỡ và tổng trọng lượng."
+        },
+        {
+          "text": "The goods must be ready for shipment by the fifteenth so the container can leave on the twentieth.",
+          "translation": "Hàng phải sẵn sàng giao trước ngày mười lăm để container có thể rời cảng vào ngày hai mươi."
+        },
+        {
+          "text": "Please send the packing list and commercial invoice to the buyer two days before shipping.",
+          "translation": "Xin gửi phiếu đóng gói và hóa đơn thương mại cho khách hàng hai ngày trước khi giao hàng."
+        }
+      ],
       "vocabulary": [
         {
           "term": "fold",
@@ -1362,6 +1568,32 @@
       "title": "Quy trình sản xuất hàng may mặc",
       "objective": "Mô tả các công đoạn từ vải đến thành phẩm.",
       "reading": "Production starts when the fabric arrives. First, it's inspected and relaxed for twenty-four hours. Then the patterns are made and the marker is planned to reduce waste. The fabric is spread on long tables and cut. The cut pieces are bundled and sent to the sewing lines. After sewing, garments go through finishing: trimming threads, pressing, and final inspection before packing.",
+      "dialogue": [
+        {
+          "text": "Production starts when the fabric arrives.",
+          "translation": "Sản xuất bắt đầu khi vải về đến nơi."
+        },
+        {
+          "text": "First, it's inspected and relaxed for twenty-four hours.",
+          "translation": "Đầu tiên, vải được kiểm tra và để nghỉ hai mươi bốn giờ."
+        },
+        {
+          "text": "Then the patterns are made and the marker is planned to reduce waste.",
+          "translation": "Sau đó, rập mẫu được làm và sơ đồ cắt được lên kế hoạch để giảm hao phí."
+        },
+        {
+          "text": "The fabric is spread on long tables and cut.",
+          "translation": "Vải được trải trên những bàn dài và được cắt."
+        },
+        {
+          "text": "The cut pieces are bundled and sent to the sewing lines.",
+          "translation": "Các chi tiết đã cắt được bó lại và chuyển đến các chuyền may."
+        },
+        {
+          "text": "After sewing, garments go through finishing: trimming threads, pressing, and final inspection before packing.",
+          "translation": "Sau khi may, sản phẩm đi qua công đoạn hoàn thiện: cắt chỉ, ủi và kiểm tra cuối cùng trước khi đóng gói."
+        }
+      ],
       "vocabulary": [
         {
           "term": "pattern",
@@ -1529,6 +1761,33 @@
       "title": "Đàm phán giá và thời gian giao hàng",
       "objective": "Đàm phán FOB price, MOQ và lead time với khách.",
       "reading": "Buyer: Your FOB price of eight dollars fifty is higher than we expected. Our target is seven eighty.\nSales manager: I understand. The price reflects the organic cotton and the double-needle stitching you requested. If you could increase the order to ten thousand pieces, we could bring it down to eight dollars.\nBuyer: And the lead time?\nSales manager: Normally seventy-five days, but if you confirm the fabric this week, we can shorten it to sixty.\nBuyer: Let me discuss it with my team and get back to you tomorrow.",
+      "dialogue": [
+        {
+          "speaker": "Buyer",
+          "text": "Your FOB price of eight dollars fifty is higher than we expected. Our target is seven eighty.",
+          "translation": "Giá FOB tám đô năm mươi của quý công ty cao hơn chúng tôi dự kiến. Mục tiêu của chúng tôi là bảy đô tám mươi."
+        },
+        {
+          "speaker": "Sales manager",
+          "text": "I understand. The price reflects the organic cotton and the double-needle stitching you requested. If you could increase the order to ten thousand pieces, we could bring it down to eight dollars.",
+          "translation": "Tôi hiểu. Mức giá phản ánh vải cotton hữu cơ và đường may kim đôi mà quý vị yêu cầu. Nếu quý vị tăng đơn hàng lên mười nghìn sản phẩm, chúng tôi có thể giảm xuống tám đô."
+        },
+        {
+          "speaker": "Buyer",
+          "text": "And the lead time?",
+          "translation": "Còn thời gian giao hàng?"
+        },
+        {
+          "speaker": "Sales manager",
+          "text": "Normally seventy-five days, but if you confirm the fabric this week, we can shorten it to sixty.",
+          "translation": "Thông thường là bảy mươi lăm ngày, nhưng nếu quý vị xác nhận vải trong tuần này, chúng tôi có thể rút ngắn xuống sáu mươi."
+        },
+        {
+          "speaker": "Buyer",
+          "text": "Let me discuss it with my team and get back to you tomorrow.",
+          "translation": "Để tôi trao đổi với nhóm của mình và sẽ phản hồi lại với bạn vào ngày mai."
+        }
+      ],
       "vocabulary": [
         {
           "term": "FOB price",
@@ -1696,6 +1955,38 @@
       "title": "Đánh giá nhà máy và tuân thủ",
       "objective": "Trả lời câu hỏi kiểm toán về điều kiện lao động và an toàn.",
       "reading": "Auditor: Could you show me the records of working hours for last month?\nCompliance officer: Certainly. All overtime is voluntary and recorded. No one worked more than sixty hours a week, and every worker had at least one day off.\nAuditor: How do workers raise concerns?\nCompliance officer: There's an anonymous suggestion box and a hotline, and worker representatives meet management every month.\nAuditor: I noticed that one fire exit was partly blocked by boxes.\nCompliance officer: Thank you for pointing that out. We'll clear it immediately and add it to our daily checklist.",
+      "dialogue": [
+        {
+          "speaker": "Auditor",
+          "text": "Could you show me the records of working hours for last month?",
+          "translation": "Chị cho tôi xem hồ sơ giờ làm việc của tháng trước được không?"
+        },
+        {
+          "speaker": "Compliance officer",
+          "text": "Certainly. All overtime is voluntary and recorded. No one worked more than sixty hours a week, and every worker had at least one day off.",
+          "translation": "Được ạ. Mọi giờ làm thêm đều tự nguyện và được ghi nhận. Không ai làm quá sáu mươi giờ một tuần, và mọi công nhân đều có ít nhất một ngày nghỉ."
+        },
+        {
+          "speaker": "Auditor",
+          "text": "How do workers raise concerns?",
+          "translation": "Công nhân nêu mối quan ngại bằng cách nào?"
+        },
+        {
+          "speaker": "Compliance officer",
+          "text": "There's an anonymous suggestion box and a hotline, and worker representatives meet management every month.",
+          "translation": "Có hòm thư góp ý ẩn danh và đường dây nóng, và đại diện công nhân gặp ban quản lý mỗi tháng."
+        },
+        {
+          "speaker": "Auditor",
+          "text": "I noticed that one fire exit was partly blocked by boxes.",
+          "translation": "Tôi nhận thấy một lối thoát hiểm bị các thùng hàng chắn một phần."
+        },
+        {
+          "speaker": "Compliance officer",
+          "text": "Thank you for pointing that out. We'll clear it immediately and add it to our daily checklist.",
+          "translation": "Cảm ơn anh đã chỉ ra. Chúng tôi sẽ dọn ngay và đưa vào danh mục kiểm tra hằng ngày."
+        }
+      ],
       "vocabulary": [
         {
           "term": "auditor",
@@ -1863,6 +2154,28 @@
       "title": "Cải tiến năng suất và sản xuất bền vững",
       "objective": "Trình bày đề xuất cải tiến chuyền và giảm tác động môi trường.",
       "reading": "In my proposal, I'd like to focus on two areas. First, line balancing: by analysing the time each operation takes, we found a bottleneck at the collar station. Adding one operator there could raise output by twelve percent. Second, sustainability: switching to recycled polyester and reusing fabric offcuts would cut waste by about a fifth. Although the initial cost is higher, many buyers now require sustainable materials, so it would strengthen our position.",
+      "dialogue": [
+        {
+          "text": "In my proposal, I'd like to focus on two areas.",
+          "translation": "Trong đề xuất của tôi, tôi muốn tập trung vào hai lĩnh vực."
+        },
+        {
+          "text": "First, line balancing: by analysing the time each operation takes, we found a bottleneck at the collar station.",
+          "translation": "Thứ nhất, cân bằng chuyền: qua phân tích thời gian của từng công đoạn, chúng tôi phát hiện một điểm nghẽn ở trạm may cổ áo."
+        },
+        {
+          "text": "Adding one operator there could raise output by twelve percent.",
+          "translation": "Bổ sung một công nhân ở đó có thể tăng sản lượng mười hai phần trăm."
+        },
+        {
+          "text": "Second, sustainability: switching to recycled polyester and reusing fabric offcuts would cut waste by about a fifth.",
+          "translation": "Thứ hai, tính bền vững: chuyển sang polyester tái chế và tái sử dụng vải thừa sẽ giảm hao phí khoảng một phần năm."
+        },
+        {
+          "text": "Although the initial cost is higher, many buyers now require sustainable materials, so it would strengthen our position.",
+          "translation": "Dù chi phí ban đầu cao hơn, nhiều khách hàng hiện yêu cầu nguyên liệu bền vững, nên việc này sẽ củng cố vị thế của chúng ta."
+        }
+      ],
       "vocabulary": [
         {
           "term": "line balancing",

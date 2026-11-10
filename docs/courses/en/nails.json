@@ -1,7 +1,7 @@
 {
   "id": "nails",
   "title": "Tiếng Anh ngành nails",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "framework": "CEFR A1–C2",
   "overview": "50 bài từ A1 đến C2 cho thợ làm móng: dụng cụ, đặt lịch, màu và kiểu móng, vệ sinh an toàn, tư vấn dịch vụ, xử lý khiếu nại, pedicure, nhóm và tiệc cưới, thanh toán, ca làm, xu hướng mùa, chăm sóc tại nhà, báo cáo doanh thu, phỏng vấn và quản lý tiệm (đến B2); nâng cao C1–C2: tư vấn tình trạng móng, dị ứng và sự cố, chính sách, đào tạo, thương hiệu, nhà cung cấp, quy định, thuyết phục khách, khiếu nại, đầu tư, hợp đồng, họp nhóm, truyền thông khủng hoảng, sản phẩm xanh, workshop và thuê mặt bằng.",
   "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
@@ -26,6 +26,32 @@
       "title": "Dụng cụ và dịch vụ làm móng",
       "objective": "Gọi tên dụng cụ và các dịch vụ cơ bản trong tiệm nail.",
       "reading": "Welcome to our nail salon. We do manicures and pedicures. I use a nail file to shape the nails and a buffer to make them smooth. I push back the cuticles with a cuticle pusher. Then I paint the nails with a base coat, two coats of colour and a top coat. We also do gel nails and acrylic nails.",
+      "dialogue": [
+        {
+          "text": "Welcome to our nail salon.",
+          "translation": "Chào mừng bạn đến với tiệm nail của chúng tôi."
+        },
+        {
+          "text": "We do manicures and pedicures.",
+          "translation": "Chúng tôi làm móng tay và móng chân."
+        },
+        {
+          "text": "I use a nail file to shape the nails and a buffer to make them smooth.",
+          "translation": "Tôi dùng dũa móng để tạo dáng móng và dụng cụ chà bóng để làm móng mịn."
+        },
+        {
+          "text": "I push back the cuticles with a cuticle pusher.",
+          "translation": "Tôi đẩy da quanh móng bằng cây đẩy da."
+        },
+        {
+          "text": "Then I paint the nails with a base coat, two coats of colour and a top coat.",
+          "translation": "Sau đó tôi sơn móng bằng một lớp sơn lót, hai lớp sơn màu và một lớp sơn bóng."
+        },
+        {
+          "text": "We also do gel nails and acrylic nails.",
+          "translation": "Chúng tôi cũng làm móng gel và móng bột."
+        }
+      ],
       "vocabulary": [
         {
           "term": "manicure",
@@ -193,6 +219,53 @@
       "title": "Chào khách và nhận lịch hẹn",
       "objective": "Chào khách, hỏi tên, dịch vụ và giờ hẹn qua điện thoại.",
       "reading": "Receptionist: Hello, Lily Nails. How can I help you?\nCustomer: Hi, I'd like to book a manicure and pedicure.\nReceptionist: Sure. What day would you like to come in?\nCustomer: Saturday morning, please.\nReceptionist: We have ten o'clock or eleven thirty.\nCustomer: Ten o'clock is fine.\nReceptionist: Can I have your name and phone number?\nCustomer: It's Sarah, 555-0142.\nReceptionist: Thank you, Sarah. See you on Saturday at ten.",
+      "dialogue": [
+        {
+          "speaker": "Receptionist",
+          "text": "Hello, Lily Nails. How can I help you?",
+          "translation": "Xin chào, Lily Nails xin nghe. Tôi có thể giúp gì cho bạn?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Hi, I'd like to book a manicure and pedicure.",
+          "translation": "Chào bạn, tôi muốn đặt lịch làm móng tay và móng chân."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Sure. What day would you like to come in?",
+          "translation": "Vâng. Bạn muốn đến vào ngày nào?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Saturday morning, please.",
+          "translation": "Sáng thứ Bảy, làm ơn."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "We have ten o'clock or eleven thirty.",
+          "translation": "Chúng tôi có lịch lúc mười giờ hoặc mười một giờ rưỡi."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Ten o'clock is fine.",
+          "translation": "Mười giờ được rồi."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Can I have your name and phone number?",
+          "translation": "Cho tôi xin tên và số điện thoại của bạn được không?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "It's Sarah, 555-0142.",
+          "translation": "Tôi là Sarah, 555-0142."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Thank you, Sarah. See you on Saturday at ten.",
+          "translation": "Cảm ơn bạn, Sarah. Hẹn gặp bạn vào thứ Bảy lúc mười giờ."
+        }
+      ],
       "vocabulary": [
         {
           "term": "book",
@@ -360,6 +433,48 @@
       "title": "Màu sơn và kiểu móng",
       "objective": "Hỏi khách về màu sơn, độ dài và hình dáng móng.",
       "reading": "Technician: What colour would you like?\nCustomer: Something light. Do you have pink?\nTechnician: Yes, we have light pink and nude pink. This one is very popular.\nCustomer: I like that one.\nTechnician: What shape would you like? Square, round or almond?\nCustomer: Almond, please. Not too long.\nTechnician: Okay, short almond. Would you like a design?\nCustomer: Just a small flower on two nails.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "What colour would you like?",
+          "translation": "Bạn muốn màu gì?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Something light. Do you have pink?",
+          "translation": "Màu nào đó nhạt. Bạn có màu hồng không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Yes, we have light pink and nude pink. This one is very popular.",
+          "translation": "Có, chúng tôi có hồng nhạt và hồng nude. Màu này rất được ưa chuộng."
+        },
+        {
+          "speaker": "Customer",
+          "text": "I like that one.",
+          "translation": "Tôi thích màu đó."
+        },
+        {
+          "speaker": "Technician",
+          "text": "What shape would you like? Square, round or almond?",
+          "translation": "Bạn muốn dáng móng nào? Vuông, tròn hay hạnh nhân?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Almond, please. Not too long.",
+          "translation": "Hạnh nhân, làm ơn. Đừng dài quá."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Okay, short almond. Would you like a design?",
+          "translation": "Được, hạnh nhân ngắn. Bạn có muốn vẽ họa tiết không?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Just a small flower on two nails.",
+          "translation": "Chỉ một bông hoa nhỏ trên hai móng thôi."
+        }
+      ],
       "vocabulary": [
         {
           "term": "colour",
@@ -527,6 +642,48 @@
       "title": "Trò chuyện với khách khi làm móng",
       "objective": "Nói chuyện xã giao và hỏi khách có thoải mái không.",
       "reading": "Technician: Is the water too hot?\nCustomer: No, it's perfect, thanks.\nTechnician: Are you doing anything fun this weekend?\nCustomer: Yes, I'm going to my friend's wedding.\nTechnician: That's lovely! So you need beautiful nails. Let me know if anything hurts.\nCustomer: It's fine. Actually, can you file a little more on this side?\nTechnician: Of course. How does that look now?\nCustomer: Much better, thank you.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "Is the water too hot?",
+          "translation": "Nước có nóng quá không ạ?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "No, it's perfect, thanks.",
+          "translation": "Không, vừa đúng rồi, cảm ơn bạn."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Are you doing anything fun this weekend?",
+          "translation": "Cuối tuần này bạn có định làm gì vui không?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Yes, I'm going to my friend's wedding.",
+          "translation": "Có, tôi sẽ đi đám cưới của bạn tôi."
+        },
+        {
+          "speaker": "Technician",
+          "text": "That's lovely! So you need beautiful nails. Let me know if anything hurts.",
+          "translation": "Tuyệt quá! Vậy bạn cần có bộ móng thật đẹp. Nếu có chỗ nào đau thì cho tôi biết nhé."
+        },
+        {
+          "speaker": "Customer",
+          "text": "It's fine. Actually, can you file a little more on this side?",
+          "translation": "Không sao. Thật ra, bạn dũa thêm một chút ở bên này được không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Of course. How does that look now?",
+          "translation": "Được chứ. Bây giờ trông thế nào ạ?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Much better, thank you.",
+          "translation": "Tốt hơn nhiều, cảm ơn bạn."
+        }
+      ],
       "vocabulary": [
         {
           "term": "hurt",
@@ -694,6 +851,38 @@
       "title": "Giải thích dịch vụ và bảng giá",
       "objective": "Giải thích sự khác nhau giữa các dịch vụ và báo giá.",
       "reading": "Customer: What's the difference between regular polish and gel?\nTechnician: Regular polish dries in the air and lasts about one week. Gel is cured under a UV lamp, so it's dry right away and lasts two to three weeks.\nCustomer: How much is a gel manicure?\nTechnician: It's thirty-five dollars. Regular is twenty.\nCustomer: And to remove gel?\nTechnician: Removal is ten dollars, but it's free if you get a new set.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "What's the difference between regular polish and gel?",
+          "translation": "Sơn thường và sơn gel khác nhau thế nào?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Regular polish dries in the air and lasts about one week. Gel is cured under a UV lamp, so it's dry right away and lasts two to three weeks.",
+          "translation": "Sơn thường khô trong không khí và giữ được khoảng một tuần. Sơn gel được sấy dưới đèn UV, nên khô ngay và giữ được hai đến ba tuần."
+        },
+        {
+          "speaker": "Customer",
+          "text": "How much is a gel manicure?",
+          "translation": "Làm móng gel giá bao nhiêu?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "It's thirty-five dollars. Regular is twenty.",
+          "translation": "Ba mươi lăm đô la. Sơn thường là hai mươi."
+        },
+        {
+          "speaker": "Customer",
+          "text": "And to remove gel?",
+          "translation": "Còn tháo gel thì sao?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Removal is ten dollars, but it's free if you get a new set.",
+          "translation": "Tháo gel mười đô la, nhưng miễn phí nếu bạn làm bộ mới."
+        }
+      ],
       "vocabulary": [
         {
           "term": "regular polish",
@@ -861,6 +1050,32 @@
       "title": "Vệ sinh và an toàn trong tiệm",
       "objective": "Nói về vệ sinh dụng cụ và an toàn cho khách.",
       "reading": "We clean and disinfect all metal tools after every customer. We use new files and buffers for each person. The pedicure tubs are cleaned with disinfectant and we use liners. We wear gloves and masks. If a customer has a cut or an infection, we do not do the service and we ask them to see a doctor. Good ventilation is important because of the chemicals.",
+      "dialogue": [
+        {
+          "text": "We clean and disinfect all metal tools after every customer.",
+          "translation": "Chúng tôi vệ sinh và khử trùng mọi dụng cụ kim loại sau mỗi khách."
+        },
+        {
+          "text": "We use new files and buffers for each person.",
+          "translation": "Chúng tôi dùng dũa và dụng cụ chà bóng mới cho mỗi người."
+        },
+        {
+          "text": "The pedicure tubs are cleaned with disinfectant and we use liners.",
+          "translation": "Bồn ngâm chân được vệ sinh bằng chất khử trùng và chúng tôi dùng túi lót."
+        },
+        {
+          "text": "We wear gloves and masks.",
+          "translation": "Chúng tôi đeo găng tay và khẩu trang."
+        },
+        {
+          "text": "If a customer has a cut or an infection, we do not do the service and we ask them to see a doctor.",
+          "translation": "Nếu khách có vết cắt hoặc nhiễm trùng, chúng tôi không làm dịch vụ và đề nghị khách đi khám bác sĩ."
+        },
+        {
+          "text": "Good ventilation is important because of the chemicals.",
+          "translation": "Thông gió tốt rất quan trọng vì có hóa chất."
+        }
+      ],
       "vocabulary": [
         {
           "term": "disinfect",
@@ -1028,6 +1243,38 @@
       "title": "Tư vấn và bán thêm dịch vụ",
       "objective": "Gợi ý dịch vụ thêm một cách tự nhiên, không ép khách.",
       "reading": "Technician: Your cuticles are quite dry. Would you like to add a paraffin treatment? It really helps.\nCustomer: What does it do?\nTechnician: We dip your hands in warm wax. It moisturises the skin and it's very relaxing. It's an extra ten dollars.\nCustomer: Hmm, maybe next time.\nTechnician: No problem. I'd also recommend using cuticle oil every night. We sell it at the front desk.\nCustomer: Okay, I'll have a look. Thanks for the tip.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "Your cuticles are quite dry. Would you like to add a paraffin treatment? It really helps.",
+          "translation": "Da quanh móng của bạn khá khô. Bạn có muốn thêm liệu trình sáp paraffin không? Nó thật sự có ích."
+        },
+        {
+          "speaker": "Customer",
+          "text": "What does it do?",
+          "translation": "Nó có tác dụng gì?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "We dip your hands in warm wax. It moisturises the skin and it's very relaxing. It's an extra ten dollars.",
+          "translation": "Chúng tôi nhúng tay bạn vào sáp ấm. Nó dưỡng ẩm cho da và rất thư giãn. Phụ thu thêm mười đô la."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Hmm, maybe next time.",
+          "translation": "Ừm, để lần sau nhé."
+        },
+        {
+          "speaker": "Technician",
+          "text": "No problem. I'd also recommend using cuticle oil every night. We sell it at the front desk.",
+          "translation": "Không sao ạ. Tôi cũng khuyên bạn dùng dầu dưỡng da quanh móng mỗi tối. Chúng tôi có bán ở quầy lễ tân."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Okay, I'll have a look. Thanks for the tip.",
+          "translation": "Được, tôi sẽ xem thử. Cảm ơn bạn đã mách."
+        }
+      ],
       "vocabulary": [
         {
           "term": "treatment",
@@ -1195,6 +1442,38 @@
       "title": "Xử lý khiếu nại của khách",
       "objective": "Xin lỗi, đưa giải pháp khi khách không hài lòng.",
       "reading": "Customer: Excuse me, I got my gel nails done here three days ago and two of them are already peeling.\nManager: I'm so sorry about that. Can I have a look?\nCustomer: Here, these two.\nManager: I see. That shouldn't happen. We'll fix them for you right now, free of charge.\nCustomer: Thank you. I was a bit disappointed.\nManager: I completely understand. I'll also give you a ten percent discount on your next visit. Thank you for letting us know.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "Excuse me, I got my gel nails done here three days ago and two of them are already peeling.",
+          "translation": "Xin lỗi, tôi làm móng gel ở đây ba ngày trước và hai móng đã bị bong rồi."
+        },
+        {
+          "speaker": "Manager",
+          "text": "I'm so sorry about that. Can I have a look?",
+          "translation": "Tôi rất tiếc về điều đó. Tôi xem thử được không?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Here, these two.",
+          "translation": "Đây, hai móng này."
+        },
+        {
+          "speaker": "Manager",
+          "text": "I see. That shouldn't happen. We'll fix them for you right now, free of charge.",
+          "translation": "Tôi hiểu rồi. Việc đó không nên xảy ra. Chúng tôi sẽ sửa cho bạn ngay bây giờ, miễn phí."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Thank you. I was a bit disappointed.",
+          "translation": "Cảm ơn bạn. Tôi đã hơi thất vọng."
+        },
+        {
+          "speaker": "Manager",
+          "text": "I completely understand. I'll also give you a ten percent discount on your next visit. Thank you for letting us know.",
+          "translation": "Tôi hoàn toàn hiểu. Tôi cũng sẽ giảm cho bạn mười phần trăm trong lần sau. Cảm ơn bạn đã cho chúng tôi biết."
+        }
+      ],
       "vocabulary": [
         {
           "term": "peel",
@@ -1362,6 +1641,24 @@
       "title": "Móng bột, đắp gel và chăm sóc sau",
       "objective": "Mô tả quy trình đắp móng và hướng dẫn chăm sóc tại nhà.",
       "reading": "For acrylic nails, I first prepare the natural nail and apply a primer. Then I attach a tip to extend the length and mix liquid and powder to build the nail. After it hardens, I file it into shape and buff the surface. Aftercare is important: wear gloves when you clean, don't use your nails as tools, and come back for a fill every two to three weeks.",
+      "dialogue": [
+        {
+          "text": "For acrylic nails, I first prepare the natural nail and apply a primer.",
+          "translation": "Với móng bột, đầu tiên tôi chuẩn bị móng thật và thoa lớp sơn lót kết dính."
+        },
+        {
+          "text": "Then I attach a tip to extend the length and mix liquid and powder to build the nail.",
+          "translation": "Sau đó tôi gắn móng giả để kéo dài và trộn dung dịch với bột để đắp móng."
+        },
+        {
+          "text": "After it hardens, I file it into shape and buff the surface.",
+          "translation": "Khi móng cứng lại, tôi dũa tạo dáng và chà bóng bề mặt."
+        },
+        {
+          "text": "Aftercare is important: wear gloves when you clean, don't use your nails as tools, and come back for a fill every two to three weeks.",
+          "translation": "Chăm sóc sau rất quan trọng: đeo găng tay khi dọn dẹp, đừng dùng móng làm công cụ, và quay lại đắp bù mỗi hai đến ba tuần."
+        }
+      ],
       "vocabulary": [
         {
           "term": "acrylic",
@@ -1529,6 +1826,43 @@
       "title": "Giải thích quy trình pedicure từng bước",
       "objective": "Giải thích trình tự dịch vụ pedicure để khách yên tâm và biết trước điều sắp diễn ra.",
       "reading": "Technician: Welcome! Please pop your feet into the water. I'll explain what we're going to do, so there are no surprises.\nCustomer: Great. I haven't had a pedicure in ages.\nTechnician: First, we soak your feet for about five minutes to soften the skin. Then I'll trim and shape your toenails, and gently push back the cuticles.\nCustomer: Will you remove the hard skin on my heels?\nTechnician: Yes, I'll use a foot file for that. After that, we'll exfoliate with a scrub, and finish with a short massage using lotion.\nCustomer: That sounds lovely. How long does it take?\nTechnician: About forty-five minutes. If the water is too hot, just tell me.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "Welcome! Please pop your feet into the water. I'll explain what we're going to do, so there are no surprises.",
+          "translation": "Chào mừng bạn! Xin bạn cho chân vào nước. Tôi sẽ giải thích những gì chúng ta sắp làm, để bạn không bị bất ngờ."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Great. I haven't had a pedicure in ages.",
+          "translation": "Tuyệt. Lâu lắm rồi tôi chưa làm móng chân."
+        },
+        {
+          "speaker": "Technician",
+          "text": "First, we soak your feet for about five minutes to soften the skin. Then I'll trim and shape your toenails, and gently push back the cuticles.",
+          "translation": "Đầu tiên, chúng tôi ngâm chân bạn khoảng năm phút để làm mềm da. Sau đó tôi sẽ cắt tỉa và tạo dáng móng chân, rồi nhẹ nhàng đẩy da quanh móng."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Will you remove the hard skin on my heels?",
+          "translation": "Bạn sẽ loại bỏ da chai ở gót chân của tôi chứ?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Yes, I'll use a foot file for that. After that, we'll exfoliate with a scrub, and finish with a short massage using lotion.",
+          "translation": "Có, tôi sẽ dùng dũa chân cho việc đó. Sau đó, chúng ta sẽ tẩy tế bào chết bằng kem tẩy, và kết thúc bằng một buổi mát-xa ngắn với kem dưỡng."
+        },
+        {
+          "speaker": "Customer",
+          "text": "That sounds lovely. How long does it take?",
+          "translation": "Nghe thật tuyệt. Mất bao lâu vậy?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "About forty-five minutes. If the water is too hot, just tell me.",
+          "translation": "Khoảng bốn mươi lăm phút. Nếu nước quá nóng, bạn cứ nói với tôi."
+        }
+      ],
       "vocabulary": [
         {
           "term": "soak",
@@ -1696,6 +2030,48 @@
       "title": "Đặt lịch cho nhóm và tiệc cô dâu",
       "objective": "Nhận đặt lịch cho nhóm đông: số người, thời gian, tiền đặt cọc và thanh toán chung.",
       "reading": "Customer: Hi, I'm getting married in June, and I'd like to book manicures for me and five bridesmaids.\nReceptionist: Congratulations! How many people in total, and what date are you thinking of?\nCustomer: Six of us, on the fourteenth. The ceremony is at four, so we'd need to finish by one o'clock.\nReceptionist: In that case, I'd suggest starting at nine. We can seat three people at a time, so two groups would take about three hours.\nCustomer: Could we have champagne while we wait?\nReceptionist: Of course, as long as everyone is over eighteen. We also ask for a fifty-dollar deposit per person to secure the booking.\nCustomer: That's fine. Can I pay for everyone together?\nReceptionist: Certainly. I'll send you a confirmation by email.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "Hi, I'm getting married in June, and I'd like to book manicures for me and five bridesmaids.",
+          "translation": "Xin chào, tôi sẽ kết hôn vào tháng Sáu, và tôi muốn đặt lịch làm móng cho tôi và năm phù dâu."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Congratulations! How many people in total, and what date are you thinking of?",
+          "translation": "Xin chúc mừng! Tổng cộng bao nhiêu người, và bạn định chọn ngày nào ạ?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Six of us, on the fourteenth. The ceremony is at four, so we'd need to finish by one o'clock.",
+          "translation": "Sáu người, vào ngày mười bốn. Lễ cưới lúc bốn giờ, nên chúng tôi cần xong trước một giờ."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "In that case, I'd suggest starting at nine. We can seat three people at a time, so two groups would take about three hours.",
+          "translation": "Vậy tôi gợi ý bắt đầu lúc chín giờ. Chúng tôi phục vụ được ba người cùng lúc, nên hai nhóm sẽ mất khoảng ba tiếng."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Could we have champagne while we wait?",
+          "translation": "Chúng tôi uống sâm panh trong lúc chờ được không?"
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Of course, as long as everyone is over eighteen. We also ask for a fifty-dollar deposit per person to secure the booking.",
+          "translation": "Được chứ, miễn là mọi người đều trên mười tám tuổi. Chúng tôi cũng nhận tiền đặt cọc năm mươi đô la mỗi người để giữ lịch."
+        },
+        {
+          "speaker": "Customer",
+          "text": "That's fine. Can I pay for everyone together?",
+          "translation": "Được thôi. Tôi thanh toán chung cho mọi người được không?"
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Certainly. I'll send you a confirmation by email.",
+          "translation": "Chắc chắn rồi. Tôi sẽ gửi cho bạn email xác nhận."
+        }
+      ],
       "vocabulary": [
         {
           "term": "bridesmaid",
@@ -1863,6 +2239,48 @@
       "title": "Giá, tiền boa và thanh toán",
       "objective": "Báo giá, giải thích tiền boa, phụ phí và các hình thức thanh toán.",
       "reading": "Customer: Excuse me, how much is a gel manicure with nail art on two fingers?\nReceptionist: A gel manicure is thirty-five dollars, and the nail art is five dollars per nail, so forty-five altogether.\nCustomer: Does that include a tip?\nReceptionist: No, tips are separate and entirely up to you. Most customers leave about fifteen to twenty percent.\nCustomer: Do you take cards?\nReceptionist: Yes, we accept all major cards and contactless payments. There's a small surcharge if you pay by credit card.\nCustomer: I'll pay in cash, then. Can I get a receipt?\nReceptionist: Of course. Here you are.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "Excuse me, how much is a gel manicure with nail art on two fingers?",
+          "translation": "Xin lỗi, làm móng gel kèm vẽ họa tiết trên hai ngón tay giá bao nhiêu?"
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "A gel manicure is thirty-five dollars, and the nail art is five dollars per nail, so forty-five altogether.",
+          "translation": "Làm móng gel là ba mươi lăm đô la, và vẽ họa tiết là năm đô la một móng, vậy tổng cộng là bốn mươi lăm."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Does that include a tip?",
+          "translation": "Giá đó đã gồm tiền boa chưa?"
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "No, tips are separate and entirely up to you. Most customers leave about fifteen to twenty percent.",
+          "translation": "Chưa, tiền boa tính riêng và hoàn toàn tùy bạn. Hầu hết khách boa khoảng mười lăm đến hai mươi phần trăm."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Do you take cards?",
+          "translation": "Bạn có nhận thẻ không?"
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Yes, we accept all major cards and contactless payments. There's a small surcharge if you pay by credit card.",
+          "translation": "Có, chúng tôi nhận mọi loại thẻ phổ biến và thanh toán không chạm. Có một khoản phụ phí nhỏ nếu bạn trả bằng thẻ tín dụng."
+        },
+        {
+          "speaker": "Customer",
+          "text": "I'll pay in cash, then. Can I get a receipt?",
+          "translation": "Vậy tôi sẽ trả bằng tiền mặt. Tôi lấy biên lai được không?"
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Of course. Here you are.",
+          "translation": "Được ạ. Của bạn đây."
+        }
+      ],
       "vocabulary": [
         {
           "term": "altogether",
@@ -2030,6 +2448,43 @@
       "title": "Khách đến trễ và nhầm lịch",
       "objective": "Xử lý khách đến muộn: giải thích hạn chế và đề xuất giải pháp phù hợp.",
       "reading": "Receptionist: Hi, Mia. We had you down for two o'clock, but it's already two forty.\nCustomer: I'm so sorry. The traffic was terrible, and I couldn't find parking.\nReceptionist: No worries. Unfortunately, we have another client at three thirty, so we can't do the full set of acrylics. What we can do is a simple gel manicure in forty minutes.\nCustomer: Oh no. Could we move the acrylics to another day?\nReceptionist: Certainly. Would Thursday at five work for you?\nCustomer: Thursday is perfect. Then I'll have the gel manicure now.\nReceptionist: Great. Next time, please call us if you're running late, so we can adjust the schedule.",
+      "dialogue": [
+        {
+          "speaker": "Receptionist",
+          "text": "Hi, Mia. We had you down for two o'clock, but it's already two forty.",
+          "translation": "Chào Mia. Chúng tôi đã ghi tên bạn lúc hai giờ, nhưng bây giờ đã hai giờ bốn mươi rồi."
+        },
+        {
+          "speaker": "Customer",
+          "text": "I'm so sorry. The traffic was terrible, and I couldn't find parking.",
+          "translation": "Tôi thành thật xin lỗi. Kẹt xe quá, và tôi không tìm được chỗ đậu xe."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "No worries. Unfortunately, we have another client at three thirty, so we can't do the full set of acrylics. What we can do is a simple gel manicure in forty minutes.",
+          "translation": "Không sao. Tuy nhiên, chúng tôi có một khách khác lúc ba giờ rưỡi, nên không thể làm trọn bộ móng bột được. Điều chúng tôi có thể làm là một bộ móng gel đơn giản trong bốn mươi phút."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Oh no. Could we move the acrylics to another day?",
+          "translation": "Ôi không. Chúng ta dời bộ móng bột sang ngày khác được không?"
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Certainly. Would Thursday at five work for you?",
+          "translation": "Được chứ. Năm giờ chiều thứ Năm có phù hợp với bạn không?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Thursday is perfect. Then I'll have the gel manicure now.",
+          "translation": "Thứ Năm thì tuyệt. Vậy bây giờ tôi sẽ làm móng gel."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Great. Next time, please call us if you're running late, so we can adjust the schedule.",
+          "translation": "Tuyệt. Lần sau, nếu bạn đến trễ xin gọi cho chúng tôi, để chúng tôi điều chỉnh lịch."
+        }
+      ],
       "vocabulary": [
         {
           "term": "had you down for",
@@ -2197,6 +2652,33 @@
       "title": "Nhận biết vấn đề móng và từ chối dịch vụ",
       "objective": "Giải thích khéo léo khi phải từ chối làm móng vì lý do sức khỏe.",
       "reading": "Technician: Before we start, I noticed some discoloration and the nail is lifting from the nail bed here.\nCustomer: Oh, I didn't notice. Is it a problem?\nTechnician: It might be a fungal infection. I'm not a doctor, so I can't diagnose it, but for your safety and other clients' safety, I'd rather not do a pedicure today.\nCustomer: I see. What should I do?\nTechnician: I'd suggest seeing a dermatologist or a podiatrist. Once it has cleared up, we'd be happy to see you again.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "Before we start, I noticed some discoloration and the nail is lifting from the nail bed here.",
+          "translation": "Trước khi bắt đầu, tôi nhận thấy móng đổi màu và móng đang bị bong khỏi giường móng ở đây."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Oh, I didn't notice. Is it a problem?",
+          "translation": "Ồ, tôi không để ý. Có vấn đề gì không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "It might be a fungal infection. I'm not a doctor, so I can't diagnose it, but for your safety and other clients' safety, I'd rather not do a pedicure today.",
+          "translation": "Có thể là nhiễm nấm. Tôi không phải bác sĩ nên không thể chẩn đoán, nhưng vì sự an toàn của bạn và của các khách khác, hôm nay tôi không làm móng chân thì hơn."
+        },
+        {
+          "speaker": "Customer",
+          "text": "I see. What should I do?",
+          "translation": "Tôi hiểu. Vậy tôi nên làm gì?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "I'd suggest seeing a dermatologist or a podiatrist. Once it has cleared up, we'd be happy to see you again.",
+          "translation": "Tôi gợi ý bạn đi khám bác sĩ da liễu hoặc bác sĩ chuyên khoa bàn chân. Khi đã khỏi, chúng tôi rất vui được đón bạn trở lại."
+        }
+      ],
       "vocabulary": [
         {
           "term": "discoloration",
@@ -2364,6 +2846,43 @@
       "title": "Phỏng vấn xin việc ở tiệm nail",
       "objective": "Giới thiệu kinh nghiệm, kỹ năng và trả lời câu hỏi phỏng vấn.",
       "reading": "Owner: Tell me about your experience.\nApplicant: I've been working as a nail technician for five years. I'm licensed and I specialise in gel extensions and hand-painted nail art.\nOwner: How do you deal with a difficult customer?\nApplicant: I stay calm, listen carefully and try to find a solution. If I can't solve it, I ask the manager for help.\nOwner: Are you comfortable working weekends?\nApplicant: Yes, I'm flexible. I can work Saturdays and Sundays.\nOwner: Great. Could you do a short trial on Monday?",
+      "dialogue": [
+        {
+          "speaker": "Owner",
+          "text": "Tell me about your experience.",
+          "translation": "Hãy kể cho tôi nghe về kinh nghiệm của bạn."
+        },
+        {
+          "speaker": "Applicant",
+          "text": "I've been working as a nail technician for five years. I'm licensed and I specialise in gel extensions and hand-painted nail art.",
+          "translation": "Tôi đã làm thợ nail được năm năm. Tôi có chứng chỉ hành nghề và chuyên về nối móng gel và vẽ móng bằng tay."
+        },
+        {
+          "speaker": "Owner",
+          "text": "How do you deal with a difficult customer?",
+          "translation": "Bạn xử lý khách khó tính như thế nào?"
+        },
+        {
+          "speaker": "Applicant",
+          "text": "I stay calm, listen carefully and try to find a solution. If I can't solve it, I ask the manager for help.",
+          "translation": "Tôi giữ bình tĩnh, lắng nghe cẩn thận và cố tìm giải pháp. Nếu tôi không giải quyết được, tôi nhờ quản lý giúp."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Are you comfortable working weekends?",
+          "translation": "Bạn có thoải mái làm cuối tuần không?"
+        },
+        {
+          "speaker": "Applicant",
+          "text": "Yes, I'm flexible. I can work Saturdays and Sundays.",
+          "translation": "Có, tôi linh hoạt. Tôi có thể làm thứ Bảy và Chủ nhật."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Great. Could you do a short trial on Monday?",
+          "translation": "Tuyệt. Bạn có thể làm thử một buổi ngắn vào thứ Hai không?"
+        }
+      ],
       "vocabulary": [
         {
           "term": "experience",
@@ -2531,6 +3050,18 @@
       "title": "Quản lý tiệm và đánh giá trực tuyến",
       "objective": "Trả lời đánh giá online và quảng bá tiệm chuyên nghiệp.",
       "reading": "Review: 'Lovely staff, but I waited forty minutes even though I had an appointment. My nails look great though.'\nReply: 'Hi Emma, thank you for taking the time to leave a review. We're glad you love your nails! We sincerely apologise for the long wait. We were short-staffed that day, and we've since adjusted our booking system so this doesn't happen again. We hope to welcome you back soon. – The Lily Nails Team'",
+      "dialogue": [
+        {
+          "speaker": "Review",
+          "text": "'Lovely staff, but I waited forty minutes even though I had an appointment. My nails look great though.'",
+          "translation": "'Nhân viên dễ thương, nhưng tôi phải chờ bốn mươi phút dù đã đặt lịch hẹn. Tuy vậy, móng của tôi trông rất đẹp.'"
+        },
+        {
+          "speaker": "Reply",
+          "text": "'Hi Emma, thank you for taking the time to leave a review. We're glad you love your nails! We sincerely apologise for the long wait. We were short-staffed that day, and we've since adjusted our booking system so this doesn't happen again. We hope to welcome you back soon. – The Lily Nails Team'",
+          "translation": "'Chào Emma, cảm ơn bạn đã dành thời gian để lại đánh giá. Chúng tôi rất vui khi bạn thích bộ móng của mình! Chúng tôi chân thành xin lỗi về thời gian chờ lâu. Hôm đó chúng tôi thiếu nhân viên, và từ đó chúng tôi đã điều chỉnh hệ thống đặt lịch để điều này không xảy ra nữa. Chúng tôi hy vọng sớm được đón bạn trở lại. – Đội ngũ Lily Nails'"
+        }
+      ],
       "vocabulary": [
         {
           "term": "review",
@@ -2698,6 +3229,38 @@
       "title": "Điều phối ca làm và xin đổi ca",
       "objective": "Xin đổi ca, tìm người làm thay và thống nhất bằng văn bản với quản lý.",
       "reading": "Manager: Thanks for coming in, Lan. You mentioned you'd like to swap your Saturday shift?\nTechnician: Yes, I have a family event on the twentieth, and I'd rather not miss it. Would it be possible to cover Sunday instead?\nManager: In principle, yes, but Sunday is already fully staffed. Could you find someone to take your Saturday? If a colleague agrees, I'm happy to approve the swap.\nTechnician: Mai said she might be available, but she'd want to take my Tuesday in return.\nManager: That seems fair. Let me check the rota. I'll need it confirmed in writing by Thursday, so the schedule doesn't change at the last minute.\nTechnician: Understood. I'll make sure it's sorted by then.",
+      "dialogue": [
+        {
+          "speaker": "Manager",
+          "text": "Thanks for coming in, Lan. You mentioned you'd like to swap your Saturday shift?",
+          "translation": "Cảm ơn em đã đến, Lan. Em nói là muốn đổi ca thứ Bảy đúng không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Yes, I have a family event on the twentieth, and I'd rather not miss it. Would it be possible to cover Sunday instead?",
+          "translation": "Vâng, em có một sự kiện gia đình vào ngày hai mươi, và em không muốn bỏ lỡ. Em làm thay ca Chủ nhật được không ạ?"
+        },
+        {
+          "speaker": "Manager",
+          "text": "In principle, yes, but Sunday is already fully staffed. Could you find someone to take your Saturday? If a colleague agrees, I'm happy to approve the swap.",
+          "translation": "Về nguyên tắc thì được, nhưng Chủ nhật đã đủ người rồi. Em tìm ai đó nhận ca thứ Bảy của em được không? Nếu có đồng nghiệp đồng ý, chị sẵn lòng duyệt việc đổi ca."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Mai said she might be available, but she'd want to take my Tuesday in return.",
+          "translation": "Mai nói cô ấy có thể rảnh, nhưng cô ấy muốn nhận ca thứ Ba của em để đổi lại."
+        },
+        {
+          "speaker": "Manager",
+          "text": "That seems fair. Let me check the rota. I'll need it confirmed in writing by Thursday, so the schedule doesn't change at the last minute.",
+          "translation": "Nghe công bằng đấy. Để chị xem lại bảng phân ca. Chị cần có xác nhận bằng văn bản trước thứ Năm, để lịch không bị thay đổi vào phút chót."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Understood. I'll make sure it's sorted by then.",
+          "translation": "Em hiểu ạ. Em sẽ đảm bảo xong trước đó."
+        }
+      ],
       "vocabulary": [
         {
           "term": "swap",
@@ -2865,6 +3428,38 @@
       "title": "Xu hướng theo mùa và đặt hàng",
       "objective": "Thảo luận màu sơn đang được ưa chuộng và quyết định số lượng đặt hàng trước mùa cao điểm.",
       "reading": "Owner: Autumn is just around the corner. What colours are customers asking about?\nTechnician: Mostly deep burgundy, olive green and a lot of chocolate browns. Quite a few people also want the glazed chrome look.\nOwner: Then we'd better stock up before demand peaks. How many bottles of each would you suggest?\nTechnician: I'd say twelve of the burgundy, since it sells fastest, and six each of the others. We should also order extra top coat, because the chrome effect uses a lot.\nOwner: Fine. If we order today, the supplier can deliver by the fifteenth. I'd rather not run out in the middle of the season.\nTechnician: Agreed. I'll draw up the list this afternoon.",
+      "dialogue": [
+        {
+          "speaker": "Owner",
+          "text": "Autumn is just around the corner. What colours are customers asking about?",
+          "translation": "Mùa thu sắp đến rồi. Khách đang hỏi về những màu nào?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Mostly deep burgundy, olive green and a lot of chocolate browns. Quite a few people also want the glazed chrome look.",
+          "translation": "Chủ yếu là đỏ rượu đậm, xanh ô liu và nhiều màu nâu sô-cô-la. Khá nhiều người cũng muốn kiểu chrome bóng gương."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Then we'd better stock up before demand peaks. How many bottles of each would you suggest?",
+          "translation": "Vậy chúng ta nên nhập thêm hàng trước khi nhu cầu lên cao điểm. Bạn đề xuất mỗi màu bao nhiêu chai?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "I'd say twelve of the burgundy, since it sells fastest, and six each of the others. We should also order extra top coat, because the chrome effect uses a lot.",
+          "translation": "Tôi nghĩ mười hai chai đỏ rượu, vì nó bán chạy nhất, và mỗi màu còn lại sáu chai. Chúng ta cũng nên đặt thêm sơn bóng, vì hiệu ứng chrome dùng rất nhiều."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Fine. If we order today, the supplier can deliver by the fifteenth. I'd rather not run out in the middle of the season.",
+          "translation": "Được. Nếu đặt hôm nay, nhà cung cấp có thể giao trước ngày mười lăm. Tôi không muốn hết hàng giữa mùa."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Agreed. I'll draw up the list this afternoon.",
+          "translation": "Đồng ý. Chiều nay tôi sẽ soạn danh sách."
+        }
+      ],
       "vocabulary": [
         {
           "term": "around the corner",
@@ -3032,6 +3627,38 @@
       "title": "Hướng dẫn khách chăm sóc móng tại nhà",
       "objective": "Đưa lời khuyên cụ thể giúp móng gel bền hơn và xử lý khi bị bong.",
       "reading": "Technician: Before you go, let me give you a few tips so your gel lasts as long as possible.\nCustomer: Thanks. I tend to break nails at the corners.\nTechnician: That's common. Try not to use your nails as tools — opening cans, peeling stickers, that kind of thing. Wear gloves when you wash dishes, because hot water and detergent weaken the gel.\nCustomer: What about the dry skin around my nails?\nTechnician: Apply cuticle oil every evening and moisturise your hands regularly. If you notice any lifting, don't pick at it; come back and we'll fix it for free within a week.\nCustomer: That's really helpful. I'll make sure to follow all of that.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "Before you go, let me give you a few tips so your gel lasts as long as possible.",
+          "translation": "Trước khi bạn về, để tôi dặn bạn vài mẹo để bộ gel giữ được lâu nhất có thể."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Thanks. I tend to break nails at the corners.",
+          "translation": "Cảm ơn bạn. Tôi hay bị gãy móng ở hai góc."
+        },
+        {
+          "speaker": "Technician",
+          "text": "That's common. Try not to use your nails as tools — opening cans, peeling stickers, that kind of thing. Wear gloves when you wash dishes, because hot water and detergent weaken the gel.",
+          "translation": "Điều đó rất phổ biến. Cố gắng đừng dùng móng làm công cụ — mở lon, bóc nhãn dán và những việc tương tự. Hãy đeo găng tay khi rửa chén, vì nước nóng và chất tẩy rửa làm yếu lớp gel."
+        },
+        {
+          "speaker": "Customer",
+          "text": "What about the dry skin around my nails?",
+          "translation": "Còn da khô quanh móng thì sao?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Apply cuticle oil every evening and moisturise your hands regularly. If you notice any lifting, don't pick at it; come back and we'll fix it for free within a week.",
+          "translation": "Thoa dầu dưỡng da quanh móng mỗi tối và dưỡng ẩm tay thường xuyên. Nếu thấy móng bắt đầu bong, đừng cạy; hãy quay lại, chúng tôi sẽ sửa miễn phí trong vòng một tuần."
+        },
+        {
+          "speaker": "Customer",
+          "text": "That's really helpful. I'll make sure to follow all of that.",
+          "translation": "Thật sự rất hữu ích. Tôi sẽ làm theo tất cả."
+        }
+      ],
       "vocabulary": [
         {
           "term": "peel",
@@ -3199,6 +3826,38 @@
       "title": "Báo cáo doanh thu và đặt mục tiêu",
       "objective": "Đọc số liệu tháng, giải thích nguyên nhân và đặt mục tiêu cho tháng sau.",
       "reading": "Owner: Let's review last month's figures. Revenue was up eight percent compared with the previous month, but our profit margin slipped slightly.\nManager: That's mainly because of supply costs. We used more gel polish than expected.\nOwner: What about repeat customers?\nManager: Encouragingly, sixty percent of clients rebooked before leaving. That's up from forty-five percent in the spring.\nOwner: Excellent. For next month, let's aim to increase that to seventy percent and reduce waste by ten percent.\nManager: Both targets seem achievable, as long as the team stays motivated. I'll share the numbers at Monday's meeting.",
+      "dialogue": [
+        {
+          "speaker": "Owner",
+          "text": "Let's review last month's figures. Revenue was up eight percent compared with the previous month, but our profit margin slipped slightly.",
+          "translation": "Chúng ta cùng xem số liệu tháng trước. Doanh thu tăng tám phần trăm so với tháng trước đó, nhưng biên lợi nhuận giảm nhẹ."
+        },
+        {
+          "speaker": "Manager",
+          "text": "That's mainly because of supply costs. We used more gel polish than expected.",
+          "translation": "Chủ yếu là do chi phí nguyên vật liệu. Chúng ta dùng nhiều sơn gel hơn dự kiến."
+        },
+        {
+          "speaker": "Owner",
+          "text": "What about repeat customers?",
+          "translation": "Còn khách quay lại thì sao?"
+        },
+        {
+          "speaker": "Manager",
+          "text": "Encouragingly, sixty percent of clients rebooked before leaving. That's up from forty-five percent in the spring.",
+          "translation": "Điều đáng mừng là sáu mươi phần trăm khách đã đặt lịch lại trước khi ra về. Con số này tăng từ bốn mươi lăm phần trăm hồi mùa xuân."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Excellent. For next month, let's aim to increase that to seventy percent and reduce waste by ten percent.",
+          "translation": "Tuyệt vời. Tháng tới, hãy đặt mục tiêu tăng lên bảy mươi phần trăm và giảm hao phí mười phần trăm."
+        },
+        {
+          "speaker": "Manager",
+          "text": "Both targets seem achievable, as long as the team stays motivated. I'll share the numbers at Monday's meeting.",
+          "translation": "Cả hai mục tiêu đều khả thi, miễn là cả nhóm giữ được tinh thần. Tôi sẽ chia sẻ số liệu trong cuộc họp thứ Hai."
+        }
+      ],
       "vocabulary": [
         {
           "term": "revenue",
@@ -3366,6 +4025,38 @@
       "title": "Tư vấn tình trạng móng phức tạp",
       "objective": "Mô tả dấu hiệu bất thường của móng, giải thích giới hạn chuyên môn và khuyên khách đi khám.",
       "reading": "Technician: Before we start, may I ask about your nails? There's some noticeable ridging here, and the free edge seems to be lifting away from the nail bed.\nCustomer: It started a few months ago. I assumed it was just from the gel removal.\nTechnician: That could be a factor, particularly if the product was soaked off for too long. However, it might also point to an underlying issue, such as a vitamin deficiency or an infection. I'm not in a position to diagnose anything, so I'd strongly suggest seeing a doctor.\nCustomer: So you won't do my nails today?\nTechnician: I'm happy to give you a gentle manicure and a strengthening treatment, but I'd steer clear of any enhancements until the nails have recovered. Were the condition to worsen, I'd have to decline altogether.\nCustomer: I see. That's a bit disappointing, but I'd rather be safe.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "Before we start, may I ask about your nails? There's some noticeable ridging here, and the free edge seems to be lifting away from the nail bed.",
+          "translation": "Trước khi bắt đầu, tôi hỏi về móng của bạn một chút được không? Ở đây có những đường gờ dọc khá rõ, và phần mép tự do của móng có vẻ đang bong khỏi giường móng."
+        },
+        {
+          "speaker": "Customer",
+          "text": "It started a few months ago. I assumed it was just from the gel removal.",
+          "translation": "Chuyện này bắt đầu cách đây vài tháng. Tôi tưởng chỉ là do tháo gel."
+        },
+        {
+          "speaker": "Technician",
+          "text": "That could be a factor, particularly if the product was soaked off for too long. However, it might also point to an underlying issue, such as a vitamin deficiency or an infection. I'm not in a position to diagnose anything, so I'd strongly suggest seeing a doctor.",
+          "translation": "Đó có thể là một yếu tố, nhất là nếu sản phẩm bị ngâm tháo quá lâu. Tuy nhiên, nó cũng có thể là dấu hiệu của một vấn đề tiềm ẩn, chẳng hạn thiếu vitamin hoặc nhiễm trùng. Tôi không có tư cách để chẩn đoán điều gì, nên tôi thật sự khuyên bạn đi khám bác sĩ."
+        },
+        {
+          "speaker": "Customer",
+          "text": "So you won't do my nails today?",
+          "translation": "Vậy hôm nay bạn sẽ không làm móng cho tôi sao?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "I'm happy to give you a gentle manicure and a strengthening treatment, but I'd steer clear of any enhancements until the nails have recovered. Were the condition to worsen, I'd have to decline altogether.",
+          "translation": "Tôi sẵn lòng làm cho bạn một bộ manicure nhẹ nhàng và liệu trình làm chắc móng, nhưng tôi sẽ tránh mọi loại móng nối cho đến khi móng hồi phục. Nếu tình trạng xấu đi, tôi sẽ buộc phải từ chối hoàn toàn."
+        },
+        {
+          "speaker": "Customer",
+          "text": "I see. That's a bit disappointing, but I'd rather be safe.",
+          "translation": "Tôi hiểu. Hơi thất vọng một chút, nhưng tôi thà an toàn."
+        }
+      ],
       "vocabulary": [
         {
           "term": "ridging",
@@ -3533,6 +4224,38 @@
       "title": "Trao đổi ý tưởng thiết kế móng theo yêu cầu",
       "objective": "Làm rõ mong muốn thẩm mỹ của khách, đề xuất thiết kế và đặt điều kiện về độ bền.",
       "reading": "Customer: I'm after something understated for my sister's wedding — nothing too flashy, but not plain either.\nTechnician: Understated can mean a lot of things. Are you thinking of a sheer nude base with a subtle shimmer, or something more graphic, like negative space with a fine gold line?\nCustomer: The negative space sounds elegant. Would it hold up over a long weekend of celebrations?\nTechnician: Absolutely, provided we seal the edges properly. I'd also suggest a slightly shorter, rounded shape; it'll look more refined and it's less likely to snag on your dress.\nCustomer: Could you mock up a design first? I don't want any surprises.\nTechnician: Of course. I'll sketch it on a practice tip, and we can tweak it until you're completely happy.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "I'm after something understated for my sister's wedding — nothing too flashy, but not plain either.",
+          "translation": "Tôi đang tìm một thiết kế tinh tế cho đám cưới của chị gái tôi — không quá lòe loẹt, nhưng cũng không trơn nhạt."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Understated can mean a lot of things. Are you thinking of a sheer nude base with a subtle shimmer, or something more graphic, like negative space with a fine gold line?",
+          "translation": "'Tinh tế' có thể mang nhiều nghĩa. Bạn đang nghĩ đến nền nude trong suốt với chút ánh nhũ nhẹ, hay thứ gì đó cách điệu hơn, như khoảng trống kết hợp một đường kim loại vàng mảnh?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "The negative space sounds elegant. Would it hold up over a long weekend of celebrations?",
+          "translation": "Kiểu khoảng trống nghe có vẻ thanh lịch. Nó có bền suốt một cuối tuần dài đầy tiệc tùng không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Absolutely, provided we seal the edges properly. I'd also suggest a slightly shorter, rounded shape; it'll look more refined and it's less likely to snag on your dress.",
+          "translation": "Chắc chắn, miễn là chúng ta bịt kín mép cẩn thận. Tôi cũng gợi ý một dáng móng hơi ngắn và tròn hơn; trông sẽ tinh tế hơn và ít bị vướng vào váy của bạn."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Could you mock up a design first? I don't want any surprises.",
+          "translation": "Bạn có thể vẽ thử thiết kế trước được không? Tôi không muốn bị bất ngờ."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Of course. I'll sketch it on a practice tip, and we can tweak it until you're completely happy.",
+          "translation": "Dĩ nhiên. Tôi sẽ vẽ phác trên một móng tập, và chúng ta có thể chỉnh sửa cho đến khi bạn hoàn toàn hài lòng."
+        }
+      ],
       "vocabulary": [
         {
           "term": "understated",
@@ -3700,6 +4423,38 @@
       "title": "Hiểu thành phần sản phẩm và dị ứng",
       "objective": "Giải thích nguyên nhân dị ứng gel, vai trò của việc sấy đúng cách và thử dị ứng.",
       "reading": "Customer: After my last gel manicure, the skin around my nails turned red and itchy. Should I be worried?\nTechnician: It could be an allergic reaction, most likely to methacrylates such as HEMA, which are found in many gel products. Once someone becomes sensitised, the reaction tends to get worse with each exposure.\nCustomer: So I can never have gel again?\nTechnician: Not necessarily. There are hypoallergenic, HEMA-free systems, although they aren't entirely risk-free. The key is proper curing — under-cured gel is far more likely to trigger a reaction — and keeping the product off the skin during application.\nCustomer: Is it safe to try today?\nTechnician: I'd recommend a patch test on one nail first, and we'll wait forty-eight hours before doing the rest. It's slower, but it's the responsible way to go about it.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "After my last gel manicure, the skin around my nails turned red and itchy. Should I be worried?",
+          "translation": "Sau lần làm móng gel gần nhất, da quanh móng của tôi đỏ và ngứa. Tôi có nên lo không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "It could be an allergic reaction, most likely to methacrylates such as HEMA, which are found in many gel products. Once someone becomes sensitised, the reaction tends to get worse with each exposure.",
+          "translation": "Đó có thể là phản ứng dị ứng, nhiều khả năng với các methacrylate như HEMA, có trong nhiều sản phẩm gel. Một khi đã bị mẫn cảm, phản ứng có xu hướng nặng hơn sau mỗi lần tiếp xúc."
+        },
+        {
+          "speaker": "Customer",
+          "text": "So I can never have gel again?",
+          "translation": "Vậy tôi không bao giờ làm gel được nữa sao?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Not necessarily. There are hypoallergenic, HEMA-free systems, although they aren't entirely risk-free. The key is proper curing — under-cured gel is far more likely to trigger a reaction — and keeping the product off the skin during application.",
+          "translation": "Không hẳn. Có các hệ gel ít gây dị ứng, không chứa HEMA, dù chúng cũng không hoàn toàn không có rủi ro. Điều then chốt là sấy đúng cách — gel sấy chưa đủ dễ gây phản ứng hơn nhiều — và giữ sản phẩm không dính lên da khi thi công."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Is it safe to try today?",
+          "translation": "Hôm nay thử có an toàn không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "I'd recommend a patch test on one nail first, and we'll wait forty-eight hours before doing the rest. It's slower, but it's the responsible way to go about it.",
+          "translation": "Tôi khuyên nên thử dị ứng trên một móng trước, và chúng ta chờ bốn mươi tám giờ trước khi làm phần còn lại. Chậm hơn, nhưng đó là cách làm có trách nhiệm."
+        }
+      ],
       "vocabulary": [
         {
           "term": "allergic reaction",
@@ -3867,6 +4622,38 @@
       "title": "Xử lý sự cố phản ứng và lập báo cáo",
       "objective": "Giữ bình tĩnh khi khách có phản ứng, hỏi triệu chứng nghiêm trọng và lập báo cáo sự cố.",
       "reading": "Customer: My fingers are burning and swelling. I think something's wrong.\nTechnician: Please stay calm. I'm going to remove the product straight away and rinse your hands with cool water. Are you having any difficulty breathing, or any swelling of the lips?\nCustomer: No, just my fingers.\nTechnician: Good. Even so, I'd advise you to see a doctor if it doesn't settle within an hour. I'll write up an incident report with the product names and batch numbers, so your doctor has all the details.\nCustomer: Will I be charged?\nTechnician: Certainly not. Our priority is your wellbeing. Here's my manager's number, and we'll follow up with you tomorrow.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "My fingers are burning and swelling. I think something's wrong.",
+          "translation": "Ngón tay tôi nóng rát và sưng lên. Tôi nghĩ có gì đó không ổn."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Please stay calm. I'm going to remove the product straight away and rinse your hands with cool water. Are you having any difficulty breathing, or any swelling of the lips?",
+          "translation": "Xin bạn bình tĩnh. Tôi sẽ lấy sản phẩm ra ngay và rửa tay bạn bằng nước mát. Bạn có thấy khó thở hoặc sưng môi không?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "No, just my fingers.",
+          "translation": "Không, chỉ ngón tay thôi."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Good. Even so, I'd advise you to see a doctor if it doesn't settle within an hour. I'll write up an incident report with the product names and batch numbers, so your doctor has all the details.",
+          "translation": "Tốt. Dù vậy, tôi khuyên bạn đi khám bác sĩ nếu không dịu đi trong vòng một giờ. Tôi sẽ lập báo cáo sự cố, ghi tên sản phẩm và số lô, để bác sĩ của bạn có đầy đủ thông tin."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Will I be charged?",
+          "translation": "Tôi có bị tính tiền không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Certainly not. Our priority is your wellbeing. Here's my manager's number, and we'll follow up with you tomorrow.",
+          "translation": "Chắc chắn là không. Ưu tiên của chúng tôi là sức khỏe của bạn. Đây là số của quản lý tôi, và ngày mai chúng tôi sẽ liên hệ lại với bạn."
+        }
+      ],
       "vocabulary": [
         {
           "term": "incident report",
@@ -4034,6 +4821,38 @@
       "title": "Chính sách đặt cọc và hủy lịch",
       "objective": "Giải thích chính sách hủy lịch, nêu giới hạn và đề xuất giải pháp thay thế một cách lịch sự.",
       "reading": "Customer: I'm so sorry — I'm going to have to cancel my appointment for this afternoon. Something's come up at work.\nReceptionist: I understand. Unfortunately, as our policy states, appointments cancelled with less than twenty-four hours' notice forfeit the deposit.\nCustomer: Surely there's some flexibility? It's my first time cancelling.\nReceptionist: Given that it's your first time, I can transfer the deposit to a new booking within the next fourteen days. That's the most I'm able to do, I'm afraid.\nCustomer: That's fair. I appreciate it.\nReceptionist: Not at all. Should you need to reschedule again, please let us know at least a day in advance, so we can offer the slot to someone on the waiting list.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "I'm so sorry — I'm going to have to cancel my appointment for this afternoon. Something's come up at work.",
+          "translation": "Tôi thành thật xin lỗi — tôi phải hủy lịch hẹn chiều nay. Công việc có việc phát sinh."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "I understand. Unfortunately, as our policy states, appointments cancelled with less than twenty-four hours' notice forfeit the deposit.",
+          "translation": "Tôi hiểu. Tiếc là theo chính sách của chúng tôi, lịch hẹn bị hủy với thời gian báo trước dưới hai mươi bốn giờ sẽ mất tiền đặt cọc."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Surely there's some flexibility? It's my first time cancelling.",
+          "translation": "Chắc chắn có thể linh hoạt chút chứ? Đây là lần đầu tôi hủy."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Given that it's your first time, I can transfer the deposit to a new booking within the next fourteen days. That's the most I'm able to do, I'm afraid.",
+          "translation": "Xét rằng đây là lần đầu của bạn, tôi có thể chuyển tiền đặt cọc sang một lịch hẹn mới trong vòng mười bốn ngày tới. Đó là mức tối đa tôi làm được, tôi e là vậy."
+        },
+        {
+          "speaker": "Customer",
+          "text": "That's fair. I appreciate it.",
+          "translation": "Như vậy là hợp lý. Cảm ơn bạn."
+        },
+        {
+          "speaker": "Receptionist",
+          "text": "Not at all. Should you need to reschedule again, please let us know at least a day in advance, so we can offer the slot to someone on the waiting list.",
+          "translation": "Không có gì ạ. Nếu bạn cần dời lịch lần nữa, xin cho chúng tôi biết trước ít nhất một ngày, để chúng tôi nhường chỗ cho người trong danh sách chờ."
+        }
+      ],
       "vocabulary": [
         {
           "term": "deposit",
@@ -4201,6 +5020,43 @@
       "title": "Hướng dẫn và góp ý cho nhân viên mới",
       "objective": "Khen đúng chỗ, góp ý cụ thể và đưa lời khuyên mềm mỏng cho thợ mới.",
       "reading": "Trainer: Let's go through your last set together. First, what do you think went well?\nTrainee: I think my shaping was quite even, and the customer seemed relaxed.\nTrainer: I agree, your shaping is coming along nicely. One thing I'd work on is your cuticle prep. You were a little heavy-handed near the sidewall, which is how lifting starts.\nTrainee: I didn't realise. I was worried about leaving any skin behind.\nTrainer: That's a common concern. If I were you, I'd use a lighter touch and let the product do more of the work. It's all about control rather than pressure.\nTrainee: Would you mind watching me again tomorrow?\nTrainer: Not at all. By the end of the month, I'm confident you'll be doing it with your eyes closed.",
+      "dialogue": [
+        {
+          "speaker": "Trainer",
+          "text": "Let's go through your last set together. First, what do you think went well?",
+          "translation": "Chúng ta cùng xem lại bộ móng em làm gần nhất. Trước tiên, em thấy điều gì đã làm tốt?"
+        },
+        {
+          "speaker": "Trainee",
+          "text": "I think my shaping was quite even, and the customer seemed relaxed.",
+          "translation": "Em nghĩ phần tạo form khá đều, và khách có vẻ thư giãn."
+        },
+        {
+          "speaker": "Trainer",
+          "text": "I agree, your shaping is coming along nicely. One thing I'd work on is your cuticle prep. You were a little heavy-handed near the sidewall, which is how lifting starts.",
+          "translation": "Chị đồng ý, phần tạo form của em đang tiến bộ tốt. Một điều chị muốn em cải thiện là bước chuẩn bị da quanh móng. Em hơi mạnh tay gần rãnh móng, và đó là lý do móng bắt đầu bị bong."
+        },
+        {
+          "speaker": "Trainee",
+          "text": "I didn't realise. I was worried about leaving any skin behind.",
+          "translation": "Em không nhận ra. Em sợ để sót da."
+        },
+        {
+          "speaker": "Trainer",
+          "text": "That's a common concern. If I were you, I'd use a lighter touch and let the product do more of the work. It's all about control rather than pressure.",
+          "translation": "Đó là nỗi lo thường gặp. Nếu là em, chị sẽ dùng lực nhẹ hơn và để sản phẩm làm việc nhiều hơn. Quan trọng là kiểm soát chứ không phải ấn mạnh."
+        },
+        {
+          "speaker": "Trainee",
+          "text": "Would you mind watching me again tomorrow?",
+          "translation": "Chị xem em làm lại vào ngày mai được không ạ?"
+        },
+        {
+          "speaker": "Trainer",
+          "text": "Not at all. By the end of the month, I'm confident you'll be doing it with your eyes closed.",
+          "translation": "Được chứ. Đến cuối tháng, chị tin em sẽ làm được mà nhắm mắt cũng xong."
+        }
+      ],
       "vocabulary": [
         {
           "term": "shaping",
@@ -4368,6 +5224,38 @@
       "title": "Xây dựng thương hiệu và mạng xã hội",
       "objective": "Trao đổi cách biến người theo dõi thành khách đặt lịch và giữ giọng điệu thương hiệu nhất quán.",
       "reading": "Owner: Our feed looks pretty, but we're not converting followers into bookings. Where are we going wrong?\nConsultant: Your photos are strong, but there's no clear call to action. Each post should tell people what to do next — book, message, or visit.\nOwner: We don't want to come across as pushy.\nConsultant: There's a fine line between pushy and helpful. Short stories about your clients' experiences, shared with their consent, build trust far more effectively than discounts. Consistency matters too; posting three times a week beats a burst of ten posts followed by silence.\nOwner: And what about the brand's tone of voice?\nConsultant: Decide on two or three adjectives — warm, expert, playful, say — and let those guide every caption. Customers should recognise you even without seeing the logo.",
+      "dialogue": [
+        {
+          "speaker": "Owner",
+          "text": "Our feed looks pretty, but we're not converting followers into bookings. Where are we going wrong?",
+          "translation": "Trang của chúng ta trông đẹp, nhưng người theo dõi không chuyển thành lịch đặt. Chúng ta đang sai ở đâu?"
+        },
+        {
+          "speaker": "Consultant",
+          "text": "Your photos are strong, but there's no clear call to action. Each post should tell people what to do next — book, message, or visit.",
+          "translation": "Ảnh của bạn rất đẹp, nhưng không có lời kêu gọi hành động rõ ràng. Mỗi bài đăng nên cho người xem biết cần làm gì tiếp theo — đặt lịch, nhắn tin hay ghé tiệm."
+        },
+        {
+          "speaker": "Owner",
+          "text": "We don't want to come across as pushy.",
+          "translation": "Chúng tôi không muốn tạo cảm giác chèo kéo."
+        },
+        {
+          "speaker": "Consultant",
+          "text": "There's a fine line between pushy and helpful. Short stories about your clients' experiences, shared with their consent, build trust far more effectively than discounts. Consistency matters too; posting three times a week beats a burst of ten posts followed by silence.",
+          "translation": "Ranh giới giữa chèo kéo và hữu ích rất mong manh. Những câu chuyện ngắn về trải nghiệm của khách, được chia sẻ khi có sự đồng ý của họ, xây dựng lòng tin hiệu quả hơn nhiều so với giảm giá. Sự đều đặn cũng quan trọng; đăng ba lần mỗi tuần tốt hơn đăng dồn mười bài rồi im lặng."
+        },
+        {
+          "speaker": "Owner",
+          "text": "And what about the brand's tone of voice?",
+          "translation": "Còn giọng điệu thương hiệu thì sao?"
+        },
+        {
+          "speaker": "Consultant",
+          "text": "Decide on two or three adjectives — warm, expert, playful, say — and let those guide every caption. Customers should recognise you even without seeing the logo.",
+          "translation": "Hãy chọn hai hoặc ba tính từ — chẳng hạn ấm áp, chuyên nghiệp, vui tươi — và để chúng dẫn dắt mọi chú thích. Khách hàng nên nhận ra bạn ngay cả khi không thấy logo."
+        }
+      ],
       "vocabulary": [
         {
           "term": "convert",
@@ -4535,6 +5423,43 @@
       "title": "Đàm phán với nhà cung cấp",
       "objective": "Thương lượng giá, chiết khấu và thời gian giao hàng, yêu cầu cam kết bằng văn bản.",
       "reading": "Owner: We're ordering in much larger volumes now, so I'd like to revisit our pricing.\nSupplier: I appreciate your business. What sort of volumes are we talking about?\nOwner: Roughly double what we ordered last quarter, on a regular basis. In return, I'd expect a discount of around fifteen percent and free delivery.\nSupplier: Fifteen is a stretch. I could offer ten percent, with free delivery above a certain order value.\nOwner: What about the lead time? Last month, a delay left us short of gel polish for a week.\nSupplier: That's unacceptable, and I apologise. I can commit to a maximum five-day lead time in writing, with a rebate if we miss it.\nOwner: In that case, we have a deal, provided it's confirmed in the contract.",
+      "dialogue": [
+        {
+          "speaker": "Owner",
+          "text": "We're ordering in much larger volumes now, so I'd like to revisit our pricing.",
+          "translation": "Hiện giờ chúng tôi đặt hàng với số lượng lớn hơn nhiều, nên tôi muốn xem lại giá của chúng ta."
+        },
+        {
+          "speaker": "Supplier",
+          "text": "I appreciate your business. What sort of volumes are we talking about?",
+          "translation": "Tôi trân trọng sự hợp tác của bạn. Chúng ta đang nói về số lượng cỡ nào?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "Roughly double what we ordered last quarter, on a regular basis. In return, I'd expect a discount of around fifteen percent and free delivery.",
+          "translation": "Khoảng gấp đôi so với quý trước, và đặt đều đặn. Đổi lại, tôi mong có chiết khấu khoảng mười lăm phần trăm và miễn phí giao hàng."
+        },
+        {
+          "speaker": "Supplier",
+          "text": "Fifteen is a stretch. I could offer ten percent, with free delivery above a certain order value.",
+          "translation": "Mười lăm hơi quá sức. Tôi có thể đề nghị mười phần trăm, kèm miễn phí giao hàng khi đơn hàng đạt một giá trị nhất định."
+        },
+        {
+          "speaker": "Owner",
+          "text": "What about the lead time? Last month, a delay left us short of gel polish for a week.",
+          "translation": "Còn thời gian giao hàng thì sao? Tháng trước, việc giao chậm làm chúng tôi thiếu sơn gel cả tuần."
+        },
+        {
+          "speaker": "Supplier",
+          "text": "That's unacceptable, and I apologise. I can commit to a maximum five-day lead time in writing, with a rebate if we miss it.",
+          "translation": "Điều đó không chấp nhận được, và tôi xin lỗi. Tôi có thể cam kết bằng văn bản thời gian giao hàng tối đa năm ngày, kèm khoản hoàn tiền nếu chúng tôi trễ."
+        },
+        {
+          "speaker": "Owner",
+          "text": "In that case, we have a deal, provided it's confirmed in the contract.",
+          "translation": "Vậy thì chúng ta chốt được, với điều kiện được xác nhận trong hợp đồng."
+        }
+      ],
       "vocabulary": [
         {
           "term": "volume",
@@ -4702,6 +5627,38 @@
       "title": "Giấy phép, quy định và kiểm tra",
       "objective": "Làm việc với thanh tra: trình giấy tờ, giải thích thiếu sót và cam kết khắc phục.",
       "reading": "Inspector: Good morning. I'm here for the routine inspection. May I see your licences and the cleaning logs?\nOwner: Of course. All technicians' licences are displayed at their stations, and our sterilisation records are in this binder.\nInspector: Thank you. I notice that the foot spa basins were last disinfected two days ago. Regulations stipulate that they must be cleaned and logged after every client.\nOwner: You're right; that entry was missed. Our new technician wasn't aware of the requirement. I'll make sure everyone is briefed today.\nInspector: I'll record it as a minor violation. You have fourteen days to demonstrate compliance, otherwise a fine may be imposed.\nOwner: Understood. We'll send you the updated logs well before the deadline.",
+      "dialogue": [
+        {
+          "speaker": "Inspector",
+          "text": "Good morning. I'm here for the routine inspection. May I see your licences and the cleaning logs?",
+          "translation": "Chào buổi sáng. Tôi đến để kiểm tra định kỳ. Tôi xem giấy phép hành nghề và nhật ký vệ sinh của quý vị được không?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "Of course. All technicians' licences are displayed at their stations, and our sterilisation records are in this binder.",
+          "translation": "Dĩ nhiên. Giấy phép của tất cả thợ được treo tại từng vị trí làm việc, và hồ sơ tiệt trùng của chúng tôi nằm trong cuốn sổ này."
+        },
+        {
+          "speaker": "Inspector",
+          "text": "Thank you. I notice that the foot spa basins were last disinfected two days ago. Regulations stipulate that they must be cleaned and logged after every client.",
+          "translation": "Cảm ơn. Tôi thấy các bồn ngâm chân lần cuối được khử trùng cách đây hai ngày. Quy định nêu rõ chúng phải được vệ sinh và ghi lại sau mỗi khách."
+        },
+        {
+          "speaker": "Owner",
+          "text": "You're right; that entry was missed. Our new technician wasn't aware of the requirement. I'll make sure everyone is briefed today.",
+          "translation": "Ông nói đúng; mục đó đã bị bỏ sót. Thợ mới của chúng tôi không biết về yêu cầu này. Tôi sẽ bảo đảm hôm nay mọi người đều được phổ biến."
+        },
+        {
+          "speaker": "Inspector",
+          "text": "I'll record it as a minor violation. You have fourteen days to demonstrate compliance, otherwise a fine may be imposed.",
+          "translation": "Tôi sẽ ghi nhận đây là vi phạm nhẹ. Quý vị có mười bốn ngày để chứng minh đã tuân thủ, nếu không có thể bị phạt."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Understood. We'll send you the updated logs well before the deadline.",
+          "translation": "Tôi hiểu. Chúng tôi sẽ gửi cho ông nhật ký cập nhật trước hạn chót từ rất sớm."
+        }
+      ],
       "vocabulary": [
         {
           "term": "inspection",
@@ -4869,6 +5826,43 @@
       "title": "Tư vấn khách có bệnh nền an toàn",
       "objective": "Hỏi về sức khỏe, nêu biện pháp phòng ngừa và dặn khách theo dõi sau dịch vụ.",
       "reading": "Technician: Before we begin, I always ask clients about any health conditions. Do you have anything we should be aware of?\nCustomer: I'm diabetic, and I'm on medication that affects my circulation.\nTechnician: Thank you for telling me. In that case, we'll take extra precautions. Because wounds can heal slowly, I'll avoid cutting the cuticles and I won't use any metal implements that could break the skin.\nCustomer: Is it still safe to have a pedicure?\nTechnician: Generally, yes, provided it's done gently and the tools are sterile. I'd recommend that you check your feet regularly, and see your doctor straight away if you notice any redness, sores or swelling.\nCustomer: I appreciate how careful you are.\nTechnician: Your safety comes first. If at any point you feel discomfort, please tell me immediately.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "Before we begin, I always ask clients about any health conditions. Do you have anything we should be aware of?",
+          "translation": "Trước khi bắt đầu, tôi luôn hỏi khách về các tình trạng sức khỏe. Bạn có điều gì chúng tôi cần biết không?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "I'm diabetic, and I'm on medication that affects my circulation.",
+          "translation": "Tôi bị tiểu đường, và tôi đang dùng thuốc ảnh hưởng đến tuần hoàn máu."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Thank you for telling me. In that case, we'll take extra precautions. Because wounds can heal slowly, I'll avoid cutting the cuticles and I won't use any metal implements that could break the skin.",
+          "translation": "Cảm ơn bạn đã cho tôi biết. Vậy thì chúng tôi sẽ có thêm các biện pháp phòng ngừa. Vì vết thương có thể lành chậm, tôi sẽ không cắt da quanh móng và sẽ không dùng bất kỳ dụng cụ kim loại nào có thể làm rách da."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Is it still safe to have a pedicure?",
+          "translation": "Làm móng chân có còn an toàn không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Generally, yes, provided it's done gently and the tools are sterile. I'd recommend that you check your feet regularly, and see your doctor straight away if you notice any redness, sores or swelling.",
+          "translation": "Nhìn chung là có, miễn là làm nhẹ nhàng và dụng cụ vô trùng. Tôi khuyên bạn thường xuyên kiểm tra bàn chân, và đi khám bác sĩ ngay nếu thấy đỏ, loét hoặc sưng."
+        },
+        {
+          "speaker": "Customer",
+          "text": "I appreciate how careful you are.",
+          "translation": "Tôi rất trân trọng sự cẩn thận của bạn."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Your safety comes first. If at any point you feel discomfort, please tell me immediately.",
+          "translation": "An toàn của bạn là trên hết. Nếu lúc nào bạn thấy khó chịu, xin cho tôi biết ngay."
+        }
+      ],
       "vocabulary": [
         {
           "term": "precaution",
@@ -5036,6 +6030,38 @@
       "title": "Giải thích khoa học về cấu trúc móng",
       "objective": "Giải thích bằng ngôn ngữ dễ hiểu vì sao móng tách lớp và cách bảo vệ móng.",
       "reading": "Customer: Why do my nails keep peeling in layers? It's so frustrating.\nTechnician: What you're describing is called lamellar splitting. Nails are made of keratin, a protein arranged in tightly packed layers. When the layers separate, they peel.\nCustomer: What causes that?\nTechnician: Usually repeated wetting and drying, harsh products, or trauma such as using your nails as tools. Nutrition can play a part too, although the evidence for supplements is mixed.\nCustomer: So no miracle cure?\nTechnician: Unfortunately not. The most reliable remedy is protection: moisturise, wear gloves, and keep the nails short while they recover. Growth is slow — a fingernail takes roughly six months to grow out completely — so patience is essential.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "Why do my nails keep peeling in layers? It's so frustrating.",
+          "translation": "Sao móng tôi cứ bong thành từng lớp vậy? Thật bực mình."
+        },
+        {
+          "speaker": "Technician",
+          "text": "What you're describing is called lamellar splitting. Nails are made of keratin, a protein arranged in tightly packed layers. When the layers separate, they peel.",
+          "translation": "Điều bạn mô tả gọi là móng tách lớp. Móng được cấu tạo từ keratin, một loại protein xếp thành các lớp xếp sát nhau. Khi các lớp tách ra, chúng bong."
+        },
+        {
+          "speaker": "Customer",
+          "text": "What causes that?",
+          "translation": "Nguyên nhân là gì?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Usually repeated wetting and drying, harsh products, or trauma such as using your nails as tools. Nutrition can play a part too, although the evidence for supplements is mixed.",
+          "translation": "Thường là do ướt rồi khô lặp đi lặp lại, các sản phẩm mạnh, hoặc chấn thương như dùng móng làm công cụ. Dinh dưỡng cũng có thể đóng một vai trò, dù bằng chứng về thực phẩm bổ sung còn chưa thống nhất."
+        },
+        {
+          "speaker": "Customer",
+          "text": "So no miracle cure?",
+          "translation": "Vậy không có thuốc thần kỳ sao?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Unfortunately not. The most reliable remedy is protection: moisturise, wear gloves, and keep the nails short while they recover. Growth is slow — a fingernail takes roughly six months to grow out completely — so patience is essential.",
+          "translation": "Tiếc là không. Biện pháp đáng tin cậy nhất là bảo vệ móng: dưỡng ẩm, đeo găng tay và giữ móng ngắn trong lúc móng hồi phục. Móng mọc chậm — một móng tay mất khoảng sáu tháng để mọc hết — nên kiên nhẫn là điều thiết yếu."
+        }
+      ],
       "vocabulary": [
         {
           "term": "keratin",
@@ -5203,6 +6229,48 @@
       "title": "Phỏng vấn ứng viên (vai chủ tiệm)",
       "objective": "Đặt câu hỏi phỏng vấn và đánh giá câu trả lời theo tình huống, hành động, kết quả.",
       "reading": "Owner: Thanks for coming in. I'd like to start with your background. What drew you to nail technology?\nCandidate: I've always been interested in the artistic side, but over time I've come to appreciate the client relationships even more.\nOwner: Tell me about a time you handled a difficult situation with a client.\nCandidate: A customer once insisted that her gel had been applied incorrectly. Rather than getting defensive, I asked her to show me where she was unhappy, apologised for the inconvenience, and redid the affected nails at no cost.\nOwner: And how do you keep up with new techniques?\nCandidate: I attend at least two workshops a year, and I follow a few reputable educators online.\nOwner: Finally, where do you see yourself in three years?\nCandidate: Ideally, leading a small team and mentoring newer technicians.",
+      "dialogue": [
+        {
+          "speaker": "Owner",
+          "text": "Thanks for coming in. I'd like to start with your background. What drew you to nail technology?",
+          "translation": "Cảm ơn bạn đã đến. Tôi muốn bắt đầu với kinh nghiệm của bạn. Điều gì thu hút bạn đến với nghề làm móng?"
+        },
+        {
+          "speaker": "Candidate",
+          "text": "I've always been interested in the artistic side, but over time I've come to appreciate the client relationships even more.",
+          "translation": "Tôi luôn quan tâm đến khía cạnh nghệ thuật, nhưng theo thời gian tôi càng trân trọng mối quan hệ với khách hàng hơn."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Tell me about a time you handled a difficult situation with a client.",
+          "translation": "Hãy kể cho tôi nghe về một lần bạn xử lý tình huống khó với khách hàng."
+        },
+        {
+          "speaker": "Candidate",
+          "text": "A customer once insisted that her gel had been applied incorrectly. Rather than getting defensive, I asked her to show me where she was unhappy, apologised for the inconvenience, and redid the affected nails at no cost.",
+          "translation": "Có một khách hàng từng khẳng định bộ gel của chị ấy làm sai. Thay vì tỏ ra phòng thủ, tôi nhờ chị ấy chỉ cho tôi chỗ chị không hài lòng, xin lỗi vì sự bất tiện, và làm lại các móng bị ảnh hưởng miễn phí."
+        },
+        {
+          "speaker": "Owner",
+          "text": "And how do you keep up with new techniques?",
+          "translation": "Và bạn cập nhật các kỹ thuật mới bằng cách nào?"
+        },
+        {
+          "speaker": "Candidate",
+          "text": "I attend at least two workshops a year, and I follow a few reputable educators online.",
+          "translation": "Tôi tham dự ít nhất hai buổi workshop mỗi năm, và theo dõi vài giảng viên uy tín trên mạng."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Finally, where do you see yourself in three years?",
+          "translation": "Cuối cùng, ba năm nữa bạn thấy mình ở đâu?"
+        },
+        {
+          "speaker": "Candidate",
+          "text": "Ideally, leading a small team and mentoring newer technicians.",
+          "translation": "Lý tưởng nhất là dẫn dắt một nhóm nhỏ và kèm cặp các thợ mới."
+        }
+      ],
       "vocabulary": [
         {
           "term": "background",
@@ -5370,6 +6438,43 @@
       "title": "Chỉ số hiệu suất và đánh giá thợ",
       "objective": "Đánh giá một thợ bằng số liệu, cân bằng khen và góp ý, đề xuất giải pháp.",
       "reading": "Manager: Let's go through your key performance indicators for the quarter. Your client retention is excellent at eighty-two percent, well above the team average.\nTechnician: Thank you. I always try to rebook clients before they leave.\nManager: It shows. On the other hand, your average service time is running about ten minutes over the target, which affects our capacity.\nTechnician: I think that's because I'm taking extra care with detailed nail art.\nManager: That's understandable, and the quality is outstanding. Perhaps we could price the more intricate designs separately, so the extra time is reflected in the fee.\nTechnician: That would make sense. I'd also appreciate some training on speed techniques.\nManager: I'll arrange that. Let's reconvene in six weeks to see how the numbers look.",
+      "dialogue": [
+        {
+          "speaker": "Manager",
+          "text": "Let's go through your key performance indicators for the quarter. Your client retention is excellent at eighty-two percent, well above the team average.",
+          "translation": "Chúng ta cùng xem các chỉ số hiệu suất chính của em trong quý. Tỷ lệ giữ chân khách của em rất xuất sắc, đạt tám mươi hai phần trăm, cao hơn nhiều mức trung bình của nhóm."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Thank you. I always try to rebook clients before they leave.",
+          "translation": "Cảm ơn chị. Em luôn cố gắng hẹn lại khách trước khi họ ra về."
+        },
+        {
+          "speaker": "Manager",
+          "text": "It shows. On the other hand, your average service time is running about ten minutes over the target, which affects our capacity.",
+          "translation": "Điều đó thể hiện rõ. Mặt khác, thời gian phục vụ trung bình của em đang vượt mục tiêu khoảng mười phút, ảnh hưởng đến công suất của tiệm."
+        },
+        {
+          "speaker": "Technician",
+          "text": "I think that's because I'm taking extra care with detailed nail art.",
+          "translation": "Em nghĩ đó là vì em dành nhiều sự chăm chút cho các mẫu vẽ chi tiết."
+        },
+        {
+          "speaker": "Manager",
+          "text": "That's understandable, and the quality is outstanding. Perhaps we could price the more intricate designs separately, so the extra time is reflected in the fee.",
+          "translation": "Điều đó dễ hiểu, và chất lượng rất xuất sắc. Có lẽ chúng ta có thể tính giá riêng cho các thiết kế phức tạp hơn, để thời gian tăng thêm được phản ánh trong giá."
+        },
+        {
+          "speaker": "Technician",
+          "text": "That would make sense. I'd also appreciate some training on speed techniques.",
+          "translation": "Như vậy là hợp lý. Em cũng mong được đào tạo thêm về các kỹ thuật làm nhanh."
+        },
+        {
+          "speaker": "Manager",
+          "text": "I'll arrange that. Let's reconvene in six weeks to see how the numbers look.",
+          "translation": "Chị sẽ sắp xếp. Chúng ta họp lại sau sáu tuần để xem số liệu thế nào."
+        }
+      ],
       "vocabulary": [
         {
           "term": "indicator",
@@ -5537,6 +6642,28 @@
       "title": "Trả lời đánh giá tiêu cực công khai",
       "objective": "Soạn phản hồi lịch sự cho đánh giá xấu: ghi nhận, xin lỗi và chuyển trao đổi sang kênh riêng.",
       "reading": "Review: 'Overpriced and rushed. The technician barely spoke to me and one nail chipped the same day. Would not recommend.'\nDraft reply: 'Dear Ms Carter, thank you for your feedback, and I'm sorry that your visit fell short of expectations. Our aim is for every client to feel valued, so I'm disappointed to hear you felt rushed. Chipping within a day isn't the standard we stand by; I'd welcome the chance to repair it free of charge. If you'd be willing to contact us directly at the salon, I will personally ensure the matter is resolved.'\nOwner: Is that too formal?\nConsultant: It's courteous, but I'd soften it slightly. Avoid defending yourself in public; acknowledge, apologise, and move the conversation offline. Also, never reveal personal details about the client.",
+      "dialogue": [
+        {
+          "speaker": "Review",
+          "text": "'Overpriced and rushed. The technician barely spoke to me and one nail chipped the same day. Would not recommend.'",
+          "translation": "'Giá đắt và làm vội. Thợ gần như không nói chuyện với tôi và một móng bị mẻ ngay trong ngày. Không khuyên dùng.'"
+        },
+        {
+          "speaker": "Draft reply",
+          "text": "'Dear Ms Carter, thank you for your feedback, and I'm sorry that your visit fell short of expectations. Our aim is for every client to feel valued, so I'm disappointed to hear you felt rushed. Chipping within a day isn't the standard we stand by; I'd welcome the chance to repair it free of charge. If you'd be willing to contact us directly at the salon, I will personally ensure the matter is resolved.'",
+          "translation": "'Kính gửi chị Carter, cảm ơn chị đã góp ý, và tôi xin lỗi vì lần ghé tiệm của chị không đạt như kỳ vọng. Mục tiêu của chúng tôi là mọi khách hàng đều cảm thấy được trân trọng, nên tôi rất tiếc khi nghe chị cảm thấy bị làm vội. Móng bị mẻ trong vòng một ngày không phải là tiêu chuẩn chúng tôi giữ; tôi rất mong có cơ hội sửa lại miễn phí. Nếu chị sẵn lòng liên hệ trực tiếp với tiệm, tôi sẽ đích thân bảo đảm vấn đề được giải quyết.'"
+        },
+        {
+          "speaker": "Owner",
+          "text": "Is that too formal?",
+          "translation": "Như vậy có quá trang trọng không?"
+        },
+        {
+          "speaker": "Consultant",
+          "text": "It's courteous, but I'd soften it slightly. Avoid defending yourself in public; acknowledge, apologise, and move the conversation offline. Also, never reveal personal details about the client.",
+          "translation": "Rất lịch sự, nhưng tôi sẽ làm mềm đi một chút. Tránh tự bào chữa nơi công khai; hãy ghi nhận, xin lỗi và chuyển cuộc trao đổi sang kênh riêng. Ngoài ra, tuyệt đối không tiết lộ thông tin cá nhân của khách hàng."
+        }
+      ],
       "vocabulary": [
         {
           "term": "fall short",
@@ -5704,6 +6831,43 @@
       "title": "Quy trình chuẩn và kiểm soát chất lượng",
       "objective": "Giới thiệu quy trình chuẩn (SOP), cách kiểm tra và xử lý khi có sai sót.",
       "reading": "Owner: From today, every service will follow a standard operating procedure. It might feel rigid at first, but consistency is what protects both our clients and our reputation.\nTechnician: What does the checklist cover?\nOwner: Everything from greeting and consultation to sanitising your station between clients. Each step has a sign-off box, and the supervisor will spot-check ten percent of services every week.\nTechnician: What happens if a step is missed?\nOwner: We treat it as a learning opportunity, not a punishment, unless it involves a safety breach. In that case, we escalate it immediately.\nTechnician: That sounds fair. Will the checklist be available in other languages for newer staff?\nOwner: Good point. We'll translate it into Vietnamese and Spanish.",
+      "dialogue": [
+        {
+          "speaker": "Owner",
+          "text": "From today, every service will follow a standard operating procedure. It might feel rigid at first, but consistency is what protects both our clients and our reputation.",
+          "translation": "Từ hôm nay, mọi dịch vụ sẽ tuân theo một quy trình vận hành chuẩn. Lúc đầu có thể thấy hơi cứng nhắc, nhưng sự nhất quán là điều bảo vệ cả khách hàng lẫn uy tín của chúng ta."
+        },
+        {
+          "speaker": "Technician",
+          "text": "What does the checklist cover?",
+          "translation": "Bảng kiểm tra gồm những gì ạ?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "Everything from greeting and consultation to sanitising your station between clients. Each step has a sign-off box, and the supervisor will spot-check ten percent of services every week.",
+          "translation": "Mọi thứ, từ chào đón và tư vấn đến vệ sinh khử khuẩn vị trí làm việc giữa các khách. Mỗi bước có một ô xác nhận, và người giám sát sẽ kiểm tra ngẫu nhiên mười phần trăm số dịch vụ mỗi tuần."
+        },
+        {
+          "speaker": "Technician",
+          "text": "What happens if a step is missed?",
+          "translation": "Nếu bỏ sót một bước thì sao ạ?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "We treat it as a learning opportunity, not a punishment, unless it involves a safety breach. In that case, we escalate it immediately.",
+          "translation": "Chúng ta xem đó là cơ hội học hỏi chứ không phải hình phạt, trừ khi liên quan đến vi phạm an toàn. Trong trường hợp đó, chúng ta sẽ báo cáo lên cấp cao hơn ngay lập tức."
+        },
+        {
+          "speaker": "Technician",
+          "text": "That sounds fair. Will the checklist be available in other languages for newer staff?",
+          "translation": "Nghe công bằng đấy ạ. Bảng kiểm tra có bản bằng các ngôn ngữ khác cho nhân viên mới không ạ?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "Good point. We'll translate it into Vietnamese and Spanish.",
+          "translation": "Ý hay đấy. Chúng ta sẽ dịch sang tiếng Việt và tiếng Tây Ban Nha."
+        }
+      ],
       "vocabulary": [
         {
           "term": "standard operating procedure",
@@ -5871,6 +7035,38 @@
       "title": "Thuyết phục khách về sức khỏe móng và xu hướng",
       "objective": "Dùng ngôn ngữ rào đón và thuyết phục để khuyên khách mà không từ chối thẳng.",
       "reading": "Customer: I want them as long as possible — and could you file them really thin so they look delicate?\nTechnician: I can certainly see the appeal, and I'd love to give you the look you're after. That said, I'd be doing you a disservice if I didn't flag a couple of concerns. Extreme length puts disproportionate leverage on the nail bed, and over-thinning the natural nail beneath can leave it weak for months.\nCustomer: Other salons do it all the time.\nTechnician: Quite possibly, and plenty of clients are perfectly happy. My point is that tolerance varies; what's harmless for one person can be damaging for another. If you'd be open to it, I could do a slightly shorter length this time and we'll see how your nails respond.\nCustomer: So you're not refusing?\nTechnician: Not at all. It's your decision — I simply want it to be an informed one.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "I want them as long as possible — and could you file them really thin so they look delicate?",
+          "translation": "Tôi muốn móng dài hết mức có thể — và bạn có thể dũa thật mỏng để trông mảnh mai không?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "I can certainly see the appeal, and I'd love to give you the look you're after. That said, I'd be doing you a disservice if I didn't flag a couple of concerns. Extreme length puts disproportionate leverage on the nail bed, and over-thinning the natural nail beneath can leave it weak for months.",
+          "translation": "Tôi hoàn toàn hiểu sức hấp dẫn của kiểu đó, và tôi rất muốn mang lại cho bạn kiểu bạn muốn. Tuy vậy, tôi sẽ có lỗi với bạn nếu không nêu ra vài mối lo. Độ dài quá mức tạo lực đòn bẩy không cân xứng lên giường móng, và việc dũa móng thật bên dưới quá mỏng có thể làm nó yếu trong nhiều tháng."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Other salons do it all the time.",
+          "translation": "Các tiệm khác làm thế suốt mà."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Quite possibly, and plenty of clients are perfectly happy. My point is that tolerance varies; what's harmless for one person can be damaging for another. If you'd be open to it, I could do a slightly shorter length this time and we'll see how your nails respond.",
+          "translation": "Rất có thể vậy, và nhiều khách vẫn hoàn toàn hài lòng. Ý tôi là ngưỡng chịu đựng của mỗi người khác nhau; điều vô hại với người này có thể gây hại cho người khác. Nếu bạn đồng ý, lần này tôi làm độ dài ngắn hơn một chút và chúng ta sẽ xem móng của bạn phản ứng ra sao."
+        },
+        {
+          "speaker": "Customer",
+          "text": "So you're not refusing?",
+          "translation": "Vậy là bạn không từ chối?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Not at all. It's your decision — I simply want it to be an informed one.",
+          "translation": "Hoàn toàn không. Đó là quyết định của bạn — tôi chỉ muốn nó là một quyết định có đủ thông tin."
+        }
+      ],
       "vocabulary": [
         {
           "term": "disservice",
@@ -6038,6 +7234,38 @@
       "title": "Giải quyết khiếu nại chính thức bằng ngôn ngữ ngoại giao",
       "objective": "Xoa dịu khách đang giận, đưa ra giải pháp thay thế và giữ mối quan hệ.",
       "reading": "Customer: This is unacceptable. I paid for a full set and two nails have already lifted. I want a full refund, and I'll be leaving a review.\nManager: I'm genuinely sorry to hear that, and I can understand why you're upset. May I take a look at the nails before we discuss what we can do?\nCustomer: Look all you like. It won't change anything.\nManager: I can see the lifting on the index and ring fingers. I'd like to make this right. Might I suggest we redo the full set at no charge, using a different base product? Alternatively, if you'd prefer to part ways, I'm prepared to offer a full refund.\nCustomer: Hmm. I was ready for an argument. I'll take the redo, but only if I can have it done today.\nManager: Absolutely. Thank you for giving us the opportunity to put it right, and for your candour — it helps us improve.",
+      "dialogue": [
+        {
+          "speaker": "Customer",
+          "text": "This is unacceptable. I paid for a full set and two nails have already lifted. I want a full refund, and I'll be leaving a review.",
+          "translation": "Thật không thể chấp nhận được. Tôi trả tiền cho cả bộ và hai móng đã bị bong rồi. Tôi muốn hoàn lại toàn bộ tiền, và tôi sẽ để lại đánh giá."
+        },
+        {
+          "speaker": "Manager",
+          "text": "I'm genuinely sorry to hear that, and I can understand why you're upset. May I take a look at the nails before we discuss what we can do?",
+          "translation": "Tôi thật lòng xin lỗi khi nghe điều đó, và tôi hiểu vì sao bạn khó chịu. Tôi xem qua móng của bạn trước khi chúng ta bàn xem có thể làm gì được không?"
+        },
+        {
+          "speaker": "Customer",
+          "text": "Look all you like. It won't change anything.",
+          "translation": "Cứ xem thoải mái. Cũng chẳng thay đổi được gì."
+        },
+        {
+          "speaker": "Manager",
+          "text": "I can see the lifting on the index and ring fingers. I'd like to make this right. Might I suggest we redo the full set at no charge, using a different base product? Alternatively, if you'd prefer to part ways, I'm prepared to offer a full refund.",
+          "translation": "Tôi thấy chỗ bong ở ngón trỏ và ngón áp út. Tôi muốn khắc phục việc này cho thỏa đáng. Tôi xin đề xuất chúng tôi làm lại cả bộ miễn phí, dùng một sản phẩm nền khác. Hoặc nếu bạn muốn dừng ở đây, tôi sẵn sàng hoàn lại toàn bộ tiền."
+        },
+        {
+          "speaker": "Customer",
+          "text": "Hmm. I was ready for an argument. I'll take the redo, but only if I can have it done today.",
+          "translation": "Hừm. Tôi đã sẵn sàng cho một cuộc cãi vã. Tôi sẽ chọn làm lại, nhưng chỉ khi làm xong ngay hôm nay."
+        },
+        {
+          "speaker": "Manager",
+          "text": "Absolutely. Thank you for giving us the opportunity to put it right, and for your candour — it helps us improve.",
+          "translation": "Chắc chắn rồi. Cảm ơn bạn đã cho chúng tôi cơ hội sửa sai, và vì sự thẳng thắn của bạn — điều đó giúp chúng tôi tiến bộ."
+        }
+      ],
       "vocabulary": [
         {
           "term": "make this right",
@@ -6205,6 +7433,38 @@
       "title": "Thuyết trình kế hoạch kinh doanh cho nhà đầu tư",
       "objective": "Trình bày số liệu, dự báo và rủi ro khi xin vay vốn mở chi nhánh.",
       "reading": "Owner: Thank you for meeting me. In short, I'm seeking a loan of eighty thousand dollars to open a second location in the downtown district.\nInvestor: Walk me through the numbers. How confident are you in the projected returns?\nOwner: Our existing salon operates at a gross margin of sixty-two percent, and occupancy is near capacity at weekends. Based on conservative estimates, the new location should break even within fourteen months and turn a profit thereafter.\nInvestor: What are the main risks?\nOwner: Chiefly staff retention and a rise in rent. We've mitigated the first by introducing a profit-share scheme, and the lease we've negotiated caps annual increases at three percent.\nInvestor: That's reassuring. Send me your cash-flow forecast, and I'll revert by Friday.",
+      "dialogue": [
+        {
+          "speaker": "Owner",
+          "text": "Thank you for meeting me. In short, I'm seeking a loan of eighty thousand dollars to open a second location in the downtown district.",
+          "translation": "Cảm ơn ông đã gặp tôi. Nói ngắn gọn, tôi đang tìm khoản vay tám mươi nghìn đô la để mở chi nhánh thứ hai ở khu trung tâm."
+        },
+        {
+          "speaker": "Investor",
+          "text": "Walk me through the numbers. How confident are you in the projected returns?",
+          "translation": "Hãy trình bày cho tôi các con số. Bà tự tin đến mức nào về lợi nhuận dự kiến?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "Our existing salon operates at a gross margin of sixty-two percent, and occupancy is near capacity at weekends. Based on conservative estimates, the new location should break even within fourteen months and turn a profit thereafter.",
+          "translation": "Tiệm hiện tại của chúng tôi hoạt động với biên lợi nhuận gộp sáu mươi hai phần trăm, và tỷ lệ lấp đầy lịch gần kín vào cuối tuần. Dựa trên các ước tính thận trọng, chi nhánh mới sẽ hòa vốn trong vòng mười bốn tháng và có lãi sau đó."
+        },
+        {
+          "speaker": "Investor",
+          "text": "What are the main risks?",
+          "translation": "Rủi ro chính là gì?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "Chiefly staff retention and a rise in rent. We've mitigated the first by introducing a profit-share scheme, and the lease we've negotiated caps annual increases at three percent.",
+          "translation": "Chủ yếu là việc giữ chân nhân viên và giá thuê tăng. Chúng tôi đã giảm thiểu rủi ro thứ nhất bằng chương trình chia lợi nhuận, và hợp đồng thuê chúng tôi đã đàm phán giới hạn mức tăng hằng năm ở ba phần trăm."
+        },
+        {
+          "speaker": "Investor",
+          "text": "That's reassuring. Send me your cash-flow forecast, and I'll revert by Friday.",
+          "translation": "Như vậy thì yên tâm. Hãy gửi tôi bản dự báo dòng tiền, và tôi sẽ phản hồi trước thứ Sáu."
+        }
+      ],
       "vocabulary": [
         {
           "term": "gross margin",
@@ -6372,6 +7632,38 @@
       "title": "Hợp đồng, thuê ghế và làm nhân viên",
       "objective": "So sánh mô hình thuê ghế và làm nhân viên, nêu rủi ro và đề nghị thử việc bằng văn bản.",
       "reading": "Technician: I'd like to understand the difference between renting a station and being employed here.\nOwner: In essence, if you rent a station, you operate as an independent contractor. You set your own prices and hours, you keep your clients' fees, and you pay a weekly rent. As an employee, you'd work set shifts, receive a wage plus commission, and I'd be responsible for your insurance and taxes.\nTechnician: What are the downsides to renting?\nOwner: You bear the financial risk. If you're quiet one week, the rent is still due, and you're liable for your own supplies and insurance. Conversely, you have more autonomy and the potential for higher earnings.\nTechnician: Could I trial it for a month?\nOwner: I'd be amenable to that, but I'd want it in writing, with a notice period of thirty days either way.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "I'd like to understand the difference between renting a station and being employed here.",
+          "translation": "Em muốn hiểu sự khác nhau giữa việc thuê một chỗ làm và làm nhân viên ở đây."
+        },
+        {
+          "speaker": "Owner",
+          "text": "In essence, if you rent a station, you operate as an independent contractor. You set your own prices and hours, you keep your clients' fees, and you pay a weekly rent. As an employee, you'd work set shifts, receive a wage plus commission, and I'd be responsible for your insurance and taxes.",
+          "translation": "Về cơ bản, nếu em thuê một chỗ làm, em hoạt động như một người làm việc độc lập. Em tự đặt giá và giờ làm, giữ toàn bộ tiền của khách và trả tiền thuê hằng tuần. Còn làm nhân viên, em làm theo ca cố định, nhận lương cộng hoa hồng, và chị chịu trách nhiệm về bảo hiểm và thuế cho em."
+        },
+        {
+          "speaker": "Technician",
+          "text": "What are the downsides to renting?",
+          "translation": "Việc thuê chỗ có những bất lợi gì ạ?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "You bear the financial risk. If you're quiet one week, the rent is still due, and you're liable for your own supplies and insurance. Conversely, you have more autonomy and the potential for higher earnings.",
+          "translation": "Em gánh rủi ro tài chính. Nếu tuần nào vắng khách, tiền thuê vẫn phải trả, và em tự chịu trách nhiệm về vật tư và bảo hiểm của mình. Ngược lại, em có nhiều quyền tự chủ hơn và tiềm năng thu nhập cao hơn."
+        },
+        {
+          "speaker": "Technician",
+          "text": "Could I trial it for a month?",
+          "translation": "Em có thể thử một tháng được không ạ?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "I'd be amenable to that, but I'd want it in writing, with a notice period of thirty days either way.",
+          "translation": "Chị sẵn lòng chấp nhận, nhưng chị muốn có văn bản, với thời gian báo trước ba mươi ngày cho cả hai bên."
+        }
+      ],
       "vocabulary": [
         {
           "term": "independent contractor",
@@ -6539,6 +7831,38 @@
       "title": "Họp nhóm và đánh giá hiệu suất",
       "objective": "Mở đầu cuộc trò chuyện khó bằng lời khen, nêu vấn đề và cùng thống nhất giải pháp.",
       "reading": "Manager: Thanks for making time. I wanted to talk about the past couple of months. Your client feedback has been outstanding, but I've noticed a pattern of late arrivals, which has a knock-on effect on the whole schedule.\nTechnician: I'm aware, and I'm sorry. I've been struggling with childcare arrangements since September.\nManager: I appreciate you telling me. Had I known, we might have adjusted your shifts sooner. What would help?\nTechnician: If I could start thirty minutes later on weekdays, I'd make up the time in the evening.\nManager: That seems workable. Let's agree on it for a trial period of six weeks and review it together. What I'd ask in return is that you let me know by text as early as possible if anything changes.\nTechnician: That's more than fair. Thank you for being so understanding.",
+      "dialogue": [
+        {
+          "speaker": "Manager",
+          "text": "Thanks for making time. I wanted to talk about the past couple of months. Your client feedback has been outstanding, but I've noticed a pattern of late arrivals, which has a knock-on effect on the whole schedule.",
+          "translation": "Cảm ơn em đã dành thời gian. Chị muốn nói về vài tháng vừa qua. Phản hồi của khách về em rất xuất sắc, nhưng chị nhận thấy một kiểu lặp lại là em hay đến trễ, và điều đó gây hiệu ứng dây chuyền lên cả lịch làm việc."
+        },
+        {
+          "speaker": "Technician",
+          "text": "I'm aware, and I'm sorry. I've been struggling with childcare arrangements since September.",
+          "translation": "Em biết, và em xin lỗi. Em đang gặp khó khăn trong việc sắp xếp chuyện đưa đón con từ tháng Chín."
+        },
+        {
+          "speaker": "Manager",
+          "text": "I appreciate you telling me. Had I known, we might have adjusted your shifts sooner. What would help?",
+          "translation": "Chị cảm ơn em đã nói cho chị biết. Nếu chị biết sớm hơn, có lẽ chúng ta đã điều chỉnh ca làm của em sớm hơn. Điều gì sẽ giúp em?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "If I could start thirty minutes later on weekdays, I'd make up the time in the evening.",
+          "translation": "Nếu em được bắt đầu muộn ba mươi phút vào các ngày trong tuần, em sẽ bù lại thời gian vào buổi tối."
+        },
+        {
+          "speaker": "Manager",
+          "text": "That seems workable. Let's agree on it for a trial period of six weeks and review it together. What I'd ask in return is that you let me know by text as early as possible if anything changes.",
+          "translation": "Nghe khả thi đấy. Chúng ta thống nhất làm thử sáu tuần rồi cùng xem xét lại. Đổi lại, chị mong em nhắn tin cho chị càng sớm càng tốt nếu có gì thay đổi."
+        },
+        {
+          "speaker": "Technician",
+          "text": "That's more than fair. Thank you for being so understanding.",
+          "translation": "Như vậy là quá công bằng ạ. Cảm ơn chị đã thông cảm."
+        }
+      ],
       "vocabulary": [
         {
           "term": "pattern",
@@ -6706,6 +8030,38 @@
       "title": "Truyền thông khủng hoảng sau sự cố vệ sinh",
       "objective": "Phát biểu thận trọng khi có cáo buộc: không vội nhận trách nhiệm nhưng cam kết minh bạch.",
       "reading": "Reporter: A customer claims she contracted an infection after a pedicure at your salon. What's your response?\nOwner: First and foremost, our thoughts are with the customer, and we wish her a swift recovery. We take any allegation of this kind extremely seriously. We have suspended the use of the foot spa in question pending an independent hygiene audit.\nReporter: Are you admitting liability?\nOwner: It would be premature to draw conclusions before the facts have been established. What I can say is that all of our equipment is sterilised after each client and that we are cooperating fully with the health authorities.\nReporter: What will you do to restore public confidence?\nOwner: We'll publish the audit's findings in full, whatever they may be, and we'll implement any recommendations without delay. Transparency is non-negotiable for us.",
+      "dialogue": [
+        {
+          "speaker": "Reporter",
+          "text": "A customer claims she contracted an infection after a pedicure at your salon. What's your response?",
+          "translation": "Một khách hàng cho biết chị bị nhiễm trùng sau khi làm móng chân tại tiệm của bà. Phản hồi của bà là gì?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "First and foremost, our thoughts are with the customer, and we wish her a swift recovery. We take any allegation of this kind extremely seriously. We have suspended the use of the foot spa in question pending an independent hygiene audit.",
+          "translation": "Trước hết, chúng tôi luôn nghĩ đến vị khách ấy và chúc chị sớm bình phục. Chúng tôi xem mọi cáo buộc loại này cực kỳ nghiêm túc. Chúng tôi đã tạm ngừng sử dụng bồn ngâm chân liên quan trong khi chờ kiểm tra vệ sinh độc lập."
+        },
+        {
+          "speaker": "Reporter",
+          "text": "Are you admitting liability?",
+          "translation": "Bà có đang thừa nhận trách nhiệm không?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "It would be premature to draw conclusions before the facts have been established. What I can say is that all of our equipment is sterilised after each client and that we are cooperating fully with the health authorities.",
+          "translation": "Sẽ là quá sớm để đưa ra kết luận trước khi các sự việc được làm rõ. Điều tôi có thể nói là mọi thiết bị của chúng tôi đều được tiệt trùng sau mỗi khách và chúng tôi đang hợp tác đầy đủ với cơ quan y tế."
+        },
+        {
+          "speaker": "Reporter",
+          "text": "What will you do to restore public confidence?",
+          "translation": "Bà sẽ làm gì để khôi phục niềm tin của công chúng?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "We'll publish the audit's findings in full, whatever they may be, and we'll implement any recommendations without delay. Transparency is non-negotiable for us.",
+          "translation": "Chúng tôi sẽ công bố đầy đủ kết quả kiểm tra, dù kết quả thế nào, và sẽ thực hiện mọi khuyến nghị không chậm trễ. Sự minh bạch là điều không thể thương lượng với chúng tôi."
+        }
+      ],
       "vocabulary": [
         {
           "term": "allegation",
@@ -6873,6 +8229,38 @@
       "title": "Xu hướng bền vững và sản phẩm thân thiện môi trường",
       "objective": "Thảo luận có phản biện về sản phẩm xanh: chứng nhận, hiệu quả và việc chuyển đổi dần.",
       "reading": "Rep: More clients are asking about sustainability, and the industry is shifting towards plant-based formulas and refillable packaging.\nOwner: I'm sympathetic to the idea, but I'm wary of greenwashing. Some brands label their products 'eco-friendly' without any evidence.\nRep: A fair point. I'd urge you to look for third-party certification rather than relying on marketing claims. Our range, for instance, is certified cruelty-free and the bottles are made from recycled glass.\nOwner: And performance? Clients won't compromise on wear time.\nRep: That's where the real innovation lies. Not only do these formulas match conventional ones for durability, but they also dry faster under LED lamps.\nOwner: If the numbers stack up, I'd be willing to switch gradually, starting with our top three colours.",
+      "dialogue": [
+        {
+          "speaker": "Rep",
+          "text": "More clients are asking about sustainability, and the industry is shifting towards plant-based formulas and refillable packaging.",
+          "translation": "Ngày càng nhiều khách hàng hỏi về tính bền vững, và ngành đang chuyển dần sang công thức gốc thực vật và bao bì có thể đổ đầy lại."
+        },
+        {
+          "speaker": "Owner",
+          "text": "I'm sympathetic to the idea, but I'm wary of greenwashing. Some brands label their products 'eco-friendly' without any evidence.",
+          "translation": "Tôi đồng cảm với ý tưởng đó, nhưng tôi dè chừng việc tẩy xanh. Một số thương hiệu gắn nhãn 'thân thiện môi trường' mà không có bất kỳ bằng chứng nào."
+        },
+        {
+          "speaker": "Rep",
+          "text": "A fair point. I'd urge you to look for third-party certification rather than relying on marketing claims. Our range, for instance, is certified cruelty-free and the bottles are made from recycled glass.",
+          "translation": "Điều bà nói có lý. Tôi khuyên bà tìm chứng nhận từ bên thứ ba thay vì tin vào các tuyên bố tiếp thị. Chẳng hạn, dòng sản phẩm của chúng tôi được chứng nhận không thử nghiệm trên động vật và chai làm từ thủy tinh tái chế."
+        },
+        {
+          "speaker": "Owner",
+          "text": "And performance? Clients won't compromise on wear time.",
+          "translation": "Còn hiệu quả thì sao? Khách hàng sẽ không nhượng bộ về độ bền màu."
+        },
+        {
+          "speaker": "Rep",
+          "text": "That's where the real innovation lies. Not only do these formulas match conventional ones for durability, but they also dry faster under LED lamps.",
+          "translation": "Đó chính là nơi có sự đổi mới thực sự. Những công thức này không chỉ ngang bằng loại thông thường về độ bền, mà còn khô nhanh hơn dưới đèn LED."
+        },
+        {
+          "speaker": "Owner",
+          "text": "If the numbers stack up, I'd be willing to switch gradually, starting with our top three colours.",
+          "translation": "Nếu các con số khớp, tôi sẵn sàng chuyển dần, bắt đầu từ ba màu bán chạy nhất của chúng tôi."
+        }
+      ],
       "vocabulary": [
         {
           "term": "sustainability",
@@ -7040,6 +8428,44 @@
       "title": "Dẫn dắt workshop và thuyết trình tại hội chợ",
       "objective": "Mở đầu, dẫn dắt và tương tác với người nghe trong buổi hướng dẫn kỹ thuật.",
       "reading": "Presenter: Good afternoon, everyone. Over the next forty minutes, I'll take you through a technique that has transformed the way I approach structured gel manicures: the apex-first method.\nPresenter: Before I begin, a quick show of hands: who here has struggled with lifting at the cuticle? Quite a few of you. That's precisely what we're going to tackle.\nPresenter: The principle is straightforward. By building strength where the nail bears the most stress, we can reduce thickness elsewhere, which results in a lighter, more natural-looking finish. I'll demonstrate on this model, and then you'll replicate it at your own tables.\nPresenter: Please don't hesitate to interrupt with questions; this is meant to be a conversation, not a lecture.",
+      "dialogue": [
+        {
+          "text": "Presenter: Good afternoon, everyone.",
+          "translation": "Người trình bày: Chào buổi chiều mọi người."
+        },
+        {
+          "text": "Over the next forty minutes, I'll take you through a technique that has transformed the way I approach structured gel manicures: the apex-first method.",
+          "translation": "Trong bốn mươi phút tới, tôi sẽ hướng dẫn các bạn một kỹ thuật đã thay đổi hoàn toàn cách tôi làm các bộ móng gel có cấu trúc: phương pháp tạo điểm chịu lực trước."
+        },
+        {
+          "text": "Presenter: Before I begin, a quick show of hands: who here has struggled with lifting at the cuticle?",
+          "translation": "Người trình bày: Trước khi bắt đầu, xin giơ tay nhanh: ai ở đây từng gặp tình trạng móng bị bong ở phần da quanh móng?"
+        },
+        {
+          "text": "Quite a few of you.",
+          "translation": "Khá nhiều bạn."
+        },
+        {
+          "text": "That's precisely what we're going to tackle.",
+          "translation": "Đó chính xác là vấn đề chúng ta sẽ giải quyết."
+        },
+        {
+          "text": "Presenter: The principle is straightforward.",
+          "translation": "Người trình bày: Nguyên lý rất đơn giản."
+        },
+        {
+          "text": "By building strength where the nail bears the most stress, we can reduce thickness elsewhere, which results in a lighter, more natural-looking finish.",
+          "translation": "Bằng cách tạo độ chắc ở nơi móng chịu nhiều áp lực nhất, chúng ta có thể giảm độ dày ở những chỗ khác, nhờ đó lớp hoàn thiện nhẹ hơn và trông tự nhiên hơn."
+        },
+        {
+          "text": "I'll demonstrate on this model, and then you'll replicate it at your own tables.",
+          "translation": "Tôi sẽ trình diễn trên người mẫu này, và sau đó các bạn sẽ làm lại tại bàn của mình."
+        },
+        {
+          "text": "Presenter: Please don't hesitate to interrupt with questions; this is meant to be a conversation, not a lecture.",
+          "translation": "Người trình bày: Xin đừng ngại ngắt lời để đặt câu hỏi; buổi này là một cuộc trò chuyện chứ không phải một bài giảng."
+        }
+      ],
       "vocabulary": [
         {
           "term": "transform",
@@ -7207,6 +8633,38 @@
       "title": "Đàm phán hợp đồng thuê mặt bằng khi mở rộng",
       "objective": "Thương lượng điều khoản thuê, quyền chấm dứt sớm và thời gian miễn tiền thuê.",
       "reading": "Owner: Before we proceed, there are a few clauses in the draft lease I'd like to discuss. Firstly, the break option: as it stands, I'd be locked in for ten years with no exit.\nLandlord: That's standard in this building. The investment in fitting out the unit is considerable on both sides.\nOwner: I understand, but given the uncertainty in the sector, I'd need a break option at year five, subject to six months' notice.\nLandlord: I might entertain that if the rent review remained upward-only.\nOwner: I'd resist that. If we were to accept an upward-only review, we'd want a cap tied to inflation. Furthermore, I'd expect a rent-free period of three months to cover the fit-out.\nLandlord: Let me take this to my solicitor. I'll come back to you with a counter-proposal by Monday.",
+      "dialogue": [
+        {
+          "speaker": "Owner",
+          "text": "Before we proceed, there are a few clauses in the draft lease I'd like to discuss. Firstly, the break option: as it stands, I'd be locked in for ten years with no exit.",
+          "translation": "Trước khi tiến hành, có vài điều khoản trong bản nháp hợp đồng thuê mà tôi muốn bàn. Trước hết là quyền chấm dứt sớm: như hiện tại, tôi sẽ bị ràng buộc mười năm mà không có lối thoát."
+        },
+        {
+          "speaker": "Landlord",
+          "text": "That's standard in this building. The investment in fitting out the unit is considerable on both sides.",
+          "translation": "Điều đó là tiêu chuẩn ở tòa nhà này. Khoản đầu tư để hoàn thiện mặt bằng là đáng kể cho cả hai bên."
+        },
+        {
+          "speaker": "Owner",
+          "text": "I understand, but given the uncertainty in the sector, I'd need a break option at year five, subject to six months' notice.",
+          "translation": "Tôi hiểu, nhưng xét sự bất định của ngành, tôi cần có quyền chấm dứt sớm vào năm thứ năm, với điều kiện báo trước sáu tháng."
+        },
+        {
+          "speaker": "Landlord",
+          "text": "I might entertain that if the rent review remained upward-only.",
+          "translation": "Tôi có thể cân nhắc nếu việc điều chỉnh giá thuê vẫn chỉ tăng chứ không giảm."
+        },
+        {
+          "speaker": "Owner",
+          "text": "I'd resist that. If we were to accept an upward-only review, we'd want a cap tied to inflation. Furthermore, I'd expect a rent-free period of three months to cover the fit-out.",
+          "translation": "Tôi sẽ phản đối điều đó. Nếu chúng tôi chấp nhận điều chỉnh chỉ tăng, chúng tôi muốn có mức trần gắn với lạm phát. Hơn nữa, tôi mong có ba tháng miễn tiền thuê để trang trải chi phí hoàn thiện."
+        },
+        {
+          "speaker": "Landlord",
+          "text": "Let me take this to my solicitor. I'll come back to you with a counter-proposal by Monday.",
+          "translation": "Để tôi trao đổi với luật sư của tôi. Tôi sẽ phản hồi lại với bà một đề xuất đối ứng trước thứ Hai."
+        }
+      ],
       "vocabulary": [
         {
           "term": "clause",
@@ -7374,6 +8832,38 @@
       "title": "Nhượng quyền và mở rộng chuỗi",
       "objective": "Thảo luận các biện pháp giữ chuẩn chất lượng và điều khoản chính của hợp đồng nhượng quyền.",
       "reading": "Advisor: Franchising can accelerate growth, but it also means relinquishing a degree of control. Have you considered how you'd maintain standards across independently owned locations?\nOwner: That's my main concern. I'd want a comprehensive operations manual, mandatory training for every franchisee, and the right to audit each location unannounced.\nAdvisor: Those are sensible safeguards. You'll also need a franchise agreement that clearly defines royalties, territorial exclusivity and the grounds for termination.\nOwner: What royalty rate is typical?\nAdvisor: Anywhere between five and eight percent of gross sales, depending on the support you provide. Should a franchisee underperform, you'd want step-in rights, allowing you to take over operations temporarily.\nOwner: I'll need to take legal advice before going any further.",
+      "dialogue": [
+        {
+          "speaker": "Advisor",
+          "text": "Franchising can accelerate growth, but it also means relinquishing a degree of control. Have you considered how you'd maintain standards across independently owned locations?",
+          "translation": "Nhượng quyền có thể thúc đẩy tăng trưởng, nhưng cũng có nghĩa là bạn phải nhường bớt một phần quyền kiểm soát. Bạn đã tính đến việc giữ chuẩn chất lượng ở các điểm do người khác sở hữu như thế nào chưa?"
+        },
+        {
+          "speaker": "Owner",
+          "text": "That's my main concern. I'd want a comprehensive operations manual, mandatory training for every franchisee, and the right to audit each location unannounced.",
+          "translation": "Đó là mối lo chính của tôi. Tôi muốn có một cuốn sổ tay vận hành đầy đủ, đào tạo bắt buộc cho mọi bên nhận nhượng quyền, và quyền kiểm tra từng điểm mà không báo trước."
+        },
+        {
+          "speaker": "Advisor",
+          "text": "Those are sensible safeguards. You'll also need a franchise agreement that clearly defines royalties, territorial exclusivity and the grounds for termination.",
+          "translation": "Đó là những biện pháp bảo vệ hợp lý. Bạn cũng cần một hợp đồng nhượng quyền xác định rõ phí bản quyền, độc quyền khu vực và các căn cứ chấm dứt hợp đồng."
+        },
+        {
+          "speaker": "Owner",
+          "text": "What royalty rate is typical?",
+          "translation": "Mức phí bản quyền thông thường là bao nhiêu?"
+        },
+        {
+          "speaker": "Advisor",
+          "text": "Anywhere between five and eight percent of gross sales, depending on the support you provide. Should a franchisee underperform, you'd want step-in rights, allowing you to take over operations temporarily.",
+          "translation": "Từ năm đến tám phần trăm tổng doanh thu, tùy vào sự hỗ trợ bạn cung cấp. Nếu một bên nhận nhượng quyền hoạt động kém, bạn nên có quyền can thiệp, cho phép bạn tạm thời tiếp quản hoạt động."
+        },
+        {
+          "speaker": "Owner",
+          "text": "I'll need to take legal advice before going any further.",
+          "translation": "Tôi sẽ cần tham vấn pháp lý trước khi đi xa hơn."
+        }
+      ],
       "vocabulary": [
         {
           "term": "franchisee",
@@ -7541,6 +9031,43 @@
       "title": "Bảo hiểm trách nhiệm và yêu cầu bồi thường",
       "objective": "Hiểu phạm vi bảo hiểm, quy trình khi có khiếu nại bồi thường và nghĩa vụ khai báo.",
       "reading": "Broker: Your current policy covers public liability up to one million dollars, but it excludes treatments performed outside the salon premises.\nOwner: We're considering offering mobile services at weddings. Would that be covered?\nBroker: Not under the existing terms. You'd need to extend the policy, and the insurer would likely require evidence of your technicians' qualifications.\nOwner: And if a client made a claim, what's the process?\nBroker: You should notify us as soon as the incident occurs, preserving all relevant documentation: consent forms, product records, photographs. Failure to disclose pertinent information could invalidate the claim.\nOwner: What about the excess?\nBroker: That's the amount you'd pay yourself before the insurer contributes. A higher excess usually lowers your premium.",
+      "dialogue": [
+        {
+          "speaker": "Broker",
+          "text": "Your current policy covers public liability up to one million dollars, but it excludes treatments performed outside the salon premises.",
+          "translation": "Hợp đồng hiện tại của bà bảo hiểm trách nhiệm công cộng đến một triệu đô la, nhưng loại trừ các dịch vụ thực hiện bên ngoài mặt bằng tiệm."
+        },
+        {
+          "speaker": "Owner",
+          "text": "We're considering offering mobile services at weddings. Would that be covered?",
+          "translation": "Chúng tôi đang cân nhắc cung cấp dịch vụ tại chỗ ở các đám cưới. Như vậy có được bảo hiểm không?"
+        },
+        {
+          "speaker": "Broker",
+          "text": "Not under the existing terms. You'd need to extend the policy, and the insurer would likely require evidence of your technicians' qualifications.",
+          "translation": "Không theo các điều khoản hiện tại. Bà cần mở rộng hợp đồng, và công ty bảo hiểm nhiều khả năng sẽ yêu cầu bằng chứng về trình độ của các thợ."
+        },
+        {
+          "speaker": "Owner",
+          "text": "And if a client made a claim, what's the process?",
+          "translation": "Và nếu một khách hàng yêu cầu bồi thường thì quy trình thế nào?"
+        },
+        {
+          "speaker": "Broker",
+          "text": "You should notify us as soon as the incident occurs, preserving all relevant documentation: consent forms, product records, photographs. Failure to disclose pertinent information could invalidate the claim.",
+          "translation": "Bà nên thông báo cho chúng tôi ngay khi sự cố xảy ra, đồng thời lưu giữ mọi tài liệu liên quan: phiếu đồng ý, hồ sơ sản phẩm, hình ảnh. Việc không khai báo thông tin liên quan có thể làm yêu cầu bồi thường mất hiệu lực."
+        },
+        {
+          "speaker": "Owner",
+          "text": "What about the excess?",
+          "translation": "Còn mức khấu trừ thì sao?"
+        },
+        {
+          "speaker": "Broker",
+          "text": "That's the amount you'd pay yourself before the insurer contributes. A higher excess usually lowers your premium.",
+          "translation": "Đó là số tiền bà tự trả trước khi công ty bảo hiểm chi trả phần còn lại. Mức khấu trừ cao hơn thường làm phí bảo hiểm thấp hơn."
+        }
+      ],
       "vocabulary": [
         {
           "term": "liability",
@@ -7708,6 +9235,38 @@
       "title": "Hợp tác thương hiệu và đàm phán tài trợ",
       "objective": "Thương lượng quyền kiểm soát nội dung, minh bạch quảng cáo và thù lao khi hợp tác với nhãn hàng.",
       "reading": "Brand rep: We'd be delighted to sponsor your salon's social channels in return for featuring our new polish collection in your content.\nOwner: I'm open to a partnership, but I'd want editorial control. Our audience trusts us because we only recommend what we genuinely use.\nBrand rep: Understood. We could draft guidelines rather than scripts, giving you creative freedom within certain boundaries.\nOwner: Then there's the question of disclosure. Any sponsored post must be clearly labelled, otherwise we risk undermining that trust and breaching advertising rules.\nBrand rep: Absolutely. In terms of compensation, we propose a flat fee plus a commission on sales generated through a discount code.\nOwner: That's a reasonable starting point. Let's put the main terms in a one-page memorandum before drawing up a formal contract.",
+      "dialogue": [
+        {
+          "speaker": "Brand rep",
+          "text": "We'd be delighted to sponsor your salon's social channels in return for featuring our new polish collection in your content.",
+          "translation": "Chúng tôi rất vui được tài trợ các kênh mạng xã hội của tiệm bạn để đổi lấy việc giới thiệu bộ sưu tập sơn mới của chúng tôi trong nội dung của bạn."
+        },
+        {
+          "speaker": "Owner",
+          "text": "I'm open to a partnership, but I'd want editorial control. Our audience trusts us because we only recommend what we genuinely use.",
+          "translation": "Tôi sẵn sàng hợp tác, nhưng tôi muốn có quyền kiểm soát nội dung. Khán giả của chúng tôi tin tưởng vì chúng tôi chỉ giới thiệu những gì thật sự dùng."
+        },
+        {
+          "speaker": "Brand rep",
+          "text": "Understood. We could draft guidelines rather than scripts, giving you creative freedom within certain boundaries.",
+          "translation": "Chúng tôi hiểu. Chúng tôi có thể soạn hướng dẫn thay vì kịch bản, để bạn tự do sáng tạo trong những ranh giới nhất định."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Then there's the question of disclosure. Any sponsored post must be clearly labelled, otherwise we risk undermining that trust and breaching advertising rules.",
+          "translation": "Sau đó là vấn đề minh bạch. Mọi bài đăng được tài trợ phải được ghi nhãn rõ ràng, nếu không chúng tôi có nguy cơ làm tổn hại niềm tin đó và vi phạm quy định quảng cáo."
+        },
+        {
+          "speaker": "Brand rep",
+          "text": "Absolutely. In terms of compensation, we propose a flat fee plus a commission on sales generated through a discount code.",
+          "translation": "Hoàn toàn đồng ý. Về thù lao, chúng tôi đề xuất một khoản phí cố định cộng với hoa hồng trên doanh số phát sinh qua mã giảm giá."
+        },
+        {
+          "speaker": "Owner",
+          "text": "That's a reasonable starting point. Let's put the main terms in a one-page memorandum before drawing up a formal contract.",
+          "translation": "Đó là điểm khởi đầu hợp lý. Chúng ta hãy ghi các điều khoản chính vào một bản ghi nhớ một trang trước khi soạn hợp đồng chính thức."
+        }
+      ],
       "vocabulary": [
         {
           "term": "sponsor",
@@ -7875,6 +9434,38 @@
       "title": "Thương lượng lương và giữ chân thợ giỏi",
       "objective": "Trình bày đóng góp, đề xuất mức tăng và thương lượng điều kiện đi kèm.",
       "reading": "Technician: Thank you for meeting me. I'd like to discuss my compensation. Over the past year I've taken on additional responsibilities, including training new staff, and my client numbers have grown by thirty percent.\nOwner: I'm aware of your contributions, and I value them. What did you have in mind?\nTechnician: Given the market rate for someone with my experience, I was hoping for a fifteen percent increase.\nOwner: Fifteen is ambitious, given our current margins. However, I'd be prepared to offer eight percent now, with a performance review in six months that could lead to a further increase.\nTechnician: I'd consider that if we could also include a mentoring allowance, since that's a considerable part of my role.\nOwner: That's reasonable. Let me put a proposal together by Friday.",
+      "dialogue": [
+        {
+          "speaker": "Technician",
+          "text": "Thank you for meeting me. I'd like to discuss my compensation. Over the past year I've taken on additional responsibilities, including training new staff, and my client numbers have grown by thirty percent.",
+          "translation": "Cảm ơn chị đã gặp em. Em muốn trao đổi về thu nhập của mình. Trong năm qua em đã đảm nhận thêm trách nhiệm, bao gồm đào tạo nhân viên mới, và số lượng khách của em đã tăng ba mươi phần trăm."
+        },
+        {
+          "speaker": "Owner",
+          "text": "I'm aware of your contributions, and I value them. What did you have in mind?",
+          "translation": "Chị biết những đóng góp của em và chị trân trọng chúng. Em đang nghĩ đến mức nào?"
+        },
+        {
+          "speaker": "Technician",
+          "text": "Given the market rate for someone with my experience, I was hoping for a fifteen percent increase.",
+          "translation": "Xét mức thị trường cho người có kinh nghiệm như em, em hy vọng được tăng mười lăm phần trăm."
+        },
+        {
+          "speaker": "Owner",
+          "text": "Fifteen is ambitious, given our current margins. However, I'd be prepared to offer eight percent now, with a performance review in six months that could lead to a further increase.",
+          "translation": "Mười lăm hơi cao, xét biên lợi nhuận hiện tại của chúng ta. Tuy nhiên, chị sẵn sàng đề nghị tám phần trăm ngay bây giờ, kèm một đợt đánh giá hiệu suất sau sáu tháng có thể dẫn đến một lần tăng nữa."
+        },
+        {
+          "speaker": "Technician",
+          "text": "I'd consider that if we could also include a mentoring allowance, since that's a considerable part of my role.",
+          "translation": "Em sẽ cân nhắc nếu chúng ta cũng thêm một khoản phụ cấp kèm cặp, vì đó là một phần đáng kể trong vai trò của em."
+        },
+        {
+          "speaker": "Owner",
+          "text": "That's reasonable. Let me put a proposal together by Friday.",
+          "translation": "Như vậy là hợp lý. Để chị soạn một đề xuất trước thứ Sáu."
+        }
+      ],
       "vocabulary": [
         {
           "term": "contribution",
@@ -8042,6 +9633,43 @@
       "title": "Hòa giải mâu thuẫn giữa hai nhân viên",
       "objective": "Lắng nghe hai bên, xác định nguyên nhân gốc và thống nhất quy tắc chung.",
       "reading": "Manager: I've asked to see you both because I understand there's been some tension over the shared client list.\nTechnician A: She's been taking clients who were booked with me.\nTechnician B: That's not true. They asked for me specifically, and the front desk simply put them in my column.\nManager: I'd like to hear each of you out without interruption. Please go first. After that, you'll have the same opportunity.\nTechnician A: My concern is that I've lost regulars, and it affects my income.\nTechnician B: I understand why that's upsetting. I had no intention of poaching anyone.\nManager: It sounds as though the root cause is a flaw in our booking process, not bad faith on either side. Let's agree a rule: clients stay with their preferred technician unless they request otherwise in writing.",
+      "dialogue": [
+        {
+          "speaker": "Manager",
+          "text": "I've asked to see you both because I understand there's been some tension over the shared client list.",
+          "translation": "Chị mời cả hai em đến vì chị biết có chút căng thẳng về danh sách khách dùng chung."
+        },
+        {
+          "speaker": "Technician A",
+          "text": "She's been taking clients who were booked with me.",
+          "translation": "Cô ấy đang lấy khách đã đặt lịch với em."
+        },
+        {
+          "speaker": "Technician B",
+          "text": "That's not true. They asked for me specifically, and the front desk simply put them in my column.",
+          "translation": "Không đúng. Họ yêu cầu em cụ thể, và quầy lễ tân chỉ xếp họ vào cột của em."
+        },
+        {
+          "speaker": "Manager",
+          "text": "I'd like to hear each of you out without interruption. Please go first. After that, you'll have the same opportunity.",
+          "translation": "Chị muốn nghe từng người nói hết mà không bị ngắt lời. Em nói trước nhé. Sau đó, em cũng sẽ có cơ hội như vậy."
+        },
+        {
+          "speaker": "Technician A",
+          "text": "My concern is that I've lost regulars, and it affects my income.",
+          "translation": "Mối lo của em là em đã mất khách quen, và điều đó ảnh hưởng đến thu nhập của em."
+        },
+        {
+          "speaker": "Technician B",
+          "text": "I understand why that's upsetting. I had no intention of poaching anyone.",
+          "translation": "Em hiểu vì sao điều đó đáng buồn. Em không hề có ý định giành khách của ai."
+        },
+        {
+          "speaker": "Manager",
+          "text": "It sounds as though the root cause is a flaw in our booking process, not bad faith on either side. Let's agree a rule: clients stay with their preferred technician unless they request otherwise in writing.",
+          "translation": "Nghe có vẻ nguyên nhân gốc là một lỗ hổng trong quy trình đặt lịch của chúng ta, chứ không phải thiếu thiện chí ở bên nào. Chúng ta thống nhất một quy tắc: khách ở lại với thợ họ ưa thích, trừ khi họ yêu cầu khác bằng văn bản."
+        }
+      ],
       "vocabulary": [
         {
           "term": "tension",
@@ -8209,6 +9837,40 @@
       "title": "Phát biểu khai trương và truyền cảm hứng cho đội ngũ",
       "objective": "Viết và đọc một bài phát biểu ngắn: kể chuyện, nêu giá trị và kêu gọi hành động.",
       "reading": "Owner: Good evening, everyone, and thank you for joining us tonight. When I opened my first salon eight years ago, I had two chairs, a borrowed table and more doubt than certainty. Tonight, we're opening our fifth location, and that wouldn't have been possible without every person in this room.\nOwner: Success in this industry isn't measured only in revenue. It's measured in the trust a client places in your hands, week after week. That trust is earned through craftsmanship, honesty and genuine care.\nOwner: So let me say this plainly: what we build next will be defined not by how fast we grow, but by how well we look after one another and the people we serve. Please raise a glass to our team, to our clients, and to the future.",
+      "dialogue": [
+        {
+          "text": "Owner: Good evening, everyone, and thank you for joining us tonight.",
+          "translation": "Chủ tiệm: Chào buổi tối mọi người, và cảm ơn mọi người đã đến cùng chúng tôi tối nay."
+        },
+        {
+          "text": "When I opened my first salon eight years ago, I had two chairs, a borrowed table and more doubt than certainty.",
+          "translation": "Khi tôi mở tiệm đầu tiên cách đây tám năm, tôi chỉ có hai chiếc ghế, một cái bàn mượn và nhiều nghi ngờ hơn là chắc chắn."
+        },
+        {
+          "text": "Tonight, we're opening our fifth location, and that wouldn't have been possible without every person in this room.",
+          "translation": "Tối nay, chúng ta khai trương địa điểm thứ năm, và điều đó đã không thể có được nếu thiếu từng người trong căn phòng này."
+        },
+        {
+          "text": "Owner: Success in this industry isn't measured only in revenue.",
+          "translation": "Chủ tiệm: Thành công trong ngành này không chỉ được đo bằng doanh thu."
+        },
+        {
+          "text": "It's measured in the trust a client places in your hands, week after week.",
+          "translation": "Nó được đo bằng niềm tin mà một khách hàng đặt vào đôi tay của bạn, hết tuần này đến tuần khác."
+        },
+        {
+          "text": "That trust is earned through craftsmanship, honesty and genuine care.",
+          "translation": "Niềm tin đó có được nhờ tay nghề, sự trung thực và sự quan tâm chân thành."
+        },
+        {
+          "text": "Owner: So let me say this plainly: what we build next will be defined not by how fast we grow, but by how well we look after one another and the people we serve.",
+          "translation": "Chủ tiệm: Vì vậy, hãy để tôi nói thẳng: điều chúng ta xây dựng tiếp theo sẽ được định hình không phải bởi việc chúng ta lớn nhanh đến đâu, mà bởi việc chúng ta chăm sóc nhau và những người chúng ta phục vụ tốt đến mức nào."
+        },
+        {
+          "text": "Please raise a glass to our team, to our clients, and to the future.",
+          "translation": "Xin mọi người nâng ly vì đội ngũ của chúng ta, vì khách hàng của chúng ta, và vì tương lai."
+        }
+      ],
       "vocabulary": [
         {
           "term": "certainty",
