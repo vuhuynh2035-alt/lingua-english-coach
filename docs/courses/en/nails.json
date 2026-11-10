@@ -1,9 +1,9 @@
 {
   "id": "nails",
   "title": "Tiếng Anh ngành nails",
-  "version": "2.0.0",
-  "framework": "CEFR A1–B2",
-  "overview": "12 bài từ A1 đến B2 cho thợ làm móng: dụng cụ, đặt lịch, màu và kiểu móng, vệ sinh an toàn, tư vấn dịch vụ, xử lý khiếu nại, phỏng vấn và quản lý tiệm.",
+  "version": "2.1.0",
+  "framework": "CEFR A1–C2",
+  "overview": "30 bài từ A1 đến C2 cho thợ làm móng: dụng cụ, đặt lịch, màu và kiểu móng, vệ sinh an toàn, tư vấn dịch vụ, xử lý khiếu nại, phỏng vấn và quản lý tiệm (B2); nâng cao C1–C2: tư vấn tình trạng móng, dị ứng và sự cố, chính sách, đào tạo, thương hiệu, nhà cung cấp, quy định, thuyết phục khách, khiếu nại, đầu tư, hợp đồng, họp nhóm, truyền thông khủng hoảng, sản phẩm xanh, workshop và thuê mặt bằng.",
   "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
   "references": [
     {
@@ -2018,6 +2018,3012 @@
           ],
           "answer": 0,
           "explanation": "“booking system” nghĩa là “hệ thống đặt lịch”. Câu đầy đủ: Our new booking system is online."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c1-1",
+      "level": "C1",
+      "unit": "C1 · Bài 1",
+      "category": "Chuyên môn",
+      "title": "Tư vấn tình trạng móng phức tạp",
+      "objective": "Mô tả dấu hiệu bất thường của móng, giải thích giới hạn chuyên môn và khuyên khách đi khám.",
+      "reading": "Technician: Before we start, may I ask about your nails? There's some noticeable ridging here, and the free edge seems to be lifting away from the nail bed.\nCustomer: It started a few months ago. I assumed it was just from the gel removal.\nTechnician: That could be a factor, particularly if the product was soaked off for too long. However, it might also point to an underlying issue, such as a vitamin deficiency or an infection. I'm not in a position to diagnose anything, so I'd strongly suggest seeing a doctor.\nCustomer: So you won't do my nails today?\nTechnician: I'm happy to give you a gentle manicure and a strengthening treatment, but I'd steer clear of any enhancements until the nails have recovered. Were the condition to worsen, I'd have to decline altogether.\nCustomer: I see. That's a bit disappointing, but I'd rather be safe.",
+      "vocabulary": [
+        {
+          "term": "ridging",
+          "definition": "gờ dọc trên bề mặt móng",
+          "example": "There is some ridging along the nail plate."
+        },
+        {
+          "term": "free edge",
+          "definition": "mép tự do của móng",
+          "example": "The free edge is starting to lift."
+        },
+        {
+          "term": "underlying",
+          "definition": "tiềm ẩn, nằm bên dưới",
+          "example": "It may be an underlying health issue."
+        },
+        {
+          "term": "enhancement",
+          "definition": "móng nối/đắp (bột, gel)",
+          "example": "I'd avoid any enhancement for now."
+        },
+        {
+          "term": "steer clear of",
+          "definition": "tránh xa",
+          "example": "I'd steer clear of acrylics for now."
+        },
+        {
+          "term": "decline",
+          "definition": "từ chối (dịch vụ)",
+          "example": "I may have to decline the service."
+        }
+      ],
+      "grammar": {
+        "title": "Đảo ngữ điều kiện: Were + S + to... / Should + S... / Had + S + V3",
+        "explanation": "Cách nói trang trọng thay cho 'if', dùng khi cảnh báo hoặc đặt điều kiện một cách lịch sự.",
+        "examples": [
+          "Were the condition to worsen, I'd have to decline.",
+          "Should you notice any swelling, please call us.",
+          "Had I known about the allergy, I would have used a different product."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Hạ giọng cuối câu khi từ chối lịch sự: I'd have to deCLINE.",
+        "tip": "Nói chậm, hạ giọng ở cuối câu để nghe chắc chắn nhưng không gay gắt.",
+        "words": [
+          "underlying",
+          "enhancement",
+          "ridging",
+          "decline"
+        ]
+      },
+      "speakingTasks": [
+        "Giải thích vì sao bạn khuyên khách đi khám trước khi làm móng nối.",
+        "Dùng 'Were... to...' hoặc 'Should you...' để cảnh báo lịch sự."
+      ],
+      "questions": [
+        {
+          "prompt": "Why does the technician recommend seeing a doctor?",
+          "options": [
+            "The salon is fully booked",
+            "The nails could reflect an underlying health problem",
+            "The customer's polish is old"
+          ],
+          "answer": 1,
+          "explanation": "'it might also point to an underlying issue'."
+        },
+        {
+          "prompt": "What will the technician offer today?",
+          "options": [
+            "A gentle manicure and a strengthening treatment",
+            "A full set of acrylics",
+            "Nothing at all"
+          ],
+          "answer": 0,
+          "explanation": "'a gentle manicure and a strengthening treatment'."
+        },
+        {
+          "prompt": "What does 'I'm not in a position to diagnose' imply?",
+          "options": [
+            "She is too busy",
+            "She does not know the customer",
+            "She is not qualified or permitted to diagnose"
+          ],
+          "answer": 2,
+          "explanation": "not in a position to = không có tư cách/thẩm quyền làm việc đó."
+        },
+        {
+          "prompt": "Which sentence uses conditional inversion correctly?",
+          "options": [
+            "If were the condition worsen, I'd decline.",
+            "The condition were worsen, I'd decline.",
+            "Were the condition to worsen, I'd decline."
+          ],
+          "answer": 2,
+          "explanation": "Were + S + to + V, ... thay cho If + S + were to + V."
+        },
+        {
+          "prompt": "How does the customer feel at the end?",
+          "options": [
+            "Angry and about to leave",
+            "Disappointed but accepting",
+            "Delighted"
+          ],
+          "answer": 1,
+          "explanation": "'a bit disappointing, but I'd rather be safe'."
+        },
+        {
+          "prompt": "Complete the sentence: There is some _____ along the nail plate.",
+          "options": [
+            "decline",
+            "ridging",
+            "steer clear of"
+          ],
+          "answer": 1,
+          "explanation": "“ridging” nghĩa là “gờ dọc trên bề mặt móng”. Câu đầy đủ: There is some ridging along the nail plate."
+        },
+        {
+          "prompt": "What does “free edge” mean?",
+          "options": [
+            "mép tự do của móng",
+            "tránh xa",
+            "gờ dọc trên bề mặt móng"
+          ],
+          "answer": 0,
+          "explanation": "“free edge” = mép tự do của móng. Ví dụ: The free edge is starting to lift."
+        },
+        {
+          "prompt": "Complete the sentence: It may be an _____ health issue.",
+          "options": [
+            "enhancement",
+            "ridging",
+            "underlying"
+          ],
+          "answer": 2,
+          "explanation": "“underlying” nghĩa là “tiềm ẩn, nằm bên dưới”. Câu đầy đủ: It may be an underlying health issue."
+        },
+        {
+          "prompt": "What does “enhancement” mean?",
+          "options": [
+            "từ chối (dịch vụ)",
+            "mép tự do của móng",
+            "móng nối/đắp (bột, gel)"
+          ],
+          "answer": 2,
+          "explanation": "“enhancement” = móng nối/đắp (bột, gel). Ví dụ: I'd avoid any enhancement for now."
+        },
+        {
+          "prompt": "Complete the sentence: I'd _____ acrylics for now.",
+          "options": [
+            "enhancement",
+            "steer clear of",
+            "underlying"
+          ],
+          "answer": 1,
+          "explanation": "“steer clear of” nghĩa là “tránh xa”. Câu đầy đủ: I'd steer clear of acrylics for now."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c1-2",
+      "level": "C1",
+      "unit": "C1 · Bài 2",
+      "category": "Giao tiếp",
+      "title": "Trao đổi ý tưởng thiết kế móng theo yêu cầu",
+      "objective": "Làm rõ mong muốn thẩm mỹ của khách, đề xuất thiết kế và đặt điều kiện về độ bền.",
+      "reading": "Customer: I'm after something understated for my sister's wedding — nothing too flashy, but not plain either.\nTechnician: Understated can mean a lot of things. Are you thinking of a sheer nude base with a subtle shimmer, or something more graphic, like negative space with a fine gold line?\nCustomer: The negative space sounds elegant. Would it hold up over a long weekend of celebrations?\nTechnician: Absolutely, provided we seal the edges properly. I'd also suggest a slightly shorter, rounded shape; it'll look more refined and it's less likely to snag on your dress.\nCustomer: Could you mock up a design first? I don't want any surprises.\nTechnician: Of course. I'll sketch it on a practice tip, and we can tweak it until you're completely happy.",
+      "vocabulary": [
+        {
+          "term": "understated",
+          "definition": "tinh tế, giản dị mà sang",
+          "example": "She wanted an understated design for the wedding."
+        },
+        {
+          "term": "sheer",
+          "definition": "mỏng, trong suốt",
+          "example": "A sheer nude base looks very natural."
+        },
+        {
+          "term": "negative space",
+          "definition": "khoảng trống để lộ nền móng",
+          "example": "Negative space designs look modern and elegant."
+        },
+        {
+          "term": "refined",
+          "definition": "tinh tế, thanh lịch",
+          "example": "A rounded shape looks more refined."
+        },
+        {
+          "term": "snag",
+          "definition": "vướng, mắc vào",
+          "example": "Long nails can snag on delicate fabric."
+        },
+        {
+          "term": "tweak",
+          "definition": "chỉnh sửa nhỏ",
+          "example": "We can tweak the design until you're happy."
+        }
+      ],
+      "grammar": {
+        "title": "provided (that) / as long as + mệnh đề: với điều kiện",
+        "explanation": "Đặt điều kiện rõ ràng khi hứa hẹn một kết quả; trang trọng hơn 'if' một chút.",
+        "examples": [
+          "It will last a week, provided you wear gloves when cleaning.",
+          "We can do it today as long as you book before noon.",
+          "I'll start the design provided that you approve the sketch."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Nhấn từ miêu tả thẩm mỹ: UNderstated, SHEER, reFINED",
+        "tip": "Từ miêu tả thẩm mỹ nên nhấn và kéo dài nhẹ để truyền cảm hứng cho khách.",
+        "words": [
+          "understated",
+          "sheer",
+          "refined",
+          "tweak"
+        ]
+      },
+      "speakingTasks": [
+        "Hỏi khách 3 câu để làm rõ 'đơn giản nhưng sang' nghĩa là gì với họ.",
+        "Đề xuất một thiết kế kèm điều kiện giữ bền bằng 'provided that'."
+      ],
+      "questions": [
+        {
+          "prompt": "What kind of design does the customer want?",
+          "options": [
+            "Completely plain",
+            "Understated but not plain",
+            "Bright and flashy"
+          ],
+          "answer": 1,
+          "explanation": "'understated... nothing too flashy, but not plain either'."
+        },
+        {
+          "prompt": "Why does the technician suggest a shorter, rounded shape?",
+          "options": [
+            "The customer asked for it",
+            "It looks refined and is less likely to snag",
+            "It is cheaper"
+          ],
+          "answer": 1,
+          "explanation": "'more refined and... less likely to snag'."
+        },
+        {
+          "prompt": "What condition does the technician set for durability?",
+          "options": [
+            "Using a darker colour",
+            "Booking twice",
+            "Sealing the edges properly"
+          ],
+          "answer": 2,
+          "explanation": "'provided we seal the edges properly'."
+        },
+        {
+          "prompt": "What will the technician do before the real design?",
+          "options": [
+            "Post it online",
+            "Sketch it on a practice tip",
+            "Charge a deposit"
+          ],
+          "answer": 1,
+          "explanation": "'I'll sketch it on a practice tip'."
+        },
+        {
+          "prompt": "Which sentence means 'on the condition that'?",
+          "options": [
+            "It lasts a week provided you wear gloves.",
+            "It lasts a week whereas you wear gloves.",
+            "It lasts a week in case you wear gloves."
+          ],
+          "answer": 0,
+          "explanation": "provided = với điều kiện."
+        },
+        {
+          "prompt": "Complete the sentence: She wanted an _____ design for the wedding.",
+          "options": [
+            "sheer",
+            "tweak",
+            "understated"
+          ],
+          "answer": 2,
+          "explanation": "“understated” nghĩa là “tinh tế, giản dị mà sang”. Câu đầy đủ: She wanted an understated design for the wedding."
+        },
+        {
+          "prompt": "What does “sheer” mean?",
+          "options": [
+            "mỏng, trong suốt",
+            "vướng, mắc vào",
+            "tinh tế, giản dị mà sang"
+          ],
+          "answer": 0,
+          "explanation": "“sheer” = mỏng, trong suốt. Ví dụ: A sheer nude base looks very natural."
+        },
+        {
+          "prompt": "Complete the sentence: _____ designs look modern and elegant.",
+          "options": [
+            "sheer",
+            "negative space",
+            "snag"
+          ],
+          "answer": 1,
+          "explanation": "“negative space” nghĩa là “khoảng trống để lộ nền móng”. Câu đầy đủ: Negative space designs look modern and elegant."
+        },
+        {
+          "prompt": "What does “refined” mean?",
+          "options": [
+            "chỉnh sửa nhỏ",
+            "tinh tế, thanh lịch",
+            "tinh tế, giản dị mà sang"
+          ],
+          "answer": 1,
+          "explanation": "“refined” = tinh tế, thanh lịch. Ví dụ: A rounded shape looks more refined."
+        },
+        {
+          "prompt": "Complete the sentence: Long nails can _____ on delicate fabric.",
+          "options": [
+            "negative space",
+            "understated",
+            "snag"
+          ],
+          "answer": 2,
+          "explanation": "“snag” nghĩa là “vướng, mắc vào”. Câu đầy đủ: Long nails can snag on delicate fabric."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c1-3",
+      "level": "C1",
+      "unit": "C1 · Bài 3",
+      "category": "Chuyên môn",
+      "title": "Hiểu thành phần sản phẩm và dị ứng",
+      "objective": "Giải thích nguyên nhân dị ứng gel, vai trò của việc sấy đúng cách và thử dị ứng.",
+      "reading": "Customer: After my last gel manicure, the skin around my nails turned red and itchy. Should I be worried?\nTechnician: It could be an allergic reaction, most likely to methacrylates such as HEMA, which are found in many gel products. Once someone becomes sensitised, the reaction tends to get worse with each exposure.\nCustomer: So I can never have gel again?\nTechnician: Not necessarily. There are hypoallergenic, HEMA-free systems, although they aren't entirely risk-free. The key is proper curing — under-cured gel is far more likely to trigger a reaction — and keeping the product off the skin during application.\nCustomer: Is it safe to try today?\nTechnician: I'd recommend a patch test on one nail first, and we'll wait forty-eight hours before doing the rest. It's slower, but it's the responsible way to go about it.",
+      "vocabulary": [
+        {
+          "term": "allergic reaction",
+          "definition": "phản ứng dị ứng",
+          "example": "She had an allergic reaction to the gel."
+        },
+        {
+          "term": "sensitised",
+          "definition": "bị mẫn cảm",
+          "example": "Once you are sensitised, the reaction gets worse."
+        },
+        {
+          "term": "hypoallergenic",
+          "definition": "ít gây dị ứng",
+          "example": "We offer hypoallergenic gel polish."
+        },
+        {
+          "term": "curing",
+          "definition": "sấy/đóng rắn gel bằng đèn",
+          "example": "Proper curing reduces the risk of irritation."
+        },
+        {
+          "term": "patch test",
+          "definition": "thử dị ứng trên một vùng nhỏ",
+          "example": "We always do a patch test first."
+        },
+        {
+          "term": "exposure",
+          "definition": "sự tiếp xúc",
+          "example": "Repeated exposure makes the allergy worse."
+        }
+      ],
+      "grammar": {
+        "title": "Câu chẻ (cleft sentence): The key is... / What matters is... / It's... that...",
+        "explanation": "Tách câu thành hai phần để nhấn mạnh thông tin quan trọng nhất.",
+        "examples": [
+          "The key is proper curing.",
+          "What matters most is that you tell us about any allergies.",
+          "It's the under-cured gel that causes most reactions."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Nhấn từ khoá: The KEY is proper CURing.",
+        "tip": "Nhấn vào phần sau 'is' để người nghe nhớ thông tin chính của lời khuyên.",
+        "words": [
+          "allergic",
+          "hypoallergenic",
+          "sensitised",
+          "exposure"
+        ]
+      },
+      "speakingTasks": [
+        "Giải thích vì sao nên thử dị ứng trên một móng trước khi làm cả bộ.",
+        "Dùng 'The key is...' để nhấn mạnh một lời khuyên an toàn."
+      ],
+      "questions": [
+        {
+          "prompt": "What is the likely cause of the customer's reaction?",
+          "options": [
+            "Too much water",
+            "Methacrylates such as HEMA",
+            "Cold weather"
+          ],
+          "answer": 1,
+          "explanation": "'most likely to methacrylates such as HEMA'."
+        },
+        {
+          "prompt": "According to the technician, what increases the risk of a reaction?",
+          "options": [
+            "Under-cured gel and skin contact",
+            "Short nails",
+            "Using a top coat"
+          ],
+          "answer": 0,
+          "explanation": "'under-cured gel is far more likely to trigger a reaction'."
+        },
+        {
+          "prompt": "What does she recommend today?",
+          "options": [
+            "A thicker layer of gel",
+            "A patch test on one nail",
+            "Never using gel again"
+          ],
+          "answer": 1,
+          "explanation": "'a patch test on one nail first'."
+        },
+        {
+          "prompt": "Which sentence is a cleft sentence?",
+          "options": [
+            "What matters is proper curing.",
+            "Curing is proper matters.",
+            "Proper curing matters."
+          ],
+          "answer": 0,
+          "explanation": "What + mệnh đề + is + thông tin nhấn mạnh."
+        },
+        {
+          "prompt": "What does 'sensitised' suggest?",
+          "options": [
+            "The nails have become stronger",
+            "The body has become reactive to a substance",
+            "The skin has become drier"
+          ],
+          "answer": 1,
+          "explanation": "sensitised = cơ thể đã trở nên mẫn cảm với một chất."
+        },
+        {
+          "prompt": "Complete the sentence: She had an _____ to the gel.",
+          "options": [
+            "allergic reaction",
+            "exposure",
+            "sensitised"
+          ],
+          "answer": 0,
+          "explanation": "“allergic reaction” nghĩa là “phản ứng dị ứng”. Câu đầy đủ: She had an allergic reaction to the gel."
+        },
+        {
+          "prompt": "What does “sensitised” mean?",
+          "options": [
+            "sự tiếp xúc",
+            "bị mẫn cảm",
+            "phản ứng dị ứng"
+          ],
+          "answer": 1,
+          "explanation": "“sensitised” = bị mẫn cảm. Ví dụ: Once you are sensitised, the reaction gets worse."
+        },
+        {
+          "prompt": "Complete the sentence: We offer _____ gel polish.",
+          "options": [
+            "hypoallergenic",
+            "sensitised",
+            "exposure"
+          ],
+          "answer": 0,
+          "explanation": "“hypoallergenic” nghĩa là “ít gây dị ứng”. Câu đầy đủ: We offer hypoallergenic gel polish."
+        },
+        {
+          "prompt": "What does “curing” mean?",
+          "options": [
+            "bị mẫn cảm",
+            "sấy/đóng rắn gel bằng đèn",
+            "thử dị ứng trên một vùng nhỏ"
+          ],
+          "answer": 1,
+          "explanation": "“curing” = sấy/đóng rắn gel bằng đèn. Ví dụ: Proper curing reduces the risk of irritation."
+        },
+        {
+          "prompt": "Complete the sentence: We always do a _____ first.",
+          "options": [
+            "curing",
+            "patch test",
+            "hypoallergenic"
+          ],
+          "answer": 1,
+          "explanation": "“patch test” nghĩa là “thử dị ứng trên một vùng nhỏ”. Câu đầy đủ: We always do a patch test first."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c1-4",
+      "level": "C1",
+      "unit": "C1 · Bài 4",
+      "category": "Kỹ năng",
+      "title": "Xử lý sự cố phản ứng và lập báo cáo",
+      "objective": "Giữ bình tĩnh khi khách có phản ứng, hỏi triệu chứng nghiêm trọng và lập báo cáo sự cố.",
+      "reading": "Customer: My fingers are burning and swelling. I think something's wrong.\nTechnician: Please stay calm. I'm going to remove the product straight away and rinse your hands with cool water. Are you having any difficulty breathing, or any swelling of the lips?\nCustomer: No, just my fingers.\nTechnician: Good. Even so, I'd advise you to see a doctor if it doesn't settle within an hour. I'll write up an incident report with the product names and batch numbers, so your doctor has all the details.\nCustomer: Will I be charged?\nTechnician: Certainly not. Our priority is your wellbeing. Here's my manager's number, and we'll follow up with you tomorrow.",
+      "vocabulary": [
+        {
+          "term": "incident report",
+          "definition": "báo cáo sự cố",
+          "example": "I'll fill in an incident report straight away."
+        },
+        {
+          "term": "batch number",
+          "definition": "số lô sản phẩm",
+          "example": "Please note the batch number on the bottle."
+        },
+        {
+          "term": "swelling",
+          "definition": "sưng",
+          "example": "Any swelling should be checked by a doctor."
+        },
+        {
+          "term": "rinse",
+          "definition": "rửa bằng nước",
+          "example": "Rinse the area with cool water."
+        },
+        {
+          "term": "settle",
+          "definition": "dịu đi, ổn định",
+          "example": "If it doesn't settle within an hour, call a doctor."
+        },
+        {
+          "term": "follow up",
+          "definition": "theo dõi, liên hệ lại",
+          "example": "We'll follow up with you tomorrow."
+        }
+      ],
+      "grammar": {
+        "title": "Even so / Nevertheless / That said: thừa nhận nhưng vẫn khuyến nghị",
+        "explanation": "Thừa nhận một điều (ví dụ phản ứng nhẹ) nhưng vẫn đưa ra khuyến nghị an toàn.",
+        "examples": [
+          "Even so, I'd advise you to see a doctor.",
+          "It's probably mild; that said, we should monitor it.",
+          "The reaction is minor. Nevertheless, we will file a report."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Giọng bình tĩnh, chậm: Please stay CALM.",
+        "tip": "Khi xử lý sự cố, nói chậm, câu ngắn, ngữ điệu hạ để trấn an người nghe.",
+        "words": [
+          "swelling",
+          "incident",
+          "breathing",
+          "wellbeing"
+        ]
+      },
+      "speakingTasks": [
+        "Trấn an khách bị phản ứng và hỏi các triệu chứng nghiêm trọng.",
+        "Giải thích bạn sẽ ghi báo cáo sự cố và theo dõi sau đó."
+      ],
+      "questions": [
+        {
+          "prompt": "What does the technician do first?",
+          "options": [
+            "Asks the customer to pay",
+            "Removes the product and rinses with cool water",
+            "Takes a photo"
+          ],
+          "answer": 1,
+          "explanation": "'remove the product straight away and rinse your hands'."
+        },
+        {
+          "prompt": "Why does the technician ask about breathing and the lips?",
+          "options": [
+            "To start a conversation",
+            "To sell lip balm",
+            "To check for a serious reaction"
+          ],
+          "answer": 2,
+          "explanation": "Khó thở/sưng môi là dấu hiệu phản ứng nghiêm trọng."
+        },
+        {
+          "prompt": "What will go in the incident report?",
+          "options": [
+            "Product names and batch numbers",
+            "The salon's prices",
+            "The customer's age only"
+          ],
+          "answer": 0,
+          "explanation": "'the product names and batch numbers'."
+        },
+        {
+          "prompt": "Will the customer be charged?",
+          "options": [
+            "Half price",
+            "No, her wellbeing comes first",
+            "Yes, full price"
+          ],
+          "answer": 1,
+          "explanation": "'Certainly not. Our priority is your wellbeing.'"
+        },
+        {
+          "prompt": "Which phrase shows a concession?",
+          "options": [
+            "Because, see a doctor.",
+            "Even so, I'd advise you to see a doctor.",
+            "So, you see a doctor."
+          ],
+          "answer": 1,
+          "explanation": "Even so = tuy vậy, dù thế."
+        },
+        {
+          "prompt": "Complete the sentence: I'll fill in an _____ straight away.",
+          "options": [
+            "settle",
+            "swelling",
+            "incident report"
+          ],
+          "answer": 2,
+          "explanation": "“incident report” nghĩa là “báo cáo sự cố”. Câu đầy đủ: I'll fill in an incident report straight away."
+        },
+        {
+          "prompt": "What does “batch number” mean?",
+          "options": [
+            "số lô sản phẩm",
+            "rửa bằng nước",
+            "dịu đi, ổn định"
+          ],
+          "answer": 0,
+          "explanation": "“batch number” = số lô sản phẩm. Ví dụ: Please note the batch number on the bottle."
+        },
+        {
+          "prompt": "Complete the sentence: Any _____ should be checked by a doctor.",
+          "options": [
+            "rinse",
+            "swelling",
+            "follow up"
+          ],
+          "answer": 1,
+          "explanation": "“swelling” nghĩa là “sưng”. Câu đầy đủ: Any swelling should be checked by a doctor."
+        },
+        {
+          "prompt": "What does “rinse” mean?",
+          "options": [
+            "theo dõi, liên hệ lại",
+            "số lô sản phẩm",
+            "rửa bằng nước"
+          ],
+          "answer": 2,
+          "explanation": "“rinse” = rửa bằng nước. Ví dụ: Rinse the area with cool water."
+        },
+        {
+          "prompt": "Complete the sentence: If it doesn't _____ within an hour, call a doctor.",
+          "options": [
+            "follow up",
+            "settle",
+            "rinse"
+          ],
+          "answer": 1,
+          "explanation": "“settle” nghĩa là “dịu đi, ổn định”. Câu đầy đủ: If it doesn't settle within an hour, call a doctor."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c1-5",
+      "level": "C1",
+      "unit": "C1 · Bài 5",
+      "category": "Quản lý",
+      "title": "Chính sách đặt cọc và hủy lịch",
+      "objective": "Giải thích chính sách hủy lịch, nêu giới hạn và đề xuất giải pháp thay thế một cách lịch sự.",
+      "reading": "Customer: I'm so sorry — I'm going to have to cancel my appointment for this afternoon. Something's come up at work.\nReceptionist: I understand. Unfortunately, as our policy states, appointments cancelled with less than twenty-four hours' notice forfeit the deposit.\nCustomer: Surely there's some flexibility? It's my first time cancelling.\nReceptionist: Given that it's your first time, I can transfer the deposit to a new booking within the next fourteen days. That's the most I'm able to do, I'm afraid.\nCustomer: That's fair. I appreciate it.\nReceptionist: Not at all. Should you need to reschedule again, please let us know at least a day in advance, so we can offer the slot to someone on the waiting list.",
+      "vocabulary": [
+        {
+          "term": "deposit",
+          "definition": "tiền đặt cọc",
+          "example": "A twenty-dollar deposit secures your booking."
+        },
+        {
+          "term": "forfeit",
+          "definition": "mất (tiền cọc, quyền lợi)",
+          "example": "Late cancellations forfeit the deposit."
+        },
+        {
+          "term": "notice",
+          "definition": "sự báo trước",
+          "example": "We need twenty-four hours' notice."
+        },
+        {
+          "term": "flexibility",
+          "definition": "sự linh hoạt",
+          "example": "Is there any flexibility on the policy?"
+        },
+        {
+          "term": "waiting list",
+          "definition": "danh sách chờ",
+          "example": "She's on the waiting list for Saturday."
+        },
+        {
+          "term": "reschedule",
+          "definition": "dời lịch",
+          "example": "Can I reschedule for next week?"
+        }
+      ],
+      "grammar": {
+        "title": "Given that / Considering that / Seeing as: vì xét rằng",
+        "explanation": "Nêu lý do làm cơ sở cho một quyết định; nghe lịch sự và có sức thuyết phục.",
+        "examples": [
+          "Given that it's your first time, I can make an exception.",
+          "Considering that the slot is in high demand, we need notice.",
+          "Seeing as you've been a loyal customer, we'll waive the fee."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Giọng ấm khi nêu giới hạn: That's the most I'm able to do, I'm aFRAID.",
+        "tip": "Thêm 'I'm afraid' và hạ giọng cuối câu để lời từ chối bớt cứng.",
+        "words": [
+          "forfeit",
+          "deposit",
+          "flexibility",
+          "reschedule"
+        ]
+      },
+      "speakingTasks": [
+        "Giải thích chính sách hủy lịch cho khách bằng 'Given that...'.",
+        "Đề xuất một giải pháp thay thế thay vì giữ nguyên mức phạt."
+      ],
+      "questions": [
+        {
+          "prompt": "Why would the customer normally lose the deposit?",
+          "options": [
+            "She was late",
+            "She changed her design",
+            "She cancelled with less than 24 hours' notice"
+          ],
+          "answer": 2,
+          "explanation": "'less than twenty-four hours' notice forfeit the deposit'."
+        },
+        {
+          "prompt": "What does the receptionist offer?",
+          "options": [
+            "To transfer the deposit to a new booking within fourteen days",
+            "A full refund",
+            "A free manicure"
+          ],
+          "answer": 0,
+          "explanation": "'transfer the deposit to a new booking'."
+        },
+        {
+          "prompt": "Why does she ask for a day's notice in future?",
+          "options": [
+            "To raise prices",
+            "To offer the slot to someone on the waiting list",
+            "To close early"
+          ],
+          "answer": 1,
+          "explanation": "'so we can offer the slot to someone on the waiting list'."
+        },
+        {
+          "prompt": "What does 'That's the most I'm able to do, I'm afraid' express?",
+          "options": [
+            "A threat",
+            "An apology for being late",
+            "A polite limit on what can be offered"
+          ],
+          "answer": 2,
+          "explanation": "Giới hạn lịch sự của những gì có thể làm."
+        },
+        {
+          "prompt": "Which sentence gives a reason?",
+          "options": [
+            "Although it's your first time, because exception.",
+            "It's your first time given so exception.",
+            "Given that it's your first time, I can make an exception."
+          ],
+          "answer": 2,
+          "explanation": "Given that = vì xét rằng."
+        },
+        {
+          "prompt": "Complete the sentence: A twenty-dollar _____ secures your booking.",
+          "options": [
+            "deposit",
+            "waiting list",
+            "notice"
+          ],
+          "answer": 0,
+          "explanation": "“deposit” nghĩa là “tiền đặt cọc”. Câu đầy đủ: A twenty-dollar deposit secures your booking."
+        },
+        {
+          "prompt": "What does “forfeit” mean?",
+          "options": [
+            "tiền đặt cọc",
+            "danh sách chờ",
+            "mất (tiền cọc, quyền lợi)"
+          ],
+          "answer": 2,
+          "explanation": "“forfeit” = mất (tiền cọc, quyền lợi). Ví dụ: Late cancellations forfeit the deposit."
+        },
+        {
+          "prompt": "Complete the sentence: We need twenty-four hours' _____.",
+          "options": [
+            "forfeit",
+            "notice",
+            "flexibility"
+          ],
+          "answer": 1,
+          "explanation": "“notice” nghĩa là “sự báo trước”. Câu đầy đủ: We need twenty-four hours' notice."
+        },
+        {
+          "prompt": "What does “flexibility” mean?",
+          "options": [
+            "dời lịch",
+            "sự báo trước",
+            "sự linh hoạt"
+          ],
+          "answer": 2,
+          "explanation": "“flexibility” = sự linh hoạt. Ví dụ: Is there any flexibility on the policy?"
+        },
+        {
+          "prompt": "Complete the sentence: She's on the _____ for Saturday.",
+          "options": [
+            "waiting list",
+            "forfeit",
+            "deposit"
+          ],
+          "answer": 0,
+          "explanation": "“waiting list” nghĩa là “danh sách chờ”. Câu đầy đủ: She's on the waiting list for Saturday."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c1-6",
+      "level": "C1",
+      "unit": "C1 · Bài 6",
+      "category": "Quản lý",
+      "title": "Hướng dẫn và góp ý cho nhân viên mới",
+      "objective": "Khen đúng chỗ, góp ý cụ thể và đưa lời khuyên mềm mỏng cho thợ mới.",
+      "reading": "Trainer: Let's go through your last set together. First, what do you think went well?\nTrainee: I think my shaping was quite even, and the customer seemed relaxed.\nTrainer: I agree, your shaping is coming along nicely. One thing I'd work on is your cuticle prep. You were a little heavy-handed near the sidewall, which is how lifting starts.\nTrainee: I didn't realise. I was worried about leaving any skin behind.\nTrainer: That's a common concern. If I were you, I'd use a lighter touch and let the product do more of the work. It's all about control rather than pressure.\nTrainee: Would you mind watching me again tomorrow?\nTrainer: Not at all. By the end of the month, I'm confident you'll be doing it with your eyes closed.",
+      "vocabulary": [
+        {
+          "term": "shaping",
+          "definition": "tạo form móng",
+          "example": "Her shaping is very even."
+        },
+        {
+          "term": "heavy-handed",
+          "definition": "mạnh tay, thiếu nhẹ nhàng",
+          "example": "Don't be heavy-handed near the skin."
+        },
+        {
+          "term": "sidewall",
+          "definition": "rãnh móng hai bên",
+          "example": "Avoid the sidewall when filing."
+        },
+        {
+          "term": "lifting",
+          "definition": "bong tróc (gel, bột)",
+          "example": "Lifting often starts at the edges."
+        },
+        {
+          "term": "prep",
+          "definition": "bước chuẩn bị móng",
+          "example": "Good prep makes the product last longer."
+        },
+        {
+          "term": "confident",
+          "definition": "tự tin, chắc chắn",
+          "example": "I'm confident you'll improve quickly."
+        }
+      ],
+      "grammar": {
+        "title": "Lời khuyên mềm: If I were you, I'd... / It might be worth... / One thing I'd work on is...",
+        "explanation": "Đưa góp ý như một gợi ý thay vì mệnh lệnh, giúp người nghe dễ tiếp nhận.",
+        "examples": [
+          "If I were you, I'd use a lighter touch.",
+          "It might be worth practising on a tip first.",
+          "One thing I'd work on is your timing."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Khen trước, góp ý sau: Your shaping is coming along NICEly.",
+        "tip": "Giọng đi lên khi khen, đều và nhẹ khi góp ý để người nghe không bị phòng thủ.",
+        "words": [
+          "heavy-handed",
+          "sidewall",
+          "confident",
+          "lifting"
+        ]
+      },
+      "speakingTasks": [
+        "Góp ý cho một nhân viên mới: một điểm tốt và một điểm cần cải thiện.",
+        "Dùng 'If I were you, I'd...' để đưa lời khuyên."
+      ],
+      "questions": [
+        {
+          "prompt": "What does the trainer praise?",
+          "options": [
+            "The trainee's nail art",
+            "The trainee's shaping",
+            "The trainee's speed"
+          ],
+          "answer": 1,
+          "explanation": "'your shaping is coming along nicely'."
+        },
+        {
+          "prompt": "What problem does the trainer point out?",
+          "options": [
+            "Being heavy-handed near the sidewall",
+            "Arriving late",
+            "Using too much polish"
+          ],
+          "answer": 0,
+          "explanation": "'a little heavy-handed near the sidewall'."
+        },
+        {
+          "prompt": "Why did the trainee press hard?",
+          "options": [
+            "She was angry",
+            "She had no tools",
+            "She was worried about leaving skin behind"
+          ],
+          "answer": 2,
+          "explanation": "'worried about leaving any skin behind'."
+        },
+        {
+          "prompt": "What does 'It's all about control rather than pressure' mean?",
+          "options": [
+            "Precision matters more than force",
+            "Use more force",
+            "Control the customer"
+          ],
+          "answer": 0,
+          "explanation": "Chính xác quan trọng hơn dùng lực."
+        },
+        {
+          "prompt": "Which is a soft piece of advice?",
+          "options": [
+            "Use a lighter touch now.",
+            "You are wrong.",
+            "If I were you, I'd use a lighter touch."
+          ],
+          "answer": 2,
+          "explanation": "If I were you, I'd... = lời khuyên mềm."
+        },
+        {
+          "prompt": "Complete the sentence: Her _____ is very even.",
+          "options": [
+            "sidewall",
+            "prep",
+            "shaping"
+          ],
+          "answer": 2,
+          "explanation": "“shaping” nghĩa là “tạo form móng”. Câu đầy đủ: Her shaping is very even."
+        },
+        {
+          "prompt": "What does “heavy-handed” mean?",
+          "options": [
+            "mạnh tay, thiếu nhẹ nhàng",
+            "bước chuẩn bị móng",
+            "tạo form móng"
+          ],
+          "answer": 0,
+          "explanation": "“heavy-handed” = mạnh tay, thiếu nhẹ nhàng. Ví dụ: Don't be heavy-handed near the skin."
+        },
+        {
+          "prompt": "Complete the sentence: Avoid the _____ when filing.",
+          "options": [
+            "sidewall",
+            "prep",
+            "heavy-handed"
+          ],
+          "answer": 0,
+          "explanation": "“sidewall” nghĩa là “rãnh móng hai bên”. Câu đầy đủ: Avoid the sidewall when filing."
+        },
+        {
+          "prompt": "What does “lifting” mean?",
+          "options": [
+            "bong tróc (gel, bột)",
+            "tự tin, chắc chắn",
+            "mạnh tay, thiếu nhẹ nhàng"
+          ],
+          "answer": 0,
+          "explanation": "“lifting” = bong tróc (gel, bột). Ví dụ: Lifting often starts at the edges."
+        },
+        {
+          "prompt": "Complete the sentence: Good _____ makes the product last longer.",
+          "options": [
+            "confident",
+            "prep",
+            "sidewall"
+          ],
+          "answer": 1,
+          "explanation": "“prep” nghĩa là “bước chuẩn bị móng”. Câu đầy đủ: Good prep makes the product last longer."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c1-7",
+      "level": "C1",
+      "unit": "C1 · Bài 7",
+      "category": "Kỹ năng",
+      "title": "Xây dựng thương hiệu và mạng xã hội",
+      "objective": "Trao đổi cách biến người theo dõi thành khách đặt lịch và giữ giọng điệu thương hiệu nhất quán.",
+      "reading": "Owner: Our feed looks pretty, but we're not converting followers into bookings. Where are we going wrong?\nConsultant: Your photos are strong, but there's no clear call to action. Each post should tell people what to do next — book, message, or visit.\nOwner: We don't want to come across as pushy.\nConsultant: There's a fine line between pushy and helpful. Short stories about your clients' experiences, shared with their consent, build trust far more effectively than discounts. Consistency matters too; posting three times a week beats a burst of ten posts followed by silence.\nOwner: And what about the brand's tone of voice?\nConsultant: Decide on two or three adjectives — warm, expert, playful, say — and let those guide every caption. Customers should recognise you even without seeing the logo.",
+      "vocabulary": [
+        {
+          "term": "convert",
+          "definition": "chuyển đổi (người theo dõi thành khách)",
+          "example": "We want to convert followers into customers."
+        },
+        {
+          "term": "call to action",
+          "definition": "lời kêu gọi hành động",
+          "example": "Every post needs a clear call to action."
+        },
+        {
+          "term": "come across as",
+          "definition": "tạo ấn tượng là",
+          "example": "We don't want to come across as pushy."
+        },
+        {
+          "term": "consent",
+          "definition": "sự đồng ý",
+          "example": "Ask for the client's consent before posting."
+        },
+        {
+          "term": "consistency",
+          "definition": "sự nhất quán",
+          "example": "Consistency builds trust over time."
+        },
+        {
+          "term": "tone of voice",
+          "definition": "giọng điệu thương hiệu",
+          "example": "Our tone of voice is warm and expert."
+        }
+      ],
+      "grammar": {
+        "title": "So sánh nhấn mạnh: far / much / considerably + more... than",
+        "explanation": "Dùng trạng từ tăng mức trước dạng so sánh để nhấn mạnh sự khác biệt lớn.",
+        "examples": [
+          "Stories build trust far more effectively than discounts.",
+          "Posting regularly is considerably cheaper than advertising.",
+          "There's a fine line between pushy and helpful."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Nhấn từ đối lập: PUSHy hay HELPful",
+        "tip": "Nhấn mạnh hai từ đối lập để người nghe thấy ngay sự khác biệt.",
+        "words": [
+          "consistency",
+          "consent",
+          "convert",
+          "pushy"
+        ]
+      },
+      "speakingTasks": [
+        "Đề xuất ba cách để biến người theo dõi thành khách đặt lịch.",
+        "Mô tả giọng điệu thương hiệu của tiệm bằng ba tính từ."
+      ],
+      "questions": [
+        {
+          "prompt": "What is the owner's problem?",
+          "options": [
+            "Followers are not turning into bookings",
+            "The photos are poor",
+            "The prices are too high"
+          ],
+          "answer": 0,
+          "explanation": "'not converting followers into bookings'."
+        },
+        {
+          "prompt": "What does each post need, according to the consultant?",
+          "options": [
+            "A clear call to action",
+            "A discount",
+            "A long caption"
+          ],
+          "answer": 0,
+          "explanation": "'no clear call to action'."
+        },
+        {
+          "prompt": "Why does the consultant suggest sharing clients' experiences?",
+          "options": [
+            "They make the feed longer",
+            "They are cheaper to film",
+            "They build trust more effectively than discounts"
+          ],
+          "answer": 2,
+          "explanation": "'build trust far more effectively than discounts'."
+        },
+        {
+          "prompt": "What does the consultant say works better?",
+          "options": [
+            "Posting three times a week consistently",
+            "Posting ten times then stopping",
+            "Never posting"
+          ],
+          "answer": 0,
+          "explanation": "'three times a week beats a burst of ten posts'."
+        },
+        {
+          "prompt": "'A fine line between pushy and helpful' means...",
+          "options": [
+            "The difference is subtle and easy to cross",
+            "There is a thin wall",
+            "They are exactly the same"
+          ],
+          "answer": 0,
+          "explanation": "a fine line = ranh giới mong manh."
+        },
+        {
+          "prompt": "Complete the sentence: We want to _____ followers into customers.",
+          "options": [
+            "call to action",
+            "convert",
+            "tone of voice"
+          ],
+          "answer": 1,
+          "explanation": "“convert” nghĩa là “chuyển đổi (người theo dõi thành khách)”. Câu đầy đủ: We want to convert followers into customers."
+        },
+        {
+          "prompt": "What does “call to action” mean?",
+          "options": [
+            "chuyển đổi (người theo dõi thành khách)",
+            "sự đồng ý",
+            "lời kêu gọi hành động"
+          ],
+          "answer": 2,
+          "explanation": "“call to action” = lời kêu gọi hành động. Ví dụ: Every post needs a clear call to action."
+        },
+        {
+          "prompt": "Complete the sentence: We don't want to _____ pushy.",
+          "options": [
+            "call to action",
+            "consistency",
+            "come across as"
+          ],
+          "answer": 2,
+          "explanation": "“come across as” nghĩa là “tạo ấn tượng là”. Câu đầy đủ: We don't want to come across as pushy."
+        },
+        {
+          "prompt": "What does “consent” mean?",
+          "options": [
+            "chuyển đổi (người theo dõi thành khách)",
+            "sự đồng ý",
+            "giọng điệu thương hiệu"
+          ],
+          "answer": 1,
+          "explanation": "“consent” = sự đồng ý. Ví dụ: Ask for the client's consent before posting."
+        },
+        {
+          "prompt": "Complete the sentence: _____ builds trust over time.",
+          "options": [
+            "call to action",
+            "tone of voice",
+            "consistency"
+          ],
+          "answer": 2,
+          "explanation": "“consistency” nghĩa là “sự nhất quán”. Câu đầy đủ: Consistency builds trust over time."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c1-8",
+      "level": "C1",
+      "unit": "C1 · Bài 8",
+      "category": "Quản lý",
+      "title": "Đàm phán với nhà cung cấp",
+      "objective": "Thương lượng giá, chiết khấu và thời gian giao hàng, yêu cầu cam kết bằng văn bản.",
+      "reading": "Owner: We're ordering in much larger volumes now, so I'd like to revisit our pricing.\nSupplier: I appreciate your business. What sort of volumes are we talking about?\nOwner: Roughly double what we ordered last quarter, on a regular basis. In return, I'd expect a discount of around fifteen percent and free delivery.\nSupplier: Fifteen is a stretch. I could offer ten percent, with free delivery above a certain order value.\nOwner: What about the lead time? Last month, a delay left us short of gel polish for a week.\nSupplier: That's unacceptable, and I apologise. I can commit to a maximum five-day lead time in writing, with a rebate if we miss it.\nOwner: In that case, we have a deal, provided it's confirmed in the contract.",
+      "vocabulary": [
+        {
+          "term": "volume",
+          "definition": "số lượng lớn",
+          "example": "We order in large volumes."
+        },
+        {
+          "term": "discount",
+          "definition": "giảm giá",
+          "example": "I'd expect a discount for bulk orders."
+        },
+        {
+          "term": "lead time",
+          "definition": "thời gian giao hàng",
+          "example": "Our lead time is five days."
+        },
+        {
+          "term": "rebate",
+          "definition": "khoản hoàn tiền",
+          "example": "You'll receive a rebate if we miss the deadline."
+        },
+        {
+          "term": "stretch",
+          "definition": "hơi quá sức, khó chấp nhận",
+          "example": "Fifteen percent is a bit of a stretch."
+        },
+        {
+          "term": "commit",
+          "definition": "cam kết",
+          "example": "I can commit to a five-day lead time."
+        }
+      ],
+      "grammar": {
+        "title": "Đề nghị và nhượng bộ khi đàm phán: In return, I'd expect... / I could offer... / provided...",
+        "explanation": "Nêu điều bạn mong muốn, điều bạn có thể đưa ra và điều kiện đi kèm.",
+        "examples": [
+          "In return, I'd expect a ten percent discount.",
+          "I could offer free delivery above a certain value.",
+          "We have a deal, provided it's in the contract."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Phân biệt số: fifTEEN và FIFty",
+        "tip": "-teen nhấn ở cuối, -ty nhấn ở đầu; nói rõ để tránh nhầm giá.",
+        "words": [
+          "fifteen",
+          "fifty",
+          "volume",
+          "commit"
+        ]
+      },
+      "speakingTasks": [
+        "Thương lượng một khoản giảm giá khi đặt số lượng lớn.",
+        "Yêu cầu nhà cung cấp cam kết thời gian giao hàng bằng văn bản."
+      ],
+      "questions": [
+        {
+          "prompt": "Why does the owner want to revisit the pricing?",
+          "options": [
+            "The salon is closing",
+            "The supplier raised prices",
+            "Orders are now much larger"
+          ],
+          "answer": 2,
+          "explanation": "'ordering in much larger volumes'."
+        },
+        {
+          "prompt": "How does the supplier respond to fifteen percent?",
+          "options": [
+            "Says it's a stretch and offers ten",
+            "Ends the call",
+            "Accepts at once"
+          ],
+          "answer": 0,
+          "explanation": "'Fifteen is a stretch. I could offer ten percent'."
+        },
+        {
+          "prompt": "What happened last month?",
+          "options": [
+            "The shop flooded",
+            "The owner forgot to pay",
+            "A delay left them short of gel polish"
+          ],
+          "answer": 2,
+          "explanation": "'a delay left us short of gel polish for a week'."
+        },
+        {
+          "prompt": "What does the supplier commit to?",
+          "options": [
+            "Lower quality",
+            "A maximum five-day lead time, with a rebate if missed",
+            "A free salon"
+          ],
+          "answer": 1,
+          "explanation": "'a maximum five-day lead time in writing, with a rebate'."
+        },
+        {
+          "prompt": "When does the owner accept the deal?",
+          "options": [
+            "Provided it is confirmed in the contract",
+            "Never",
+            "Only if the supplier apologises twice"
+          ],
+          "answer": 0,
+          "explanation": "'provided it's confirmed in the contract'."
+        },
+        {
+          "prompt": "Complete the sentence: We order in large _____s.",
+          "options": [
+            "lead time",
+            "volume",
+            "discount"
+          ],
+          "answer": 1,
+          "explanation": "“volume” nghĩa là “số lượng lớn”. Câu đầy đủ: We order in large volumes."
+        },
+        {
+          "prompt": "What does “discount” mean?",
+          "options": [
+            "cam kết",
+            "giảm giá",
+            "số lượng lớn"
+          ],
+          "answer": 1,
+          "explanation": "“discount” = giảm giá. Ví dụ: I'd expect a discount for bulk orders."
+        },
+        {
+          "prompt": "Complete the sentence: Our _____ is five days.",
+          "options": [
+            "lead time",
+            "stretch",
+            "discount"
+          ],
+          "answer": 0,
+          "explanation": "“lead time” nghĩa là “thời gian giao hàng”. Câu đầy đủ: Our lead time is five days."
+        },
+        {
+          "prompt": "What does “rebate” mean?",
+          "options": [
+            "số lượng lớn",
+            "khoản hoàn tiền",
+            "giảm giá"
+          ],
+          "answer": 1,
+          "explanation": "“rebate” = khoản hoàn tiền. Ví dụ: You'll receive a rebate if we miss the deadline."
+        },
+        {
+          "prompt": "Complete the sentence: Fifteen percent is a bit of a _____.",
+          "options": [
+            "rebate",
+            "commit",
+            "stretch"
+          ],
+          "answer": 2,
+          "explanation": "“stretch” nghĩa là “hơi quá sức, khó chấp nhận”. Câu đầy đủ: Fifteen percent is a bit of a stretch."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c1-9",
+      "level": "C1",
+      "unit": "C1 · Bài 9",
+      "category": "Pháp lý",
+      "title": "Giấy phép, quy định và kiểm tra",
+      "objective": "Làm việc với thanh tra: trình giấy tờ, giải thích thiếu sót và cam kết khắc phục.",
+      "reading": "Inspector: Good morning. I'm here for the routine inspection. May I see your licences and the cleaning logs?\nOwner: Of course. All technicians' licences are displayed at their stations, and our sterilisation records are in this binder.\nInspector: Thank you. I notice that the foot spa basins were last disinfected two days ago. Regulations stipulate that they must be cleaned and logged after every client.\nOwner: You're right; that entry was missed. Our new technician wasn't aware of the requirement. I'll make sure everyone is briefed today.\nInspector: I'll record it as a minor violation. You have fourteen days to demonstrate compliance, otherwise a fine may be imposed.\nOwner: Understood. We'll send you the updated logs well before the deadline.",
+      "vocabulary": [
+        {
+          "term": "inspection",
+          "definition": "cuộc kiểm tra",
+          "example": "The routine inspection takes about an hour."
+        },
+        {
+          "term": "licence",
+          "definition": "giấy phép hành nghề",
+          "example": "All technicians must display their licence."
+        },
+        {
+          "term": "stipulate",
+          "definition": "quy định rõ",
+          "example": "The regulations stipulate daily cleaning."
+        },
+        {
+          "term": "compliance",
+          "definition": "sự tuân thủ",
+          "example": "We must demonstrate compliance within fourteen days."
+        },
+        {
+          "term": "violation",
+          "definition": "vi phạm",
+          "example": "It was recorded as a minor violation."
+        },
+        {
+          "term": "disinfect",
+          "definition": "khử trùng",
+          "example": "We disinfect the basins after every client."
+        }
+      ],
+      "grammar": {
+        "title": "Bị động trang trọng: must be cleaned and logged / is required to / may be imposed",
+        "explanation": "Dùng trong quy định và văn bản pháp lý, nhấn vào hành động chứ không phải người làm.",
+        "examples": [
+          "Basins must be cleaned after every client.",
+          "A fine may be imposed if records are missing.",
+          "Staff are required to wear gloves."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Nhấn âm tiết trước đuôi -tion: inSPECtion, vioLAtion",
+        "tip": "Từ đuôi -tion nhấn vào âm tiết ngay trước đuôi; nói chậm với từ pháp lý.",
+        "words": [
+          "inspection",
+          "compliance",
+          "violation",
+          "stipulate"
+        ]
+      },
+      "speakingTasks": [
+        "Giải thích với thanh tra bạn đã khắc phục một thiếu sót như thế nào.",
+        "Hướng dẫn nhân viên mới quy định khử trùng bằng câu bị động."
+      ],
+      "questions": [
+        {
+          "prompt": "Why has the inspector come?",
+          "options": [
+            "For a job interview",
+            "For a routine inspection",
+            "Because of a customer complaint"
+          ],
+          "answer": 1,
+          "explanation": "'I'm here for the routine inspection'."
+        },
+        {
+          "prompt": "What was missing from the records?",
+          "options": [
+            "The gloves",
+            "Cleaning entries for the foot spa basins after every client",
+            "The owner's licence"
+          ],
+          "answer": 1,
+          "explanation": "'that entry was missed'."
+        },
+        {
+          "prompt": "How is the problem classified?",
+          "options": [
+            "As a minor violation",
+            "As a compliment",
+            "As a criminal offence"
+          ],
+          "answer": 0,
+          "explanation": "'I'll record it as a minor violation'."
+        },
+        {
+          "prompt": "What deadline does the owner receive?",
+          "options": [
+            "Fourteen days",
+            "Two days",
+            "One year"
+          ],
+          "answer": 0,
+          "explanation": "'You have fourteen days to demonstrate compliance'."
+        },
+        {
+          "prompt": "Which sentence is passive and formal?",
+          "options": [
+            "Clean basins you must.",
+            "Basins must be cleaned after every client.",
+            "Someone cleaning basins every client."
+          ],
+          "answer": 1,
+          "explanation": "must be + V3 = bị động trang trọng."
+        },
+        {
+          "prompt": "Complete the sentence: The routine _____ takes about an hour.",
+          "options": [
+            "disinfect",
+            "licence",
+            "inspection"
+          ],
+          "answer": 2,
+          "explanation": "“inspection” nghĩa là “cuộc kiểm tra”. Câu đầy đủ: The routine inspection takes about an hour."
+        },
+        {
+          "prompt": "What does “licence” mean?",
+          "options": [
+            "giấy phép hành nghề",
+            "khử trùng",
+            "vi phạm"
+          ],
+          "answer": 0,
+          "explanation": "“licence” = giấy phép hành nghề. Ví dụ: All technicians must display their licence."
+        },
+        {
+          "prompt": "Complete the sentence: The regulations _____ daily cleaning.",
+          "options": [
+            "licence",
+            "stipulate",
+            "compliance"
+          ],
+          "answer": 1,
+          "explanation": "“stipulate” nghĩa là “quy định rõ”. Câu đầy đủ: The regulations stipulate daily cleaning."
+        },
+        {
+          "prompt": "What does “compliance” mean?",
+          "options": [
+            "sự tuân thủ",
+            "vi phạm",
+            "quy định rõ"
+          ],
+          "answer": 0,
+          "explanation": "“compliance” = sự tuân thủ. Ví dụ: We must demonstrate compliance within fourteen days."
+        },
+        {
+          "prompt": "Complete the sentence: It was recorded as a minor _____.",
+          "options": [
+            "violation",
+            "compliance",
+            "stipulate"
+          ],
+          "answer": 0,
+          "explanation": "“violation” nghĩa là “vi phạm”. Câu đầy đủ: It was recorded as a minor violation."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c2-1",
+      "level": "C2",
+      "unit": "C2 · Bài 1",
+      "category": "Chuyên môn",
+      "title": "Thuyết phục khách về sức khỏe móng và xu hướng",
+      "objective": "Dùng ngôn ngữ rào đón và thuyết phục để khuyên khách mà không từ chối thẳng.",
+      "reading": "Customer: I want them as long as possible — and could you file them really thin so they look delicate?\nTechnician: I can certainly see the appeal, and I'd love to give you the look you're after. That said, I'd be doing you a disservice if I didn't flag a couple of concerns. Extreme length puts disproportionate leverage on the nail bed, and over-thinning the natural nail beneath can leave it weak for months.\nCustomer: Other salons do it all the time.\nTechnician: Quite possibly, and plenty of clients are perfectly happy. My point is that tolerance varies; what's harmless for one person can be damaging for another. If you'd be open to it, I could do a slightly shorter length this time and we'll see how your nails respond.\nCustomer: So you're not refusing?\nTechnician: Not at all. It's your decision — I simply want it to be an informed one.",
+      "vocabulary": [
+        {
+          "term": "disservice",
+          "definition": "việc làm gây hại, không có lợi",
+          "example": "It would be a disservice not to mention the risks."
+        },
+        {
+          "term": "leverage",
+          "definition": "đòn bẩy, lực tác động",
+          "example": "Long nails put extra leverage on the nail bed."
+        },
+        {
+          "term": "disproportionate",
+          "definition": "không cân xứng, quá mức",
+          "example": "Extreme length has a disproportionate effect."
+        },
+        {
+          "term": "tolerance",
+          "definition": "ngưỡng chịu đựng",
+          "example": "Everyone's tolerance is different."
+        },
+        {
+          "term": "informed",
+          "definition": "có đủ thông tin",
+          "example": "I want you to make an informed decision."
+        },
+        {
+          "term": "appeal",
+          "definition": "sức hấp dẫn",
+          "example": "I can see the appeal of a longer shape."
+        }
+      ],
+      "grammar": {
+        "title": "Rào đón (hedging): I'd be doing you a disservice if I didn't... / may well / tend to",
+        "explanation": "Làm mềm lời khuyên và cảnh báo để khách không cảm thấy bị phản đối.",
+        "examples": [
+          "I'd be doing you a disservice if I didn't mention the risks.",
+          "That may well be true, but tolerance varies.",
+          "Thin natural nails tend to break more easily."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Ngắt nghỉ sau 'That said': That said, [pause] I'd be doing you a disSERvice...",
+        "tip": "Ngắt nghỉ ngắn sau 'That said' để khách chú ý vào phần cảnh báo quan trọng.",
+        "words": [
+          "disservice",
+          "disproportionate",
+          "leverage",
+          "tolerance"
+        ]
+      },
+      "speakingTasks": [
+        "Thuyết phục khách chọn độ dài an toàn hơn mà không từ chối thẳng.",
+        "Dùng ba cụm rào đón (may well, tend to, quite possibly) trong một lời giải thích."
+      ],
+      "questions": [
+        {
+          "prompt": "What does the customer ask for?",
+          "options": [
+            "No polish",
+            "Very long, thin nails",
+            "Short natural nails"
+          ],
+          "answer": 1,
+          "explanation": "'as long as possible... file them really thin'."
+        },
+        {
+          "prompt": "Why does the technician say she'd be 'doing a disservice'?",
+          "options": [
+            "She wants to charge more",
+            "She dislikes long nails",
+            "Staying silent about the risks would not serve the client"
+          ],
+          "answer": 2,
+          "explanation": "disservice = làm điều có hại cho ai đó (ở đây là im lặng về rủi ro)."
+        },
+        {
+          "prompt": "What does the technician propose?",
+          "options": [
+            "A slightly shorter length this time",
+            "Refusing the job",
+            "Doubling the price"
+          ],
+          "answer": 0,
+          "explanation": "'a slightly shorter length this time'."
+        },
+        {
+          "prompt": "'Tolerance varies' means...",
+          "options": [
+            "Everyone has the same limit",
+            "People differ in how much stress their nails can take",
+            "The salon is tolerant"
+          ],
+          "answer": 1,
+          "explanation": "Ngưỡng chịu đựng của mỗi người khác nhau."
+        },
+        {
+          "prompt": "What is the technician's final position?",
+          "options": [
+            "It's the client's decision, as long as it's informed",
+            "She insists on her view",
+            "She refuses"
+          ],
+          "answer": 0,
+          "explanation": "'It's your decision — I simply want it to be an informed one'."
+        },
+        {
+          "prompt": "Complete the sentence: It would be a _____ not to mention the risks.",
+          "options": [
+            "disservice",
+            "leverage",
+            "appeal"
+          ],
+          "answer": 0,
+          "explanation": "“disservice” nghĩa là “việc làm gây hại, không có lợi”. Câu đầy đủ: It would be a disservice not to mention the risks."
+        },
+        {
+          "prompt": "What does “leverage” mean?",
+          "options": [
+            "đòn bẩy, lực tác động",
+            "sức hấp dẫn",
+            "không cân xứng, quá mức"
+          ],
+          "answer": 0,
+          "explanation": "“leverage” = đòn bẩy, lực tác động. Ví dụ: Long nails put extra leverage on the nail bed."
+        },
+        {
+          "prompt": "Complete the sentence: Extreme length has a _____ effect.",
+          "options": [
+            "leverage",
+            "disproportionate",
+            "appeal"
+          ],
+          "answer": 1,
+          "explanation": "“disproportionate” nghĩa là “không cân xứng, quá mức”. Câu đầy đủ: Extreme length has a disproportionate effect."
+        },
+        {
+          "prompt": "What does “tolerance” mean?",
+          "options": [
+            "ngưỡng chịu đựng",
+            "không cân xứng, quá mức",
+            "việc làm gây hại, không có lợi"
+          ],
+          "answer": 0,
+          "explanation": "“tolerance” = ngưỡng chịu đựng. Ví dụ: Everyone's tolerance is different."
+        },
+        {
+          "prompt": "Complete the sentence: I want you to make an _____ decision.",
+          "options": [
+            "tolerance",
+            "informed",
+            "disproportionate"
+          ],
+          "answer": 1,
+          "explanation": "“informed” nghĩa là “có đủ thông tin”. Câu đầy đủ: I want you to make an informed decision."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c2-2",
+      "level": "C2",
+      "unit": "C2 · Bài 2",
+      "category": "Giao tiếp",
+      "title": "Giải quyết khiếu nại chính thức bằng ngôn ngữ ngoại giao",
+      "objective": "Xoa dịu khách đang giận, đưa ra giải pháp thay thế và giữ mối quan hệ.",
+      "reading": "Customer: This is unacceptable. I paid for a full set and two nails have already lifted. I want a full refund, and I'll be leaving a review.\nManager: I'm genuinely sorry to hear that, and I can understand why you're upset. May I take a look at the nails before we discuss what we can do?\nCustomer: Look all you like. It won't change anything.\nManager: I can see the lifting on the index and ring fingers. I'd like to make this right. Might I suggest we redo the full set at no charge, using a different base product? Alternatively, if you'd prefer to part ways, I'm prepared to offer a full refund.\nCustomer: Hmm. I was ready for an argument. I'll take the redo, but only if I can have it done today.\nManager: Absolutely. Thank you for giving us the opportunity to put it right, and for your candour — it helps us improve.",
+      "vocabulary": [
+        {
+          "term": "make this right",
+          "definition": "khắc phục cho thoả đáng",
+          "example": "We want to make this right."
+        },
+        {
+          "term": "part ways",
+          "definition": "chia tay, không tiếp tục hợp tác",
+          "example": "If you'd prefer to part ways, we'll refund you."
+        },
+        {
+          "term": "candour",
+          "definition": "sự thẳng thắn",
+          "example": "Thank you for your candour."
+        },
+        {
+          "term": "redo",
+          "definition": "làm lại",
+          "example": "We can redo the full set today."
+        },
+        {
+          "term": "genuinely",
+          "definition": "thực lòng",
+          "example": "I'm genuinely sorry to hear that."
+        },
+        {
+          "term": "upset",
+          "definition": "buồn bực, khó chịu",
+          "example": "I can understand why you're upset."
+        }
+      ],
+      "grammar": {
+        "title": "Ngôn ngữ ngoại giao: Might I suggest...? / I'd like to... / Alternatively, if you'd prefer...",
+        "explanation": "Đề xuất giải pháp dưới dạng câu hỏi hoặc gợi ý để khách có cảm giác được lựa chọn.",
+        "examples": [
+          "Might I suggest we redo the full set?",
+          "I'd like to make this right.",
+          "Alternatively, if you'd prefer, I can offer a refund."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Giọng thấp, chậm: I'm genuinely SORry.",
+        "tip": "Khi khách giận, hạ âm lượng và tốc độ nói, tránh nâng giọng để không làm căng thêm.",
+        "words": [
+          "genuinely",
+          "candour",
+          "alternatively",
+          "unacceptable"
+        ]
+      },
+      "speakingTasks": [
+        "Xoa dịu khách đang tức giận và đưa ra hai lựa chọn khắc phục.",
+        "Dùng 'Might I suggest...' để đề xuất giải pháp."
+      ],
+      "questions": [
+        {
+          "prompt": "What does the customer demand at first?",
+          "options": [
+            "A discount code",
+            "A new technician",
+            "A refund, and she warns of a review"
+          ],
+          "answer": 2,
+          "explanation": "'I want a full refund, and I'll be leaving a review'."
+        },
+        {
+          "prompt": "What does the manager ask to do first?",
+          "options": [
+            "Offer a refund",
+            "Look at the nails",
+            "End the call"
+          ],
+          "answer": 1,
+          "explanation": "'May I take a look at the nails'."
+        },
+        {
+          "prompt": "Besides redoing the set, what does the manager offer?",
+          "options": [
+            "A full refund",
+            "A gift card",
+            "A free pedicure"
+          ],
+          "answer": 0,
+          "explanation": "'I'm prepared to offer a full refund'."
+        },
+        {
+          "prompt": "What does the customer decide?",
+          "options": [
+            "To post a bad review",
+            "To leave angrily",
+            "To accept the redo today"
+          ],
+          "answer": 2,
+          "explanation": "'I'll take the redo, but only if I can have it done today'."
+        },
+        {
+          "prompt": "Which sentence is the most diplomatic?",
+          "options": [
+            "You should accept the redo.",
+            "We won't refund you.",
+            "Might I suggest we redo the set?"
+          ],
+          "answer": 2,
+          "explanation": "Might I suggest... = cách đề xuất ngoại giao nhất."
+        },
+        {
+          "prompt": "Complete the sentence: We want to _____.",
+          "options": [
+            "upset",
+            "genuinely",
+            "make this right"
+          ],
+          "answer": 2,
+          "explanation": "“make this right” nghĩa là “khắc phục cho thoả đáng”. Câu đầy đủ: We want to make this right."
+        },
+        {
+          "prompt": "What does “part ways” mean?",
+          "options": [
+            "sự thẳng thắn",
+            "buồn bực, khó chịu",
+            "chia tay, không tiếp tục hợp tác"
+          ],
+          "answer": 2,
+          "explanation": "“part ways” = chia tay, không tiếp tục hợp tác. Ví dụ: If you'd prefer to part ways, we'll refund you."
+        },
+        {
+          "prompt": "Complete the sentence: Thank you for your _____.",
+          "options": [
+            "candour",
+            "make this right",
+            "redo"
+          ],
+          "answer": 0,
+          "explanation": "“candour” nghĩa là “sự thẳng thắn”. Câu đầy đủ: Thank you for your candour."
+        },
+        {
+          "prompt": "What does “redo” mean?",
+          "options": [
+            "buồn bực, khó chịu",
+            "làm lại",
+            "thực lòng"
+          ],
+          "answer": 1,
+          "explanation": "“redo” = làm lại. Ví dụ: We can redo the full set today."
+        },
+        {
+          "prompt": "Complete the sentence: I'm _____ sorry to hear that.",
+          "options": [
+            "redo",
+            "genuinely",
+            "part ways"
+          ],
+          "answer": 1,
+          "explanation": "“genuinely” nghĩa là “thực lòng”. Câu đầy đủ: I'm genuinely sorry to hear that."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c2-3",
+      "level": "C2",
+      "unit": "C2 · Bài 3",
+      "category": "Quản lý",
+      "title": "Thuyết trình kế hoạch kinh doanh cho nhà đầu tư",
+      "objective": "Trình bày số liệu, dự báo và rủi ro khi xin vay vốn mở chi nhánh.",
+      "reading": "Owner: Thank you for meeting me. In short, I'm seeking a loan of eighty thousand dollars to open a second location in the downtown district.\nInvestor: Walk me through the numbers. How confident are you in the projected returns?\nOwner: Our existing salon operates at a gross margin of sixty-two percent, and occupancy is near capacity at weekends. Based on conservative estimates, the new location should break even within fourteen months and turn a profit thereafter.\nInvestor: What are the main risks?\nOwner: Chiefly staff retention and a rise in rent. We've mitigated the first by introducing a profit-share scheme, and the lease we've negotiated caps annual increases at three percent.\nInvestor: That's reassuring. Send me your cash-flow forecast, and I'll revert by Friday.",
+      "vocabulary": [
+        {
+          "term": "gross margin",
+          "definition": "biên lợi nhuận gộp",
+          "example": "Our gross margin is sixty-two percent."
+        },
+        {
+          "term": "break even",
+          "definition": "hoà vốn",
+          "example": "We expect to break even within fourteen months."
+        },
+        {
+          "term": "retention",
+          "definition": "việc giữ chân (nhân viên)",
+          "example": "Staff retention is our main risk."
+        },
+        {
+          "term": "mitigate",
+          "definition": "giảm thiểu (rủi ro)",
+          "example": "We can mitigate the risk with a profit-share scheme."
+        },
+        {
+          "term": "cash-flow forecast",
+          "definition": "dự báo dòng tiền",
+          "example": "I'll send you the cash-flow forecast."
+        },
+        {
+          "term": "occupancy",
+          "definition": "tỷ lệ lấp đầy lịch",
+          "example": "Occupancy is near capacity at weekends."
+        }
+      ],
+      "grammar": {
+        "title": "Dự đoán và số liệu: should + V / is projected to + V / Based on + N",
+        "explanation": "Trình bày dự báo một cách thận trọng và có căn cứ.",
+        "examples": [
+          "The new location should break even within fourteen months.",
+          "Revenue is projected to grow by twenty percent.",
+          "Based on conservative estimates, we will turn a profit."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Đọc số rõ ràng: sixty-TWO percent, eighty THOUsand",
+        "tip": "Ngắt nghỉ sau mỗi số lớn để người nghe kịp ghi nhớ.",
+        "words": [
+          "margin",
+          "retention",
+          "mitigate",
+          "projected"
+        ]
+      },
+      "speakingTasks": [
+        "Trình bày ngắn gọn (4 câu) kế hoạch mở chi nhánh thứ hai.",
+        "Nêu hai rủi ro và cách giảm thiểu."
+      ],
+      "questions": [
+        {
+          "prompt": "How much does the owner want to borrow?",
+          "options": [
+            "$8,000",
+            "$80,000",
+            "$800,000"
+          ],
+          "answer": 1,
+          "explanation": "'a loan of eighty thousand dollars'."
+        },
+        {
+          "prompt": "When should the new location break even?",
+          "options": [
+            "Immediately",
+            "Within two years",
+            "Within fourteen months"
+          ],
+          "answer": 2,
+          "explanation": "'break even within fourteen months'."
+        },
+        {
+          "prompt": "What are the main risks?",
+          "options": [
+            "Weather and traffic",
+            "Staff retention and rising rent",
+            "The competitors' names"
+          ],
+          "answer": 1,
+          "explanation": "'Chiefly staff retention and a rise in rent'."
+        },
+        {
+          "prompt": "How has the rent risk been mitigated?",
+          "options": [
+            "By closing the shop",
+            "A lease capping annual increases at three percent",
+            "By raising prices"
+          ],
+          "answer": 1,
+          "explanation": "'caps annual increases at three percent'."
+        },
+        {
+          "prompt": "What will the investor do next?",
+          "options": [
+            "Sign immediately",
+            "Revert by Friday after reading the forecast",
+            "Reject the plan"
+          ],
+          "answer": 1,
+          "explanation": "'I'll revert by Friday'."
+        },
+        {
+          "prompt": "Complete the sentence: Our _____ is sixty-two percent.",
+          "options": [
+            "mitigate",
+            "gross margin",
+            "retention"
+          ],
+          "answer": 1,
+          "explanation": "“gross margin” nghĩa là “biên lợi nhuận gộp”. Câu đầy đủ: Our gross margin is sixty-two percent."
+        },
+        {
+          "prompt": "What does “break even” mean?",
+          "options": [
+            "hoà vốn",
+            "dự báo dòng tiền",
+            "việc giữ chân (nhân viên)"
+          ],
+          "answer": 0,
+          "explanation": "“break even” = hoà vốn. Ví dụ: We expect to break even within fourteen months."
+        },
+        {
+          "prompt": "Complete the sentence: Staff _____ is our main risk.",
+          "options": [
+            "cash-flow forecast",
+            "mitigate",
+            "retention"
+          ],
+          "answer": 2,
+          "explanation": "“retention” nghĩa là “việc giữ chân (nhân viên)”. Câu đầy đủ: Staff retention is our main risk."
+        },
+        {
+          "prompt": "What does “mitigate” mean?",
+          "options": [
+            "giảm thiểu (rủi ro)",
+            "việc giữ chân (nhân viên)",
+            "hoà vốn"
+          ],
+          "answer": 0,
+          "explanation": "“mitigate” = giảm thiểu (rủi ro). Ví dụ: We can mitigate the risk with a profit-share scheme."
+        },
+        {
+          "prompt": "Complete the sentence: I'll send you the _____.",
+          "options": [
+            "cash-flow forecast",
+            "mitigate",
+            "gross margin"
+          ],
+          "answer": 0,
+          "explanation": "“cash-flow forecast” nghĩa là “dự báo dòng tiền”. Câu đầy đủ: I'll send you the cash-flow forecast."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c2-4",
+      "level": "C2",
+      "unit": "C2 · Bài 4",
+      "category": "Pháp lý",
+      "title": "Hợp đồng, thuê ghế và làm nhân viên",
+      "objective": "So sánh mô hình thuê ghế và làm nhân viên, nêu rủi ro và đề nghị thử việc bằng văn bản.",
+      "reading": "Technician: I'd like to understand the difference between renting a station and being employed here.\nOwner: In essence, if you rent a station, you operate as an independent contractor. You set your own prices and hours, you keep your clients' fees, and you pay a weekly rent. As an employee, you'd work set shifts, receive a wage plus commission, and I'd be responsible for your insurance and taxes.\nTechnician: What are the downsides to renting?\nOwner: You bear the financial risk. If you're quiet one week, the rent is still due, and you're liable for your own supplies and insurance. Conversely, you have more autonomy and the potential for higher earnings.\nTechnician: Could I trial it for a month?\nOwner: I'd be amenable to that, but I'd want it in writing, with a notice period of thirty days either way.",
+      "vocabulary": [
+        {
+          "term": "independent contractor",
+          "definition": "người làm việc độc lập",
+          "example": "As an independent contractor, you set your own prices."
+        },
+        {
+          "term": "commission",
+          "definition": "hoa hồng",
+          "example": "Employees receive a wage plus commission."
+        },
+        {
+          "term": "liable",
+          "definition": "chịu trách nhiệm",
+          "example": "You are liable for your own insurance."
+        },
+        {
+          "term": "autonomy",
+          "definition": "quyền tự chủ",
+          "example": "Renting gives you more autonomy."
+        },
+        {
+          "term": "notice period",
+          "definition": "thời gian báo trước",
+          "example": "There is a thirty-day notice period."
+        },
+        {
+          "term": "amenable",
+          "definition": "sẵn lòng chấp nhận",
+          "example": "I'd be amenable to a trial month."
+        }
+      ],
+      "grammar": {
+        "title": "Đối chiếu: Conversely / Whereas / While / In contrast",
+        "explanation": "Đặt hai mô hình hoặc hai phương án cạnh nhau để so sánh rõ ràng.",
+        "examples": [
+          "Employees receive a wage; conversely, renters keep all the fees.",
+          "Whereas employees work set shifts, renters choose their hours.",
+          "While renting offers autonomy, it carries financial risk."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Từ pháp lý: LIable, auTONomy, comMIssion",
+        "tip": "Nói chậm và nhấn âm tiết chính với thuật ngữ hợp đồng để tránh hiểu nhầm.",
+        "words": [
+          "liable",
+          "autonomy",
+          "commission",
+          "amenable"
+        ]
+      },
+      "speakingTasks": [
+        "So sánh hai mô hình làm việc (thuê ghế và nhân viên) bằng 'whereas'.",
+        "Đề nghị thử việc một tháng, có thời gian báo trước bằng văn bản."
+      ],
+      "questions": [
+        {
+          "prompt": "What does a station renter do?",
+          "options": [
+            "Has no clients",
+            "Receives a fixed wage",
+            "Sets prices and keeps clients' fees"
+          ],
+          "answer": 2,
+          "explanation": "'You set your own prices... you keep your clients' fees'."
+        },
+        {
+          "prompt": "Who is responsible for an employee's insurance and taxes?",
+          "options": [
+            "The customer",
+            "The owner",
+            "The supplier"
+          ],
+          "answer": 1,
+          "explanation": "'I'd be responsible for your insurance and taxes'."
+        },
+        {
+          "prompt": "What is a downside of renting?",
+          "options": [
+            "There is no freedom",
+            "There are no clients",
+            "The renter bears the financial risk"
+          ],
+          "answer": 2,
+          "explanation": "'You bear the financial risk'."
+        },
+        {
+          "prompt": "What does the owner want for the trial month?",
+          "options": [
+            "A verbal promise",
+            "No conditions",
+            "A written agreement with a thirty-day notice period"
+          ],
+          "answer": 2,
+          "explanation": "'in writing, with a notice period of thirty days'."
+        },
+        {
+          "prompt": "Which word signals contrast?",
+          "options": [
+            "Therefore",
+            "Conversely",
+            "Furthermore"
+          ],
+          "answer": 1,
+          "explanation": "Conversely = ngược lại."
+        },
+        {
+          "prompt": "Complete the sentence: As an _____, you set your own prices.",
+          "options": [
+            "notice period",
+            "amenable",
+            "independent contractor"
+          ],
+          "answer": 2,
+          "explanation": "“independent contractor” nghĩa là “người làm việc độc lập”. Câu đầy đủ: As an independent contractor, you set your own prices."
+        },
+        {
+          "prompt": "What does “commission” mean?",
+          "options": [
+            "hoa hồng",
+            "quyền tự chủ",
+            "chịu trách nhiệm"
+          ],
+          "answer": 0,
+          "explanation": "“commission” = hoa hồng. Ví dụ: Employees receive a wage plus commission."
+        },
+        {
+          "prompt": "Complete the sentence: You are _____ for your own insurance.",
+          "options": [
+            "autonomy",
+            "liable",
+            "independent contractor"
+          ],
+          "answer": 1,
+          "explanation": "“liable” nghĩa là “chịu trách nhiệm”. Câu đầy đủ: You are liable for your own insurance."
+        },
+        {
+          "prompt": "What does “autonomy” mean?",
+          "options": [
+            "thời gian báo trước",
+            "người làm việc độc lập",
+            "quyền tự chủ"
+          ],
+          "answer": 2,
+          "explanation": "“autonomy” = quyền tự chủ. Ví dụ: Renting gives you more autonomy."
+        },
+        {
+          "prompt": "Complete the sentence: There is a thirty-day _____.",
+          "options": [
+            "commission",
+            "notice period",
+            "amenable"
+          ],
+          "answer": 1,
+          "explanation": "“notice period” nghĩa là “thời gian báo trước”. Câu đầy đủ: There is a thirty-day notice period."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c2-5",
+      "level": "C2",
+      "unit": "C2 · Bài 5",
+      "category": "Quản lý",
+      "title": "Họp nhóm và đánh giá hiệu suất",
+      "objective": "Mở đầu cuộc trò chuyện khó bằng lời khen, nêu vấn đề và cùng thống nhất giải pháp.",
+      "reading": "Manager: Thanks for making time. I wanted to talk about the past couple of months. Your client feedback has been outstanding, but I've noticed a pattern of late arrivals, which has a knock-on effect on the whole schedule.\nTechnician: I'm aware, and I'm sorry. I've been struggling with childcare arrangements since September.\nManager: I appreciate you telling me. Had I known, we might have adjusted your shifts sooner. What would help?\nTechnician: If I could start thirty minutes later on weekdays, I'd make up the time in the evening.\nManager: That seems workable. Let's agree on it for a trial period of six weeks and review it together. What I'd ask in return is that you let me know by text as early as possible if anything changes.\nTechnician: That's more than fair. Thank you for being so understanding.",
+      "vocabulary": [
+        {
+          "term": "pattern",
+          "definition": "kiểu lặp lại, xu hướng",
+          "example": "I've noticed a pattern of late arrivals."
+        },
+        {
+          "term": "knock-on effect",
+          "definition": "hiệu ứng dây chuyền",
+          "example": "Lateness has a knock-on effect on the schedule."
+        },
+        {
+          "term": "outstanding",
+          "definition": "xuất sắc",
+          "example": "Your client feedback has been outstanding."
+        },
+        {
+          "term": "workable",
+          "definition": "khả thi",
+          "example": "That seems like a workable solution."
+        },
+        {
+          "term": "make up the time",
+          "definition": "bù lại thời gian",
+          "example": "I'll make up the time in the evening."
+        },
+        {
+          "term": "review",
+          "definition": "xem xét lại",
+          "example": "We'll review the arrangement in six weeks."
+        }
+      ],
+      "grammar": {
+        "title": "Đảo ngữ điều kiện quá khứ: Had I known, ... / Had you told me earlier, ... / Should you need...",
+        "explanation": "Nói về điều đã không xảy ra do thiếu thông tin, vẫn giữ giọng lịch sự và không đổ lỗi.",
+        "examples": [
+          "Had I known, we might have adjusted your shifts sooner.",
+          "Had she arrived earlier, the client wouldn't have waited.",
+          "Should you need more time, just let me know."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Mở đầu nhẹ nhàng: I've noticed a PATtern of late arrivals.",
+        "tip": "Bắt đầu bằng điều tích cực để người nghe bớt phòng thủ, rồi mới nêu vấn đề.",
+        "words": [
+          "pattern",
+          "outstanding",
+          "workable",
+          "arrangement"
+        ]
+      },
+      "speakingTasks": [
+        "Mở đầu một cuộc trò chuyện khó với nhân viên: khen trước, nêu vấn đề sau.",
+        "Đề xuất giải pháp thử nghiệm sáu tuần và cách theo dõi."
+      ],
+      "questions": [
+        {
+          "prompt": "What does the manager praise?",
+          "options": [
+            "The technician's client feedback",
+            "Her prices",
+            "Her punctuality"
+          ],
+          "answer": 0,
+          "explanation": "'Your client feedback has been outstanding'."
+        },
+        {
+          "prompt": "What problem does the manager raise?",
+          "options": [
+            "Missing licences",
+            "A pattern of late arrivals",
+            "Rude behaviour"
+          ],
+          "answer": 1,
+          "explanation": "'a pattern of late arrivals'."
+        },
+        {
+          "prompt": "Why has the technician been late?",
+          "options": [
+            "A second job",
+            "A broken car",
+            "Childcare arrangements"
+          ],
+          "answer": 2,
+          "explanation": "'struggling with childcare arrangements'."
+        },
+        {
+          "prompt": "What do they agree on?",
+          "options": [
+            "A pay cut",
+            "A six-week trial of a later start",
+            "Dismissal"
+          ],
+          "answer": 1,
+          "explanation": "'a trial period of six weeks'."
+        },
+        {
+          "prompt": "'Had I known, we might have adjusted your shifts' means...",
+          "options": [
+            "The manager did not know, so shifts were not changed",
+            "The manager knew and refused",
+            "The shifts were changed already"
+          ],
+          "answer": 0,
+          "explanation": "Had I known = If I had known (nhưng thực tế không biết)."
+        },
+        {
+          "prompt": "Complete the sentence: I've noticed a _____ of late arrivals.",
+          "options": [
+            "knock-on effect",
+            "outstanding",
+            "pattern"
+          ],
+          "answer": 2,
+          "explanation": "“pattern” nghĩa là “kiểu lặp lại, xu hướng”. Câu đầy đủ: I've noticed a pattern of late arrivals."
+        },
+        {
+          "prompt": "What does “knock-on effect” mean?",
+          "options": [
+            "xem xét lại",
+            "kiểu lặp lại, xu hướng",
+            "hiệu ứng dây chuyền"
+          ],
+          "answer": 2,
+          "explanation": "“knock-on effect” = hiệu ứng dây chuyền. Ví dụ: Lateness has a knock-on effect on the schedule."
+        },
+        {
+          "prompt": "Complete the sentence: Your client feedback has been _____.",
+          "options": [
+            "outstanding",
+            "make up the time",
+            "pattern"
+          ],
+          "answer": 0,
+          "explanation": "“outstanding” nghĩa là “xuất sắc”. Câu đầy đủ: Your client feedback has been outstanding."
+        },
+        {
+          "prompt": "What does “workable” mean?",
+          "options": [
+            "bù lại thời gian",
+            "xem xét lại",
+            "khả thi"
+          ],
+          "answer": 2,
+          "explanation": "“workable” = khả thi. Ví dụ: That seems like a workable solution."
+        },
+        {
+          "prompt": "Complete the sentence: I'll _____ in the evening.",
+          "options": [
+            "make up the time",
+            "pattern",
+            "outstanding"
+          ],
+          "answer": 0,
+          "explanation": "“make up the time” nghĩa là “bù lại thời gian”. Câu đầy đủ: I'll make up the time in the evening."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c2-6",
+      "level": "C2",
+      "unit": "C2 · Bài 6",
+      "category": "Kỹ năng",
+      "title": "Truyền thông khủng hoảng sau sự cố vệ sinh",
+      "objective": "Phát biểu thận trọng khi có cáo buộc: không vội nhận trách nhiệm nhưng cam kết minh bạch.",
+      "reading": "Reporter: A customer claims she contracted an infection after a pedicure at your salon. What's your response?\nOwner: First and foremost, our thoughts are with the customer, and we wish her a swift recovery. We take any allegation of this kind extremely seriously. We have suspended the use of the foot spa in question pending an independent hygiene audit.\nReporter: Are you admitting liability?\nOwner: It would be premature to draw conclusions before the facts have been established. What I can say is that all of our equipment is sterilised after each client and that we are cooperating fully with the health authorities.\nReporter: What will you do to restore public confidence?\nOwner: We'll publish the audit's findings in full, whatever they may be, and we'll implement any recommendations without delay. Transparency is non-negotiable for us.",
+      "vocabulary": [
+        {
+          "term": "allegation",
+          "definition": "cáo buộc",
+          "example": "We take every allegation seriously."
+        },
+        {
+          "term": "pending",
+          "definition": "trong khi chờ",
+          "example": "The foot spa is closed pending an audit."
+        },
+        {
+          "term": "liability",
+          "definition": "trách nhiệm pháp lý",
+          "example": "Are you admitting liability?"
+        },
+        {
+          "term": "premature",
+          "definition": "quá sớm, vội vàng",
+          "example": "It would be premature to draw conclusions."
+        },
+        {
+          "term": "transparency",
+          "definition": "sự minh bạch",
+          "example": "Transparency is non-negotiable for us."
+        },
+        {
+          "term": "restore confidence",
+          "definition": "khôi phục niềm tin",
+          "example": "We will restore confidence by being open."
+        }
+      ],
+      "grammar": {
+        "title": "whatever / however + may: dù thế nào đi nữa",
+        "explanation": "Cam kết một hành động bất kể kết quả; dùng nhiều trong phát biểu chính thức.",
+        "examples": [
+          "We'll publish the findings, whatever they may be.",
+          "However serious the issue is, we will respond openly.",
+          "It would be premature to draw conclusions."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Giọng điềm tĩnh, dứt khoát: We take this extremely SERiously.",
+        "tip": "Dùng câu ngắn, nhấn từ khoá và tránh nói nhanh khi trả lời truyền thông.",
+        "words": [
+          "allegation",
+          "liability",
+          "premature",
+          "transparency"
+        ]
+      },
+      "speakingTasks": [
+        "Soạn lời phát biểu ngắn khi có cáo buộc về vệ sinh, không thừa nhận vội trách nhiệm.",
+        "Nêu ba hành động cụ thể để khôi phục niềm tin."
+      ],
+      "questions": [
+        {
+          "prompt": "What is the allegation?",
+          "options": [
+            "A customer got an infection after a pedicure",
+            "A stolen bag",
+            "A late appointment"
+          ],
+          "answer": 0,
+          "explanation": "'contracted an infection after a pedicure'."
+        },
+        {
+          "prompt": "What has the owner done about the foot spa?",
+          "options": [
+            "Suspended its use pending an audit",
+            "Kept using it",
+            "Sold it"
+          ],
+          "answer": 0,
+          "explanation": "'suspended the use of the foot spa... pending an independent hygiene audit'."
+        },
+        {
+          "prompt": "Why does the owner avoid admitting liability?",
+          "options": [
+            "He is guilty",
+            "He is angry",
+            "It is premature before the facts are established"
+          ],
+          "answer": 2,
+          "explanation": "'It would be premature to draw conclusions'."
+        },
+        {
+          "prompt": "What will be published?",
+          "options": [
+            "Customer names",
+            "The salon's profits",
+            "The audit's findings in full"
+          ],
+          "answer": 2,
+          "explanation": "'publish the audit's findings in full'."
+        },
+        {
+          "prompt": "'Whatever they may be' means...",
+          "options": [
+            "They may not exist",
+            "Only the good ones",
+            "No matter what they turn out to be"
+          ],
+          "answer": 2,
+          "explanation": "Bất kể kết quả là gì."
+        },
+        {
+          "prompt": "Complete the sentence: We take every _____ seriously.",
+          "options": [
+            "liability",
+            "allegation",
+            "premature"
+          ],
+          "answer": 1,
+          "explanation": "“allegation” nghĩa là “cáo buộc”. Câu đầy đủ: We take every allegation seriously."
+        },
+        {
+          "prompt": "What does “pending” mean?",
+          "options": [
+            "quá sớm, vội vàng",
+            "trách nhiệm pháp lý",
+            "trong khi chờ"
+          ],
+          "answer": 2,
+          "explanation": "“pending” = trong khi chờ. Ví dụ: The foot spa is closed pending an audit."
+        },
+        {
+          "prompt": "Complete the sentence: Are you admitting _____?",
+          "options": [
+            "liability",
+            "restore confidence",
+            "transparency"
+          ],
+          "answer": 0,
+          "explanation": "“liability” nghĩa là “trách nhiệm pháp lý”. Câu đầy đủ: Are you admitting liability?"
+        },
+        {
+          "prompt": "What does “premature” mean?",
+          "options": [
+            "trong khi chờ",
+            "trách nhiệm pháp lý",
+            "quá sớm, vội vàng"
+          ],
+          "answer": 2,
+          "explanation": "“premature” = quá sớm, vội vàng. Ví dụ: It would be premature to draw conclusions."
+        },
+        {
+          "prompt": "Complete the sentence: _____ is non-negotiable for us.",
+          "options": [
+            "transparency",
+            "pending",
+            "premature"
+          ],
+          "answer": 0,
+          "explanation": "“transparency” nghĩa là “sự minh bạch”. Câu đầy đủ: Transparency is non-negotiable for us."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c2-7",
+      "level": "C2",
+      "unit": "C2 · Bài 7",
+      "category": "Chuyên môn",
+      "title": "Xu hướng bền vững và sản phẩm thân thiện môi trường",
+      "objective": "Thảo luận có phản biện về sản phẩm xanh: chứng nhận, hiệu quả và việc chuyển đổi dần.",
+      "reading": "Rep: More clients are asking about sustainability, and the industry is shifting towards plant-based formulas and refillable packaging.\nOwner: I'm sympathetic to the idea, but I'm wary of greenwashing. Some brands label their products 'eco-friendly' without any evidence.\nRep: A fair point. I'd urge you to look for third-party certification rather than relying on marketing claims. Our range, for instance, is certified cruelty-free and the bottles are made from recycled glass.\nOwner: And performance? Clients won't compromise on wear time.\nRep: That's where the real innovation lies. Not only do these formulas match conventional ones for durability, but they also dry faster under LED lamps.\nOwner: If the numbers stack up, I'd be willing to switch gradually, starting with our top three colours.",
+      "vocabulary": [
+        {
+          "term": "sustainability",
+          "definition": "tính bền vững",
+          "example": "More clients ask about sustainability."
+        },
+        {
+          "term": "plant-based",
+          "definition": "gốc thực vật",
+          "example": "We stock plant-based formulas."
+        },
+        {
+          "term": "greenwashing",
+          "definition": "tẩy xanh (quảng cáo môi trường sai sự thật)",
+          "example": "I'm wary of greenwashing."
+        },
+        {
+          "term": "cruelty-free",
+          "definition": "không thử nghiệm trên động vật",
+          "example": "The whole range is certified cruelty-free."
+        },
+        {
+          "term": "wary",
+          "definition": "dè dặt, cảnh giác",
+          "example": "I'm wary of big claims."
+        },
+        {
+          "term": "certification",
+          "definition": "chứng nhận",
+          "example": "Look for third-party certification."
+        }
+      ],
+      "grammar": {
+        "title": "Đảo ngữ với Not only... but also: Not only do these formulas..., but they also...",
+        "explanation": "Đưa 'Not only' lên đầu câu, đảo trợ động từ lên trước chủ ngữ để nhấn mạnh.",
+        "examples": [
+          "Not only do these formulas last longer, but they are also kinder to the planet.",
+          "Rarely do clients ask about ingredients.",
+          "Seldom have we seen such strong results."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Nhấn đảo ngữ: NOT only DO these forMULas...",
+        "tip": "Nhấn mạnh 'Not only' và dừng nhẹ trước 'but also' để làm nổi bật ý thứ hai.",
+        "words": [
+          "sustainability",
+          "greenwashing",
+          "certification",
+          "formula"
+        ]
+      },
+      "speakingTasks": [
+        "Giải thích với khách vì sao bạn chọn sản phẩm có chứng nhận độc lập.",
+        "Dùng 'Not only... but also...' để so sánh sản phẩm thân thiện môi trường với sản phẩm thường."
+      ],
+      "questions": [
+        {
+          "prompt": "What trend does the rep describe?",
+          "options": [
+            "A shift to plant-based and refillable products",
+            "A drop in demand",
+            "A ban on gel"
+          ],
+          "answer": 0,
+          "explanation": "'shifting towards plant-based formulas and refillable packaging'."
+        },
+        {
+          "prompt": "What is the owner worried about?",
+          "options": [
+            "Delivery times",
+            "Staff pay",
+            "Greenwashing"
+          ],
+          "answer": 2,
+          "explanation": "'I'm wary of greenwashing'."
+        },
+        {
+          "prompt": "What does the rep advise looking for?",
+          "options": [
+            "Celebrity endorsements",
+            "Bright packaging",
+            "Third-party certification"
+          ],
+          "answer": 2,
+          "explanation": "'look for third-party certification'."
+        },
+        {
+          "prompt": "How do the new formulas perform?",
+          "options": [
+            "They are dull",
+            "They match conventional ones and dry faster",
+            "They last half as long"
+          ],
+          "answer": 1,
+          "explanation": "'match conventional ones for durability... dry faster'."
+        },
+        {
+          "prompt": "Which sentence uses inversion correctly?",
+          "options": [
+            "Not only these formulas last longer but also.",
+            "Not only do these formulas last longer, but they are also kinder.",
+            "Not only these formulas do last longer."
+          ],
+          "answer": 1,
+          "explanation": "Not only + trợ động từ + S + V."
+        },
+        {
+          "prompt": "Complete the sentence: More clients ask about _____.",
+          "options": [
+            "cruelty-free",
+            "wary",
+            "sustainability"
+          ],
+          "answer": 2,
+          "explanation": "“sustainability” nghĩa là “tính bền vững”. Câu đầy đủ: More clients ask about sustainability."
+        },
+        {
+          "prompt": "What does “plant-based” mean?",
+          "options": [
+            "tẩy xanh (quảng cáo môi trường sai sự thật)",
+            "gốc thực vật",
+            "không thử nghiệm trên động vật"
+          ],
+          "answer": 1,
+          "explanation": "“plant-based” = gốc thực vật. Ví dụ: We stock plant-based formulas."
+        },
+        {
+          "prompt": "Complete the sentence: I'm wary of _____.",
+          "options": [
+            "wary",
+            "greenwashing",
+            "cruelty-free"
+          ],
+          "answer": 1,
+          "explanation": "“greenwashing” nghĩa là “tẩy xanh (quảng cáo môi trường sai sự thật)”. Câu đầy đủ: I'm wary of greenwashing."
+        },
+        {
+          "prompt": "What does “cruelty-free” mean?",
+          "options": [
+            "dè dặt, cảnh giác",
+            "không thử nghiệm trên động vật",
+            "gốc thực vật"
+          ],
+          "answer": 1,
+          "explanation": "“cruelty-free” = không thử nghiệm trên động vật. Ví dụ: The whole range is certified cruelty-free."
+        },
+        {
+          "prompt": "Complete the sentence: I'm _____ of big claims.",
+          "options": [
+            "sustainability",
+            "cruelty-free",
+            "wary"
+          ],
+          "answer": 2,
+          "explanation": "“wary” nghĩa là “dè dặt, cảnh giác”. Câu đầy đủ: I'm wary of big claims."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c2-8",
+      "level": "C2",
+      "unit": "C2 · Bài 8",
+      "category": "Kỹ năng",
+      "title": "Dẫn dắt workshop và thuyết trình tại hội chợ",
+      "objective": "Mở đầu, dẫn dắt và tương tác với người nghe trong buổi hướng dẫn kỹ thuật.",
+      "reading": "Presenter: Good afternoon, everyone. Over the next forty minutes, I'll take you through a technique that has transformed the way I approach structured gel manicures: the apex-first method.\nPresenter: Before I begin, a quick show of hands: who here has struggled with lifting at the cuticle? Quite a few of you. That's precisely what we're going to tackle.\nPresenter: The principle is straightforward. By building strength where the nail bears the most stress, we can reduce thickness elsewhere, which results in a lighter, more natural-looking finish. I'll demonstrate on this model, and then you'll replicate it at your own tables.\nPresenter: Please don't hesitate to interrupt with questions; this is meant to be a conversation, not a lecture.",
+      "vocabulary": [
+        {
+          "term": "transform",
+          "definition": "thay đổi hoàn toàn",
+          "example": "This technique transformed my work."
+        },
+        {
+          "term": "apex",
+          "definition": "điểm chịu lực (đỉnh vòm) của móng",
+          "example": "Build the apex where the nail bears the most stress."
+        },
+        {
+          "term": "straightforward",
+          "definition": "đơn giản, dễ hiểu",
+          "example": "The principle is straightforward."
+        },
+        {
+          "term": "demonstrate",
+          "definition": "trình diễn",
+          "example": "I'll demonstrate on a model."
+        },
+        {
+          "term": "replicate",
+          "definition": "làm lại theo, tái hiện",
+          "example": "You'll replicate the technique at your tables."
+        },
+        {
+          "term": "tackle",
+          "definition": "giải quyết",
+          "example": "That's precisely the problem we'll tackle."
+        }
+      ],
+      "grammar": {
+        "title": "Dẫn dắt người nghe (signposting): Over the next... / Let me turn to... / To sum up...",
+        "explanation": "Báo trước cấu trúc bài nói để người nghe theo dõi dễ dàng.",
+        "examples": [
+          "Over the next forty minutes, I'll take you through the method.",
+          "Let me turn now to the common mistakes.",
+          "To sum up, build strength where the stress is."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Ngắt nghỉ và nhấn: Quite a few of you. [pause] That's precisely what we'll TACkle.",
+        "tip": "Ngắt nghỉ sau ý chính, hạ giọng ở cuối câu để thể hiện sự tự tin.",
+        "words": [
+          "apex",
+          "straightforward",
+          "demonstrate",
+          "replicate"
+        ]
+      },
+      "speakingTasks": [
+        "Mở đầu một buổi hướng dẫn kỹ thuật dài 3 phút bằng cụm dẫn dắt.",
+        "Mời người nghe đặt câu hỏi và tóm tắt ý chính."
+      ],
+      "questions": [
+        {
+          "prompt": "What technique is being presented?",
+          "options": [
+            "A pedicure massage",
+            "A cutting technique",
+            "The apex-first method"
+          ],
+          "answer": 2,
+          "explanation": "'the apex-first method'."
+        },
+        {
+          "prompt": "Why does the presenter ask for a show of hands?",
+          "options": [
+            "To start a vote on price",
+            "To choose a model",
+            "To find who struggles with lifting at the cuticle"
+          ],
+          "answer": 2,
+          "explanation": "'who here has struggled with lifting at the cuticle?'"
+        },
+        {
+          "prompt": "What does the principle achieve?",
+          "options": [
+            "Strength where stress is highest and a lighter finish",
+            "A thicker finish",
+            "A cheaper product"
+          ],
+          "answer": 0,
+          "explanation": "'reduce thickness elsewhere... a lighter, more natural-looking finish'."
+        },
+        {
+          "prompt": "What will the audience do after the demonstration?",
+          "options": [
+            "Leave",
+            "Buy products",
+            "Replicate it at their tables"
+          ],
+          "answer": 2,
+          "explanation": "'you'll replicate it at your own tables'."
+        },
+        {
+          "prompt": "Which phrase is signposting?",
+          "options": [
+            "Over the next forty minutes, I'll take you through...",
+            "Maybe yes, maybe no.",
+            "I like nails."
+          ],
+          "answer": 0,
+          "explanation": "Signposting = báo trước nội dung sắp trình bày."
+        },
+        {
+          "prompt": "Complete the sentence: This technique _____ed my work.",
+          "options": [
+            "apex",
+            "transform",
+            "replicate"
+          ],
+          "answer": 1,
+          "explanation": "“transform” nghĩa là “thay đổi hoàn toàn”. Câu đầy đủ: This technique transformed my work."
+        },
+        {
+          "prompt": "What does “apex” mean?",
+          "options": [
+            "điểm chịu lực (đỉnh vòm) của móng",
+            "đơn giản, dễ hiểu",
+            "trình diễn"
+          ],
+          "answer": 0,
+          "explanation": "“apex” = điểm chịu lực (đỉnh vòm) của móng. Ví dụ: Build the apex where the nail bears the most stress."
+        },
+        {
+          "prompt": "Complete the sentence: The principle is _____.",
+          "options": [
+            "tackle",
+            "replicate",
+            "straightforward"
+          ],
+          "answer": 2,
+          "explanation": "“straightforward” nghĩa là “đơn giản, dễ hiểu”. Câu đầy đủ: The principle is straightforward."
+        },
+        {
+          "prompt": "What does “demonstrate” mean?",
+          "options": [
+            "làm lại theo, tái hiện",
+            "trình diễn",
+            "thay đổi hoàn toàn"
+          ],
+          "answer": 1,
+          "explanation": "“demonstrate” = trình diễn. Ví dụ: I'll demonstrate on a model."
+        },
+        {
+          "prompt": "Complete the sentence: You'll _____ the technique at your tables.",
+          "options": [
+            "transform",
+            "demonstrate",
+            "replicate"
+          ],
+          "answer": 2,
+          "explanation": "“replicate” nghĩa là “làm lại theo, tái hiện”. Câu đầy đủ: You'll replicate the technique at your tables."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "nails-c2-9",
+      "level": "C2",
+      "unit": "C2 · Bài 9",
+      "category": "Pháp lý",
+      "title": "Đàm phán hợp đồng thuê mặt bằng khi mở rộng",
+      "objective": "Thương lượng điều khoản thuê, quyền chấm dứt sớm và thời gian miễn tiền thuê.",
+      "reading": "Owner: Before we proceed, there are a few clauses in the draft lease I'd like to discuss. Firstly, the break option: as it stands, I'd be locked in for ten years with no exit.\nLandlord: That's standard in this building. The investment in fitting out the unit is considerable on both sides.\nOwner: I understand, but given the uncertainty in the sector, I'd need a break option at year five, subject to six months' notice.\nLandlord: I might entertain that if the rent review remained upward-only.\nOwner: I'd resist that. If we were to accept an upward-only review, we'd want a cap tied to inflation. Furthermore, I'd expect a rent-free period of three months to cover the fit-out.\nLandlord: Let me take this to my solicitor. I'll come back to you with a counter-proposal by Monday.",
+      "vocabulary": [
+        {
+          "term": "clause",
+          "definition": "điều khoản",
+          "example": "Please check each clause carefully."
+        },
+        {
+          "term": "break option",
+          "definition": "quyền chấm dứt hợp đồng sớm",
+          "example": "I'd want a break option at year five."
+        },
+        {
+          "term": "fit-out",
+          "definition": "hoàn thiện nội thất mặt bằng",
+          "example": "The fit-out costs a lot."
+        },
+        {
+          "term": "solicitor",
+          "definition": "luật sư tư vấn",
+          "example": "My solicitor will review the lease."
+        },
+        {
+          "term": "counter-proposal",
+          "definition": "đề xuất đối ứng",
+          "example": "I'll send a counter-proposal on Monday."
+        },
+        {
+          "term": "rent review",
+          "definition": "điều chỉnh tiền thuê định kỳ",
+          "example": "The rent review happens every three years."
+        }
+      ],
+      "grammar": {
+        "title": "Điều kiện lịch sự trong đàm phán: If we were to..., we'd want... / subject to... / as it stands",
+        "explanation": "Nêu điều kiện giả định và ràng buộc một cách trang trọng, tránh tạo đối đầu.",
+        "examples": [
+          "If we were to accept that, we'd want a cap.",
+          "The option is subject to six months' notice.",
+          "As it stands, I'd be locked in for ten years."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Thuật ngữ pháp lý: break CLAUSE, soLIcitor",
+        "tip": "Với thuật ngữ pháp lý, nói chậm và nhấn âm tiết chính để tránh hiểu lầm.",
+        "words": [
+          "clause",
+          "solicitor",
+          "subject",
+          "counter-proposal"
+        ]
+      },
+      "speakingTasks": [
+        "Đề nghị sửa một điều khoản trong hợp đồng thuê bằng 'If we were to...'.",
+        "Yêu cầu thời gian miễn tiền thuê để hoàn thiện mặt bằng."
+      ],
+      "questions": [
+        {
+          "prompt": "What worries the owner about the draft lease?",
+          "options": [
+            "The colour of the walls",
+            "Being locked in for ten years with no exit",
+            "The location"
+          ],
+          "answer": 1,
+          "explanation": "'locked in for ten years with no exit'."
+        },
+        {
+          "prompt": "What break option does the owner request?",
+          "options": [
+            "None at all",
+            "At year one",
+            "At year five, with six months' notice"
+          ],
+          "answer": 2,
+          "explanation": "'a break option at year five, subject to six months' notice'."
+        },
+        {
+          "prompt": "What does the landlord want in return?",
+          "options": [
+            "An upward-only rent review",
+            "Free rent for a year",
+            "A shorter lease"
+          ],
+          "answer": 0,
+          "explanation": "'if the rent review remained upward-only'."
+        },
+        {
+          "prompt": "What does the owner want to cover the fit-out?",
+          "options": [
+            "A cheaper brand",
+            "A loan from the landlord",
+            "A three-month rent-free period"
+          ],
+          "answer": 2,
+          "explanation": "'a rent-free period of three months'."
+        },
+        {
+          "prompt": "'As it stands' means...",
+          "options": [
+            "At the stand",
+            "In its current form",
+            "In the future"
+          ],
+          "answer": 1,
+          "explanation": "as it stands = ở hiện trạng, theo bản hiện tại."
+        },
+        {
+          "prompt": "Complete the sentence: Please check each _____ carefully.",
+          "options": [
+            "fit-out",
+            "counter-proposal",
+            "clause"
+          ],
+          "answer": 2,
+          "explanation": "“clause” nghĩa là “điều khoản”. Câu đầy đủ: Please check each clause carefully."
+        },
+        {
+          "prompt": "What does “break option” mean?",
+          "options": [
+            "luật sư tư vấn",
+            "điều chỉnh tiền thuê định kỳ",
+            "quyền chấm dứt hợp đồng sớm"
+          ],
+          "answer": 2,
+          "explanation": "“break option” = quyền chấm dứt hợp đồng sớm. Ví dụ: I'd want a break option at year five."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ costs a lot.",
+          "options": [
+            "fit-out",
+            "break option",
+            "clause"
+          ],
+          "answer": 0,
+          "explanation": "“fit-out” nghĩa là “hoàn thiện nội thất mặt bằng”. Câu đầy đủ: The fit-out costs a lot."
+        },
+        {
+          "prompt": "What does “solicitor” mean?",
+          "options": [
+            "luật sư tư vấn",
+            "điều chỉnh tiền thuê định kỳ",
+            "đề xuất đối ứng"
+          ],
+          "answer": 0,
+          "explanation": "“solicitor” = luật sư tư vấn. Ví dụ: My solicitor will review the lease."
+        },
+        {
+          "prompt": "Complete the sentence: I'll send a _____ on Monday.",
+          "options": [
+            "fit-out",
+            "rent review",
+            "counter-proposal"
+          ],
+          "answer": 2,
+          "explanation": "“counter-proposal” nghĩa là “đề xuất đối ứng”. Câu đầy đủ: I'll send a counter-proposal on Monday."
         }
       ],
       "audioIds": []
