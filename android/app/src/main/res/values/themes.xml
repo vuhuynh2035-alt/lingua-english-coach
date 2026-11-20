@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TeacherAI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#15966d</item>
+        <item name="colorPrimaryVariant">#0f6f50</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="android:statusBarColor">#15966d</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="android:windowBackground">#FFFFFF</item>
+    </style>
+</resources>

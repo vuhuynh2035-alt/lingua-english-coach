@@ -23,6 +23,9 @@
     "tsconfig.tsbuildinfo"
   ],
   "liveVersions": [],
+  "apk": {
+    "output": "android/app/build/outputs/apk/debug/TeacherAI-debug.apk"
+  },
   "actions": {
     "deploy-pages": {
       "label": "Xuất bản GitHub Pages (docs/)",
@@ -41,6 +44,22 @@
         {
           "cwd": ".",
           "run": "git add -A docs && (git diff --cached --quiet || git commit -q -m \"Xuất bản GitHub Pages {tag}\") && git push origin HEAD:refs/heads/main"
+        }
+      ]
+    },
+    "apk-debug": {
+      "label": "Build APK debug (WebView HP)",
+      "kind": "apk",
+      "bump": false,
+      "checks": [
+        {
+          "type": "android-sdk"
+        }
+      ],
+      "steps": [
+        {
+          "cwd": ".",
+          "run": "bash scripts/build-apk.sh"
         }
       ]
     }
