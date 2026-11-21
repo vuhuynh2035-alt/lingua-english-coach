@@ -27,7 +27,7 @@
 
 ## Tạo APK (Android)
 - Capacitor đóng gói bản xuất tĩnh (`out`, **không** có base path) vào APK: `capacitor.config.ts` (appId `app.teacherai.pwa`, tên "Teacher AI"), thư mục `android/`. APK có nguồn gốc riêng (`https://localhost`), dữ liệu học riêng → chuyển qua lại bằng Sao lưu & chuyển dữ liệu.
-- Tạo APK: `npm run apk` (build web → `scripts/sync-android-version.cjs` ghi version vào `android/app/build.gradle` → `cap sync` → `scripts/assemble-apk.cjs` ký và chép ra `APK/TeacherAI-vX.Y.Z.apk`). Hoặc dùng **Công cụ phát hành** (`C:\Cong cu phat hanh`): hành động `apk` (tăng version) / `apk-current` (không tăng), khai báo ở `.release.json`; công cụ kiểm tra chữ ký APK với `apk.certSha256`.
+- Tạo APK: `npm run apk` (build web → `cap sync` → `scripts/assemble-apk.cjs` truyền version từ `package.json` cho Gradle, ký và chép ra `APK/TeacherAI-vX.Y.Z.apk`; không sửa tệp nào đang được theo dõi). Hoặc dùng **Công cụ phát hành** (`C:\Cong cu phat hanh`): hành động `apk` (tăng version) / `apk-current` (không tăng) / `deploy-hp` (`scripts/deploy-hp.mjs`: SSH `root@10.201.1.8`, pull + dựng lại Docker, đối chiếu version) / `deploy-pages` / **`release` = APK + GitHub Pages + deploy HP** (nút "Phát hành" mặc định), khai báo ở `.release.json`; công cụ kiểm tra chữ ký APK với `apk.certSha256`.
 - Bí mật **không nằm trong git**: `android/keystore.properties` và `android/app/teacherai-release-2026.jks` (hoặc biến `TEACHERAI_KEYSTORE_*`). Phải sao lưu riêng ở nơi an toàn; mất khóa thì không cập nhật được app đã cài. Chạy `npm run apk` bằng **PowerShell** (không dùng Git Bash).
 - Đổi appId sau khi đã cài trên điện thoại sẽ thành app khác, mất dữ liệu trong app cũ.
 

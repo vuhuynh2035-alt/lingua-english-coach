@@ -20,12 +20,23 @@
     ]
   },
   "generatedFiles": [
-    "tsconfig.tsbuildinfo"
+    "tsconfig.tsbuildinfo",
+    "android/app/build/",
+    "android/build/"
   ],
-  "liveVersions": [],
+  "liveVersions": [
+    {
+      "name": "GitHub Pages",
+      "url": "https://vuhuynh2035-alt.github.io/lingua-english-coach/version.json"
+    },
+    {
+      "name": "Máy chủ HP (teacher.saigonref.com)",
+      "url": "https://teacher.saigonref.com/version.json"
+    }
+  ],
   "actions": {
     "deploy-pages": {
-      "label": "Xuất bản GitHub Pages (docs/)",
+      "label": "Xuất bản GitHub Pages (docs/) — KHÔNG tạo APK, KHÔNG deploy HP",
       "kind": "deploy",
       "bump": true,
       "checks": [
@@ -44,8 +55,26 @@
         }
       ]
     },
+    "deploy-hp": {
+      "label": "Deploy web lên máy chủ HP (teacher.saigonref.com) — KHÔNG tạo APK",
+      "kind": "deploy",
+      "bump": true,
+      "checks": [
+        {
+          "type": "ssh",
+          "host": "root@10.201.1.8",
+          "hostEnv": "TEACHER_SSH_HOST"
+        }
+      ],
+      "steps": [
+        {
+          "cwd": ".",
+          "run": "node scripts/deploy-hp.mjs"
+        }
+      ]
+    },
     "apk": {
-      "label": "Tạo APK bản mới (tăng version)",
+      "label": "Tạo APK Android (tăng version) — KHÔNG deploy web",
       "kind": "apk",
       "bump": true,
       "verifyApk": true,
@@ -76,7 +105,7 @@
       ]
     },
     "apk-current": {
-      "label": "Tạo APK cho bản hiện tại (không tăng version)",
+      "label": "Tạo lại APK bản hiện tại (không tăng version)",
       "kind": "apk",
       "bump": false,
       "verifyApk": true,
@@ -105,9 +134,57 @@
           "run": "npm run apk"
         }
       ]
+    },
+    "release": {
+      "label": "Phát hành đầy đủ (APK + GitHub Pages + deploy web máy chủ HP)",
+      "kind": "release",
+      "bump": true,
+      "verifyApk": true,
+      "requires": [
+        {
+          "file": "android/keystore.properties",
+          "orEnv": "TEACHERAI_KEYSTORE_PASSWORD"
+        }
+      ],
+      "checks": [
+        {
+          "type": "node_modules"
+        },
+        {
+          "type": "keystore",
+          "properties": "android/keystore.properties",
+          "envStoreFile": "TEACHERAI_KEYSTORE_FILE"
+        },
+        {
+          "type": "android-sdk"
+        },
+        {
+          "type": "ssh",
+          "host": "root@10.201.1.8",
+          "hostEnv": "TEACHER_SSH_HOST"
+        }
+      ],
+      "steps": [
+        {
+          "cwd": ".",
+          "run": "npm run apk"
+        },
+        {
+          "cwd": ".",
+          "run": "npm run publish:pages"
+        },
+        {
+          "cwd": ".",
+          "run": "git add -A docs && (git diff --cached --quiet || git commit -q -m \"Xuất bản GitHub Pages {tag}\") && git push origin HEAD:refs/heads/main"
+        },
+        {
+          "cwd": ".",
+          "run": "node scripts/deploy-hp.mjs"
+        }
+      ]
     }
   },
-  "releaseAction": "deploy-pages",
+  "releaseAction": "release",
   "apk": {
     "output": "APK/TeacherAI-v{version}.apk",
     "certSha256": "5D:D1:64:9F:10:17:77:4A:AF:51:3C:18:12:D4:BE:D2:19:19:37:4D:DA:5B:26:29:9D:5C:63:DA:A0:DD:F4:1C"

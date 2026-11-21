@@ -8,7 +8,7 @@
     "prebuild": "node scripts/write-version.mjs",
     "build": "next build",
     "postbuild": "node scripts/optimize-css.mjs",
-    "apk": "npm run build && node scripts/sync-android-version.cjs && npx cap sync android && node scripts/assemble-apk.cjs",
+    "apk": "npm run build && npx cap sync android && node scripts/assemble-apk.cjs",
     "publish:pages": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/publish-pages.ps1",
     "lint": "eslint src next.config.ts eslint.config.mjs"
   },

@@ -9,6 +9,15 @@ const fs = require("fs");
 const { isAbsolute, join } = require("path");
 
 const root = join(__dirname, "..");
+
+/** 2.17.24 -> 2017024: major*1e6 + minor*1e3 + patch (patch capped at 999), so every release sorts above the last. */
+function versionCodeFrom(version) {
+  const parts = String(version || "0.0.0").split(".").map((n) => Number.parseInt(n, 10) || 0);
+  while (parts.length < 3) parts.push(0);
+  return parts[0] * 1000000 + parts[1] * 1000 + Math.min(parts[2], 999);
+}
+const appVersion = require("../package.json").version;
+const versionArgs = [`-PappVersionName=${appVersion}`, `-PappVersionCode=${versionCodeFrom(appVersion)}`];
 const android = join(root, "android");
 const isWin = process.platform === "win32";
 const gradlew = join(android, isWin ? "gradlew.bat" : "gradlew");
@@ -98,8 +107,8 @@ function envWithJdk() {
 const env = envWithJdk();
 // cmd cannot start gradlew.bat when the project path has spaces or accents: PowerShell handles them.
 const result = isWin
-  ? spawnSync("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", "& '.\\gradlew.bat' assembleRelease --no-daemon; exit $LASTEXITCODE"], { cwd: android, stdio: "inherit", env })
-  : spawnSync(gradlew, ["assembleRelease", "--no-daemon"], { cwd: android, stdio: "inherit", env });
+  ? spawnSync("powershell.exe", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", `& '.\\gradlew.bat' assembleRelease --no-daemon ${versionArgs.map((arg) => `'${arg}'`).join(" ")}; exit $LASTEXITCODE`], { cwd: android, stdio: "inherit", env })
+  : spawnSync(gradlew, ["assembleRelease", "--no-daemon", ...versionArgs], { cwd: android, stdio: "inherit", env });
 
 if (result.error) {
   console.error(result.error);
