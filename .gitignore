@@ -9,3 +9,21 @@ coverage/
 
 __pycache__/
 *.pyc
+
+# Android (Capacitor): secrets and build output stay out of git
+android/keystore.properties
+android/app/*.jks
+android/app/*.keystore
+*.jks
+*.keystore
+android/.gradle
+android/build
+android/app/build
+android/app/src/main/assets/public
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/local.properties
+android/.idea
+android/capacitor-cordova-android-plugins/build
+APK/
+*.apk

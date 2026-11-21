@@ -6,3 +6,6 @@ docs
 *.tar
 .env*.local
 README.md
+android
+APK
+capacitor.config.ts

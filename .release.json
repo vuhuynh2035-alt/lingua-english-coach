@@ -43,7 +43,73 @@
           "run": "git add -A docs && (git diff --cached --quiet || git commit -q -m \"Xuất bản GitHub Pages {tag}\") && git push origin HEAD:refs/heads/main"
         }
       ]
+    },
+    "apk": {
+      "label": "Tạo APK bản mới (tăng version)",
+      "kind": "apk",
+      "bump": true,
+      "verifyApk": true,
+      "requires": [
+        {
+          "file": "android/keystore.properties",
+          "orEnv": "TEACHERAI_KEYSTORE_PASSWORD"
+        }
+      ],
+      "checks": [
+        {
+          "type": "node_modules"
+        },
+        {
+          "type": "keystore",
+          "properties": "android/keystore.properties",
+          "envStoreFile": "TEACHERAI_KEYSTORE_FILE"
+        },
+        {
+          "type": "android-sdk"
+        }
+      ],
+      "steps": [
+        {
+          "cwd": ".",
+          "run": "npm run apk"
+        }
+      ]
+    },
+    "apk-current": {
+      "label": "Tạo APK cho bản hiện tại (không tăng version)",
+      "kind": "apk",
+      "bump": false,
+      "verifyApk": true,
+      "requires": [
+        {
+          "file": "android/keystore.properties",
+          "orEnv": "TEACHERAI_KEYSTORE_PASSWORD"
+        }
+      ],
+      "checks": [
+        {
+          "type": "node_modules"
+        },
+        {
+          "type": "keystore",
+          "properties": "android/keystore.properties",
+          "envStoreFile": "TEACHERAI_KEYSTORE_FILE"
+        },
+        {
+          "type": "android-sdk"
+        }
+      ],
+      "steps": [
+        {
+          "cwd": ".",
+          "run": "npm run apk"
+        }
+      ]
     }
   },
-  "releaseAction": "deploy-pages"
+  "releaseAction": "deploy-pages",
+  "apk": {
+    "output": "APK/TeacherAI-v{version}.apk",
+    "certSha256": "5D:D1:64:9F:10:17:77:4A:AF:51:3C:18:12:D4:BE:D2:19:19:37:4D:DA:5B:26:29:9D:5C:63:DA:A0:DD:F4:1C"
+  }
 }

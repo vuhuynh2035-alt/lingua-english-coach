@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Teacher AI</string>
+    <string name="title_activity_main">Teacher AI</string>
+    <string name="package_name">app.teacherai.pwa</string>
+    <string name="custom_url_scheme">app.teacherai.pwa</string>
+</resources>
