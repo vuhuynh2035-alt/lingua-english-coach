@@ -26,6 +26,13 @@ const DEVICE_ONLY = new Set([
 const SECRET_KEYS = /^lingua-(gemini-api-key|gcloud-tts-key.*)$/;
 const AI_SETTINGS = "lingua-ai-settings";
 const AI_SECRET_FIELDS = ["keys", "activeKeyIds"] as const;
+/**
+ * Cost settings of the AI services. Four of its fields belong to individual keys (by the key's last characters):
+ * the plan of each key (Free / Paid), its own cap, keys switched off and the groups that share limits.
+ * They travel with the keys, so restoring the keys brings the plans back too.
+ */
+const USAGE_SETTINGS = "lingua-usage-settings";
+const USAGE_KEY_FIELDS = ["tiers", "keyCaps", "disabled", "groups"] as const;
 /** Names (after the language prefix) of the learning data. */
 const DATA_NAMES = /^lingua-(ja-|zh-)?(progress|messages-.*|grammar-scores|course-progress-v2|course-lesson-scores-v2|lesson-view)$/;
 
@@ -61,6 +68,17 @@ function splitAiSettings(value: string): { plain: Record<string, unknown>; secre
   return { plain, secret };
 }
 
+function splitUsageSettings(value: string): { plain: Record<string, unknown>; perKey: Record<string, unknown> } | null {
+  const all = parseObject(value);
+  if (!all) return null;
+  const plain: Record<string, unknown> = {};
+  const perKey: Record<string, unknown> = {};
+  for (const [name, field] of Object.entries(all)) {
+    ((USAGE_KEY_FIELDS as readonly string[]).includes(name) ? perKey : plain)[name] = field;
+  }
+  return { plain, perKey };
+}
+
 export function createBackup(appVersion: string, parts: BackupParts): BackupFile {
   const entries: Record<string, string> = {};
   for (let index = 0; index < localStorage.length; index += 1) {
@@ -74,6 +92,11 @@ export function createBackup(appVersion: string, parts: BackupParts): BackupFile
       const split = splitAiSettings(value);
       if (!split) continue;
       const chosen = { ...(parts.settings ? split.plain : {}), ...(parts.keys ? split.secret : {}) };
+      if (Object.keys(chosen).length > 0) entries[key] = JSON.stringify(chosen);
+    } else if (key === USAGE_SETTINGS) {
+      const split = splitUsageSettings(value);
+      if (!split) continue;
+      const chosen = { ...(parts.settings ? split.plain : {}), ...(parts.keys ? split.perKey : {}) };
       if (Object.keys(chosen).length > 0) entries[key] = JSON.stringify(chosen);
     } else if (DATA_NAMES.test(key)) {
       if (parts.data) entries[key] = value;
@@ -100,7 +123,9 @@ export function readBackup(text: string): BackupFile {
     if (key.startsWith(PREFIX) && !DEVICE_ONLY.has(key) && typeof value === "string") entries[key] = value;
   }
   if (Object.keys(entries).length === 0) throw new Error("Bản sao lưu không có dữ liệu nào.");
-  const keyLike = (key: string) => SECRET_KEYS.test(key) || (key === AI_SETTINGS && AI_SECRET_FIELDS.some((f) => f in (parseObject(entries[key]) ?? {})));
+  const keyLike = (key: string) => SECRET_KEYS.test(key)
+    || (key === AI_SETTINGS && AI_SECRET_FIELDS.some((f) => f in (parseObject(entries[key]) ?? {})))
+    || (key === USAGE_SETTINGS && USAGE_KEY_FIELDS.some((f) => f in (parseObject(entries[key]) ?? {})));
   const parts: BackupParts = file.version === 1
     ? { data: true, settings: true, keys: file.includesKeys === true }
     : {
@@ -128,6 +153,19 @@ export function applyBackup(file: BackupFile): number {
       const incoming = parseObject(value) ?? {};
       const current = parseObject(localStorage.getItem(AI_SETTINGS)) ?? {};
       next = JSON.stringify({ ...current, ...incoming });
+    } else if (key === USAGE_SETTINGS) {
+      // The per-key fields are merged key by key, so the plans of keys already on this device are kept too.
+      const incoming = parseObject(value) ?? {};
+      const current = parseObject(localStorage.getItem(USAGE_SETTINGS)) ?? {};
+      const merged: Record<string, unknown> = { ...current, ...incoming };
+      for (const field of USAGE_KEY_FIELDS) {
+        const mine = current[field];
+        const theirs = incoming[field];
+        if (typeof mine === "object" && mine !== null && typeof theirs === "object" && theirs !== null) {
+          merged[field] = { ...(mine as Record<string, unknown>), ...(theirs as Record<string, unknown>) };
+        }
+      }
+      next = JSON.stringify(merged);
     }
     localStorage.setItem(key, next);
     written += 1;
