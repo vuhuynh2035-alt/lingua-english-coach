@@ -2563,6 +2563,7 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 18px; opaci
 .sh-words { display: flex; flex-wrap: wrap; gap: 6px; }
 .sh-word { padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); color: var(--ink); font-family: inherit; font-size: 1rem; cursor: pointer; }
 .sh-word.active { border-color: var(--purple); background: #efecff; font-weight: 700; }
+.usage-cap.key-cap .settings-input { width: 12rem; max-width: 100%; }
 .sh-result { display: grid; gap: 4px; margin: 0; padding-left: 18px; line-height: 1.5; }
 
 

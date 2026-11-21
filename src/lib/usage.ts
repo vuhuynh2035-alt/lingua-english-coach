@@ -29,7 +29,7 @@ export type UsageSettings = {
   enabledChat: Record<ServiceId, boolean>;
   /** Monthly spending cap per service (every key, chat and speech together), USD; 0 = only free use. */
   caps: Record<ServiceId, number>;
-  /** Unused since 2.17.1 (caps are per service again); kept so older settings still load. */
+  /** Monthly cap of one paid key, USD (by the key's last characters). Unset: the key has no cap of its own and only the service cap applies. */
   keyCaps: Record<string, number>;
   /** Keys switched off for now (by their last characters). */
   disabled: Record<string, boolean>;
@@ -279,6 +279,11 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   if (recent.length >= safe(rpm)) {
     return { ok: false, cost, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
   }
+  // A paid key may also have a cap of its own; it stops alone when it reaches it and the next key is tried.
+  const keyCap = settings.keyCaps[tag];
+  if (cost > 0 && keyCap !== undefined && (load().byKey?.[tag] ?? 0) + cost > keyCap + 1e-9) {
+    return { ok: false, cost, reason: `Key …${key.slice(-4)} đã chạm trần riêng`, resetIn: untilNextMonth(), renews: "month" };
+  }
   // The money cap belongs to the whole service (every key, chat and speech together). Once it is
   // reached only free use goes on: free keys, and the free part of paid keys.
   const spent = load().spent[service];
@@ -326,6 +331,11 @@ export function refused(settings: UsageSettings, service: ServiceId, key: string
 }
 
 // ---------------------------------------------------------------- reports for the settings screen
+/** Money counted for one key this month, USD. */
+export function spentByKey(key: string): number {
+  return load().byKey?.[keyTag(key)] ?? 0;
+}
+
 export function spentThisMonth(service: ServiceId): number {
   return load().spent[service];
 }
