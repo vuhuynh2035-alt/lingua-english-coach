@@ -9,6 +9,8 @@
  *   "free use only".
  * Costs are estimates (characters → tokens / seconds of speech); the provider's bill is the reference.
  */
+import { geminiChatPrice, geminiSpeechFactor, openAiChatPrice, suitsTutor } from "@/lib/model-prices";
+
 export type ServiceId = "gemini" | "openai" | "gcloud";
 export type KeyTier = "free" | "paid";
 export type UsageKind = "chat" | "speech";
@@ -65,7 +67,7 @@ export const SPEECH_MODELS: Record<ServiceId, { id: string; label: string; note:
 /** The models the app recommends ("Mặc định"): fast, current chat models and the natural-sounding speech models. */
 export function allowedByDefault(service: ServiceId, kind: UsageKind, model: string): boolean {
   if (kind === "chat") {
-    if (service === "gemini") return /flash/i.test(model) && !/thinking|exp/i.test(model);
+    if (service === "gemini") return suitsTutor(model);
     return /^gpt-[\d.o]+-mini$/.test(model);
   }
   if (service === "gemini") return /gemini-3\.8/.test(model);
@@ -82,7 +84,7 @@ export function usesDefaultModels(settings: UsageSettings, service: ServiceId): 
   return !Object.keys(settings.allowed).some((key) => key.startsWith(`${service}|`));
 }
 
-/** Prices as published in October 2026 (USD per 1M tokens, per minute, or per 1M characters). */
+/** Standard prices (USD per 1M tokens, per minute, or per 1M characters). Gemini chat and speech follow `model-prices.ts` while the learner has not edited them. */
 export const DEFAULT_PRICES: Prices = {
   gemini: { chatIn: 0.75, chatOut: 3.75, ttsFlash: 9, ttsLite: 6 },
   openai: { chatIn: 0.15, chatOut: 0.6, ttsPerMinute: 0.015 },
@@ -246,10 +248,19 @@ export function estimateCost(settings: UsageSettings, service: ServiceId, tier: 
   if (service === "gemini" && tier === "free") return 0;
   if (kind === "chat") {
     const prices = service === "openai" ? p.openai : p.gemini;
-    return ((amount.inTokens ?? 0) * prices.chatIn + (amount.outTokens ?? 0) * prices.chatOut) / 1e6;
+    // A price the learner has not edited follows the published price of this very model (and the January 2027 change).
+    const untouched = prices.chatIn === DEFAULT_PRICES[service === "openai" ? "openai" : "gemini"].chatIn
+      && prices.chatOut === DEFAULT_PRICES[service === "openai" ? "openai" : "gemini"].chatOut;
+    const listed = untouched ? (service === "openai" ? openAiChatPrice(model) : geminiChatPrice(model)) : null;
+    const price = listed ?? { in: prices.chatIn, out: prices.chatOut };
+    return ((amount.inTokens ?? 0) * price.in + (amount.outTokens ?? 0) * price.out) / 1e6;
   }
   const chars = amount.chars ?? 0;
-  if (service === "gemini") return (chars / CHARS_PER_SECOND) * AUDIO_TOKENS_PER_SECOND * (/lite/i.test(model) ? p.gemini.ttsLite : p.gemini.ttsFlash) / 1e6;
+  if (service === "gemini") {
+    const unit = /lite/i.test(model) ? p.gemini.ttsLite : p.gemini.ttsFlash;
+    const untouched = p.gemini.ttsLite === DEFAULT_PRICES.gemini.ttsLite && p.gemini.ttsFlash === DEFAULT_PRICES.gemini.ttsFlash;
+    return (chars / CHARS_PER_SECOND) * AUDIO_TOKENS_PER_SECOND * unit * (untouched ? geminiSpeechFactor() : 1) / 1e6;
+  }
   if (service === "openai") return (chars / CHARS_PER_SECOND / 60) * p.openai.ttsPerMinute;
   const free = Math.max(0, p.gcloud.freeChars * SAFE - keyLedger(tag).monthChars);
   return Math.max(0, chars - free) * p.gcloud.perMillionChars / 1e6;

@@ -30,6 +30,7 @@ import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeak
 import { keyEnabled, keyTier, MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentByKey, spentThisMonth, usesDefaultModels, type Candidate, type KeyTier, type ServiceId, type UsageSettings } from "@/lib/usage";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import type { AskKind } from "@/components/sentence-helper";
+import { geminiChatPrice, openAiChatPrice, turnCost } from "@/lib/model-prices";
 import { capturedInstallPrompt, clearInstallPrompt, type InstallPromptEvent } from "@/lib/install-prompt";
 import { LANGUAGES, switchLanguage } from "@/lib/language-meta";
 
@@ -85,6 +86,11 @@ import {
 } from "@/lib/personal-library";
 
 type Section = "home" | "choose" | "mode" | "lessons" | "practice" | "progress" | "placement" | "grammar" | "library" | "settings" | "setup" | "dictionary";
+/** "≈ 0.0049 USD/lượt gia sư" from the published price of a chat model; empty when the model is not listed. */
+function turnNote(service: ServiceId, model: string): string {
+  const price = service === "openai" ? openAiChatPrice(model) : service === "gemini" ? geminiChatPrice(model) : null;
+  return price ? `≈ ${turnCost(price).toFixed(4)} USD/lượt gia sư` : "";
+}
 type CourseLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 /** The four levels of the learner's own level (placement test, tutor, grammar). */
 const BASE_LEVELS: CourseLevel[] = ["A1", "A2", "B1", "B2"];
@@ -634,6 +640,8 @@ export default function Home() {
   const [apiKeys, setApiKeys] = useState<ProviderRecord<ApiKeyEntry[]>>({ google: [], openai: [] });
   const [activeKeyIds, setActiveKeyIds] = useState<ProviderRecord<string>>({ google: "", openai: "" });
   const [selectedModels, setSelectedModels] = useState<ProviderRecord<string>>({ ...DEFAULT_MODELS });
+  /** On: the app picks the cheapest chat model that is good enough (see `model-prices.ts`); off: the model chosen below goes first. */
+  const [autoModel, setAutoModel] = useState(true);
   const [modelCatalog, setModelCatalog] = useState<ProviderRecord<AiModel[]>>({ google: [], openai: [] });
   const [apiKeyDraft, setApiKeyDraft] = useState("");
   const [apiKeyBusy, setApiKeyBusy] = useState(false);
@@ -969,6 +977,7 @@ export default function Home() {
               ? storedIds.openai : keys.openai[0]?.id ?? "",
           });
         }
+        setAutoModel(stored.autoModel !== false);
         if (typeof stored.selectedModels === "object" && stored.selectedModels !== null) {
           const models = stored.selectedModels as Record<string, unknown>;
           setSelectedModels({
@@ -1221,12 +1230,13 @@ export default function Home() {
         keys: apiKeys,
         activeKeyIds,
         selectedModels,
+        autoModel,
       }));
       localStorage.removeItem(API_KEY_STORAGE);
     } catch {
       setApiKeyError("Không thể lưu cài đặt AI trên trình duyệt này.");
     }
-  }, [aiProvider, apiKeys, activeKeyIds, selectedModels, aiSettingsLoaded]);
+  }, [aiProvider, apiKeys, activeKeyIds, selectedModels, autoModel, aiSettingsLoaded]);
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "production") return;
@@ -1364,7 +1374,8 @@ export default function Home() {
 
   async function chatModelCandidates(fastFirst = false, provider: AiProvider = aiProvider): Promise<string[]> {
     const available = provider === "google" ? await googleModelIds() : [];
-    return modelCandidates(provider, selectedModels[provider] || DEFAULT_MODELS[provider], fastFirst, available);
+    // Automatic: no model is pinned first, so the cheapest suitable one leads.
+    return modelCandidates(provider, autoModel ? "" : selectedModels[provider] || DEFAULT_MODELS[provider], fastFirst, available);
   }
 
   /**
@@ -1489,7 +1500,7 @@ export default function Home() {
 
   function rememberWorkingConnection(keyId: string, model: string, provider: AiProvider = aiProvider) {
     if (activeKeyIds[provider] !== keyId) setActiveKeyIds((current) => ({ ...current, [provider]: keyId }));
-    if ((selectedModels[provider] || DEFAULT_MODELS[provider]) !== model) setSelectedModels((current) => ({ ...current, [provider]: model }));
+    if (!autoModel && (selectedModels[provider] || DEFAULT_MODELS[provider]) !== model) setSelectedModels((current) => ({ ...current, [provider]: model }));
   }
 
   async function testAiConnection(): Promise<boolean> {
@@ -3001,7 +3012,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   function modelList(service: ServiceId, kind: "chat" | "speech") {
     if (kind === "speech") return SPEECH_MODELS[service];
     const provider = service === "gemini" ? "google" : "openai";
-    const loaded = modelCatalog[provider].filter((model) => isChatModel(model.id)).map((model) => ({ id: model.id, label: model.label, note: "" }));
+    const loaded = modelCatalog[provider].filter((model) => isChatModel(model.id)).map((model) => ({ id: model.id, label: model.label, note: turnNote(service, model.id) }));
     const current = selectedModels[provider] || DEFAULT_MODELS[provider];
     return loaded.length ? loaded : [{ id: current, label: current, note: "bấm “Kiểm tra” ở một key để tải đủ danh sách" }];
   }
@@ -3427,13 +3438,19 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               )}
 
               {provider && (
+                <>
+                <label className="model-check model-check-default">
+                  <input type="checkbox" checked={autoModel} onChange={(event) => setAutoModel(event.target.checked)} />
+                  <span><strong>Tự chọn mô hình rẻ nhất phù hợp</strong><small> — chỉ dùng các mô hình đủ tốt để làm gia sư (bỏ Lite, Pro, bản preview và bản quá cũ), xếp từ rẻ đến đắt; chỉ chuyển sang mô hình đắt hơn khi mô hình rẻ hơn bị lỗi hoặc hết lượt. Giá mỗi lượt gia sư hiện cạnh từng mô hình ở mục “Mô hình được phép dùng”.</small></span>
+                </label>
                 <label className="manual-picks">
-                  <span>Mô hình trò chuyện chính</span>
-                  <select className="settings-select" value={selectedModels[provider] || DEFAULT_MODELS[provider]} onChange={(event) => setSelectedModels((current) => ({ ...current, [provider]: event.target.value }))}>
+                  <span>Mô hình trò chuyện chính{autoModel ? " (không dùng khi đang tự chọn)" : ""}</span>
+                  <select className="settings-select" disabled={autoModel} value={selectedModels[provider] || DEFAULT_MODELS[provider]} onChange={(event) => setSelectedModels((current) => ({ ...current, [provider]: event.target.value }))}>
                     {!modelCatalog[provider].some((model) => model.id === (selectedModels[provider] || DEFAULT_MODELS[provider])) && <option value={selectedModels[provider] || DEFAULT_MODELS[provider]}>{selectedModels[provider] || DEFAULT_MODELS[provider]}</option>}
                     {modelCatalog[provider].map((model) => <option key={model.id} value={model.id}>{model.label}</option>)}
                   </select>
                 </label>
+                </>
               )}
               <details className="usage-prices">
                 <summary>Mô hình được phép dùng</summary>

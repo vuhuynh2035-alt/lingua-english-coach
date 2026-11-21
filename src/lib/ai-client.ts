@@ -1,3 +1,4 @@
+import { rankingCost, suitsTutor } from "@/lib/model-prices";
 import type { AiProvider } from "@/lib/ai-providers";
 
 /** `audio` (Gemini only) is a voice recording sent together with the text of that message. */
@@ -36,7 +37,7 @@ export type FailoverOptions = {
  * (2.0 was shut down on 1 June 2026 and 2.5 is closed to new users), the alias last.
  */
 export const FALLBACK_MODELS: Record<AiProvider, string[]> = {
-  google: ["gemini-3.8-flash", "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-flash-latest"],
+  google: ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-flash-latest"],
   openai: ["gpt-4o-mini", "gpt-4.1-mini"],
 };
 
@@ -57,19 +58,20 @@ function modelVersion(id: string): number {
 }
 
 /**
- * Fast models from the key's real model list, newest first: stable before preview,
- * Flash before Flash-Lite (Lite has its own quota, so it is a good second choice).
+ * Models from the key's real model list. Chat: only the Flash models good enough to tutor
+ * (`suitsTutor`: no Lite, no Pro, no previews, no old generations), the cheapest first and, at the
+ * same price, the newest. Speech: the newest first.
  */
 export function rankGoogleModels(available: string[], kind: "chat" | "tts"): string[] {
-  const wanted = available.filter((id) => kind === "tts"
-    ? /tts/i.test(id) && !/^gemini-[12]\./.test(id)
-    : isChatModel(id) && /flash/i.test(id) && !/thinking|exp/i.test(id) && !/^gemini-(1\.|2\.0)/.test(id));
-  return wanted
-    // Previews have small quotas, so stable models come first whatever their version.
-    .sort((a, b) => Number(/preview/i.test(a)) - Number(/preview/i.test(b))
-      || modelVersion(b) - modelVersion(a)
-      || Number(/lite/i.test(a)) - Number(/lite/i.test(b))
-      || a.localeCompare(b))
+  if (kind === "tts") {
+    return available
+      .filter((id) => /tts/i.test(id) && !/^gemini-[12]\./.test(id))
+      .sort((a, b) => Number(/preview/i.test(a)) - Number(/preview/i.test(b)) || modelVersion(b) - modelVersion(a) || Number(/lite/i.test(a)) - Number(/lite/i.test(b)) || a.localeCompare(b))
+      .slice(0, 4);
+  }
+  return available
+    .filter((id) => isChatModel(id) && suitsTutor(id))
+    .sort((a, b) => rankingCost(a) - rankingCost(b) || modelVersion(b) - modelVersion(a) || a.localeCompare(b))
     .slice(0, 4);
 }
 
