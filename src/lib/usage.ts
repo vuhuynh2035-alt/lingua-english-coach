@@ -121,10 +121,14 @@ export function groupTag(settings: UsageSettings, service: ServiceId, key: strin
   return `${service}:${settings.groups[keyTag(key)] ?? keyTag(key)}`;
 }
 
-/** Gemini keys may be free or paid; OpenAI keys are always paid; a Cloud TTS key is "paid" when it may go beyond the free characters. */
+/**
+ * Gemini keys may be free or paid; OpenAI keys are always paid; a Cloud TTS key is "paid" when it may go beyond the free characters.
+ * A key nobody marked as paid is FREE: it costs nothing and is only held back by the provider's free limits (a "paid" default made
+ * every new key stop at once under a 0 USD cap).
+ */
 export function keyTier(settings: UsageSettings, service: ServiceId, key: string): KeyTier {
   if (service === "openai") return "paid";
-  return settings.tiers[keyTag(key)] ?? (service === "gcloud" ? "free" : "paid");
+  return settings.tiers[keyTag(key)] ?? "free";
 }
 
 export const keyEnabled = (settings: UsageSettings, key: string) => !settings.disabled[keyTag(key)];
@@ -295,10 +299,10 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   if (cost > 0 && keyCap !== undefined && (load().byKey?.[tag] ?? 0) + cost > keyCap + 1e-9) {
     return { ok: false, cost, reason: `Key …${key.slice(-4)} đã chạm trần riêng`, resetIn: untilNextMonth(), renews: "month" };
   }
-  // The money cap belongs to the whole service (every key, chat and speech together). Once it is
-  // reached only free use goes on: free keys, and the free part of paid keys.
+  // A paid key that has a cap of its own is held by that cap alone; one without it follows the service cap
+  // (every key, chat and speech together). Once the cap is reached only free use goes on: free keys, and the free part of paid keys.
   const spent = load().spent[service];
-  const cap = tier === "free" ? 0 : settings.caps[service];
+  const cap = tier === "free" ? 0 : keyCap !== undefined ? Infinity : settings.caps[service];
   if (cost > 0 && spent + cost > cap + 1e-9) {
     return {
       ok: false, cost,

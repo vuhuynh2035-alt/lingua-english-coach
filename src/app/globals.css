@@ -2564,6 +2564,13 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 18px; opaci
 .sh-word { padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--paper); color: var(--ink); font-family: inherit; font-size: 1rem; cursor: pointer; }
 .sh-word.active { border-color: var(--purple); background: #efecff; font-weight: 700; }
 .usage-cap.key-cap .settings-input { width: 12rem; max-width: 100%; }
+.key-link { display: inline-block; margin: 2px 0 6px; font-weight: 700; }
+.service-key-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.service-key-head > .settings-input { flex: 1 1 14rem; min-width: 0; }
+.paid-tick { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; white-space: nowrap; font-weight: 700; cursor: pointer; }
+.paid-tick input { width: 1.15rem; height: 1.15rem; }
+.usage-cap.key-cap .settings-input:disabled { opacity: .45; cursor: not-allowed; background: #f0efec; }
+.service-key.new-key { border-style: dashed; }
 .sh-result { display: grid; gap: 4px; margin: 0; padding-left: 18px; line-height: 1.5; }
 
 

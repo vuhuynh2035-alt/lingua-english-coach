@@ -91,6 +91,8 @@ function turnNote(service: ServiceId, model: string): string {
   const price = service === "openai" ? openAiChatPrice(model) : service === "gemini" ? geminiChatPrice(model) : null;
   return price ? `≈ ${turnCost(price).toFixed(4)} USD/lượt gia sư` : "";
 }
+/** Monthly cap (USD) put in the box when a key is marked as paid. */
+const DEFAULT_KEY_CAP = 5;
 type CourseLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 /** The four levels of the learner's own level (placement test, tutor, grammar). */
 const BASE_LEVELS: CourseLevel[] = ["A1", "A2", "B1", "B2"];
@@ -583,6 +585,8 @@ export default function Home() {
   const [keyDrafts, setKeyDrafts] = useState<Partial<Record<ServiceId, string>>>({});
   /** The plan the learner picked for the key being added (Gemini / Cloud TTS keys must be marked before they are added). */
   const [keyTierDrafts, setKeyTierDrafts] = useState<Partial<Record<ServiceId, KeyTier>>>({});
+  /** The monthly cap typed for the key being added. */
+  const [keyCapDrafts, setKeyCapDrafts] = useState<Partial<Record<ServiceId, string>>>({});
   const [keyBusy, setKeyBusy] = useState<string | null>(null);
   const [keyMessages, setKeyMessages] = useState<Record<string, { ok: boolean; text: string }>>({});
   /** The regional accent each AI service reads with (per language). */
@@ -3091,7 +3095,16 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <small>Gia sư đã dừng ở hạn mức bạn đặt. Bạn muốn làm gì?</small>
         {paidKeys.length > 0 && (
           <button type="button" className="button button-primary" onClick={() => {
-            updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: Math.round((current.caps[service] + 2) * 100) / 100 } }));
+            updateUsageSettings((current) => {
+              const more = (value: number) => Math.round((value + 2) * 100) / 100;
+              const keyCaps = { ...current.keyCaps };
+              let serviceCapUsed = false;
+              for (const entry of paidKeys) {
+                const tag = keyTag(entry.value);
+                if (keyCaps[tag] !== undefined) keyCaps[tag] = more(keyCaps[tag]); else serviceCapUsed = true;
+              }
+              return { ...current, keyCaps, caps: serviceCapUsed ? { ...current.caps, [service]: more(current.caps[service]) } : current.caps };
+            });
             again();
           }}>Nâng trần {SERVICE_NAMES[service]} thêm 2 USD và học tiếp</button>
         )}
@@ -3138,7 +3151,11 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             const keys = serviceKeys(service);
             const hasPaid = keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid");
             // A paid key under a 0 USD cap has nothing left to spend: the gauge shows full.
-            const paidCap = hasPaid ? usageSettings.caps[service] : 0;
+            const paidKeys = keys.filter((entry) => keyTier(usageSettings, service, entry.value) === "paid");
+            const ownCaps = paidKeys.filter((entry) => usageSettings.keyCaps[keyTag(entry.value)] !== undefined);
+            const paidCap = hasPaid
+              ? ownCaps.reduce((sum, entry) => sum + usageSettings.keyCaps[keyTag(entry.value)], 0) + (ownCaps.length < paidKeys.length ? usageSettings.caps[service] : 0)
+              : 0;
             const spent = spentThisMonth(service);
             const rows: { label: string; left: number; total: number; reset: string }[] = [];
             if (service === "gcloud") {
@@ -3254,9 +3271,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   async function addServiceKey(service: ServiceId) {
     const value = (keyDrafts[service] ?? "").trim();
     const list = serviceKeys(service, true);
-    const chosenTier = keyTierDrafts[service];
+    const paid = service === "openai" || keyTierDrafts[service] === "paid";
+    const capDraft = Math.max(0, Number(keyCapDrafts[service] ?? DEFAULT_KEY_CAP) || 0);
     if (!value) return;
-    if (service !== "openai" && !chosenTier) { setKeyMessages((current) => ({ ...current, [service]: { ok: false, text: "Hãy chọn gói của key mới (Free hay Paid) trước khi thêm." } })); return; }
     if (list.length >= MAX_KEYS) { setKeyMessages((current) => ({ ...current, [service]: { ok: false, text: `Mỗi dịch vụ tối đa ${MAX_KEYS} key.` } })); return; }
     if (list.some((entry) => entry.value === value)) { setKeyMessages((current) => ({ ...current, [service]: { ok: false, text: "Key này đã có trong danh sách." } })); return; }
     setKeyBusy(service);
@@ -3272,8 +3289,15 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         setApiKeys((current) => ({ ...current, [provider]: [...current[provider], entry] }));
         if (!activeKeyIds[provider]) setActiveKeyIds((current) => ({ ...current, [provider]: entry.id }));
       }
-      if (service !== "openai" && chosenTier) updateUsageSettings((current) => ({ ...current, tiers: { ...current.tiers, [keyTag(value)]: chosenTier } }));
+      updateUsageSettings((current) => {
+        const tiers = { ...current.tiers };
+        const keyCaps = { ...current.keyCaps };
+        if (service !== "openai") tiers[keyTag(value)] = paid ? "paid" : "free";
+        if (paid) keyCaps[keyTag(value)] = capDraft; else delete keyCaps[keyTag(value)];
+        return { ...current, tiers, keyCaps };
+      });
       setKeyTierDrafts((current) => ({ ...current, [service]: undefined }));
+      setKeyCapDrafts((current) => ({ ...current, [service]: undefined }));
       setKeyDrafts((current) => ({ ...current, [service]: "" }));
       setKeyMessages((current) => ({ ...current, [service]: { ok: true, text: `Đã thêm key. ${text}` } }));
     } catch (error) {
@@ -3347,86 +3371,77 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               </div>
               {!usageSettings.servicesEnabled[service] && <small className="settings-hint">Dịch vụ đã tắt; app sẽ không sử dụng. Các cài đặt đã lưu sẽ được giữ lại.</small>}
               {usageSettings.servicesEnabled[service] && <>
-              <small className="settings-hint key-advice">ℹ️ {keyAdvice(service)}</small>
-              {keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid") ? (
-                <>
-              <div className="usage-cap">
-                <span>Trần chi phí mỗi tháng của dịch vụ (tổng mọi key Paid, cả đọc lẫn trò chuyện)</span>
-                <input type="number" min="0" step="0.5" className="settings-input" value={usageSettings.caps[service]}
-                  onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: value } })); }} />
-                <span>USD · tháng này đã dùng {spentThisMonth(service).toFixed(3)} USD. {service === "gemini"
-                  ? "Trần 0 USD vẫn dùng key Gemini Free; key Paid bị dừng vì không có quota token miễn phí."
-                  : service === "gcloud"
-                  ? "Trần 0 USD vẫn dùng phần ký tự miễn phí theo tháng."
-                  : "OpenAI API không có quota miễn phí nên trần 0 USD sẽ dừng dịch vụ này."}</span>
-              </div>
-              {serviceUsedUp(service) && <p className="voice-warning">⚠️ {SERVICE_NAMES[service]} đã hết hạn mức sử dụng. Muốn dùng tiếp, nâng trần chi phí ở ô trên.</p>}
-                </>
-              ) : keys.length > 0 ? (
-                <small className="settings-hint">Chưa có key Paid nên chưa cần đặt trần chi phí. Khi bạn chọn gói Paid cho một key, khung nhập trần sẽ hiện ra.</small>
-              ) : null}
+              <a href={info[service].link} target="_blank" rel="noreferrer" className="settings-hint key-link">{info[service].linkText}</a>
 
               {keys.map((entry) => {
                 const tier = keyTier(usageSettings, service, entry.value);
                 const tag = keyTag(entry.value);
                 const message = keyMessages[entry.id];
+                const paid = tier === "paid";
                 return (
                   <div className={`service-key${keyEnabled(usageSettings, entry.value) ? "" : " off"}`} key={entry.id}>
                     <div className="service-key-head">
                       <strong>{entry.label} · …{entry.value.slice(-4)}</strong>
                       <button type="button" className="button button-outline" disabled={keyBusy === entry.id} onClick={() => { void checkServiceKey(service, entry); }}>{keyBusy === entry.id ? "Đang kiểm tra…" : "Kiểm tra"}</button>
                       <button type="button" className="remove-key-button" onClick={() => removeServiceKey(service, entry)}>Xóa</button>
+                      {service !== "openai" && (
+                        <label className="paid-tick">
+                          <input type="checkbox" checked={paid} aria-label={`${entry.label} có phí`}
+                            onChange={(event) => { const on = event.target.checked; updateUsageSettings((current) => { const tiers = { ...current.tiers, [tag]: on ? "paid" as const : "free" as const }; const keyCaps = { ...current.keyCaps }; if (on && keyCaps[tag] === undefined) keyCaps[tag] = DEFAULT_KEY_CAP; return { ...current, tiers, keyCaps }; }); }} />
+                          <span>{service === "gemini" ? "Có phí" : "Cho phép tính phí"}</span>
+                        </label>
+                      )}
                     </div>
                     <label className="model-check"><input type="checkbox" checked={keyEnabled(usageSettings, entry.value)} onChange={(event) => updateUsageSettings((current) => ({ ...current, disabled: { ...current.disabled, [tag]: !event.target.checked } }))} /> <span>Đang dùng key này</span></label>
-                    {service !== "openai" && (
-                      <label className="manual-picks">
-                        <span>Gói của API key</span>
-                        <select className="settings-select" aria-label={`Gói ${SERVICE_NAMES[service]} của ${entry.label}`} value={usageSettings.tiers[tag] ?? ""}
-                          onChange={(event) => updateUsageSettings((current) => { const tiers = { ...current.tiers }; if (event.target.value === "") delete tiers[tag]; else tiers[tag] = event.target.value === "paid" ? "paid" : "free"; return { ...current, tiers }; })}>
-                          <option value="">{service === "gemini" ? "Chưa chọn — app tạm coi là Paid" : "Chưa chọn — app tạm chỉ dùng phần miễn phí"}</option>
-                          <option value="free">{service === "gemini" ? "Free — quota miễn phí" : "Chỉ dùng phần miễn phí"}</option>
-                          <option value="paid">{service === "gemini" ? "Paid — tính phí theo lượt" : "Cho phép tính phí vượt phần miễn phí"}</option>
-                        </select>
-                        <small className="settings-hint">{usageSettings.tiers[tag] ? keyTierAdvice(service, tier) : service === "gemini" ? "Bạn chưa chọn gói cho key này nên app tạm coi là Paid (hạn mức cao, có tính tiền). Nếu key thật là Free, hãy chọn Free để app không gửi quá nhanh và bị Google từ chối." : "Bạn chưa chọn gói cho key này nên app chỉ dùng phần ký tự miễn phí mỗi tháng."}</small>
-                      </label>
-                    )}
-                    {tier === "paid" && (
-                      <label className="usage-cap key-cap">
-                        <span>Trần riêng của key này (USD mỗi tháng)</span>
-                        <input type="number" min="0" step="0.5" className="settings-input" aria-label={`Trần riêng của ${entry.label}`} placeholder="Không giới hạn riêng" value={usageSettings.keyCaps[tag] ?? ""}
-                          onChange={(event) => { const raw = event.target.value; updateUsageSettings((current) => { const keyCaps = { ...current.keyCaps }; if (raw === "") delete keyCaps[tag]; else keyCaps[tag] = Math.max(0, Number(raw) || 0); return { ...current, keyCaps }; }); }} />
-                        <span>USD · tháng này key đã dùng {spentByKey(entry.value).toFixed(3)} USD. Key dừng khi chạm trần riêng này hoặc trần chung của dịch vụ, cái nào tới trước.</span>
-                      </label>
-                    )}
-                    {service === "openai" && <small className="settings-hint">{keyTierAdvice(service, tier)}</small>}
+                    <label className="usage-cap key-cap">
+                      <span>Hạn mức trần {entry.label.toLowerCase()} (USD mỗi tháng)</span>
+                      <input type="number" min="0" step="0.5" className="settings-input" aria-label={`Hạn mức trần ${entry.label}`} disabled={!paid}
+                        placeholder={paid ? `Theo trần chung: ${usageSettings.caps[service]}` : "Key miễn phí: không tốn tiền"} value={paid ? usageSettings.keyCaps[tag] ?? "" : ""}
+                        onChange={(event) => { const raw = event.target.value; updateUsageSettings((current) => { const keyCaps = { ...current.keyCaps }; if (raw === "") delete keyCaps[tag]; else keyCaps[tag] = Math.max(0, Number(raw) || 0); return { ...current, keyCaps }; }); }} />
+                      <span>{paid ? `USD · tháng này đã dùng ${spentByKey(entry.value).toFixed(3)} USD.` : "Dùng phần miễn phí của nhà cung cấp."}</span>
+                    </label>
+                    {paid && usageSettings.keyCaps[tag] === 0 && <small className="voice-warning">Trần 0 USD: key có phí này sẽ không dùng được. Nếu key này thật ra là miễn phí, bỏ tick “{service === "gemini" ? "Có phí" : "Cho phép tính phí"}”.</small>}
                     {message && <small className={message.ok ? "api-key-success" : "error-message"}>{message.text}</small>}
                   </div>
                 );
               })}
 
-              {keys.length < MAX_KEYS && service !== "openai" && (
-                <label className="manual-picks">
-                  <span>Key mới thuộc gói nào?</span>
-                  <select className="settings-select" aria-label={`Gói của key ${SERVICE_NAMES[service]} mới`} value={keyTierDrafts[service] ?? ""}
-                    onChange={(event) => setKeyTierDrafts((current) => ({ ...current, [service]: event.target.value === "paid" ? "paid" : event.target.value === "free" ? "free" : undefined }))}>
-                    <option value="">— Chọn gói trước khi thêm key —</option>
-                    <option value="free">{service === "gemini" ? "Free — quota miễn phí" : "Chỉ dùng phần miễn phí"}</option>
-                    <option value="paid">{service === "gemini" ? "Paid — tính phí theo lượt" : "Cho phép tính phí vượt phần miễn phí"}</option>
-                  </select>
-                  <small className="settings-hint">{service === "gemini" ? "Xem ở Google AI Studio (trang API keys): nhãn “Free tier” là Free; “Tier 1” trở lên là Paid (dự án đã liên kết thanh toán)." : "Chọn “Chỉ dùng phần miễn phí” nếu không muốn bị tính tiền khi vượt 1 triệu ký tự mỗi tháng."}</small>
-                </label>
-              )}
               {keys.length < MAX_KEYS && (
-                <div className="gcloud-key-row">
-                  <input className="settings-input" type="password" autoComplete="off" placeholder={info[service].placeholder} value={keyDrafts[service] ?? ""} onChange={(event) => setKeyDrafts((current) => ({ ...current, [service]: event.target.value.trim() }))} />
-                  <button type="button" className="button button-primary" disabled={!keyDrafts[service] || keyBusy === service || (service !== "openai" && !keyTierDrafts[service])} onClick={() => { void addServiceKey(service); }}>{keyBusy === service ? "Đang kiểm tra…" : "Thêm key"}</button>
+                <div className="service-key new-key">
+                  <div className="service-key-head">
+                    <input className="settings-input" type="password" autoComplete="off" aria-label={`Dán API key ${SERVICE_NAMES[service]} mới`} placeholder={`Key ${keys.length + 1} — ${info[service].placeholder}`} value={keyDrafts[service] ?? ""} onChange={(event) => setKeyDrafts((current) => ({ ...current, [service]: event.target.value.trim() }))} />
+                    <button type="button" className="button button-primary" disabled={!keyDrafts[service] || keyBusy === service} onClick={() => { void addServiceKey(service); }}>{keyBusy === service ? "Đang kiểm tra…" : "Thêm key"}</button>
+                    {service !== "openai" && (
+                      <label className="paid-tick">
+                        <input type="checkbox" checked={keyTierDrafts[service] === "paid"} aria-label="Key mới có phí"
+                          onChange={(event) => setKeyTierDrafts((current) => ({ ...current, [service]: event.target.checked ? "paid" : undefined }))} />
+                        <span>{service === "gemini" ? "Có phí" : "Cho phép tính phí"}</span>
+                      </label>
+                    )}
+                  </div>
+                  <label className="usage-cap key-cap">
+                    <span>Hạn mức trần key {keys.length + 1} (USD mỗi tháng)</span>
+                    <input type="number" min="0" step="0.5" className="settings-input" aria-label="Hạn mức trần của key mới" disabled={service !== "openai" && keyTierDrafts[service] !== "paid"}
+                      placeholder={String(DEFAULT_KEY_CAP)} value={keyCapDrafts[service] ?? ""} onChange={(event) => setKeyCapDrafts((current) => ({ ...current, [service]: event.target.value }))} />
+                    <span>{service === "openai" ? "USD · OpenAI không có phần miễn phí." : keyTierDrafts[service] === "paid" ? "USD · để trống = 5." : "Không tick “có phí” thì key dùng phần miễn phí, không tốn tiền."}</span>
+                  </label>
                 </div>
               )}
               {keyMessages[service] && <small className={keyMessages[service].ok ? "api-key-success" : "error-message"}>{keyMessages[service].text}</small>}
-              <a href={info[service].link} target="_blank" rel="noreferrer" className="settings-hint">{info[service].linkText}</a>
-              {service === "gcloud" && (
-                <details className="usage-prices">
-                  <summary>Hướng dẫn tạo key Google Cloud (từng bước)</summary>
+              {serviceUsedUp(service) && <p className="voice-warning">⚠️ {SERVICE_NAMES[service]} đã hết hạn mức sử dụng. Muốn dùng tiếp, nâng hạn mức trần của key có phí (hoặc bỏ tick “có phí” nếu key đó là miễn phí).</p>}
+
+              <details className="usage-prices">
+                <summary>Hướng dẫn, giá tiền và trần chung</summary>
+                <small className="settings-hint key-advice">ℹ️ {keyAdvice(service)}</small>
+                {service !== "openai" && <>
+                  <small className="settings-hint">{keyTierAdvice(service, "free")}</small>
+                  <small className="settings-hint">{keyTierAdvice(service, "paid")}</small>
+                </>}
+                {service === "openai" && <small className="settings-hint">{keyTierAdvice(service, "paid")}</small>}
+                <small className="settings-hint">Không tick “có phí” = app chỉ dùng phần miễn phí, không tốn đồng nào, hạn mức 0 USD vẫn dùng được. Tick “có phí” khi dự án của key đã liên kết thanh toán; app dừng key đó khi chạm hạn mức trần riêng. Key có phí chưa đặt trần riêng thì theo trần chung bên dưới.</small>
+{service === "gcloud" && (
+                <>
+                  <span className="settings-label">Cách tạo key Google Cloud (từng bước)</span>
                   <ol className="settings-hint">
                     <li>Đăng nhập tài khoản Google, mở nút <strong>“Mở trang Credentials”</strong> ở trên. Nếu được hỏi, chọn hoặc tạo một <strong>dự án (project)</strong> và bật <strong>thanh toán (billing)</strong> — Google yêu cầu có thẻ nhưng vẫn có 1 triệu ký tự miễn phí mỗi tháng.</li>
                     <li>Bật API: mở <a href="https://console.cloud.google.com/apis/library/texttospeech.googleapis.com" target="_blank" rel="noreferrer">Cloud Text-to-Speech API ↗</a>, bấm <strong>Enable</strong> (nếu đã thấy <strong>Manage</strong>/“Enabled” thì đã bật rồi, bỏ qua).</li>
@@ -3434,8 +3449,19 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                     <li>Hộp thoại hiện ra một dãy bắt đầu bằng <strong>AIza…</strong> → bấm biểu tượng sao chép. Nên bấm <strong>Edit API key</strong> → <em>API restrictions</em> → chọn <strong>Cloud Text-to-Speech API</strong> để key không bị dùng vào việc khác.</li>
                     <li>Quay lại đây, dán key vào ô phía trên rồi bấm <strong>Thêm key</strong>.</li>
                   </ol>
-                </details>
-              )}
+                </>
+                )}
+                <div className="usage-cap">
+                  <span>Trần chung của dịch vụ (dùng cho key có phí chưa đặt trần riêng)</span>
+                  <input type="number" min="0" step="0.5" className="settings-input" aria-label="Trần chung của dịch vụ" value={usageSettings.caps[service]}
+                    onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: value } })); }} />
+                  <span>USD · tháng này cả dịch vụ đã dùng {spentThisMonth(service).toFixed(3)} USD.</span>
+                </div>
+                <span className="settings-label">Đơn giá (sửa khi nhà cung cấp đổi giá)</span>
+                {service === "gemini" && [price("gemini", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("gemini", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("gemini", "ttsFlash", "Đọc – Flash TTS", "USD / 1 triệu token âm thanh"), price("gemini", "ttsLite", "Đọc – Flash-Lite TTS", "USD / 1 triệu token âm thanh")]}
+                {service === "openai" && [price("openai", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("openai", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("openai", "ttsPerMinute", "Đọc", "USD / phút")]}
+                {service === "gcloud" && [price("gcloud", "perMillionChars", "Đọc – Chirp 3 HD", "USD / 1 triệu ký tự"), price("gcloud", "freeChars", "Miễn phí mỗi tháng", "ký tự / tài khoản thanh toán")]}
+              </details>
 
               {provider && (
                 <>
@@ -3462,12 +3488,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <span className="settings-label">Đọc</span>
                 {renderModelChecks(service, "speech")}
                 {service !== "gcloud" && (<><span className="settings-label">Trò chuyện</span>{renderModelChecks(service, "chat")}</>)}
-              </details>
-              <details className="usage-prices">
-                <summary>Đơn giá (sửa khi nhà cung cấp đổi giá)</summary>
-                {service === "gemini" && [price("gemini", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("gemini", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("gemini", "ttsFlash", "Đọc – Flash TTS", "USD / 1 triệu token âm thanh"), price("gemini", "ttsLite", "Đọc – Flash-Lite TTS", "USD / 1 triệu token âm thanh")]}
-                {service === "openai" && [price("openai", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("openai", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("openai", "ttsPerMinute", "Đọc", "USD / phút")]}
-                {service === "gcloud" && [price("gcloud", "perMillionChars", "Đọc – Chirp 3 HD", "USD / 1 triệu ký tự"), price("gcloud", "freeChars", "Miễn phí mỗi tháng", "ký tự / tài khoản thanh toán")]}
               </details>
               </>}
             </section>
