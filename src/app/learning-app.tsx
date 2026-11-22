@@ -2881,7 +2881,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     const model = service === "openai" ? OPENAI_TTS_MODELS[0] : service === "gcloud" ? "chirp3-hd" : (ttsModelOrder([...GOOGLE_TTS_MODELS]).find((id) => modelAllowed(usageSettings, "gemini", "speech", id)) ?? GOOGLE_TTS_MODELS[0]);
     return keys.length > 0 && keys.every((entry) => {
       const state = checkUsage(usageSettings, service, entry.value, model, "speech", { chars: 200 });
-      return !state.ok && /hết hạn mức sử dụng/.test(state.reason ?? "");
+      return !state.ok && /hết hạn mức sử dụng|hạn mức trần là 0 USD/.test(state.reason ?? "");
     });
   }
 
@@ -2957,7 +2957,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               <div className="service-accents">
                 {services.map((service) => (
                   <div className={`service-accent${serviceKeys(service).length ? "" : " no-key"}`} key={service}>
-                    <label htmlFor={`accent-${service}`}>{SERVICE_NAMES[service]}{serviceUsedUp(service) && <small className="cap-warning"> · đã hết hạn mức sử dụng</small>}</label>
+                    <label htmlFor={`accent-${service}`}>{SERVICE_NAMES[service]}{serviceUsedUp(service) && <small className="cap-warning"> · chưa dùng được (hạn mức trần)</small>}</label>
                     {serviceKeys(service).length ? (
                       <select id={`accent-${service}`} className="settings-select" value={serviceAccent(service)}
                       onChange={(event) => { updateServiceAccent(service, event.target.value); stopSpeech(); setPreviewing(null); if (serviceKeys(service).length) previewService(service, event.target.value); }}>
@@ -3445,7 +3445,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 </div>
               )}
               {keyMessages[service] && <small className={keyMessages[service].ok ? "api-key-success" : "error-message"}>{keyMessages[service].text}</small>}
-              {serviceUsedUp(service) && <p className="voice-warning">⚠️ {SERVICE_NAMES[service]} đã hết hạn mức sử dụng. Muốn dùng tiếp, nâng hạn mức trần của key có phí (hoặc bỏ tick “có phí” nếu key đó là miễn phí).</p>}
+              {serviceUsedUp(service) && <p className="voice-warning">⚠️ {SERVICE_NAMES[service]} chưa dùng được vì mọi key đều đang đặt “có phí” mà hạn mức trần là 0 USD (hoặc đã tiêu hết trần). Muốn dùng phần miễn phí: bỏ tick “Có phí” ở key miễn phí. Muốn dùng key có phí: nhập hạn mức trần lớn hơn 0.</p>}
 
               <details className="usage-prices">
                 <summary>Hướng dẫn, giá tiền và trần chung</summary>

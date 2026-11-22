@@ -304,7 +304,10 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
     return {
       ok: false, cost,
       // No free capacity left and no money left under the key's cap (0 USD included): simply "used up".
-      reason: `${name} (key …${key.slice(-4)}) đã hết hạn mức sử dụng`,
+      // A cap of 0 is not "used up": the key was never allowed to spend. Say so, it is a setting the learner can change.
+      reason: keyCap === 0
+        ? `${name} (key …${key.slice(-4)}) đang đặt có phí nhưng hạn mức trần là 0 USD, chưa được phép tiêu tiền`
+        : `${name} (key …${key.slice(-4)}) đã hết hạn mức sử dụng`,
       resetIn: untilNextMonth(), renews: "month",
     };
   }
