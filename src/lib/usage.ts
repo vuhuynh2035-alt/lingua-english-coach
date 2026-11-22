@@ -29,9 +29,11 @@ export type UsageSettings = {
   /** Services the Auto mode may use for speech / for chat. */
   enabled: Record<ServiceId, boolean>;
   enabledChat: Record<ServiceId, boolean>;
-  /** Monthly spending cap per service (every key, chat and speech together), USD; 0 = only free use. */
+  /** Not used any more (every paid key has its own cap in `keyCaps`); kept so older settings load and can be migrated once. */
   caps: Record<ServiceId, number>;
-  /** Monthly cap of one paid key, USD (by the key's last characters). Unset: the key has no cap of its own and only the service cap applies. */
+  /** True once the old per-service caps were copied into the caps of the paid keys. */
+  capsMigrated?: boolean;
+  /** Monthly cap of one paid key, USD (by the key's last characters). Unset means 0: a paid key may spend nothing until the learner sets a cap. */
   keyCaps: Record<string, number>;
   /** Keys switched off for now (by their last characters). */
   disabled: Record<string, boolean>;
@@ -147,6 +149,7 @@ export function loadSettings(): UsageSettings {
       enabled: { ...DEFAULT_SETTINGS.enabled, ...stored.enabled },
       enabledChat: { ...DEFAULT_SETTINGS.enabledChat, ...stored.enabledChat },
       caps: { ...DEFAULT_SETTINGS.caps, ...stored.caps },
+      capsMigrated: stored.capsMigrated === true,
       keyCaps: { ...stored.keyCaps },
       disabled: { ...stored.disabled },
       prices: {
@@ -294,20 +297,14 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   if (recent.length >= safe(rpm)) {
     return { ok: false, cost, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
   }
-  // A paid key may also have a cap of its own; it stops alone when it reaches it and the next key is tried.
-  const keyCap = settings.keyCaps[tag];
-  if (cost > 0 && keyCap !== undefined && (load().byKey?.[tag] ?? 0) + cost > keyCap + 1e-9) {
-    return { ok: false, cost, reason: `Key …${key.slice(-4)} đã chạm trần riêng`, resetIn: untilNextMonth(), renews: "month" };
-  }
-  // A paid key that has a cap of its own is held by that cap alone; one without it follows the service cap
-  // (every key, chat and speech together). Once the cap is reached only free use goes on: free keys, and the free part of paid keys.
-  const spent = load().spent[service];
-  const cap = tier === "free" ? 0 : keyCap !== undefined ? Infinity : settings.caps[service];
-  if (cost > 0 && spent + cost > cap + 1e-9) {
+  // Money: every paid key has a cap of its own (0 until the learner sets one). Once a key has spent it, only free use goes on:
+  // free keys never cost anything, and the free part of a paid Cloud TTS key stays free. The next key is tried.
+  const keyCap = tier === "free" ? 0 : settings.keyCaps[tag] ?? 0;
+  if (cost > 0 && (load().byKey?.[tag] ?? 0) + cost > keyCap + 1e-9) {
     return {
       ok: false, cost,
-      // No free capacity left and no money left under the cap (0 USD included): simply "used up".
-      reason: `${name} đã hết hạn mức sử dụng`,
+      // No free capacity left and no money left under the key's cap (0 USD included): simply "used up".
+      reason: `${name} (key …${key.slice(-4)}) đã hết hạn mức sử dụng`,
       resetIn: untilNextMonth(), renews: "month",
     };
   }

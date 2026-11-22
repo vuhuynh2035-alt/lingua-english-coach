@@ -91,8 +91,8 @@ function turnNote(service: ServiceId, model: string): string {
   const price = service === "openai" ? openAiChatPrice(model) : service === "gemini" ? geminiChatPrice(model) : null;
   return price ? `≈ ${turnCost(price).toFixed(4)} USD/lượt gia sư` : "";
 }
-/** Monthly cap (USD) put in the box when a key is marked as paid. */
-const DEFAULT_KEY_CAP = 5;
+/** Monthly cap (USD) put in the box when a key is marked as paid: 0, the learner raises it when ready to pay. */
+const DEFAULT_KEY_CAP = 0;
 type CourseLevel = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 /** The four levels of the learner's own level (placement test, tutor, grammar). */
 const BASE_LEVELS: CourseLevel[] = ["A1", "A2", "B1", "B2"];
@@ -1242,6 +1242,25 @@ export default function Home() {
     }
   }, [aiProvider, apiKeys, activeKeyIds, selectedModels, autoModel, aiSettingsLoaded]);
 
+  // Before 2.17.28 the money cap belonged to the whole service. Now every paid key has its own: copy the old cap
+  // into each paid key that has none, once, so nobody's paid key stops by surprise.
+  useEffect(() => {
+    if (!aiSettingsLoaded || usageSettings.capsMigrated) return;
+    updateUsageSettings((current) => {
+      const keyCaps = { ...current.keyCaps };
+      const carry = (service: ServiceId, value: string) => {
+        const tag = keyTag(value);
+        const paid = service === "openai" || current.tiers[tag] === "paid";
+        if (paid && keyCaps[tag] === undefined && current.caps[service] > 0) keyCaps[tag] = current.caps[service];
+      };
+      apiKeys.google.forEach((entry) => carry("gemini", entry.value));
+      apiKeys.openai.forEach((entry) => carry("openai", entry.value));
+      cloudKeys.forEach((entry) => carry("gcloud", entry.value));
+      return { ...current, keyCaps, capsMigrated: true };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aiSettingsLoaded, usageSettings.capsMigrated]);
+
   useEffect(() => {
     if (process.env.NODE_ENV !== "production") return;
     if (!("serviceWorker" in navigator)) {
@@ -1466,7 +1485,7 @@ export default function Home() {
         // Counted on the device first: a key at its limit or over the money cap is skipped (the next key is tried).
         const state = checkUsage(usageSettingsRef.current, service, key, model, "chat", { inTokens, outTokens: 700 });
         if (!state.ok) {
-          const freeTierHint = state.cost > 0 && usageSettingsRef.current.caps[service] === 0
+          const freeTierHint = state.cost > 0 && (usageSettingsRef.current.keyCaps[keyTag(key)] ?? 0) === 0
             ? service === "gemini"
               ? " Key Gemini này đang đặt Paid nên không có quota token miễn phí; nếu dự án chưa bật thanh toán, hãy chọn gói Free ở Cài đặt → Dịch vụ AI."
               : " OpenAI API không có gói Free; hãy bật Gemini Free hoặc tăng trần nếu muốn tiếp tục."
@@ -3096,14 +3115,12 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         {paidKeys.length > 0 && (
           <button type="button" className="button button-primary" onClick={() => {
             updateUsageSettings((current) => {
-              const more = (value: number) => Math.round((value + 2) * 100) / 100;
               const keyCaps = { ...current.keyCaps };
-              let serviceCapUsed = false;
               for (const entry of paidKeys) {
                 const tag = keyTag(entry.value);
-                if (keyCaps[tag] !== undefined) keyCaps[tag] = more(keyCaps[tag]); else serviceCapUsed = true;
+                keyCaps[tag] = Math.round(((keyCaps[tag] ?? 0) + 2) * 100) / 100;
               }
-              return { ...current, keyCaps, caps: serviceCapUsed ? { ...current.caps, [service]: more(current.caps[service]) } : current.caps };
+              return { ...current, keyCaps };
             });
             again();
           }}>Nâng trần {SERVICE_NAMES[service]} thêm 2 USD và học tiếp</button>
@@ -3152,10 +3169,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             const hasPaid = keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid");
             // A paid key under a 0 USD cap has nothing left to spend: the gauge shows full.
             const paidKeys = keys.filter((entry) => keyTier(usageSettings, service, entry.value) === "paid");
-            const ownCaps = paidKeys.filter((entry) => usageSettings.keyCaps[keyTag(entry.value)] !== undefined);
-            const paidCap = hasPaid
-              ? ownCaps.reduce((sum, entry) => sum + usageSettings.keyCaps[keyTag(entry.value)], 0) + (ownCaps.length < paidKeys.length ? usageSettings.caps[service] : 0)
-              : 0;
+            const paidCap = paidKeys.reduce((sum, entry) => sum + (usageSettings.keyCaps[keyTag(entry.value)] ?? 0), 0);
             const spent = spentThisMonth(service);
             const rows: { label: string; left: number; total: number; reset: string }[] = [];
             if (service === "gcloud") {
@@ -3396,15 +3410,18 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                     <label className="usage-cap key-cap">
                       <span>Hạn mức trần {entry.label.toLowerCase()} (USD mỗi tháng)</span>
                       <input type="number" min="0" step="0.5" className="settings-input" aria-label={`Hạn mức trần ${entry.label}`} disabled={!paid}
-                        placeholder={paid ? `Theo trần chung: ${usageSettings.caps[service]}` : "Key miễn phí: không tốn tiền"} value={paid ? usageSettings.keyCaps[tag] ?? "" : ""}
+                        placeholder={paid ? "0" : "Key miễn phí: không tốn tiền"} value={paid ? usageSettings.keyCaps[tag] ?? 0 : ""}
                         onChange={(event) => { const raw = event.target.value; updateUsageSettings((current) => { const keyCaps = { ...current.keyCaps }; if (raw === "") delete keyCaps[tag]; else keyCaps[tag] = Math.max(0, Number(raw) || 0); return { ...current, keyCaps }; }); }} />
                       <span>{paid ? `USD · tháng này đã dùng ${spentByKey(entry.value).toFixed(3)} USD.` : "Dùng phần miễn phí của nhà cung cấp."}</span>
                     </label>
-                    {paid && usageSettings.keyCaps[tag] === 0 && <small className="voice-warning">Trần 0 USD: key có phí này sẽ không dùng được. Nếu key này thật ra là miễn phí, bỏ tick “{service === "gemini" ? "Có phí" : "Cho phép tính phí"}”.</small>}
+                    {paid && (usageSettings.keyCaps[tag] ?? 0) === 0 && <small className="voice-warning">Hạn mức trần đang là 0 USD nên key có phí này chưa được dùng. Nhập hạn mức (ví dụ 2) để cho phép tiêu tối đa số tiền đó mỗi tháng, hoặc bỏ tick “{service === "gemini" ? "Có phí" : "Cho phép tính phí"}” nếu key này miễn phí.</small>}
                     {message && <small className={message.ok ? "api-key-success" : "error-message"}>{message.text}</small>}
                   </div>
                 );
               })}
+              {keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid") && (
+                <small className="settings-hint">Tổng tiền tối đa mỗi tháng của các key có phí: <strong>{keys.filter((entry) => keyTier(usageSettings, service, entry.value) === "paid").reduce((sum, entry) => sum + (usageSettings.keyCaps[keyTag(entry.value)] ?? 0), 0)} USD</strong>.</small>
+              )}
 
               {keys.length < MAX_KEYS && (
                 <div className="service-key new-key">
@@ -3423,7 +3440,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                     <span>Hạn mức trần key {keys.length + 1} (USD mỗi tháng)</span>
                     <input type="number" min="0" step="0.5" className="settings-input" aria-label="Hạn mức trần của key mới" disabled={service !== "openai" && keyTierDrafts[service] !== "paid"}
                       placeholder={String(DEFAULT_KEY_CAP)} value={keyCapDrafts[service] ?? ""} onChange={(event) => setKeyCapDrafts((current) => ({ ...current, [service]: event.target.value }))} />
-                    <span>{service === "openai" ? "USD · OpenAI không có phần miễn phí." : keyTierDrafts[service] === "paid" ? "USD · để trống = 5." : "Không tick “có phí” thì key dùng phần miễn phí, không tốn tiền."}</span>
+                    <span>{service === "openai" ? "USD · OpenAI không có phần miễn phí; để 0 thì key chưa được dùng." : keyTierDrafts[service] === "paid" ? "USD · để 0 thì key chưa được dùng; nhập số tiền tối đa mỗi tháng." : "Không tick “có phí” thì key dùng phần miễn phí, không tốn tiền."}</span>
                   </label>
                 </div>
               )}
@@ -3438,7 +3455,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   <small className="settings-hint">{keyTierAdvice(service, "paid")}</small>
                 </>}
                 {service === "openai" && <small className="settings-hint">{keyTierAdvice(service, "paid")}</small>}
-                <small className="settings-hint">Không tick “có phí” = app chỉ dùng phần miễn phí, không tốn đồng nào, hạn mức 0 USD vẫn dùng được. Tick “có phí” khi dự án của key đã liên kết thanh toán; app dừng key đó khi chạm hạn mức trần riêng. Key có phí chưa đặt trần riêng thì theo trần chung bên dưới.</small>
+                <small className="settings-hint">Không tick “có phí” = app chỉ dùng phần miễn phí, không tốn đồng nào. Tick “có phí” khi dự án của key đã liên kết thanh toán; mỗi key có phí có hạn mức trần riêng (mặc định 0 USD, bạn tự tăng khi muốn dùng), app dừng key đó khi chạm trần. Tổng tiền tối đa mỗi tháng là tổng các trần riêng.</small>
 {service === "gcloud" && (
                 <>
                   <span className="settings-label">Cách tạo key Google Cloud (từng bước)</span>
@@ -3451,12 +3468,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   </ol>
                 </>
                 )}
-                <div className="usage-cap">
-                  <span>Trần chung của dịch vụ (dùng cho key có phí chưa đặt trần riêng)</span>
-                  <input type="number" min="0" step="0.5" className="settings-input" aria-label="Trần chung của dịch vụ" value={usageSettings.caps[service]}
-                    onChange={(event) => { const value = Math.max(0, Number(event.target.value) || 0); updateUsageSettings((current) => ({ ...current, caps: { ...current.caps, [service]: value } })); }} />
-                  <span>USD · tháng này cả dịch vụ đã dùng {spentThisMonth(service).toFixed(3)} USD.</span>
-                </div>
+                <small className="settings-hint">Tháng này cả dịch vụ đã dùng {spentThisMonth(service).toFixed(3)} USD.</small>
                 <span className="settings-label">Đơn giá (sửa khi nhà cung cấp đổi giá)</span>
                 {service === "gemini" && [price("gemini", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("gemini", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("gemini", "ttsFlash", "Đọc – Flash TTS", "USD / 1 triệu token âm thanh"), price("gemini", "ttsLite", "Đọc – Flash-Lite TTS", "USD / 1 triệu token âm thanh")]}
                 {service === "openai" && [price("openai", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("openai", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("openai", "ttsPerMinute", "Đọc", "USD / phút")]}
