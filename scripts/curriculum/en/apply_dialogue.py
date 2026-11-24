@@ -16,7 +16,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-CURRICULUM_VERSION = "2.3.0"  # must equal CURRICULUM_VERSIONS.en in src/lib/course-library.ts
+CURRICULUM_VERSION = "2.4.0"  # must equal CURRICULUM_VERSIONS.en in src/lib/course-library.ts
 VI_DIR = Path(__file__).resolve().parent / "vi"
 SPEAKER = re.compile(r"^([^\s:：][^:：\d]{0,24}?)\s*[:：]\s*(.+)$")
 # a sentence ends at . ! ? followed by a space and a capital letter or quote

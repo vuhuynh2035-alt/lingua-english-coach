@@ -1,7 +1,7 @@
 import { useId } from "react";
 
 export type IllustrationName =
-  | "business" | "travel" | "technology" | "healthcare" | "finance" | "everyday" | "refrigeration" | "nails" | "facial" | "garment"
+  | "business" | "travel" | "technology" | "healthcare" | "finance" | "everyday" | "refrigeration" | "nails" | "facial" | "garment" | "kids"
   | "home" | "practice" | "profiles" | "courses" | "library" | "grammar" | "progress"
   | "timer" | "sessions" | "level" | "streak" | "key" | "sparkles" | "books" | "pdf" | "text" | "audio"
   | "microphone" | "stop" | "speaker" | "compass" | "back" | "settings" | "teacher";
@@ -17,6 +17,7 @@ const colors: Record<IllustrationName, [string, string, string]> = {
   nails: ["#ff8fb8", "#d9468a", "#ffe1ee"],
   facial: ["#7fdcb5", "#2a9a7a", "#dcfff0"],
   garment: ["#a58cff", "#5a46c8", "#ece6ff"],
+  kids: ["#ffd24d", "#f08a24", "#fff4c2"],
   home: ["#57d2a5", "#188f71", "#d5fff0"],
   practice: ["#53cdb6", "#248bcb", "#d5fff4"],
   profiles: ["#9a83f6", "#6253c4", "#e9e0ff"],
@@ -67,6 +68,8 @@ function Illustration({ name, gradientId }: { name: IllustrationName; gradientId
       return <><ellipse cx="30" cy="34" rx="17" ry="21" fill={main} /><path d="M23 31c2-2 5-2 7 0m5 0c2-2 5-2 7 0" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" /><path d="M25 43c3 3 9 3 12 0" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" /><path d="M46 10c6 4 9 11 4 16-5 3-11-1-10-7 1-4 3-6 6-9z" fill={shineFill} /><path d="M45 25c0-5 1-9 3-12" stroke="#2a9a7a" strokeWidth="1.8" fill="none" strokeLinecap="round" /></>;
     case "garment":
       return <><path d="M23 11l-12 7 5 11 6-3v28h20V26l6 3 5-11-12-7c-1 4-5 6-9 6s-8-2-9-6z" fill={main} /><path d="M24 11c1 4 4 6 8 6s7-2 8-6" fill="none" stroke="#fff" strokeOpacity=".7" strokeWidth="2" /><path d="M32 24v26" stroke="#fff" strokeOpacity=".75" strokeWidth="2" strokeDasharray="3 3" /><circle cx="49" cy="46" r="6" fill={shineFill} /><path d="M45 50l8-8" stroke="#5a46c8" strokeWidth="1.6" /></>;
+    case "kids":
+      return <><circle cx="32" cy="34" r="19" fill={main} /><circle cx="25" cy="31" r="3" fill="#fff" /><circle cx="39" cy="31" r="3" fill="#fff" /><circle cx="25" cy="31" r="1.4" fill="#5a3512" /><circle cx="39" cy="31" r="1.4" fill="#5a3512" /><path d="M24 40c4 5 12 5 16 0" fill="none" stroke="#fff" strokeWidth="2.8" strokeLinecap="round" /><path d="m47 8 2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.5 5-.7z" fill={shineFill} /><circle cx="22" cy="24" r="3" fill="#fff" fillOpacity=".4" /></>;
     case "home":
       return <><path d="m12 29 20-17 20 17v21a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4z" fill={main} /><path d="M26 54V37h12v17" fill="#fff" fillOpacity=".82" /><path d="m9 29 23-20 23 20" fill="none" stroke={main} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" /><path d="M19 31h9" stroke="#fff" strokeOpacity=".7" strokeWidth="2" strokeLinecap="round" /></>;
     case "practice":

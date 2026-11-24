@@ -167,6 +167,16 @@ const en: LangConfig = {
     prompt: "Hello, I'm the buyer. We've received your pre-production sample and I have some comments about the colour and measurements. Please listen and tell me how you will fix them.",
     words: ["How many pieces do we need?", "The stitches are uneven.", "We'll send a revised sample."],
   },
+  {
+    id: "kids",
+    title: "Tiếng Anh cho trẻ em",
+    subtitle: "Bé 5–11 tuổi học qua hội thoại ngắn vui nhộn",
+    icon: "kids",
+    color: "yellow",
+    scene: "Làm quen với cô giáo và các bạn",
+    prompt: "Hello! I'm a young learner of about eight years old. Please talk to me like a kind, cheerful teacher: use very short and simple sentences, easy words and a lot of praise. Start by saying hello and asking my name.",
+    words: ["What is your name?", "I like apples.", "Can you swim?"],
+  },
   ] as Profile[],
   phraseMeanings: {
   "Could you clarify that?": "Bạn có thể giải thích rõ hơn không?",
@@ -248,6 +258,12 @@ const en: LangConfig = {
     "Which treatment would you recommend for dark spots?",
     "Cô giải thích thuật ngữ chăm sóc da này giúp em.",
     "Is this serum suitable for sensitive skin?",
+  ],
+  kids: [
+    "Hello! My name is Mia. What is your name?",
+    "What colour is the sun?",
+    "Cô dạy em hát một bài tiếng Anh đơn giản nhé.",
+    "Can you count to ten?",
   ],
   garment: [
     "We've finished four hundred pieces so far.",
