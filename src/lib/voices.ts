@@ -103,7 +103,7 @@ export function parseVoiceProfile(raw: unknown): VoiceProfile {
   const pick = <T extends string>(v: unknown, allowed: readonly T[], fallback: T): T =>
     typeof v === "string" && (allowed as readonly string[]).includes(v) ? v as T : fallback;
   return {
-    engine: pick(value.engine, ["google", "openai", "gcloud", "device"] as const, DEFAULT_VOICE_PROFILE.engine),
+    engine: pick(value.engine, ["google", "gcloud", "device"] as const, DEFAULT_VOICE_PROFILE.engine),
     accent: pick(value.accent, ACCENTS.map((a) => a.id), DEFAULT_VOICE_PROFILE.accent),
     gender: pick(value.gender, ["female", "male"] as const, DEFAULT_VOICE_PROFILE.gender),
     googleVoice: pick(value.googleVoice, GOOGLE_VOICES.map((v) => v.id), DEFAULT_VOICE_PROFILE.googleVoice),

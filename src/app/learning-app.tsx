@@ -27,7 +27,7 @@ import { LANG, levelLabel } from "@/lib/language";
 import { langKey, sharedKey } from "@/lib/storage-keys";
 import { InAppBrowserNotice } from "@/components/in-app-browser-notice";
 import { cancelOfflineSynthesis, downloadPack as downloadVoicePack, englishSpeaker, isOfflineClip, packFlag as voicePackFlag, packInstalled as voicePackInstalled, packMB as voicePackMB, removePack as removeVoicePack, synthesize, warmVoice, type PackId as VoicePackId } from "@/lib/offline-tts";
-import { keyEnabled, keyTier, MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentByKey, spentThisMonth, usesDefaultModels, type Candidate, type KeyTier, type ServiceId, type UsageSettings } from "@/lib/usage";
+import { DEFAULT_PAID_CAP, keyEnabled, keyTier, MAX_KEYS, isAllowed as modelAllowed, SPEECH_MODELS, check as checkUsage, DEFAULT_SETTINGS as DEFAULT_USAGE, inWords, keyReport, keyTag, loadSettings as loadUsageSettings, planSpeech, record as recordUsage, refused as refuseUsage, reserve as reserveUsage, saveSettings as saveUsageSettings, SERVICE_NAMES, spentByKey, spentThisMonth, usesDefaultModels, type Candidate, type KeyTier, type ServiceId, type UsageSettings } from "@/lib/usage";
 import { castDialogue, isConversation, parseDialogue, type DialogueLine } from "@/lib/dialogue-voices";
 import type { AskKind } from "@/components/sentence-helper";
 import { geminiChatPrice, openAiChatPrice, turnCost } from "@/lib/model-prices";
@@ -207,7 +207,7 @@ const PAGE_HELP: Record<Section, HelpContent> = {
       "Chọn giao diện và cỡ chữ phù hợp.",
       "Nhấn vào từng nhóm cài đặt để mở danh sách chi tiết.",
       "Tải, mở hoặc xóa giáo trình offline trong nhóm “Giáo trình offline”.",
-      "Thêm API key Google AI hoặc OpenAI để dùng hội thoại, giọng đọc và các tính năng AI; key được lưu trong trình duyệt này.",
+      "Thêm API key Google AI để dùng hội thoại, giọng đọc và các tính năng AI; key được lưu trong trình duyệt này.",
       "Chọn mô hình và giọng đọc. Audio được tạo khi bạn nghe thử/phát câu, rồi lưu trên thiết bị để nghe lại.",
       "Xem phiên bản ứng dụng và kiểm tra bản cập nhật ở cuối trang.",
       "Có thể cài Teacher AI lên màn hình chính theo hướng dẫn ở đầu trang.",
@@ -584,8 +584,11 @@ export default function Home() {
   /** The plan the learner picked for the key being added (Gemini / Cloud TTS keys must be marked before they are added). */
   const [keyTierDrafts, setKeyTierDrafts] = useState<Partial<Record<ServiceId, KeyTier>>>({});
   /** The monthly cap typed for the key being added. */
-  const [paidAsk, setPaidAsk] = useState<{ services: string[]; onlyPaid: boolean; estimate: number } | null>(null);
-  const paidAskRef = useRef<{ promise: Promise<boolean>; answer: (answer: boolean) => void } | null>(null);
+  type PaidAsk = { kind: "ask" | "raise"; services: string[]; onlyPaid: boolean; estimate: number; cap: number; spent: number };
+  const [paidAsk, setPaidAsk] = useState<PaidAsk | null>(null);
+  const paidAskRef = useRef<{ kind: PaidAsk["kind"]; promise: Promise<boolean>; answer: (answer: boolean) => void } | null>(null);
+  /** The learner agreed to paid keys: valid until the app is closed, so the next opening asks again. */
+  const paidSessionRef = useRef(false);
   const [keyCapDrafts, setKeyCapDrafts] = useState<Partial<Record<ServiceId, string>>>({});
   const [keyBusy, setKeyBusy] = useState<string | null>(null);
   const [keyMessages, setKeyMessages] = useState<Record<string, { ok: boolean; text: string }>>({});
@@ -772,7 +775,7 @@ export default function Home() {
       // The guide opens by itself only once, on the first visit of an app that is not set up yet.
       const finished = localStorage.getItem(sharedKey("setup-done")) || localStorage.getItem(sharedKey("setup-seen"));
       const installed = window.matchMedia("(display-mode: standalone)").matches;
-      if (!finished && !installed && apiKeys.google.length === 0 && apiKeys.openai.length === 0) {
+      if (!finished && !installed && apiKeys.google.length === 0) {
         localStorage.setItem(sharedKey("setup-seen"), "1");
         setSetupStep(setupStartStep());
         setSection("setup");
@@ -854,7 +857,7 @@ export default function Home() {
       voiceSaved = localStorage.getItem(VOICE_PROFILE_STORAGE) !== null;
     } catch {}
     const keyHere = apiKeys[aiProvider].length > 0;
-    const anyKey = apiKeys.google.length + apiKeys.openai.length > 0;
+    const anyKey = apiKeys.google.length > 0;
     return [false, standalone, anyKey, keyHere, keyHere, keyHere && (connection.status === "ok" || modelCatalog[aiProvider].length > 0), voiceSaved, false];
   }
 
@@ -957,7 +960,7 @@ export default function Home() {
           throw new Error("Cài đặt AI đã lưu không đúng định dạng.");
         }
         const stored = parsed as Record<string, unknown>;
-        if (typeof stored.provider === "string" && isAiProvider(stored.provider)) setAiProvider(stored.provider);
+        if (typeof stored.provider === "string" && isAiProvider(stored.provider) && stored.provider === "google") setAiProvider("google");
         if (typeof stored.keys === "object" && stored.keys !== null && !Array.isArray(stored.keys)) {
           const storedKeys = stored.keys as Record<string, unknown>;
           const validKeys = (value: unknown): ApiKeyEntry[] => Array.isArray(value)
@@ -969,7 +972,8 @@ export default function Home() {
                   ? [{ id: entry.id, label: entry.label, value: entry.value.trim() }]
                   : [])
             : [];
-          const keys = { google: validKeys(storedKeys.google), openai: validKeys(storedKeys.openai) };
+          // OpenAI is not offered any more: keys saved earlier are dropped.
+          const keys = { google: validKeys(storedKeys.google), openai: [] as ApiKeyEntry[] };
           setApiKeys(keys);
           const storedIds = typeof stored.activeKeyIds === "object" && stored.activeKeyIds !== null
             ? stored.activeKeyIds as Record<string, unknown>
@@ -1186,7 +1190,7 @@ export default function Home() {
         if (voices) setServiceVoices((current) => Object.fromEntries((Object.keys(current) as VoiceService[]).map((service) => [service, { ...current[service], ...voices[service] }])) as Record<VoiceService, Record<VoiceSlot, string>>);
       } catch {}
       const savedAiVoice = localStorage.getItem(sharedKey("ai-voice-engine"));
-      if (savedAiVoice === "google" || savedAiVoice === "openai" || savedAiVoice === "gcloud") setAiVoiceEngine(savedAiVoice);
+      if (savedAiVoice === "google" || savedAiVoice === "gcloud") setAiVoiceEngine(savedAiVoice);
       for (const id of ["vi", "en"] as const) {
         if (voicePackFlag(id)) { packReadyRef.current[id] = true; setPackReady((current) => ({ ...current, [id]: true })); }
         void voicePackInstalled(id).then((ok) => { packReadyRef.current[id] = ok; setPackReady((current) => ({ ...current, [id]: ok })); });
@@ -1418,7 +1422,7 @@ export default function Home() {
   function chatProviders(): AiProvider[] {
     const settings = usageSettingsRef.current;
     if (settings.mode !== "auto") return [aiProvider];
-    const ranked = (["google", "openai"] as AiProvider[])
+    const ranked = (["google"] as AiProvider[])
       .filter((provider) => {
         const service: ServiceId = provider === "google" ? "gemini" : "openai";
         return settings.servicesEnabled[service] && settings.enabledChat[service];
@@ -1449,7 +1453,7 @@ export default function Home() {
     const serviceOf = (provider: AiProvider): ServiceId => (provider === "google" ? "gemini" : "openai");
     const first = only ? [only] : chatProviders();
     // Every provider that may be used, in the order of the ranking (the others last): the paid pass needs all of them.
-    const providers = only ? first : [...first, ...(settings.mode === "auto" ? (["google", "openai"] as AiProvider[]).filter((provider) => !first.includes(provider) && settings.servicesEnabled[serviceOf(provider)] && settings.enabledChat[serviceOf(provider)]) : [])];
+    const providers = only ? first : [...first, ...(settings.mode === "auto" ? (["google"] as AiProvider[]).filter((provider) => !first.includes(provider) && settings.servicesEnabled[serviceOf(provider)] && settings.enabledChat[serviceOf(provider)]) : [])];
     const disabledProvider = providers.find((provider) => !settings.servicesEnabled[serviceOf(provider)]);
     if (disabledProvider) {
       throw new AiError("auth", `${SERVICE_NAMES[serviceOf(disabledProvider)]} đang tắt. Hãy bật lại trong Cài đặt → Dịch vụ AI để sử dụng.`);
@@ -1482,15 +1486,51 @@ export default function Home() {
       stopped.details = base.details;
       throw stopped;
     }
-    const agreed = await askPaid({
-      services: [...new Set(paidProviders.map((provider) => SERVICE_NAMES[serviceOf(provider)]))],
-      onlyPaid: freeProviders.length === 0,
-      estimate: Math.min(...paidProviders.flatMap((provider) => keysOf(provider, "paid").map((entry) => checkUsage(settings, serviceOf(provider), entry.value, selectedModels[provider] || DEFAULT_MODELS[provider], "chat", { inTokens: 3000, outTokens: 700 }).cost))),
-    });
-    if (!agreed) {
-      const declined = new AiError("quota", "Bạn chưa đồng ý dùng API trả phí nên app dừng lại. Chạm “Thử lại” khi muốn dùng, hoặc đợi hạn mức miễn phí đặt lại.", 429);
-      declined.detail = "local usage limit";
-      throw declined;
+    const paidEntries = paidProviders.flatMap((provider) => keysOf(provider, "paid").map((entry) => ({ provider, entry })));
+    const paidState = (item: { provider: AiProvider; entry: ApiKeyEntry }) => checkUsage(usageSettingsRef.current, serviceOf(item.provider), item.entry.value, selectedModels[item.provider] || DEFAULT_MODELS[item.provider], "chat", { inTokens: 3000, outTokens: 700 });
+    const stop = (message: string) => {
+      const stopped = new AiError("quota", message, 429);
+      stopped.detail = "local usage limit";
+      return stopped;
+    };
+    // Asked once; a yes holds until the app is closed (the free keys are still tried first on every turn).
+    if (!paidSessionRef.current) {
+      const agreed = await askPaid({
+        kind: "ask",
+        services: [...new Set(paidProviders.map((provider) => SERVICE_NAMES[serviceOf(provider)]))],
+        onlyPaid: freeProviders.length === 0,
+        estimate: Math.min(...paidEntries.map((item) => paidState(item).cost)),
+        cap: DEFAULT_PAID_CAP,
+        spent: 0,
+      });
+      if (!agreed) throw stop("Bạn chưa đồng ý dùng API trả phí nên app dừng lại. Chạm “Thử lại” khi muốn dùng, hoặc đợi hạn mức miễn phí đặt lại.");
+      paidSessionRef.current = true;
+    }
+    // A paid key that reached its cap: ask whether to raise it by 2 USD or stop.
+    for (let round = 0; round < 20; round++) {
+      const states = paidEntries.map((item) => ({ item, state: paidState(item) }));
+      if (states.some(({ state }) => state.ok)) break;
+      const capped = states.filter(({ state }) => !state.ok && state.cost > 0 && state.renews === "month");
+      if (!capped.length) break;
+      const first = capped[0].item.entry;
+      const cap = usageSettingsRef.current.keyCaps[keyTag(first.value)] ?? DEFAULT_PAID_CAP;
+      const raise = await askPaid({
+        kind: "raise",
+        services: [...new Set(capped.map(({ item }) => SERVICE_NAMES[serviceOf(item.provider)]))],
+        onlyPaid: false,
+        estimate: 0,
+        cap,
+        spent: spentByKey(first.value),
+      });
+      if (!raise) throw stop(`Đã chạm mức trần ${cap} USD của key trả phí nên app dừng lại. Bạn có thể tăng trần trong Cài đặt → Dịch vụ AI.`);
+      updateUsageSettings((current) => {
+        const keyCaps = { ...current.keyCaps };
+        for (const { item } of capped) {
+          const tag = keyTag(item.entry.value);
+          keyCaps[tag] = Math.round(((keyCaps[tag] ?? DEFAULT_PAID_CAP) + 2) * 100) / 100;
+        }
+        return { ...current, keyCaps };
+      });
     }
     for (const provider of paidProviders) {
       try {
@@ -1503,12 +1543,14 @@ export default function Home() {
     throw failure;
   }
 
-  /** Asks whether this one request may use a paid key. Concurrent requests share one question. */
-  function askPaid(info: { services: string[]; onlyPaid: boolean; estimate: number }): Promise<boolean> {
+  /** Asks about paid keys (first use, or a key at its cap). Concurrent requests share one question of the same kind. */
+  async function askPaid(info: PaidAsk): Promise<boolean> {
+    while (paidAskRef.current && paidAskRef.current.kind !== info.kind) await paidAskRef.current.promise;
     if (paidAskRef.current) return paidAskRef.current.promise;
     let settle: (answer: boolean) => void = () => {};
     const promise = new Promise<boolean>((resolve) => { settle = resolve; });
     paidAskRef.current = {
+      kind: info.kind,
       promise,
       answer: (answer) => { paidAskRef.current = null; setPaidAsk(null); settle(answer); },
     };
@@ -1869,7 +1911,7 @@ RULES:
 
   /** One short AI answer about a lesson sentence: its Vietnamese meaning or its grammar. */
   async function askAboutSentence(kind: AskKind, sentence: string, lessonTitle: string, word?: string): Promise<string> {
-    if (apiKeys.google.length + apiKeys.openai.length === 0) {
+    if (apiKeys.google.length === 0) {
       throw new Error("Chưa có API key để nhờ AI. Hãy thêm key trong Cài đặt → Dịch vụ AI, hoặc xem điểm ngữ pháp của bài ở phần 3 bên dưới.");
     }
     const language = LANG.nameEn;
@@ -2406,7 +2448,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   /** Services the AI voice may use now: every ticked one in Auto mode, else the one picked. */
   function speechServices(profile: SpeechProfile): ServiceId[] {
     const list: ServiceId[] = profile.only ? [profile.only]
-      : usageSettings.mode === "auto" ? (["gcloud", "gemini", "openai"] as const).filter((service) => usageSettings.servicesEnabled[service] && usageSettings.enabled[service])
+      : usageSettings.mode === "auto" ? (["gcloud", "gemini"] as const).filter((service) => usageSettings.servicesEnabled[service] && usageSettings.enabled[service])
       : profile.engine === "device" ? [] : [profile.engine === "google" ? "gemini" : profile.engine];
     return list.filter((service) => serviceKeys(service).length > 0);
   }
@@ -2997,7 +3039,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   function renderVoiceStudio() {
     const voiceService = voiceProfile.engine === "google" ? "gemini" : voiceProfile.engine === "device" ? null : voiceProfile.engine;
     const aiMode = voiceService !== null && usageSettings.servicesEnabled[voiceService];
-    const services = (["gemini", "gcloud", "openai"] as const).filter((service) => usageSettings.servicesEnabled[service]);
+    const services = (["gemini", "gcloud"] as const).filter((service) => usageSettings.servicesEnabled[service]);
     return (
       <section className="panel settings-panel voice-studio">
         <div className="settings-section-heading">
@@ -3076,7 +3118,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
       stopSpeech();
       setPreviewing(null);
       const engine: VoiceProfile["engine"] = service === "gemini" ? "google" : service;
-      const fallback = (["gemini", "gcloud", "openai"] as const)
+      const fallback = (["gemini", "gcloud"] as const)
         .find((candidate) => candidate !== service && usageSettingsRef.current.servicesEnabled[candidate]);
       const fallbackEngine: VoiceProfile["engine"] = fallback === "gemini" ? "google" : fallback ?? "device";
       if (voiceProfile.engine === engine) updateVoiceProfile({ engine: fallbackEngine });
@@ -3173,11 +3215,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   /** The tutor stopped because the free limit is used up (or the learner declined to pay): try again, switch provider, or look at the settings. */
   function renderCapChoices(again: () => void) {
     const other: AiProvider = aiProvider === "google" ? "openai" : "google";
-    const hasPaid = (["google", "openai"] as AiProvider[]).some((provider) => apiKeys[provider].some((entry) => keyTier(usageSettings, provider === "google" ? "gemini" : "openai", entry.value) === "paid"));
     return (
       <div className="cap-choices">
         <small>Gia sư đang dừng. Bạn muốn làm gì?</small>
-        <button type="button" className="button button-primary" onClick={again}>{hasPaid ? "Thử lại (hỏi trước khi dùng key trả phí)" : "Thử lại"}</button>
+        <button type="button" className="button button-primary" onClick={again}>Thử lại</button>
         {apiKeys[other].length > 0 && (
           <button type="button" className="button button-outline" onClick={() => { setAiProvider(other); again(); }}>
             Chuyển sang {other === "google" ? "Gemini" : "ChatGPT"} và học tiếp
@@ -3205,10 +3246,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
   /** "Chi phí AI": gauges of every service, then how the services are chosen. */
   function renderCostSettings() {
     void usageTick;
-    const withKeys = (["gemini", "gcloud", "openai"] as const).filter((service) => serviceKeys(service).length > 0);
+    const withKeys = (["gemini", "gcloud"] as const).filter((service) => serviceKeys(service).length > 0);
     const auto = usageSettings.mode === "auto";
-    const chatChoices = (["google", "openai"] as AiProvider[]).filter((provider) => serviceKeys(provider === "google" ? "gemini" : "openai").length > 0);
-    const hasConfiguredKeys = (["gemini", "gcloud", "openai"] as const).some((service) => serviceKeys(service, true).length > 0);
+    const chatChoices = (["google"] as AiProvider[]).filter((provider) => serviceKeys(provider === "google" ? "gemini" : "openai").length > 0);
+    const hasConfiguredKeys = (["gemini", "gcloud"] as const).some((service) => serviceKeys(service, true).length > 0);
     return (
       <>
         <section className="panel settings-panel usage-settings">
@@ -3222,8 +3263,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
             const hasPaid = keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid");
             // A paid key under a 0 USD cap has nothing left to spend: the gauge shows full.
             const paidKeys = keys.filter((entry) => keyTier(usageSettings, service, entry.value) === "paid");
-            const capped = paidKeys.every((entry) => usageSettings.keyCaps[keyTag(entry.value)] !== undefined);
-            const paidCap = paidKeys.reduce((sum, entry) => sum + (usageSettings.keyCaps[keyTag(entry.value)] ?? 0), 0);
+            const paidCap = paidKeys.reduce((sum, entry) => sum + (usageSettings.keyCaps[keyTag(entry.value)] ?? DEFAULT_PAID_CAP), 0);
             const spent = spentThisMonth(service);
             const rows: { label: string; left: number; total: number; reset: string }[] = [];
             if (service === "gcloud") {
@@ -3247,7 +3287,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <div className="gauge-service-head"><strong>{SERVICE_NAMES[service]}</strong><small> · {keys.length} key</small></div>
                 <div className="gauge-row">
                   {rows.map((row) => <div key={row.label}>{gauge("left", row.total ? row.left / row.total : 0, `${Math.round((row.total ? row.left / row.total : 0) * 100)}%`, row.label, `còn ${row.left.toLocaleString("vi-VN")} / ${row.total.toLocaleString("vi-VN")}`, row.reset)}</div>)}
-                  <div>{gauge("money", !hasPaid || !capped ? 0 : paidCap > 0 ? Math.min(1, spent / paidCap) : 1, `$${spent < 10 ? spent.toFixed(2) : Math.round(spent)}`, "Tiền tháng này", !hasPaid ? "Chưa có key tính phí: không mất tiền" : !capped ? `${spent.toFixed(3)} USD đã dùng · chưa đặt trần, mỗi lượt đều hỏi bạn` : spent + 1e-9 >= paidCap ? `Đã hết hạn mức: ${spent.toFixed(3)} / ${paidCap} USD trần` : `${spent.toFixed(3)} / ${paidCap} USD trần`, "về 0 đầu tháng sau")}</div>
+                  <div>{gauge("money", !hasPaid ? 0 : paidCap > 0 ? Math.min(1, spent / paidCap) : 1, `$${spent < 10 ? spent.toFixed(2) : Math.round(spent)}`, "Tiền tháng này", !hasPaid ? "Chưa có key tính phí: không mất tiền" : spent + 1e-9 >= paidCap ? `Đã hết hạn mức: ${spent.toFixed(3)} / ${paidCap} USD trần` : `${spent.toFixed(3)} / ${paidCap} USD trần`, "về 0 đầu tháng sau")}</div>
                 </div>
               </div>
             );
@@ -3422,9 +3462,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
     };
     return (
       <>
-        {(["gemini", "gcloud", "openai"] as const).map((service) => {
+        {(["gemini", "gcloud"] as const).map((service) => {
           const keys = serviceKeys(service, true);
-          const provider: AiProvider | null = service === "gemini" ? "google" : service === "openai" ? "openai" : null;
+          const provider: AiProvider | null = service === "gemini" ? "google" : null;
           return (
             <section className="panel settings-panel service-card" key={service}>
               <div className="service-card-head">
@@ -3453,7 +3493,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                       <strong>{entry.label} · …{entry.value.slice(-4)}</strong>
                       <button type="button" className="button button-outline" disabled={keyBusy === entry.id} onClick={() => { void checkServiceKey(service, entry); }}>{keyBusy === entry.id ? "Đang kiểm tra…" : "Kiểm tra"}</button>
                       <button type="button" className="remove-key-button" onClick={() => removeServiceKey(service, entry)}>Xóa</button>
-                      {service !== "openai" && (
+                      {(
                         <label className="paid-tick">
                           <input type="checkbox" checked={paid} aria-label={`${entry.label} có phí`}
                             onChange={(event) => { const on = event.target.checked; updateUsageSettings((current) => { return { ...current, tiers: { ...current.tiers, [tag]: on ? "paid" as const : "free" as const } }; }); }} />
@@ -3465,9 +3505,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                     <label className="usage-cap key-cap">
                       <span>Hạn mức trần {entry.label.toLowerCase()} (USD mỗi tháng)</span>
                       <input type="number" min="0" step="0.5" className="settings-input" aria-label={`Hạn mức trần ${entry.label}`} disabled={!paid}
-                        placeholder={paid ? "Không giới hạn" : "Key miễn phí: không tốn tiền"} value={paid ? usageSettings.keyCaps[tag] ?? "" : ""}
+                        placeholder={paid ? String(DEFAULT_PAID_CAP) : "Key miễn phí: không tốn tiền"} value={paid ? usageSettings.keyCaps[tag] ?? DEFAULT_PAID_CAP : ""}
                         onChange={(event) => { const raw = event.target.value; updateUsageSettings((current) => { const keyCaps = { ...current.keyCaps }; if (raw === "") delete keyCaps[tag]; else keyCaps[tag] = Math.max(0, Number(raw) || 0); return { ...current, keyCaps }; }); }} />
-                      <span>{paid ? `USD · tùy chọn, bỏ trống = không giới hạn (mỗi lượt trả phí vẫn hỏi bạn trước). Tháng này đã dùng ${spentByKey(entry.value).toFixed(3)} USD.` : "Dùng phần miễn phí của nhà cung cấp."}</span>
+                      <span>{paid ? `USD · mặc định ${DEFAULT_PAID_CAP} USD mỗi tháng; chạm mức này app hỏi bạn tăng thêm hay dừng. Tháng này đã dùng ${spentByKey(entry.value).toFixed(3)} USD.` : "Dùng phần miễn phí của nhà cung cấp."}</span>
                     </label>
                     {paid && usageSettings.keyCaps[tag] === 0 && <small className="voice-warning">Hạn mức trần là 0 USD nên key có phí này sẽ không bao giờ được dùng. Xóa số 0 để cho phép (mỗi lượt vẫn hỏi bạn trước), hoặc bỏ tick “{service === "gemini" ? "Có phí" : "Cho phép tính phí"}” nếu key này miễn phí.</small>}
                     {message && <small className={message.ok ? "api-key-success" : "error-message"}>{message.text}</small>}
@@ -3475,9 +3515,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 );
               })}
               {keys.some((entry) => keyTier(usageSettings, service, entry.value) === "paid") && (
-                <small className="settings-hint">{keys.filter((entry) => keyTier(usageSettings, service, entry.value) === "paid").every((entry) => usageSettings.keyCaps[keyTag(entry.value)] !== undefined)
-                  ? <>Tổng tiền tối đa mỗi tháng của các key có phí: <strong>{keys.filter((entry) => keyTier(usageSettings, service, entry.value) === "paid").reduce((sum, entry) => sum + (usageSettings.keyCaps[keyTag(entry.value)] ?? 0), 0)} USD</strong>.</>
-                  : <>Key có phí chưa đặt trần nên không giới hạn số tiền; mỗi lượt dùng đều hỏi bạn xác nhận trước.</>}</small>
+                <small className="settings-hint">Tổng tiền tối đa mỗi tháng của các key có phí: <strong>{keys.filter((entry) => keyTier(usageSettings, service, entry.value) === "paid").reduce((sum, entry) => sum + (usageSettings.keyCaps[keyTag(entry.value)] ?? DEFAULT_PAID_CAP), 0)} USD</strong>.</small>
               )}
 
               {keys.length < MAX_KEYS && (
@@ -3485,7 +3523,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   <div className="service-key-head">
                     <input className="settings-input" type="password" autoComplete="off" aria-label={`Dán API key ${SERVICE_NAMES[service]} mới`} placeholder={`Key ${keys.length + 1} — ${info[service].placeholder}`} value={keyDrafts[service] ?? ""} onChange={(event) => setKeyDrafts((current) => ({ ...current, [service]: event.target.value.trim() }))} />
                     <button type="button" className="button button-primary" disabled={!keyDrafts[service] || keyBusy === service} onClick={() => { void addServiceKey(service); }}>{keyBusy === service ? "Đang kiểm tra…" : "Thêm key"}</button>
-                    {service !== "openai" && (
+                    {(
                       <label className="paid-tick">
                         <input type="checkbox" checked={keyTierDrafts[service] === "paid"} aria-label="Key mới có phí"
                           onChange={(event) => setKeyTierDrafts((current) => ({ ...current, [service]: event.target.checked ? "paid" : undefined }))} />
@@ -3495,9 +3533,9 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                   </div>
                   <label className="usage-cap key-cap">
                     <span>Hạn mức trần key {keys.length + 1} (USD mỗi tháng)</span>
-                    <input type="number" min="0" step="0.5" className="settings-input" aria-label="Hạn mức trần của key mới" disabled={service !== "openai" && keyTierDrafts[service] !== "paid"}
-                      placeholder="Không giới hạn" value={keyCapDrafts[service] ?? ""} onChange={(event) => setKeyCapDrafts((current) => ({ ...current, [service]: event.target.value }))} />
-                    <span>{service === "openai" ? "USD · tùy chọn. OpenAI luôn tính phí nên mỗi lượt dùng đều hỏi bạn xác nhận." : keyTierDrafts[service] === "paid" ? "USD · tùy chọn, bỏ trống = không giới hạn; mỗi lượt dùng đều hỏi bạn xác nhận." : "Không tick “có phí” thì key dùng phần miễn phí, không tốn tiền."}</span>
+                    <input type="number" min="0" step="0.5" className="settings-input" aria-label="Hạn mức trần của key mới" disabled={keyTierDrafts[service] !== "paid"}
+                      placeholder={String(DEFAULT_PAID_CAP)} value={keyCapDrafts[service] ?? ""} onChange={(event) => setKeyCapDrafts((current) => ({ ...current, [service]: event.target.value }))} />
+                    <span>{keyTierDrafts[service] === "paid" ? `USD · bỏ trống = ${DEFAULT_PAID_CAP} USD mỗi tháng; chạm mức này app hỏi bạn tăng thêm hay dừng.` : "Không tick “có phí” thì key dùng phần miễn phí, không tốn tiền."}</span>
                   </label>
                 </div>
               )}
@@ -3507,12 +3545,11 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
               <details className="usage-prices">
                 <summary>Hướng dẫn, giá tiền và trần chung</summary>
                 <small className="settings-hint key-advice">ℹ️ {keyAdvice(service)}</small>
-                {service !== "openai" && <>
+                {<>
                   <small className="settings-hint">{keyTierAdvice(service, "free")}</small>
                   <small className="settings-hint">{keyTierAdvice(service, "paid")}</small>
                 </>}
-                {service === "openai" && <small className="settings-hint">{keyTierAdvice(service, "paid")}</small>}
-                <small className="settings-hint">Cách app dùng key: luôn thử key miễn phí (không tick “có phí”) trước. Khi hết hạn mức miễn phí và bạn có key có phí, app hiện hộp hỏi xin phép; chỉ khi bạn đồng ý mới dùng key có phí cho đúng lượt đó, lượt sau lại thử key miễn phí trước (hạn mức miễn phí đặt lại thì app tự quay về dùng miễn phí). Không có key có phí thì app báo hết hạn mức rồi dừng. Hạn mức trần USD của mỗi key có phí là tùy chọn, để bỏ trống nếu chỉ muốn hỏi từng lượt. Giọng đọc AI không bao giờ tự tính phí.</small>
+                <small className="settings-hint">Cách app dùng key: luôn thử key miễn phí (không tick “có phí”) trước. Khi hết hạn mức miễn phí và bạn có key có phí, app hiện hộp hỏi một lần; nếu bạn đồng ý, app dùng key có phí cho đến khi bạn đóng app (lần mở sau hỏi lại), và hạn mức miễn phí có lại thì app tự quay về dùng miễn phí. Mỗi key có phí có hạn mức trần mặc định 2 USD mỗi tháng; chạm trần app hỏi bạn tăng thêm 2 USD hay dừng. Không có key có phí thì app báo hết hạn mức rồi dừng. Giọng đọc AI không bao giờ tự tính phí.</small>
 {service === "gcloud" && (
                 <>
                   <span className="settings-label">Cách tạo key Google Cloud (từng bước)</span>
@@ -3528,7 +3565,6 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
                 <small className="settings-hint">Tháng này cả dịch vụ đã dùng {spentThisMonth(service).toFixed(3)} USD.</small>
                 <span className="settings-label">Đơn giá (sửa khi nhà cung cấp đổi giá)</span>
                 {service === "gemini" && [price("gemini", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("gemini", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("gemini", "ttsFlash", "Đọc – Flash TTS", "USD / 1 triệu token âm thanh"), price("gemini", "ttsLite", "Đọc – Flash-Lite TTS", "USD / 1 triệu token âm thanh")]}
-                {service === "openai" && [price("openai", "chatIn", "Trò chuyện – đầu vào", "USD / 1 triệu token"), price("openai", "chatOut", "Trò chuyện – đầu ra", "USD / 1 triệu token"), price("openai", "ttsPerMinute", "Đọc", "USD / phút")]}
                 {service === "gcloud" && [price("gcloud", "perMillionChars", "Đọc – Chirp 3 HD", "USD / 1 triệu ký tự"), price("gcloud", "freeChars", "Miễn phí mỗi tháng", "ký tự / tài khoản thanh toán")]}
               </details>
 
@@ -4109,7 +4145,7 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
         <details name="settings-groups" className="settings-group" onToggle={scrollGroupToTop}>
           <summary className="settings-group-summary">
             <span className="settings-icon"><IllustrationIcon name="key" /></span>
-            <span><strong>Dịch vụ AI</strong><small>Gemini {apiKeys.google.length} · Google Cloud {cloudKeys.length} · ChatGPT {apiKeys.openai.length} key</small></span>
+            <span><strong>Dịch vụ AI</strong><small>Gemini {apiKeys.google.length} · Google Cloud {cloudKeys.length} key</small></span>
             <span className="settings-group-chevron" aria-hidden="true">⌄</span>
           </summary>
           <div className="settings-group-content">
@@ -4646,10 +4682,6 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
                     <small>Có hạn mức miễn phí, đủ để luyện hằng ngày. Dùng tài khoản Gmail.</small>
                   </button>
                 </Spot>
-                <button type="button" role="radio" aria-checked={aiProvider === "openai"} className={aiProvider === "openai" ? "sg-choice on" : "sg-choice"} onClick={() => { setAiProvider("openai"); setApiKeyDraft(""); setApiKeyError(""); setApiKeySaved(false); setModelsError(""); }}>
-                  <strong>OpenAI / ChatGPT</strong>
-                  <small>Tính phí theo mức dùng, cần nạp tiền vào tài khoản OpenAI.</small>
-                </button>
               </div>
             </>
           )}
@@ -4730,7 +4762,7 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
               <p className="sg-lead">Chọn giọng để nghe {LANG.viName} và nghe thử. Bạn có thể đổi lại bất cứ lúc nào ở Cài đặt → Gia sư AI & giọng đọc.</p>
               <span className="settings-label">Nguồn giọng</span>
               <div className="voice-chips">
-                {([["device", "Giọng trên máy (miễn phí)"], ["google", "Giọng AI Google"], ["openai", "Giọng AI OpenAI"]] as const).map(([id, label]) => (
+                {([["device", "Giọng trên máy (miễn phí)"], ["google", "Giọng AI Google"]] as const).map(([id, label]) => (
                   <button key={id} type="button" className={voiceProfile.engine === id ? "voice-chip active" : "voice-chip"} onClick={() => updateVoiceProfile({ engine: id })}>{label}</button>
                 ))}
               </div>
@@ -5513,18 +5545,32 @@ Cô giải thích ngắn gọn cách dùng cấu trúc này và cho em một tì
       {paidAsk && (
         <div className="paid-ask" role="alertdialog" aria-modal="true" aria-labelledby="paid-ask-title">
           <div className="paid-ask-card">
-            <strong id="paid-ask-title">{paidAsk.onlyPaid ? "Dùng API trả phí cho lượt này?" : "Đã hết hạn mức miễn phí"}</strong>
-            <p>
-              {paidAsk.onlyPaid
-                ? `Bạn chỉ cài key có phí (${paidAsk.services.join(", ")}), nên lượt này sẽ tính tiền.`
-                : `Các key miễn phí đã hết lượt. Bạn có muốn dùng key trả phí (${paidAsk.services.join(", ")}) cho lượt này không?`}
-              {paidAsk.estimate > 0 && Number.isFinite(paidAsk.estimate) ? ` Ước tính khoảng ${paidAsk.estimate < 0.01 ? "<0,01" : paidAsk.estimate.toFixed(2)} USD.` : ""}
-            </p>
-            <small>Lần sau app vẫn thử key miễn phí trước; khi hạn mức miễn phí đặt lại, app tự dùng miễn phí tiếp. Mỗi lượt trả phí đều hỏi bạn.</small>
-            <div className="paid-ask-actions">
-              <button type="button" className="button button-primary" onClick={() => paidAskRef.current?.answer(true)}>Đồng ý, dùng key trả phí lần này</button>
-              <button type="button" className="button button-outline" onClick={() => paidAskRef.current?.answer(false)}>Không, dừng lại</button>
-            </div>
+            {paidAsk.kind === "ask" ? (
+              <>
+                <strong id="paid-ask-title">{paidAsk.onlyPaid ? "Dùng API trả phí?" : "Đã hết hạn mức miễn phí"}</strong>
+                <p>
+                  {paidAsk.onlyPaid
+                    ? `Bạn chỉ cài key có phí (${paidAsk.services.join(", ")}), nên trò chuyện sẽ tính tiền.`
+                    : `Các key miễn phí đã hết lượt. Bạn có muốn chuyển sang dùng key trả phí (${paidAsk.services.join(", ")}) không?`}
+                  {paidAsk.estimate > 0 && Number.isFinite(paidAsk.estimate) ? ` Mỗi lượt trò chuyện ước tính khoảng ${paidAsk.estimate < 0.01 ? "<0,01" : paidAsk.estimate.toFixed(2)} USD.` : ""}
+                </p>
+                <small>Nếu đồng ý, app dùng key trả phí cho đến khi bạn đóng app (không hỏi lại từng lượt); mỗi key có phí tối đa {paidAsk.cap} USD mỗi tháng, chạm mức này app sẽ hỏi bạn. Hạn mức miễn phí có lại thì app tự dùng miễn phí trước. Lần mở app sau sẽ hỏi lại.</small>
+                <div className="paid-ask-actions">
+                  <button type="button" className="button button-primary" onClick={() => paidAskRef.current?.answer(true)}>Đồng ý, dùng key trả phí</button>
+                  <button type="button" className="button button-outline" onClick={() => paidAskRef.current?.answer(false)}>Không, dừng lại</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <strong id="paid-ask-title">Đã chạm mức trần {paidAsk.cap} USD</strong>
+                <p>Key trả phí ({paidAsk.services.join(", ")}) đã dùng {paidAsk.spent.toFixed(2)} USD trong tháng này, chạm mức trần {paidAsk.cap} USD. Bạn muốn tăng thêm 2 USD để tiếp tục hay dừng lại?</p>
+                <small>Mức trần mới sẽ là {Math.round((paidAsk.cap + 2) * 100) / 100} USD mỗi tháng. Bạn có thể đổi lại ở Cài đặt → Dịch vụ AI.</small>
+                <div className="paid-ask-actions">
+                  <button type="button" className="button button-primary" onClick={() => paidAskRef.current?.answer(true)}>Tăng thêm 2 USD và tiếp tục</button>
+                  <button type="button" className="button button-outline" onClick={() => paidAskRef.current?.answer(false)}>Dừng lại</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

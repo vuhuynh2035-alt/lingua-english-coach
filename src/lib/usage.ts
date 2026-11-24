@@ -137,6 +137,9 @@ export function keyTier(settings: UsageSettings, service: ServiceId, key: string
 
 export const keyEnabled = (settings: UsageSettings, key: string) => !settings.disabled[keyTag(key)];
 
+/** Monthly cap (USD) of a paid key until the learner changes it; at the cap the app asks whether to raise it or stop. */
+export const DEFAULT_PAID_CAP = 2;
+
 /** At most this many keys per service. */
 export const MAX_KEYS = 3;
 
@@ -300,9 +303,9 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   if (recent.length >= safe(rpm)) {
     return { ok: false, cost, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
   }
-  // Money: a paid key may have a cap of its own; without one it is not limited here (every paid chat turn is confirmed by
-  // the learner first, see withAvailableApiKey). Once a key reached its cap, only free use goes on and the next key is tried.
-  const keyCap = tier === "free" ? 0 : settings.keyCaps[tag] ?? Infinity;
+  // Money: a paid key has a monthly cap (2 USD unless the learner set another). At the cap only free use goes on, the next key
+  // is tried, and withAvailableApiKey asks the learner whether to raise the cap.
+  const keyCap = tier === "free" ? 0 : settings.keyCaps[tag] ?? DEFAULT_PAID_CAP;
   if (cost > 0 && (load().byKey?.[tag] ?? 0) + cost > keyCap + 1e-9) {
     return {
       ok: false, cost,
