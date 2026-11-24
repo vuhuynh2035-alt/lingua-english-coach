@@ -2910,3 +2910,11 @@ html[data-theme] .floating-back-button:hover:not(:disabled) { width: 22px; }
 .service-accent .voice-chip:disabled { opacity: .4; }
 .service-accent.no-key { opacity: .5; }
 .cap-warning { color: #b42318; font-weight: 600; }
+
+/* ===== Asking before a paid AI key is used ===== */
+.paid-ask { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 18px; background: #0b1f2bb3; }
+.paid-ask-card { width: min(100%, 420px); display: grid; gap: 10px; padding: 20px; border-radius: 18px; background: #fff; color: var(--ink); box-shadow: 0 20px 50px #0006; }
+.paid-ask-card strong { font-size: 1.1rem; }
+.paid-ask-card p { margin: 0; line-height: 1.5; }
+.paid-ask-card small { color: var(--muted); line-height: 1.45; }
+.paid-ask-actions { display: grid; gap: 8px; margin-top: 4px; }

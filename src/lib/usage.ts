@@ -33,6 +33,8 @@ export type UsageSettings = {
   caps: Record<ServiceId, number>;
   /** True once the old per-service caps were copied into the caps of the paid keys. */
   capsMigrated?: boolean;
+  /** True once the 0 USD caps written by the old default were cleared (paid keys are now confirmed one turn at a time instead). */
+  askMigrated?: boolean;
   /** Monthly cap of one paid key, USD (by the key's last characters). Unset means 0: a paid key may spend nothing until the learner sets a cap. */
   keyCaps: Record<string, number>;
   /** Keys switched off for now (by their last characters). */
@@ -150,6 +152,7 @@ export function loadSettings(): UsageSettings {
       enabledChat: { ...DEFAULT_SETTINGS.enabledChat, ...stored.enabledChat },
       caps: { ...DEFAULT_SETTINGS.caps, ...stored.caps },
       capsMigrated: stored.capsMigrated === true,
+      askMigrated: stored.askMigrated === true,
       keyCaps: { ...stored.keyCaps },
       disabled: { ...stored.disabled },
       prices: {
@@ -297,9 +300,9 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   if (recent.length >= safe(rpm)) {
     return { ok: false, cost, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
   }
-  // Money: every paid key has a cap of its own (0 until the learner sets one). Once a key has spent it, only free use goes on:
-  // free keys never cost anything, and the free part of a paid Cloud TTS key stays free. The next key is tried.
-  const keyCap = tier === "free" ? 0 : settings.keyCaps[tag] ?? 0;
+  // Money: a paid key may have a cap of its own; without one it is not limited here (every paid chat turn is confirmed by
+  // the learner first, see withAvailableApiKey). Once a key reached its cap, only free use goes on and the next key is tried.
+  const keyCap = tier === "free" ? 0 : settings.keyCaps[tag] ?? Infinity;
   if (cost > 0 && (load().byKey?.[tag] ?? 0) + cost > keyCap + 1e-9) {
     return {
       ok: false, cost,
@@ -404,9 +407,13 @@ export function planSpeech(settings: UsageSettings, candidates: Candidate[], cha
       const tier = state.cost > 0 ? 3 : state.renews === "month" ? 2 : 1;
       return { candidate, index, state, tier, unit: chars ? state.cost / chars : 0 };
     });
-  const allowed = scored.filter((item) => item.state.ok)
+  // Speech is read sentence by sentence, so it never spends money by itself (a confirmation for every sentence is not workable):
+  // only free capacity is used and the voice in the app / the device reads when it is gone.
+  const allowed = scored.filter((item) => item.state.ok && item.state.cost === 0)
     .sort((a, b) => a.tier - b.tier || a.unit - b.unit || a.index - b.index);
-  const refusals = scored.filter((item) => !item.state.ok).map((item) => item.state);
+  const refusals = scored.filter((item) => !item.state.ok || item.state.cost > 0).map((item) => item.state.ok
+    ? { ...item.state, ok: false, reason: `${SERVICE_NAMES[item.candidate.service]} đã hết phần miễn phí (giọng đọc không tự tính phí)`, renews: "never" as const }
+    : item.state);
   const best = allowed[0];
   const soonFree = scored
     .filter((item) => !item.state.ok && item.state.renews === "minute" && item.state.cost === 0 && (item.state.resetIn ?? Infinity) <= WAIT_FOR_FREE_MS)
