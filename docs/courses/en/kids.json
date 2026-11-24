@@ -1,0 +1,3287 @@
+{
+  "id": "kids",
+  "title": "Tiếng Anh cho trẻ em",
+  "version": "2.4.0",
+  "framework": "CEFR A1–A2 (trẻ em 5–11 tuổi)",
+  "overview": "16 bài ngắn từ A1 đến A2 cho bé 5–11 tuổi: chào hỏi, màu sắc, số đếm, con vật, gia đình, cơ thể, đồ ăn, đồ dùng học tập, thời tiết, quần áo, một ngày của bé, sở thú (can), vị trí (in/on/under), ngôi nhà, sở thích và sinh nhật. Mỗi bài là một đoạn hội thoại ngắn có dịch tiếng Việt để bố mẹ đọc cùng bé.",
+  "contentLicense": "Nội dung biên soạn riêng cho Teacher AI theo khung CEFR",
+  "references": [
+    {
+      "title": "Council of Europe – Common European Framework of Reference for Languages (CEFR)",
+      "url": "https://www.coe.int/en/web/common-european-framework-reference-languages",
+      "license": "Khung trình độ tham chiếu (chỉ dùng làm chuẩn phân cấp, không sao chép nội dung)"
+    },
+    {
+      "title": "Cambridge English Young Learners (Starters / Movers) – danh mục chủ đề",
+      "url": "https://www.cambridgeenglish.org/exams-and-tests/young-learners-english/",
+      "license": "Tham khảo chủ đề và mức độ cho trẻ em (không sao chép nội dung)"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "kids-a1-1",
+      "level": "A1",
+      "unit": "A1 · Bài 1",
+      "category": "Giao tiếp",
+      "title": "Xin chào và tạm biệt",
+      "objective": "Chào hỏi, nói tên mình và tạm biệt bằng tiếng Anh.",
+      "reading": "Teacher: Hello, class!\nMia: Hello, teacher! My name is Mia.\nTeacher: Nice to meet you, Mia.\nTom: Hi, Mia! I am Tom.\nMia: Hi, Tom! How are you?\nTom: I am fine, thank you.\nMia: Goodbye, Tom! See you tomorrow.",
+      "dialogue": [
+        {
+          "speaker": "Teacher",
+          "text": "Hello, class!",
+          "translation": "Xin chào cả lớp!"
+        },
+        {
+          "speaker": "Mia",
+          "text": "Hello, teacher! My name is Mia.",
+          "translation": "Em chào cô! Tên em là Mia."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Nice to meet you, Mia.",
+          "translation": "Cô rất vui được gặp em, Mia."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Hi, Mia! I am Tom.",
+          "translation": "Chào Mia! Tớ là Tom."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Hi, Tom! How are you?",
+          "translation": "Chào Tom! Bạn khỏe không?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "I am fine, thank you.",
+          "translation": "Tớ khỏe, cảm ơn bạn."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Goodbye, Tom! See you tomorrow.",
+          "translation": "Tạm biệt Tom! Mai gặp lại nhé."
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "hello",
+          "definition": "xin chào",
+          "example": "Hello, Mia!"
+        },
+        {
+          "term": "goodbye",
+          "definition": "tạm biệt",
+          "example": "Goodbye, teacher!"
+        },
+        {
+          "term": "name",
+          "definition": "tên",
+          "example": "My name is Tom."
+        },
+        {
+          "term": "fine",
+          "definition": "khỏe, ổn",
+          "example": "I am fine, thank you."
+        },
+        {
+          "term": "thank you",
+          "definition": "cảm ơn",
+          "example": "Thank you, Mum."
+        },
+        {
+          "term": "friend",
+          "definition": "bạn bè",
+          "example": "Tom is my friend."
+        }
+      ],
+      "grammar": {
+        "title": "My name is… / I am…",
+        "explanation": "Để nói tên mình: My name is Mia hoặc I am Mia. Hỏi tên bạn: What is your name?",
+        "examples": [
+          "My name is Mia.",
+          "I am Tom.",
+          "What is your name?"
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /θ/ trong thank",
+        "tip": "Đặt đầu lưỡi giữa hai hàm răng rồi thổi hơi nhẹ. Thank you không đọc là “sanh kiu”.",
+        "words": [
+          "thank",
+          "this",
+          "hello",
+          "goodbye"
+        ]
+      },
+      "speakingTasks": [
+        "Nhìn vào gương, chào và nói tên của con bằng tiếng Anh.",
+        "Đóng vai hai bạn gặp nhau: chào, hỏi thăm và tạm biệt."
+      ],
+      "questions": [
+        {
+          "prompt": "What is the girl's name?",
+          "options": [
+            "Mia",
+            "Lily",
+            "Tom"
+          ],
+          "answer": 0,
+          "explanation": "Cô bé nói: “My name is Mia.”"
+        },
+        {
+          "prompt": "Who says “I am fine, thank you”?",
+          "options": [
+            "Mia",
+            "The teacher",
+            "Tom"
+          ],
+          "answer": 2,
+          "explanation": "Tom trả lời câu hỏi How are you?"
+        },
+        {
+          "prompt": "When will Mia see Tom again?",
+          "options": [
+            "Tonight",
+            "Tomorrow",
+            "Yesterday"
+          ],
+          "answer": 1,
+          "explanation": "“See you tomorrow” nghĩa là mai gặp lại."
+        },
+        {
+          "prompt": "Which word means “tạm biệt”?",
+          "options": [
+            "Fine",
+            "Hello",
+            "Goodbye"
+          ],
+          "answer": 2,
+          "explanation": "Goodbye = tạm biệt."
+        },
+        {
+          "prompt": "Complete: My name ___ Mia.",
+          "options": [
+            "are",
+            "is",
+            "am"
+          ],
+          "answer": 1,
+          "explanation": "My name đi với is."
+        },
+        {
+          "prompt": "Complete the sentence: _____, Mia!",
+          "options": [
+            "goodbye",
+            "hello",
+            "thank you"
+          ],
+          "answer": 1,
+          "explanation": "“hello” nghĩa là “xin chào”. Câu đầy đủ: Hello, Mia!"
+        },
+        {
+          "prompt": "What does “goodbye” mean?",
+          "options": [
+            "bạn bè",
+            "tạm biệt",
+            "tên"
+          ],
+          "answer": 1,
+          "explanation": "“goodbye” = tạm biệt. Ví dụ: Goodbye, teacher!"
+        },
+        {
+          "prompt": "Complete the sentence: My _____ is Tom.",
+          "options": [
+            "fine",
+            "friend",
+            "name"
+          ],
+          "answer": 2,
+          "explanation": "“name” nghĩa là “tên”. Câu đầy đủ: My name is Tom."
+        },
+        {
+          "prompt": "What does “fine” mean?",
+          "options": [
+            "bạn bè",
+            "khỏe, ổn",
+            "cảm ơn"
+          ],
+          "answer": 1,
+          "explanation": "“fine” = khỏe, ổn. Ví dụ: I am fine, thank you."
+        },
+        {
+          "prompt": "Complete the sentence: _____, Mum.",
+          "options": [
+            "thank you",
+            "fine",
+            "name"
+          ],
+          "answer": 0,
+          "explanation": "“thank you” nghĩa là “cảm ơn”. Câu đầy đủ: Thank you, Mum."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a1-2",
+      "level": "A1",
+      "unit": "A1 · Bài 2",
+      "category": "Từ vựng",
+      "title": "Màu sắc",
+      "objective": "Gọi tên các màu cơ bản và hỏi màu yêu thích.",
+      "reading": "Teacher: Look at the rainbow! What colour is it?\nMia: It is red, orange and yellow.\nTom: It is green, blue and purple, too.\nTeacher: Very good! What is your favourite colour, Mia?\nMia: My favourite colour is pink. I like my pink bag.\nTom: I like blue. My shoes are blue.\nTeacher: Let us paint the sun yellow!",
+      "dialogue": [
+        {
+          "speaker": "Teacher",
+          "text": "Look at the rainbow! What colour is it?",
+          "translation": "Nhìn cầu vồng kìa! Nó có màu gì?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "It is red, orange and yellow.",
+          "translation": "Nó màu đỏ, cam và vàng."
+        },
+        {
+          "speaker": "Tom",
+          "text": "It is green, blue and purple, too.",
+          "translation": "Nó cũng có màu xanh lá, xanh dương và tím nữa."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Very good! What is your favourite colour, Mia?",
+          "translation": "Giỏi lắm! Màu em thích nhất là màu gì, Mia?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "My favourite colour is pink. I like my pink bag.",
+          "translation": "Màu em thích nhất là màu hồng. Em thích cái cặp màu hồng."
+        },
+        {
+          "speaker": "Tom",
+          "text": "I like blue. My shoes are blue.",
+          "translation": "Tớ thích màu xanh dương. Giày của tớ màu xanh dương."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Let us paint the sun yellow!",
+          "translation": "Chúng ta cùng tô mặt trời màu vàng nhé!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "red",
+          "definition": "màu đỏ",
+          "example": "The apple is red."
+        },
+        {
+          "term": "yellow",
+          "definition": "màu vàng",
+          "example": "The sun is yellow."
+        },
+        {
+          "term": "blue",
+          "definition": "màu xanh dương",
+          "example": "The sky is blue."
+        },
+        {
+          "term": "green",
+          "definition": "màu xanh lá",
+          "example": "The grass is green."
+        },
+        {
+          "term": "pink",
+          "definition": "màu hồng",
+          "example": "I have a pink bag."
+        },
+        {
+          "term": "favourite",
+          "definition": "yêu thích nhất",
+          "example": "Blue is my favourite colour."
+        }
+      ],
+      "grammar": {
+        "title": "What colour is it? – It is …",
+        "explanation": "Hỏi màu: What colour is it? Trả lời: It is red. Màu sắc đặt trước danh từ: a red apple.",
+        "examples": [
+          "What colour is it?",
+          "It is green.",
+          "I have a blue pen."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /r/ trong red và /l/ trong yellow",
+        "tip": "Đọc red: cuộn nhẹ lưỡi, không chạm vòm. Đọc yellow: đầu lưỡi chạm lợi trên ở âm /l/.",
+        "words": [
+          "red",
+          "yellow",
+          "green",
+          "purple"
+        ]
+      },
+      "speakingTasks": [
+        "Chỉ vào 5 đồ vật quanh nhà và nói màu của chúng.",
+        "Hỏi bạn: What is your favourite colour?"
+      ],
+      "questions": [
+        {
+          "prompt": "What colour is the sun in the lesson?",
+          "options": [
+            "Yellow",
+            "Green",
+            "Blue"
+          ],
+          "answer": 0,
+          "explanation": "Cô giáo nói: “Let us paint the sun yellow!”"
+        },
+        {
+          "prompt": "What is Mia's favourite colour?",
+          "options": [
+            "Red",
+            "Blue",
+            "Pink"
+          ],
+          "answer": 2,
+          "explanation": "“My favourite colour is pink.”"
+        },
+        {
+          "prompt": "What colour are Tom's shoes?",
+          "options": [
+            "Pink",
+            "Blue",
+            "Purple"
+          ],
+          "answer": 1,
+          "explanation": "“My shoes are blue.”"
+        },
+        {
+          "prompt": "Choose the question for a colour.",
+          "options": [
+            "Where is it?",
+            "How old is it?",
+            "What colour is it?"
+          ],
+          "answer": 2,
+          "explanation": "What colour…? dùng để hỏi màu."
+        },
+        {
+          "prompt": "Complete: The grass ___ green.",
+          "options": [
+            "am",
+            "are",
+            "is"
+          ],
+          "answer": 2,
+          "explanation": "The grass là số ít nên dùng is."
+        },
+        {
+          "prompt": "Complete the sentence: The apple is _____.",
+          "options": [
+            "red",
+            "yellow",
+            "green"
+          ],
+          "answer": 0,
+          "explanation": "“red” nghĩa là “màu đỏ”. Câu đầy đủ: The apple is red."
+        },
+        {
+          "prompt": "What does “yellow” mean?",
+          "options": [
+            "màu vàng",
+            "màu xanh dương",
+            "yêu thích nhất"
+          ],
+          "answer": 0,
+          "explanation": "“yellow” = màu vàng. Ví dụ: The sun is yellow."
+        },
+        {
+          "prompt": "Complete the sentence: The sky is _____.",
+          "options": [
+            "red",
+            "yellow",
+            "blue"
+          ],
+          "answer": 2,
+          "explanation": "“blue” nghĩa là “màu xanh dương”. Câu đầy đủ: The sky is blue."
+        },
+        {
+          "prompt": "What does “green” mean?",
+          "options": [
+            "màu hồng",
+            "màu đỏ",
+            "màu xanh lá"
+          ],
+          "answer": 2,
+          "explanation": "“green” = màu xanh lá. Ví dụ: The grass is green."
+        },
+        {
+          "prompt": "Complete the sentence: I have a _____ bag.",
+          "options": [
+            "yellow",
+            "pink",
+            "red"
+          ],
+          "answer": 1,
+          "explanation": "“pink” nghĩa là “màu hồng”. Câu đầy đủ: I have a pink bag."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a1-3",
+      "level": "A1",
+      "unit": "A1 · Bài 3",
+      "category": "Từ vựng",
+      "title": "Số đếm từ 1 đến 10",
+      "objective": "Đếm từ 1 đến 10 và hỏi có bao nhiêu đồ vật.",
+      "reading": "Teacher: Let us count! One, two, three.\nMia: Four, five, six, seven.\nTom: Eight, nine, ten! I can count to ten.\nTeacher: How many apples are there?\nMia: There are five apples.\nTeacher: And how many bananas?\nTom: There are three bananas. Three and five is eight!",
+      "dialogue": [
+        {
+          "speaker": "Teacher",
+          "text": "Let us count! One, two, three.",
+          "translation": "Chúng ta cùng đếm nào! Một, hai, ba."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Four, five, six, seven.",
+          "translation": "Bốn, năm, sáu, bảy."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Eight, nine, ten! I can count to ten.",
+          "translation": "Tám, chín, mười! Tớ đếm được đến mười."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "How many apples are there?",
+          "translation": "Có bao nhiêu quả táo?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "There are five apples.",
+          "translation": "Có năm quả táo."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "And how many bananas?",
+          "translation": "Còn chuối thì có bao nhiêu quả?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "There are three bananas. Three and five is eight!",
+          "translation": "Có ba quả chuối. Ba cộng năm là tám!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "one",
+          "definition": "một",
+          "example": "I have one pen."
+        },
+        {
+          "term": "three",
+          "definition": "ba",
+          "example": "There are three birds."
+        },
+        {
+          "term": "five",
+          "definition": "năm",
+          "example": "I am five years old."
+        },
+        {
+          "term": "seven",
+          "definition": "bảy",
+          "example": "There are seven days in a week."
+        },
+        {
+          "term": "ten",
+          "definition": "mười",
+          "example": "I have ten fingers."
+        },
+        {
+          "term": "count",
+          "definition": "đếm",
+          "example": "Let us count the apples."
+        }
+      ],
+      "grammar": {
+        "title": "How many … are there? – There are …",
+        "explanation": "Hỏi số lượng: How many apples are there? Trả lời: There are five apples. Có một: There is one apple.",
+        "examples": [
+          "How many apples are there?",
+          "There are five apples.",
+          "There is one banana."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm cuối /s/ và /z/ ở số nhiều",
+        "tip": "Nói rõ âm cuối: apples, bananas. Đừng bỏ âm s ở cuối.",
+        "words": [
+          "three",
+          "seven",
+          "apples",
+          "bananas"
+        ]
+      },
+      "speakingTasks": [
+        "Đếm các ngón tay của con từ 1 đến 10 bằng tiếng Anh.",
+        "Đếm số bút, số cốc hoặc số đồ chơi quanh con."
+      ],
+      "questions": [
+        {
+          "prompt": "How many apples are there?",
+          "options": [
+            "Three",
+            "Five",
+            "Ten"
+          ],
+          "answer": 1,
+          "explanation": "“There are five apples.”"
+        },
+        {
+          "prompt": "How many bananas are there?",
+          "options": [
+            "Three",
+            "Five",
+            "Eight"
+          ],
+          "answer": 0,
+          "explanation": "“There are three bananas.”"
+        },
+        {
+          "prompt": "What is three and five?",
+          "options": [
+            "Eight",
+            "Seven",
+            "Ten"
+          ],
+          "answer": 0,
+          "explanation": "Tom nói: “Three and five is eight.”"
+        },
+        {
+          "prompt": "Which number comes after nine?",
+          "options": [
+            "Seven",
+            "Ten",
+            "Eight"
+          ],
+          "answer": 1,
+          "explanation": "Sau nine là ten."
+        },
+        {
+          "prompt": "Complete: There ___ one banana.",
+          "options": [
+            "am",
+            "is",
+            "are"
+          ],
+          "answer": 1,
+          "explanation": "Số ít (one) dùng there is."
+        },
+        {
+          "prompt": "Complete the sentence: I have _____ pen.",
+          "options": [
+            "count",
+            "seven",
+            "one"
+          ],
+          "answer": 2,
+          "explanation": "“one” nghĩa là “một”. Câu đầy đủ: I have one pen."
+        },
+        {
+          "prompt": "What does “three” mean?",
+          "options": [
+            "năm",
+            "bảy",
+            "ba"
+          ],
+          "answer": 2,
+          "explanation": "“three” = ba. Ví dụ: There are three birds."
+        },
+        {
+          "prompt": "Complete the sentence: I am _____ years old.",
+          "options": [
+            "five",
+            "one",
+            "seven"
+          ],
+          "answer": 0,
+          "explanation": "“five” nghĩa là “năm”. Câu đầy đủ: I am five years old."
+        },
+        {
+          "prompt": "What does “seven” mean?",
+          "options": [
+            "mười",
+            "bảy",
+            "ba"
+          ],
+          "answer": 1,
+          "explanation": "“seven” = bảy. Ví dụ: There are seven days in a week."
+        },
+        {
+          "prompt": "Complete the sentence: I have _____ fingers.",
+          "options": [
+            "seven",
+            "one",
+            "ten"
+          ],
+          "answer": 2,
+          "explanation": "“ten” nghĩa là “mười”. Câu đầy đủ: I have ten fingers."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a1-4",
+      "level": "A1",
+      "unit": "A1 · Bài 4",
+      "category": "Từ vựng",
+      "title": "Thú cưng và con vật",
+      "objective": "Gọi tên các con vật quen thuộc và nói con vật mình thích.",
+      "reading": "Mia: Look! I have a pet. It is a dog.\nTom: Its name is Bobby. It is big and brown.\nMia: Do you have a pet, Tom?\nTom: Yes, I do. I have a white cat.\nMia: Is your cat small?\nTom: Yes, it is. It likes fish and milk.\nMia: I like animals. I like birds and rabbits, too.",
+      "dialogue": [
+        {
+          "speaker": "Mia",
+          "text": "Look! I have a pet. It is a dog.",
+          "translation": "Nhìn này! Tớ có một thú cưng. Đó là một chú chó."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Its name is Bobby. It is big and brown.",
+          "translation": "Tên nó là Bobby. Nó to và có màu nâu."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Do you have a pet, Tom?",
+          "translation": "Bạn có thú cưng không, Tom?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "Yes, I do. I have a white cat.",
+          "translation": "Có chứ. Tớ có một con mèo trắng."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Is your cat small?",
+          "translation": "Con mèo của bạn nhỏ không?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "Yes, it is. It likes fish and milk.",
+          "translation": "Ừ, nhỏ lắm. Nó thích cá và sữa."
+        },
+        {
+          "speaker": "Mia",
+          "text": "I like animals. I like birds and rabbits, too.",
+          "translation": "Tớ thích động vật. Tớ cũng thích chim và thỏ."
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "dog",
+          "definition": "con chó",
+          "example": "The dog is big."
+        },
+        {
+          "term": "cat",
+          "definition": "con mèo",
+          "example": "My cat is white."
+        },
+        {
+          "term": "bird",
+          "definition": "con chim",
+          "example": "The bird can sing."
+        },
+        {
+          "term": "rabbit",
+          "definition": "con thỏ",
+          "example": "The rabbit likes carrots."
+        },
+        {
+          "term": "fish",
+          "definition": "con cá",
+          "example": "I have a fish."
+        },
+        {
+          "term": "pet",
+          "definition": "thú cưng",
+          "example": "A dog is a good pet."
+        }
+      ],
+      "grammar": {
+        "title": "I have a … / Do you have a …?",
+        "explanation": "Nói mình có gì: I have a cat. Hỏi bạn: Do you have a pet? Trả lời: Yes, I do. / No, I don't.",
+        "examples": [
+          "I have a dog.",
+          "Do you have a pet?",
+          "Yes, I do."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /æ/ trong cat",
+        "tip": "Mở miệng rộng như nói “e” kéo dài ra phía hai bên: cat, rabbit. Không đọc là “ket”.",
+        "words": [
+          "cat",
+          "rabbit",
+          "bag",
+          "black"
+        ]
+      },
+      "speakingTasks": [
+        "Kể tên 5 con vật mà con biết bằng tiếng Anh.",
+        "Hỏi bạn: Do you have a pet?"
+      ],
+      "questions": [
+        {
+          "prompt": "What pet does Mia have?",
+          "options": [
+            "A bird",
+            "A cat",
+            "A dog"
+          ],
+          "answer": 2,
+          "explanation": "“I have a pet. It is a dog.”"
+        },
+        {
+          "prompt": "What colour is Tom's cat?",
+          "options": [
+            "White",
+            "Black",
+            "Brown"
+          ],
+          "answer": 0,
+          "explanation": "“I have a white cat.”"
+        },
+        {
+          "prompt": "What does Tom's cat like?",
+          "options": [
+            "Fish and milk",
+            "Bones",
+            "Carrots"
+          ],
+          "answer": 0,
+          "explanation": "“It likes fish and milk.”"
+        },
+        {
+          "prompt": "Which animal is NOT mentioned?",
+          "options": [
+            "A horse",
+            "A rabbit",
+            "A bird"
+          ],
+          "answer": 0,
+          "explanation": "Bài nói đến dog, cat, birds và rabbits."
+        },
+        {
+          "prompt": "Answer: Do you have a pet?",
+          "options": [
+            "Yes, it is.",
+            "Yes, I am.",
+            "Yes, I do."
+          ],
+          "answer": 2,
+          "explanation": "Do you have…? trả lời Yes, I do."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ is big.",
+          "options": [
+            "rabbit",
+            "dog",
+            "bird"
+          ],
+          "answer": 1,
+          "explanation": "“dog” nghĩa là “con chó”. Câu đầy đủ: The dog is big."
+        },
+        {
+          "prompt": "What does “cat” mean?",
+          "options": [
+            "thú cưng",
+            "con mèo",
+            "con cá"
+          ],
+          "answer": 1,
+          "explanation": "“cat” = con mèo. Ví dụ: My cat is white."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ can sing.",
+          "options": [
+            "bird",
+            "rabbit",
+            "dog"
+          ],
+          "answer": 0,
+          "explanation": "“bird” nghĩa là “con chim”. Câu đầy đủ: The bird can sing."
+        },
+        {
+          "prompt": "What does “rabbit” mean?",
+          "options": [
+            "con chim",
+            "thú cưng",
+            "con thỏ"
+          ],
+          "answer": 2,
+          "explanation": "“rabbit” = con thỏ. Ví dụ: The rabbit likes carrots."
+        },
+        {
+          "prompt": "Complete the sentence: I have a _____.",
+          "options": [
+            "cat",
+            "dog",
+            "fish"
+          ],
+          "answer": 2,
+          "explanation": "“fish” nghĩa là “con cá”. Câu đầy đủ: I have a fish."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a1-5",
+      "level": "A1",
+      "unit": "A1 · Bài 5",
+      "category": "Giao tiếp",
+      "title": "Gia đình của tôi",
+      "objective": "Giới thiệu các thành viên trong gia đình.",
+      "reading": "Teacher: Tell me about your family, Tom.\nTom: This is my mum. She is a nurse.\nTom: This is my dad. He is a driver.\nTeacher: Do you have a brother or a sister?\nTom: I have a sister. Her name is Lan.\nTom: I love my grandma and grandpa, too.\nTeacher: What a lovely family!",
+      "dialogue": [
+        {
+          "speaker": "Teacher",
+          "text": "Tell me about your family, Tom.",
+          "translation": "Hãy kể cho cô nghe về gia đình em, Tom."
+        },
+        {
+          "speaker": "Tom",
+          "text": "This is my mum. She is a nurse.",
+          "translation": "Đây là mẹ em. Mẹ em là y tá."
+        },
+        {
+          "speaker": "Tom",
+          "text": "This is my dad. He is a driver.",
+          "translation": "Đây là bố em. Bố em là tài xế."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Do you have a brother or a sister?",
+          "translation": "Em có anh em trai hay chị em gái không?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "I have a sister. Her name is Lan.",
+          "translation": "Em có một chị gái. Tên chị là Lan."
+        },
+        {
+          "speaker": "Tom",
+          "text": "I love my grandma and grandpa, too.",
+          "translation": "Em cũng yêu bà và ông của em."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "What a lovely family!",
+          "translation": "Thật là một gia đình đáng yêu!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "mum",
+          "definition": "mẹ",
+          "example": "My mum is kind."
+        },
+        {
+          "term": "dad",
+          "definition": "bố",
+          "example": "My dad is tall."
+        },
+        {
+          "term": "sister",
+          "definition": "chị/em gái",
+          "example": "My sister is ten."
+        },
+        {
+          "term": "brother",
+          "definition": "anh/em trai",
+          "example": "I have one brother."
+        },
+        {
+          "term": "grandma",
+          "definition": "bà",
+          "example": "My grandma tells stories."
+        },
+        {
+          "term": "family",
+          "definition": "gia đình",
+          "example": "I love my family."
+        }
+      ],
+      "grammar": {
+        "title": "He / She và his / her",
+        "explanation": "He (anh ấy) và She (cô ấy) thay cho người. His/her là “của anh ấy/của cô ấy”: his name, her name.",
+        "examples": [
+          "She is a nurse.",
+          "He is a driver.",
+          "Her name is Lan."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /ð/ trong mother, brother",
+        "tip": "Đặt lưỡi giữa hai hàm răng và rung dây thanh: mother, brother, this.",
+        "words": [
+          "mother",
+          "brother",
+          "father",
+          "this"
+        ]
+      },
+      "speakingTasks": [
+        "Chỉ vào ảnh gia đình và nói: This is my … .",
+        "Nói nghề của bố hoặc mẹ bằng tiếng Anh."
+      ],
+      "questions": [
+        {
+          "prompt": "What is Tom's mum?",
+          "options": [
+            "A teacher",
+            "A nurse",
+            "A driver"
+          ],
+          "answer": 1,
+          "explanation": "“She is a nurse.”"
+        },
+        {
+          "prompt": "What is Tom's dad?",
+          "options": [
+            "A nurse",
+            "A driver",
+            "A doctor"
+          ],
+          "answer": 1,
+          "explanation": "“He is a driver.”"
+        },
+        {
+          "prompt": "What is Tom's sister's name?",
+          "options": [
+            "Anna",
+            "Lan",
+            "Mia"
+          ],
+          "answer": 1,
+          "explanation": "“Her name is Lan.”"
+        },
+        {
+          "prompt": "Choose the word for a boy or a man.",
+          "options": [
+            "He",
+            "Her",
+            "She"
+          ],
+          "answer": 0,
+          "explanation": "He dùng cho nam."
+        },
+        {
+          "prompt": "Complete: ___ name is Lan. (chị ấy)",
+          "options": [
+            "His",
+            "Her",
+            "He"
+          ],
+          "answer": 1,
+          "explanation": "Her = của cô ấy."
+        },
+        {
+          "prompt": "Complete the sentence: My _____ is kind.",
+          "options": [
+            "mum",
+            "family",
+            "sister"
+          ],
+          "answer": 0,
+          "explanation": "“mum” nghĩa là “mẹ”. Câu đầy đủ: My mum is kind."
+        },
+        {
+          "prompt": "What does “dad” mean?",
+          "options": [
+            "gia đình",
+            "bố",
+            "mẹ"
+          ],
+          "answer": 1,
+          "explanation": "“dad” = bố. Ví dụ: My dad is tall."
+        },
+        {
+          "prompt": "Complete the sentence: My _____ is ten.",
+          "options": [
+            "sister",
+            "dad",
+            "grandma"
+          ],
+          "answer": 0,
+          "explanation": "“sister” nghĩa là “chị/em gái”. Câu đầy đủ: My sister is ten."
+        },
+        {
+          "prompt": "What does “brother” mean?",
+          "options": [
+            "anh/em trai",
+            "mẹ",
+            "bà"
+          ],
+          "answer": 0,
+          "explanation": "“brother” = anh/em trai. Ví dụ: I have one brother."
+        },
+        {
+          "prompt": "Complete the sentence: My _____ tells stories.",
+          "options": [
+            "dad",
+            "brother",
+            "grandma"
+          ],
+          "answer": 2,
+          "explanation": "“grandma” nghĩa là “bà”. Câu đầy đủ: My grandma tells stories."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a1-6",
+      "level": "A1",
+      "unit": "A1 · Bài 6",
+      "category": "Từ vựng",
+      "title": "Các bộ phận cơ thể",
+      "objective": "Gọi tên các bộ phận cơ thể và làm theo lời chỉ dẫn.",
+      "reading": "Teacher: Let us sing and move! Touch your head.\nMia: Touch your nose and your mouth.\nTom: Touch your eyes and your ears.\nTeacher: Now, clap your hands!\nMia: Stamp your feet! One, two, three!\nTom: I have two arms and two legs.\nTeacher: Well done, everyone! Sit down, please.",
+      "dialogue": [
+        {
+          "speaker": "Teacher",
+          "text": "Let us sing and move! Touch your head.",
+          "translation": "Cùng hát và vận động nào! Chạm vào đầu của em."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Touch your nose and your mouth.",
+          "translation": "Chạm vào mũi và miệng của em."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Touch your eyes and your ears.",
+          "translation": "Chạm vào mắt và tai của em."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Now, clap your hands!",
+          "translation": "Bây giờ, hãy vỗ tay nào!"
+        },
+        {
+          "speaker": "Mia",
+          "text": "Stamp your feet! One, two, three!",
+          "translation": "Dậm chân nào! Một, hai, ba!"
+        },
+        {
+          "speaker": "Tom",
+          "text": "I have two arms and two legs.",
+          "translation": "Tớ có hai cánh tay và hai cái chân."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Well done, everyone! Sit down, please.",
+          "translation": "Giỏi lắm cả lớp! Mời các em ngồi xuống."
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "head",
+          "definition": "đầu",
+          "example": "Touch your head."
+        },
+        {
+          "term": "eye",
+          "definition": "mắt",
+          "example": "I have two eyes."
+        },
+        {
+          "term": "nose",
+          "definition": "mũi",
+          "example": "My nose is small."
+        },
+        {
+          "term": "hand",
+          "definition": "bàn tay",
+          "example": "Clap your hands."
+        },
+        {
+          "term": "foot",
+          "definition": "bàn chân",
+          "example": "Stamp your foot."
+        },
+        {
+          "term": "ear",
+          "definition": "tai",
+          "example": "I hear with my ears."
+        }
+      ],
+      "grammar": {
+        "title": "Câu mệnh lệnh: Touch / Clap / Stand up",
+        "explanation": "Dùng động từ đứng đầu câu để bảo ai làm gì: Touch your nose. Thêm please cho lịch sự.",
+        "examples": [
+          "Touch your head.",
+          "Clap your hands.",
+          "Sit down, please."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Số nhiều bất quy tắc: foot → feet",
+        "tip": "Một chân là foot, hai chân là feet. Đọc feet dài /iː/.",
+        "words": [
+          "foot",
+          "feet",
+          "eyes",
+          "ears"
+        ]
+      },
+      "speakingTasks": [
+        "Chơi trò “Simon says”: con làm theo bố mẹ nói bằng tiếng Anh.",
+        "Chỉ vào các bộ phận trên mặt và nói tên bằng tiếng Anh."
+      ],
+      "questions": [
+        {
+          "prompt": "What do you do with your hands?",
+          "options": [
+            "Sit",
+            "Stamp",
+            "Clap"
+          ],
+          "answer": 2,
+          "explanation": "Cô nói: “Clap your hands!”"
+        },
+        {
+          "prompt": "What do you do with your feet?",
+          "options": [
+            "Count",
+            "Clap",
+            "Stamp"
+          ],
+          "answer": 2,
+          "explanation": "“Stamp your feet!”"
+        },
+        {
+          "prompt": "How many arms does Tom have?",
+          "options": [
+            "One",
+            "Two",
+            "Four"
+          ],
+          "answer": 1,
+          "explanation": "“I have two arms and two legs.”"
+        },
+        {
+          "prompt": "Which word is the plural of “foot”?",
+          "options": [
+            "Foots",
+            "Feet",
+            "Footes"
+          ],
+          "answer": 1,
+          "explanation": "Foot → feet."
+        },
+        {
+          "prompt": "Which sentence is polite?",
+          "options": [
+            "Sit down you.",
+            "Sit down, please.",
+            "You sit down now."
+          ],
+          "answer": 1,
+          "explanation": "Please làm câu nhẹ nhàng, lịch sự."
+        },
+        {
+          "prompt": "Complete the sentence: Touch your _____.",
+          "options": [
+            "ear",
+            "hand",
+            "head"
+          ],
+          "answer": 2,
+          "explanation": "“head” nghĩa là “đầu”. Câu đầy đủ: Touch your head."
+        },
+        {
+          "prompt": "What does “eye” mean?",
+          "options": [
+            "mắt",
+            "tai",
+            "mũi"
+          ],
+          "answer": 0,
+          "explanation": "“eye” = mắt. Ví dụ: I have two eyes."
+        },
+        {
+          "prompt": "Complete the sentence: My _____ is small.",
+          "options": [
+            "foot",
+            "eye",
+            "nose"
+          ],
+          "answer": 2,
+          "explanation": "“nose” nghĩa là “mũi”. Câu đầy đủ: My nose is small."
+        },
+        {
+          "prompt": "What does “hand” mean?",
+          "options": [
+            "tai",
+            "mắt",
+            "bàn tay"
+          ],
+          "answer": 2,
+          "explanation": "“hand” = bàn tay. Ví dụ: Clap your hands."
+        },
+        {
+          "prompt": "Complete the sentence: Stamp your _____.",
+          "options": [
+            "eye",
+            "foot",
+            "hand"
+          ],
+          "answer": 1,
+          "explanation": "“foot” nghĩa là “bàn chân”. Câu đầy đủ: Stamp your foot."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a1-7",
+      "level": "A1",
+      "unit": "A1 · Bài 7",
+      "category": "Từ vựng",
+      "title": "Đồ ăn và trái cây",
+      "objective": "Nói về món mình thích và không thích.",
+      "reading": "Mum: It is lunch time! What would you like?\nMia: I like rice and chicken, Mum.\nTom: I do not like fish. I like eggs.\nMum: Do you like fruit?\nMia: Yes, I do! I like apples and bananas.\nTom: I like oranges, but I do not like milk.\nMum: Here you are. Enjoy your meal!",
+      "dialogue": [
+        {
+          "speaker": "Mum",
+          "text": "It is lunch time! What would you like?",
+          "translation": "Đến giờ ăn trưa rồi! Con muốn ăn gì?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "I like rice and chicken, Mum.",
+          "translation": "Con thích cơm và thịt gà, mẹ ơi."
+        },
+        {
+          "speaker": "Tom",
+          "text": "I do not like fish. I like eggs.",
+          "translation": "Con không thích cá. Con thích trứng."
+        },
+        {
+          "speaker": "Mum",
+          "text": "Do you like fruit?",
+          "translation": "Các con có thích trái cây không?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "Yes, I do! I like apples and bananas.",
+          "translation": "Có ạ! Con thích táo và chuối."
+        },
+        {
+          "speaker": "Tom",
+          "text": "I like oranges, but I do not like milk.",
+          "translation": "Con thích cam, nhưng con không thích sữa."
+        },
+        {
+          "speaker": "Mum",
+          "text": "Here you are. Enjoy your meal!",
+          "translation": "Của các con đây. Ăn ngon miệng nhé!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "rice",
+          "definition": "cơm, gạo",
+          "example": "I eat rice every day."
+        },
+        {
+          "term": "egg",
+          "definition": "trứng",
+          "example": "I like eggs."
+        },
+        {
+          "term": "apple",
+          "definition": "quả táo",
+          "example": "An apple is red."
+        },
+        {
+          "term": "banana",
+          "definition": "quả chuối",
+          "example": "A banana is yellow."
+        },
+        {
+          "term": "milk",
+          "definition": "sữa",
+          "example": "I drink milk."
+        },
+        {
+          "term": "orange",
+          "definition": "quả cam",
+          "example": "I like orange juice."
+        }
+      ],
+      "grammar": {
+        "title": "I like / I do not like",
+        "explanation": "Thích: I like apples. Không thích: I do not like fish (I don't like fish). Hỏi: Do you like fruit?",
+        "examples": [
+          "I like eggs.",
+          "I do not like fish.",
+          "Do you like fruit?"
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /dʒ/ trong orange, juice",
+        "tip": "Môi hơi chu, lưỡi chạm vòm miệng rồi bật hơi: orange, juice, jam.",
+        "words": [
+          "orange",
+          "juice",
+          "apple",
+          "banana"
+        ]
+      },
+      "speakingTasks": [
+        "Nói 3 món con thích và 2 món con không thích.",
+        "Hỏi bố mẹ: Do you like bananas?"
+      ],
+      "questions": [
+        {
+          "prompt": "What does Tom like?",
+          "options": [
+            "Eggs",
+            "Fish",
+            "Milk"
+          ],
+          "answer": 0,
+          "explanation": "“I do not like fish. I like eggs.”"
+        },
+        {
+          "prompt": "What fruit does Mia like?",
+          "options": [
+            "Mangoes",
+            "Apples and bananas",
+            "Only oranges"
+          ],
+          "answer": 1,
+          "explanation": "“I like apples and bananas.”"
+        },
+        {
+          "prompt": "Which drink does Tom NOT like?",
+          "options": [
+            "Juice",
+            "Milk",
+            "Water"
+          ],
+          "answer": 1,
+          "explanation": "“I do not like milk.”"
+        },
+        {
+          "prompt": "Say you do not like something.",
+          "options": [
+            "I do not like fish.",
+            "I like fish.",
+            "Do you like fish?"
+          ],
+          "answer": 0,
+          "explanation": "Phủ định dùng do not."
+        },
+        {
+          "prompt": "Complete: ___ you like fruit?",
+          "options": [
+            "Do",
+            "Is",
+            "Are"
+          ],
+          "answer": 0,
+          "explanation": "Câu hỏi với like dùng Do."
+        },
+        {
+          "prompt": "Complete the sentence: I eat _____ every day.",
+          "options": [
+            "banana",
+            "rice",
+            "egg"
+          ],
+          "answer": 1,
+          "explanation": "“rice” nghĩa là “cơm, gạo”. Câu đầy đủ: I eat rice every day."
+        },
+        {
+          "prompt": "What does “egg” mean?",
+          "options": [
+            "trứng",
+            "quả cam",
+            "quả táo"
+          ],
+          "answer": 0,
+          "explanation": "“egg” = trứng. Ví dụ: I like eggs."
+        },
+        {
+          "prompt": "Complete the sentence: An _____ is red.",
+          "options": [
+            "apple",
+            "banana",
+            "orange"
+          ],
+          "answer": 0,
+          "explanation": "“apple” nghĩa là “quả táo”. Câu đầy đủ: An apple is red."
+        },
+        {
+          "prompt": "What does “banana” mean?",
+          "options": [
+            "trứng",
+            "quả chuối",
+            "cơm, gạo"
+          ],
+          "answer": 1,
+          "explanation": "“banana” = quả chuối. Ví dụ: A banana is yellow."
+        },
+        {
+          "prompt": "Complete the sentence: I drink _____.",
+          "options": [
+            "rice",
+            "milk",
+            "apple"
+          ],
+          "answer": 1,
+          "explanation": "“milk” nghĩa là “sữa”. Câu đầy đủ: I drink milk."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a1-8",
+      "level": "A1",
+      "unit": "A1 · Bài 8",
+      "category": "Từ vựng",
+      "title": "Đồ dùng học tập",
+      "objective": "Gọi tên đồ vật trong lớp và hỏi đó là gì.",
+      "reading": "Teacher: Open your bags. What is this?\nMia: It is a book.\nTeacher: And what is that?\nTom: That is a pencil case. I have a ruler in it.\nMia: I have a pen, a rubber and a notebook.\nTeacher: Take out your crayons. We will draw a picture.\nTom: I can draw a house and a tree!",
+      "dialogue": [
+        {
+          "speaker": "Teacher",
+          "text": "Open your bags. What is this?",
+          "translation": "Hãy mở cặp ra. Đây là cái gì?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "It is a book.",
+          "translation": "Đó là một quyển sách."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "And what is that?",
+          "translation": "Còn kia là cái gì?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "That is a pencil case. I have a ruler in it.",
+          "translation": "Kia là hộp bút. Trong đó tớ có một cây thước."
+        },
+        {
+          "speaker": "Mia",
+          "text": "I have a pen, a rubber and a notebook.",
+          "translation": "Tớ có một cây bút, một cục tẩy và một quyển vở."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Take out your crayons. We will draw a picture.",
+          "translation": "Hãy lấy bút màu ra. Chúng ta sẽ vẽ một bức tranh."
+        },
+        {
+          "speaker": "Tom",
+          "text": "I can draw a house and a tree!",
+          "translation": "Tớ vẽ được một ngôi nhà và một cái cây!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "book",
+          "definition": "quyển sách",
+          "example": "Open your book."
+        },
+        {
+          "term": "pencil",
+          "definition": "bút chì",
+          "example": "I write with a pencil."
+        },
+        {
+          "term": "ruler",
+          "definition": "cây thước",
+          "example": "Use a ruler to draw a line."
+        },
+        {
+          "term": "rubber",
+          "definition": "cục tẩy",
+          "example": "I need a rubber."
+        },
+        {
+          "term": "bag",
+          "definition": "cái cặp",
+          "example": "My bag is heavy."
+        },
+        {
+          "term": "crayon",
+          "definition": "bút sáp màu",
+          "example": "I draw with crayons."
+        }
+      ],
+      "grammar": {
+        "title": "This is / That is",
+        "explanation": "This is: đồ vật ở gần. That is: đồ vật ở xa. Hỏi: What is this? What is that?",
+        "examples": [
+          "What is this?",
+          "This is a book.",
+          "That is a pencil case."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /k/ trong crayon, book",
+        "tip": "Âm /k/ bật hơi từ cuống họng, không rung: crayon, book, pencil case.",
+        "words": [
+          "crayon",
+          "book",
+          "pencil",
+          "case"
+        ]
+      },
+      "speakingTasks": [
+        "Cầm từng đồ dùng học tập lên và nói: This is a …",
+        "Chỉ vào đồ vật ở xa và nói: That is a …"
+      ],
+      "questions": [
+        {
+          "prompt": "What is in Tom's pencil case?",
+          "options": [
+            "A ruler",
+            "A book",
+            "A crayon"
+          ],
+          "answer": 0,
+          "explanation": "“I have a ruler in it.”"
+        },
+        {
+          "prompt": "What will they do with crayons?",
+          "options": [
+            "Draw a picture",
+            "Count",
+            "Read a book"
+          ],
+          "answer": 0,
+          "explanation": "“We will draw a picture.”"
+        },
+        {
+          "prompt": "What can Tom draw?",
+          "options": [
+            "A car",
+            "A house and a tree",
+            "A cat"
+          ],
+          "answer": 1,
+          "explanation": "“I can draw a house and a tree!”"
+        },
+        {
+          "prompt": "For something far away, we say…",
+          "options": [
+            "That is",
+            "It am",
+            "This is"
+          ],
+          "answer": 0,
+          "explanation": "That is dùng cho đồ vật ở xa."
+        },
+        {
+          "prompt": "Which one is used to rub out a mistake?",
+          "options": [
+            "Notebook",
+            "Ruler",
+            "Rubber"
+          ],
+          "answer": 2,
+          "explanation": "Rubber = cục tẩy."
+        },
+        {
+          "prompt": "Complete the sentence: Open your _____.",
+          "options": [
+            "crayon",
+            "rubber",
+            "book"
+          ],
+          "answer": 2,
+          "explanation": "“book” nghĩa là “quyển sách”. Câu đầy đủ: Open your book."
+        },
+        {
+          "prompt": "What does “pencil” mean?",
+          "options": [
+            "cây thước",
+            "cái cặp",
+            "bút chì"
+          ],
+          "answer": 2,
+          "explanation": "“pencil” = bút chì. Ví dụ: I write with a pencil."
+        },
+        {
+          "prompt": "Complete the sentence: Use a _____ to draw a line.",
+          "options": [
+            "book",
+            "ruler",
+            "rubber"
+          ],
+          "answer": 1,
+          "explanation": "“ruler” nghĩa là “cây thước”. Câu đầy đủ: Use a ruler to draw a line."
+        },
+        {
+          "prompt": "What does “rubber” mean?",
+          "options": [
+            "cục tẩy",
+            "bút chì",
+            "quyển sách"
+          ],
+          "answer": 0,
+          "explanation": "“rubber” = cục tẩy. Ví dụ: I need a rubber."
+        },
+        {
+          "prompt": "Complete the sentence: My _____ is heavy.",
+          "options": [
+            "ruler",
+            "crayon",
+            "bag"
+          ],
+          "answer": 2,
+          "explanation": "“bag” nghĩa là “cái cặp”. Câu đầy đủ: My bag is heavy."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a1-9",
+      "level": "A1",
+      "unit": "A1 · Bài 9",
+      "category": "Từ vựng",
+      "title": "Thời tiết",
+      "objective": "Nói về thời tiết hôm nay và quần áo phù hợp.",
+      "reading": "Mum: Look outside. What is the weather like?\nMia: It is sunny and hot today.\nTom: Yesterday it was rainy and cold.\nMum: Take your hat. The sun is very bright.\nMia: Can we play in the park?\nMum: Yes, but it may be windy later.\nTom: Hooray! I love sunny days!",
+      "dialogue": [
+        {
+          "speaker": "Mum",
+          "text": "Look outside. What is the weather like?",
+          "translation": "Con nhìn ra ngoài xem. Thời tiết thế nào?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "It is sunny and hot today.",
+          "translation": "Hôm nay trời nắng và nóng."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Yesterday it was rainy and cold.",
+          "translation": "Hôm qua trời mưa và lạnh."
+        },
+        {
+          "speaker": "Mum",
+          "text": "Take your hat. The sun is very bright.",
+          "translation": "Đội mũ vào nhé. Mặt trời rất chói."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Can we play in the park?",
+          "translation": "Chúng con chơi ở công viên được không ạ?"
+        },
+        {
+          "speaker": "Mum",
+          "text": "Yes, but it may be windy later.",
+          "translation": "Được, nhưng lát nữa có thể có gió."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Hooray! I love sunny days!",
+          "translation": "Hoan hô! Tớ yêu những ngày nắng!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "sunny",
+          "definition": "có nắng",
+          "example": "It is sunny today."
+        },
+        {
+          "term": "rainy",
+          "definition": "có mưa",
+          "example": "It is a rainy day."
+        },
+        {
+          "term": "cloudy",
+          "definition": "nhiều mây",
+          "example": "The sky is cloudy."
+        },
+        {
+          "term": "windy",
+          "definition": "có gió",
+          "example": "It is windy outside."
+        },
+        {
+          "term": "hot",
+          "definition": "nóng",
+          "example": "Summer is hot."
+        },
+        {
+          "term": "cold",
+          "definition": "lạnh",
+          "example": "Winter is cold."
+        }
+      ],
+      "grammar": {
+        "title": "What is the weather like? – It is …",
+        "explanation": "Hỏi thời tiết: What is the weather like? Trả lời: It is sunny. Hôm qua dùng was: It was rainy.",
+        "examples": [
+          "What is the weather like?",
+          "It is sunny.",
+          "It was rainy yesterday."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /w/ trong weather, windy",
+        "tip": "Tròn môi như thổi nến rồi mở ra: weather, windy, was.",
+        "words": [
+          "weather",
+          "windy",
+          "was",
+          "warm"
+        ]
+      },
+      "speakingTasks": [
+        "Mở cửa sổ và nói thời tiết hôm nay bằng tiếng Anh.",
+        "Chọn quần áo hợp với trời mưa và trời nắng."
+      ],
+      "questions": [
+        {
+          "prompt": "What is the weather like today?",
+          "options": [
+            "Snowy",
+            "Sunny and hot",
+            "Rainy and cold"
+          ],
+          "answer": 1,
+          "explanation": "“It is sunny and hot today.”"
+        },
+        {
+          "prompt": "What was the weather yesterday?",
+          "options": [
+            "Windy",
+            "Rainy and cold",
+            "Sunny"
+          ],
+          "answer": 1,
+          "explanation": "“Yesterday it was rainy and cold.”"
+        },
+        {
+          "prompt": "Why does Mum say take your hat?",
+          "options": [
+            "The sun is bright",
+            "It is snowing",
+            "It is night"
+          ],
+          "answer": 0,
+          "explanation": "“The sun is very bright.”"
+        },
+        {
+          "prompt": "Where do the children want to play?",
+          "options": [
+            "In the kitchen",
+            "In the park",
+            "At school"
+          ],
+          "answer": 1,
+          "explanation": "“Can we play in the park?”"
+        },
+        {
+          "prompt": "Complete: Yesterday it ___ cold.",
+          "options": [
+            "was",
+            "is",
+            "are"
+          ],
+          "answer": 0,
+          "explanation": "Chuyện hôm qua dùng was."
+        },
+        {
+          "prompt": "Complete the sentence: It is _____ today.",
+          "options": [
+            "hot",
+            "sunny",
+            "cold"
+          ],
+          "answer": 1,
+          "explanation": "“sunny” nghĩa là “có nắng”. Câu đầy đủ: It is sunny today."
+        },
+        {
+          "prompt": "What does “rainy” mean?",
+          "options": [
+            "có gió",
+            "lạnh",
+            "có mưa"
+          ],
+          "answer": 2,
+          "explanation": "“rainy” = có mưa. Ví dụ: It is a rainy day."
+        },
+        {
+          "prompt": "Complete the sentence: The sky is _____.",
+          "options": [
+            "windy",
+            "cloudy",
+            "rainy"
+          ],
+          "answer": 1,
+          "explanation": "“cloudy” nghĩa là “nhiều mây”. Câu đầy đủ: The sky is cloudy."
+        },
+        {
+          "prompt": "What does “windy” mean?",
+          "options": [
+            "có mưa",
+            "có gió",
+            "nhiều mây"
+          ],
+          "answer": 1,
+          "explanation": "“windy” = có gió. Ví dụ: It is windy outside."
+        },
+        {
+          "prompt": "Complete the sentence: Summer is _____.",
+          "options": [
+            "sunny",
+            "hot",
+            "windy"
+          ],
+          "answer": 1,
+          "explanation": "“hot” nghĩa là “nóng”. Câu đầy đủ: Summer is hot."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a1-10",
+      "level": "A1",
+      "unit": "A1 · Bài 10",
+      "category": "Từ vựng",
+      "title": "Quần áo của tôi",
+      "objective": "Gọi tên quần áo và nói mình mặc gì.",
+      "reading": "Mum: Get dressed, Mia. It is time for school.\nMia: I am wearing my white shirt and my blue skirt.\nMum: Where are your socks and shoes?\nMia: My socks are under the bed. My shoes are here.\nTom: I am wearing trousers and a T-shirt.\nMum: It is cold. Put on your jacket and your hat.\nTom: Now I am ready for school!",
+      "dialogue": [
+        {
+          "speaker": "Mum",
+          "text": "Get dressed, Mia. It is time for school.",
+          "translation": "Con mặc quần áo đi, Mia. Đến giờ đi học rồi."
+        },
+        {
+          "speaker": "Mia",
+          "text": "I am wearing my white shirt and my blue skirt.",
+          "translation": "Con đang mặc áo sơ mi trắng và váy xanh."
+        },
+        {
+          "speaker": "Mum",
+          "text": "Where are your socks and shoes?",
+          "translation": "Tất và giày của con đâu?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "My socks are under the bed. My shoes are here.",
+          "translation": "Tất của con ở dưới giường. Giày của con ở đây."
+        },
+        {
+          "speaker": "Tom",
+          "text": "I am wearing trousers and a T-shirt.",
+          "translation": "Tớ đang mặc quần dài và áo thun."
+        },
+        {
+          "speaker": "Mum",
+          "text": "It is cold. Put on your jacket and your hat.",
+          "translation": "Trời lạnh. Mặc áo khoác và đội mũ vào."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Now I am ready for school!",
+          "translation": "Giờ tớ sẵn sàng đi học rồi!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "shirt",
+          "definition": "áo sơ mi",
+          "example": "My shirt is white."
+        },
+        {
+          "term": "skirt",
+          "definition": "chân váy",
+          "example": "She has a blue skirt."
+        },
+        {
+          "term": "trousers",
+          "definition": "quần dài",
+          "example": "These trousers are new."
+        },
+        {
+          "term": "shoes",
+          "definition": "đôi giày",
+          "example": "Put on your shoes."
+        },
+        {
+          "term": "socks",
+          "definition": "đôi tất",
+          "example": "I wear warm socks."
+        },
+        {
+          "term": "jacket",
+          "definition": "áo khoác",
+          "example": "Put on your jacket."
+        }
+      ],
+      "grammar": {
+        "title": "I am wearing …",
+        "explanation": "Nói đang mặc gì: I am wearing a red shirt. Đồ có hai ống/hai chiếc (trousers, shoes, socks) dùng số nhiều.",
+        "examples": [
+          "I am wearing a shirt.",
+          "My shoes are here.",
+          "Put on your jacket."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /ʃ/ trong shirt, shoes",
+        "tip": "Chu môi, thổi hơi nhẹ như nói “suỵt”: shirt, shoes, she.",
+        "words": [
+          "shirt",
+          "shoes",
+          "she",
+          "jacket"
+        ]
+      },
+      "speakingTasks": [
+        "Nói ba món con đang mặc bằng tiếng Anh.",
+        "Chọn quần áo cho một ngày lạnh và một ngày nóng."
+      ],
+      "questions": [
+        {
+          "prompt": "What is Mia wearing?",
+          "options": [
+            "Trousers",
+            "A jacket",
+            "A white shirt and a blue skirt"
+          ],
+          "answer": 2,
+          "explanation": "“I am wearing my white shirt and my blue skirt.”"
+        },
+        {
+          "prompt": "Where are Mia's socks?",
+          "options": [
+            "Under the bed",
+            "On the table",
+            "In the bag"
+          ],
+          "answer": 0,
+          "explanation": "“My socks are under the bed.”"
+        },
+        {
+          "prompt": "What does Tom wear?",
+          "options": [
+            "Trousers and a T-shirt",
+            "A skirt",
+            "A dress"
+          ],
+          "answer": 0,
+          "explanation": "“I am wearing trousers and a T-shirt.”"
+        },
+        {
+          "prompt": "Why does Mum say put on your jacket?",
+          "options": [
+            "It is hot",
+            "It is night",
+            "It is cold"
+          ],
+          "answer": 2,
+          "explanation": "“It is cold.”"
+        },
+        {
+          "prompt": "Complete: My shoes ___ here.",
+          "options": [
+            "am",
+            "is",
+            "are"
+          ],
+          "answer": 2,
+          "explanation": "Shoes là số nhiều nên dùng are."
+        },
+        {
+          "prompt": "Complete the sentence: My _____ is white.",
+          "options": [
+            "skirt",
+            "shirt",
+            "socks"
+          ],
+          "answer": 1,
+          "explanation": "“shirt” nghĩa là “áo sơ mi”. Câu đầy đủ: My shirt is white."
+        },
+        {
+          "prompt": "What does “skirt” mean?",
+          "options": [
+            "chân váy",
+            "quần dài",
+            "áo sơ mi"
+          ],
+          "answer": 0,
+          "explanation": "“skirt” = chân váy. Ví dụ: She has a blue skirt."
+        },
+        {
+          "prompt": "Complete the sentence: These _____ are new.",
+          "options": [
+            "socks",
+            "trousers",
+            "shirt"
+          ],
+          "answer": 1,
+          "explanation": "“trousers” nghĩa là “quần dài”. Câu đầy đủ: These trousers are new."
+        },
+        {
+          "prompt": "What does “shoes” mean?",
+          "options": [
+            "đôi giày",
+            "áo khoác",
+            "áo sơ mi"
+          ],
+          "answer": 0,
+          "explanation": "“shoes” = đôi giày. Ví dụ: Put on your shoes."
+        },
+        {
+          "prompt": "Complete the sentence: I wear warm _____.",
+          "options": [
+            "jacket",
+            "shoes",
+            "socks"
+          ],
+          "answer": 2,
+          "explanation": "“socks” nghĩa là “đôi tất”. Câu đầy đủ: I wear warm socks."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a2-1",
+      "level": "A2",
+      "unit": "A2 · Bài 1",
+      "category": "Giao tiếp",
+      "title": "Một ngày của tôi",
+      "objective": "Kể về các việc mình làm trong ngày bằng thì hiện tại đơn.",
+      "reading": "Teacher: What do you do in the morning, Mia?\nMia: I get up at six o'clock. I brush my teeth and have breakfast.\nTeacher: How do you go to school?\nMia: I go to school by bike with my brother.\nTom: I have lunch at school. In the afternoon I play football.\nMia: In the evening I do my homework and watch TV.\nTeacher: And I go to bed at nine. Good night!",
+      "dialogue": [
+        {
+          "speaker": "Teacher",
+          "text": "What do you do in the morning, Mia?",
+          "translation": "Buổi sáng em làm gì, Mia?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "I get up at six o'clock. I brush my teeth and have breakfast.",
+          "translation": "Em dậy lúc sáu giờ. Em đánh răng và ăn sáng."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "How do you go to school?",
+          "translation": "Em đến trường bằng cách nào?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "I go to school by bike with my brother.",
+          "translation": "Em đi học bằng xe đạp với anh trai."
+        },
+        {
+          "speaker": "Tom",
+          "text": "I have lunch at school. In the afternoon I play football.",
+          "translation": "Tớ ăn trưa ở trường. Buổi chiều tớ chơi bóng đá."
+        },
+        {
+          "speaker": "Mia",
+          "text": "In the evening I do my homework and watch TV.",
+          "translation": "Buổi tối em làm bài tập và xem ti vi."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "And I go to bed at nine. Good night!",
+          "translation": "Còn cô đi ngủ lúc chín giờ. Chúc ngủ ngon!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "get up",
+          "definition": "thức dậy",
+          "example": "I get up at six."
+        },
+        {
+          "term": "breakfast",
+          "definition": "bữa sáng",
+          "example": "I have breakfast at home."
+        },
+        {
+          "term": "homework",
+          "definition": "bài tập về nhà",
+          "example": "I do my homework after school."
+        },
+        {
+          "term": "go to bed",
+          "definition": "đi ngủ",
+          "example": "I go to bed at nine."
+        },
+        {
+          "term": "brush my teeth",
+          "definition": "đánh răng",
+          "example": "I brush my teeth twice a day."
+        },
+        {
+          "term": "by bike",
+          "definition": "bằng xe đạp",
+          "example": "I go to school by bike."
+        }
+      ],
+      "grammar": {
+        "title": "Hiện tại đơn: I get up / He gets up",
+        "explanation": "Dùng để nói thói quen hằng ngày. Với he/she/it thêm s: He gets up at six. She plays football.",
+        "examples": [
+          "I get up at six.",
+          "He goes to school by bike.",
+          "She plays football."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Giờ giấc: o'clock",
+        "tip": "Nói giờ tròn: six o'clock, seven o'clock. Âm /ə/ trong o'clock đọc nhẹ.",
+        "words": [
+          "o'clock",
+          "breakfast",
+          "homework",
+          "evening"
+        ]
+      },
+      "speakingTasks": [
+        "Kể 4 việc con làm từ sáng đến tối, bắt đầu bằng I.",
+        "Hỏi bạn: What time do you get up?"
+      ],
+      "questions": [
+        {
+          "prompt": "What time does Mia get up?",
+          "options": [
+            "At noon",
+            "At six o'clock",
+            "At nine o'clock"
+          ],
+          "answer": 1,
+          "explanation": "“I get up at six o'clock.”"
+        },
+        {
+          "prompt": "How does Mia go to school?",
+          "options": [
+            "On foot",
+            "By bus",
+            "By bike"
+          ],
+          "answer": 2,
+          "explanation": "“I go to school by bike.”"
+        },
+        {
+          "prompt": "What does Tom do in the afternoon?",
+          "options": [
+            "Watches TV",
+            "Does homework",
+            "Plays football"
+          ],
+          "answer": 2,
+          "explanation": "“In the afternoon I play football.”"
+        },
+        {
+          "prompt": "When does Mia do her homework?",
+          "options": [
+            "At lunch",
+            "In the evening",
+            "In the morning"
+          ],
+          "answer": 1,
+          "explanation": "“In the evening I do my homework.”"
+        },
+        {
+          "prompt": "Complete: He ___ to school by bike.",
+          "options": [
+            "go",
+            "goes",
+            "going"
+          ],
+          "answer": 1,
+          "explanation": "He + động từ thêm es: goes."
+        },
+        {
+          "prompt": "Complete the sentence: I _____ at six.",
+          "options": [
+            "brush my teeth",
+            "get up",
+            "breakfast"
+          ],
+          "answer": 1,
+          "explanation": "“get up” nghĩa là “thức dậy”. Câu đầy đủ: I get up at six."
+        },
+        {
+          "prompt": "What does “breakfast” mean?",
+          "options": [
+            "bài tập về nhà",
+            "bữa sáng",
+            "đánh răng"
+          ],
+          "answer": 1,
+          "explanation": "“breakfast” = bữa sáng. Ví dụ: I have breakfast at home."
+        },
+        {
+          "prompt": "Complete the sentence: I do my _____ after school.",
+          "options": [
+            "breakfast",
+            "homework",
+            "get up"
+          ],
+          "answer": 1,
+          "explanation": "“homework” nghĩa là “bài tập về nhà”. Câu đầy đủ: I do my homework after school."
+        },
+        {
+          "prompt": "What does “go to bed” mean?",
+          "options": [
+            "đánh răng",
+            "đi ngủ",
+            "bằng xe đạp"
+          ],
+          "answer": 1,
+          "explanation": "“go to bed” = đi ngủ. Ví dụ: I go to bed at nine."
+        },
+        {
+          "prompt": "Complete the sentence: I _____ twice a day.",
+          "options": [
+            "homework",
+            "get up",
+            "brush my teeth"
+          ],
+          "answer": 2,
+          "explanation": "“brush my teeth” nghĩa là “đánh răng”. Câu đầy đủ: I brush my teeth twice a day."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a2-2",
+      "level": "A2",
+      "unit": "A2 · Bài 2",
+      "category": "Giao tiếp",
+      "title": "Ở sở thú: can và can't",
+      "objective": "Nói con vật làm được và không làm được gì.",
+      "reading": "Teacher: Welcome to the zoo! Look at the monkey.\nMia: It can climb trees. It can jump, too.\nTom: Can an elephant jump?\nTeacher: No, it can't. But it can swim and it can carry heavy things.\nMia: Can a bird swim?\nTom: Some birds can, but this bird can only fly.\nTeacher: Very good! Let us see the lions now.",
+      "dialogue": [
+        {
+          "speaker": "Teacher",
+          "text": "Welcome to the zoo! Look at the monkey.",
+          "translation": "Chào mừng đến sở thú! Nhìn chú khỉ kìa."
+        },
+        {
+          "speaker": "Mia",
+          "text": "It can climb trees. It can jump, too.",
+          "translation": "Nó trèo cây được. Nó cũng nhảy được nữa."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Can an elephant jump?",
+          "translation": "Con voi có nhảy được không?"
+        },
+        {
+          "speaker": "Teacher",
+          "text": "No, it can't. But it can swim and it can carry heavy things.",
+          "translation": "Không, nó không nhảy được. Nhưng nó biết bơi và mang được vật nặng."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Can a bird swim?",
+          "translation": "Con chim có biết bơi không?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "Some birds can, but this bird can only fly.",
+          "translation": "Một số loài chim biết, nhưng con chim này chỉ bay được."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Very good! Let us see the lions now.",
+          "translation": "Giỏi lắm! Bây giờ chúng ta đi xem sư tử nhé."
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "monkey",
+          "definition": "con khỉ",
+          "example": "The monkey eats a banana."
+        },
+        {
+          "term": "elephant",
+          "definition": "con voi",
+          "example": "An elephant is very big."
+        },
+        {
+          "term": "lion",
+          "definition": "sư tử",
+          "example": "The lion can run fast."
+        },
+        {
+          "term": "climb",
+          "definition": "trèo",
+          "example": "Monkeys can climb trees."
+        },
+        {
+          "term": "jump",
+          "definition": "nhảy",
+          "example": "Frogs can jump."
+        },
+        {
+          "term": "swim",
+          "definition": "bơi",
+          "example": "Fish can swim."
+        }
+      ],
+      "grammar": {
+        "title": "can / can't",
+        "explanation": "Can nói khả năng: It can swim. Can't (cannot) là không thể: It can't jump. Hỏi: Can an elephant jump? – No, it can't.",
+        "examples": [
+          "A monkey can climb.",
+          "An elephant can't jump.",
+          "Can a bird fly?"
+        ]
+      },
+      "pronunciation": {
+        "focus": "Phân biệt can /kæn/ và can't /kɑːnt/",
+        "tip": "Can đọc ngắn, nhẹ. Can't đọc dài và rõ hơn, nhấn vào âm “a” (kiểu Anh).",
+        "words": [
+          "can",
+          "can't",
+          "climb",
+          "swim"
+        ]
+      },
+      "speakingTasks": [
+        "Nói 3 điều con làm được và 2 điều con chưa làm được bằng can / can't.",
+        "Hỏi bạn: Can you swim?"
+      ],
+      "questions": [
+        {
+          "prompt": "What can the monkey do?",
+          "options": [
+            "Climb trees",
+            "Drive",
+            "Swim"
+          ],
+          "answer": 0,
+          "explanation": "“It can climb trees.”"
+        },
+        {
+          "prompt": "Can an elephant jump?",
+          "options": [
+            "Yes, it can.",
+            "Yes, it is.",
+            "No, it can't."
+          ],
+          "answer": 2,
+          "explanation": "Cô giáo: “No, it can't.”"
+        },
+        {
+          "prompt": "What can an elephant do?",
+          "options": [
+            "Swim",
+            "Fly",
+            "Climb trees"
+          ],
+          "answer": 0,
+          "explanation": "“It can swim and it can carry heavy things.”"
+        },
+        {
+          "prompt": "What can the bird in the lesson do?",
+          "options": [
+            "Swim",
+            "Run",
+            "Fly"
+          ],
+          "answer": 2,
+          "explanation": "“This bird can only fly.”"
+        },
+        {
+          "prompt": "Complete: A fish ___ swim.",
+          "options": [
+            "do",
+            "is",
+            "can"
+          ],
+          "answer": 2,
+          "explanation": "Can + động từ nguyên mẫu."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ eats a banana.",
+          "options": [
+            "monkey",
+            "elephant",
+            "jump"
+          ],
+          "answer": 0,
+          "explanation": "“monkey” nghĩa là “con khỉ”. Câu đầy đủ: The monkey eats a banana."
+        },
+        {
+          "prompt": "What does “elephant” mean?",
+          "options": [
+            "con voi",
+            "sư tử",
+            "nhảy"
+          ],
+          "answer": 0,
+          "explanation": "“elephant” = con voi. Ví dụ: An elephant is very big."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ can run fast.",
+          "options": [
+            "climb",
+            "swim",
+            "lion"
+          ],
+          "answer": 2,
+          "explanation": "“lion” nghĩa là “sư tử”. Câu đầy đủ: The lion can run fast."
+        },
+        {
+          "prompt": "What does “climb” mean?",
+          "options": [
+            "trèo",
+            "nhảy",
+            "bơi"
+          ],
+          "answer": 0,
+          "explanation": "“climb” = trèo. Ví dụ: Monkeys can climb trees."
+        },
+        {
+          "prompt": "Complete the sentence: Frogs can _____.",
+          "options": [
+            "jump",
+            "lion",
+            "climb"
+          ],
+          "answer": 0,
+          "explanation": "“jump” nghĩa là “nhảy”. Câu đầy đủ: Frogs can jump."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a2-3",
+      "level": "A2",
+      "unit": "A2 · Bài 3",
+      "category": "Giao tiếp",
+      "title": "Ở đâu? in, on, under",
+      "objective": "Dùng in, on, under, next to để nói vị trí đồ vật.",
+      "reading": "Mum: Tom, where is your school bag?\nTom: It is on the chair, Mum.\nMum: And where are your shoes?\nTom: They are under the table.\nMia: Your ball is in the box next to the door.\nTom: Thank you, Mia! And my cat?\nMia: It is behind the sofa. It is sleeping.",
+      "dialogue": [
+        {
+          "speaker": "Mum",
+          "text": "Tom, where is your school bag?",
+          "translation": "Tom, cặp sách của con đâu?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "It is on the chair, Mum.",
+          "translation": "Nó ở trên ghế, mẹ ạ."
+        },
+        {
+          "speaker": "Mum",
+          "text": "And where are your shoes?",
+          "translation": "Còn giày của con đâu?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "They are under the table.",
+          "translation": "Chúng ở dưới bàn ạ."
+        },
+        {
+          "speaker": "Mia",
+          "text": "Your ball is in the box next to the door.",
+          "translation": "Quả bóng của bạn ở trong cái hộp cạnh cửa."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Thank you, Mia! And my cat?",
+          "translation": "Cảm ơn Mia! Còn con mèo của tớ đâu?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "It is behind the sofa. It is sleeping.",
+          "translation": "Nó ở sau ghế sô-pha. Nó đang ngủ."
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "in",
+          "definition": "ở trong",
+          "example": "The ball is in the box."
+        },
+        {
+          "term": "on",
+          "definition": "ở trên (có tiếp xúc)",
+          "example": "The bag is on the chair."
+        },
+        {
+          "term": "under",
+          "definition": "ở dưới",
+          "example": "The shoes are under the table."
+        },
+        {
+          "term": "next to",
+          "definition": "bên cạnh",
+          "example": "The box is next to the door."
+        },
+        {
+          "term": "behind",
+          "definition": "ở phía sau",
+          "example": "The cat is behind the sofa."
+        },
+        {
+          "term": "between",
+          "definition": "ở giữa",
+          "example": "The cat is between the chairs."
+        }
+      ],
+      "grammar": {
+        "title": "Giới từ chỉ vị trí",
+        "explanation": "Where is …? / Where are …? hỏi vị trí. Trả lời bằng giới từ: It is in / on / under …. Số nhiều dùng They are.",
+        "examples": [
+          "Where is my bag?",
+          "It is on the chair.",
+          "They are under the table."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Âm /ʌ/ trong under, sun",
+        "tip": "Miệng mở nhỏ, âm ngắn và nhẹ như “ơ”: under, sun, bus, up.",
+        "words": [
+          "under",
+          "sofa",
+          "behind",
+          "between"
+        ]
+      },
+      "speakingTasks": [
+        "Đặt một món đồ chơi ở 3 chỗ khác nhau và nói vị trí bằng tiếng Anh.",
+        "Hỏi bố mẹ: Where is my …?"
+      ],
+      "questions": [
+        {
+          "prompt": "Where is Tom's school bag?",
+          "options": [
+            "On the chair",
+            "In the box",
+            "Under the table"
+          ],
+          "answer": 0,
+          "explanation": "“It is on the chair.”"
+        },
+        {
+          "prompt": "Where are Tom's shoes?",
+          "options": [
+            "Behind the door",
+            "Under the table",
+            "On the sofa"
+          ],
+          "answer": 1,
+          "explanation": "“They are under the table.”"
+        },
+        {
+          "prompt": "Where is the ball?",
+          "options": [
+            "On the bed",
+            "In the box",
+            "Under the chair"
+          ],
+          "answer": 1,
+          "explanation": "“Your ball is in the box.”"
+        },
+        {
+          "prompt": "Where is the cat?",
+          "options": [
+            "In the garden",
+            "On the table",
+            "Behind the sofa"
+          ],
+          "answer": 2,
+          "explanation": "“It is behind the sofa.”"
+        },
+        {
+          "prompt": "Complete: Where ___ my shoes?",
+          "options": [
+            "are",
+            "am",
+            "is"
+          ],
+          "answer": 0,
+          "explanation": "Shoes số nhiều nên hỏi Where are."
+        },
+        {
+          "prompt": "Complete the sentence: The ball is _____ the box.",
+          "options": [
+            "next to",
+            "in",
+            "behind"
+          ],
+          "answer": 1,
+          "explanation": "“in” nghĩa là “ở trong”. Câu đầy đủ: The ball is in the box."
+        },
+        {
+          "prompt": "What does “on” mean?",
+          "options": [
+            "ở giữa",
+            "ở trong",
+            "ở trên (có tiếp xúc)"
+          ],
+          "answer": 2,
+          "explanation": "“on” = ở trên (có tiếp xúc). Ví dụ: The bag is on the chair."
+        },
+        {
+          "prompt": "Complete the sentence: The shoes are _____ the table.",
+          "options": [
+            "behind",
+            "under",
+            "between"
+          ],
+          "answer": 1,
+          "explanation": "“under” nghĩa là “ở dưới”. Câu đầy đủ: The shoes are under the table."
+        },
+        {
+          "prompt": "What does “next to” mean?",
+          "options": [
+            "bên cạnh",
+            "ở giữa",
+            "ở trong"
+          ],
+          "answer": 0,
+          "explanation": "“next to” = bên cạnh. Ví dụ: The box is next to the door."
+        },
+        {
+          "prompt": "Complete the sentence: The cat is _____ the sofa.",
+          "options": [
+            "under",
+            "behind",
+            "next to"
+          ],
+          "answer": 1,
+          "explanation": "“behind” nghĩa là “ở phía sau”. Câu đầy đủ: The cat is behind the sofa."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a2-4",
+      "level": "A2",
+      "unit": "A2 · Bài 4",
+      "category": "Giao tiếp",
+      "title": "Ngôi nhà của tôi",
+      "objective": "Tả các phòng và đồ vật trong nhà bằng There is / There are.",
+      "reading": "Mia: Welcome to my house! Come in.\nTom: Wow, it is big! How many rooms are there?\nMia: There are five rooms. There is a living room, a kitchen and three bedrooms.\nTom: What is in your bedroom?\nMia: There is a bed, a desk and a lamp. There are many books, too.\nTom: Is there a garden?\nMia: Yes, there is. Let us play there!",
+      "dialogue": [
+        {
+          "speaker": "Mia",
+          "text": "Welcome to my house! Come in.",
+          "translation": "Chào mừng đến nhà tớ! Mời vào."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Wow, it is big! How many rooms are there?",
+          "translation": "Ồ, nhà to quá! Có bao nhiêu phòng vậy?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "There are five rooms. There is a living room, a kitchen and three bedrooms.",
+          "translation": "Có năm phòng. Có một phòng khách, một nhà bếp và ba phòng ngủ."
+        },
+        {
+          "speaker": "Tom",
+          "text": "What is in your bedroom?",
+          "translation": "Trong phòng ngủ của bạn có gì?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "There is a bed, a desk and a lamp. There are many books, too.",
+          "translation": "Có một cái giường, một cái bàn học và một cái đèn. Cũng có nhiều sách nữa."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Is there a garden?",
+          "translation": "Có vườn không?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "Yes, there is. Let us play there!",
+          "translation": "Có chứ. Chúng ta ra đó chơi đi!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "living room",
+          "definition": "phòng khách",
+          "example": "We watch TV in the living room."
+        },
+        {
+          "term": "kitchen",
+          "definition": "nhà bếp",
+          "example": "Mum cooks in the kitchen."
+        },
+        {
+          "term": "bedroom",
+          "definition": "phòng ngủ",
+          "example": "My bedroom is small."
+        },
+        {
+          "term": "bathroom",
+          "definition": "phòng tắm",
+          "example": "The bathroom is next to my room."
+        },
+        {
+          "term": "garden",
+          "definition": "khu vườn",
+          "example": "There are flowers in the garden."
+        },
+        {
+          "term": "lamp",
+          "definition": "cái đèn",
+          "example": "There is a lamp on the desk."
+        }
+      ],
+      "grammar": {
+        "title": "There is / There are",
+        "explanation": "There is + danh từ số ít: There is a bed. There are + số nhiều: There are three bedrooms. Hỏi: Is there a garden? – Yes, there is.",
+        "examples": [
+          "There is a lamp.",
+          "There are three bedrooms.",
+          "Is there a garden?"
+        ]
+      },
+      "pronunciation": {
+        "focus": "Nhấn âm trong từ hai âm tiết",
+        "tip": "Nhấn vào âm đầu: KITchen, BEDroom, GARden, LAMP. Đọc âm đầu to và rõ hơn.",
+        "words": [
+          "kitchen",
+          "bedroom",
+          "garden",
+          "bathroom"
+        ]
+      },
+      "speakingTasks": [
+        "Tả phòng ngủ của con: There is … / There are …",
+        "Hỏi bạn: Is there a garden at your house?"
+      ],
+      "questions": [
+        {
+          "prompt": "How many rooms are there?",
+          "options": [
+            "Five",
+            "Three",
+            "Ten"
+          ],
+          "answer": 0,
+          "explanation": "“There are five rooms.”"
+        },
+        {
+          "prompt": "How many bedrooms are there?",
+          "options": [
+            "One",
+            "Three",
+            "Five"
+          ],
+          "answer": 1,
+          "explanation": "“three bedrooms.”"
+        },
+        {
+          "prompt": "What is on Mia's desk or in her room?",
+          "options": [
+            "A lamp",
+            "A cat",
+            "A car"
+          ],
+          "answer": 0,
+          "explanation": "“a bed, a desk and a lamp.”"
+        },
+        {
+          "prompt": "Is there a garden?",
+          "options": [
+            "Yes, there is.",
+            "Yes, it is.",
+            "No, there isn't."
+          ],
+          "answer": 0,
+          "explanation": "Mia trả lời “Yes, there is.”"
+        },
+        {
+          "prompt": "Complete: There ___ many books.",
+          "options": [
+            "is",
+            "am",
+            "are"
+          ],
+          "answer": 2,
+          "explanation": "Books số nhiều nên dùng there are."
+        },
+        {
+          "prompt": "Complete the sentence: We watch TV in the _____.",
+          "options": [
+            "living room",
+            "bedroom",
+            "lamp"
+          ],
+          "answer": 0,
+          "explanation": "“living room” nghĩa là “phòng khách”. Câu đầy đủ: We watch TV in the living room."
+        },
+        {
+          "prompt": "What does “kitchen” mean?",
+          "options": [
+            "khu vườn",
+            "nhà bếp",
+            "phòng khách"
+          ],
+          "answer": 1,
+          "explanation": "“kitchen” = nhà bếp. Ví dụ: Mum cooks in the kitchen."
+        },
+        {
+          "prompt": "Complete the sentence: My _____ is small.",
+          "options": [
+            "bedroom",
+            "living room",
+            "bathroom"
+          ],
+          "answer": 0,
+          "explanation": "“bedroom” nghĩa là “phòng ngủ”. Câu đầy đủ: My bedroom is small."
+        },
+        {
+          "prompt": "What does “bathroom” mean?",
+          "options": [
+            "phòng ngủ",
+            "phòng tắm",
+            "nhà bếp"
+          ],
+          "answer": 1,
+          "explanation": "“bathroom” = phòng tắm. Ví dụ: The bathroom is next to my room."
+        },
+        {
+          "prompt": "Complete the sentence: There are flowers in the _____.",
+          "options": [
+            "lamp",
+            "garden",
+            "living room"
+          ],
+          "answer": 1,
+          "explanation": "“garden” nghĩa là “khu vườn”. Câu đầy đủ: There are flowers in the garden."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a2-5",
+      "level": "A2",
+      "unit": "A2 · Bài 5",
+      "category": "Giao tiếp",
+      "title": "Sở thích và thể thao",
+      "objective": "Nói về môn thể thao và hoạt động mình thích.",
+      "reading": "Teacher: What do you like doing in your free time?\nMia: I like dancing and drawing. I do not like swimming.\nTom: I love playing football with my friends.\nTeacher: Do you play any sport on Sunday?\nTom: Yes, I play badminton with my dad.\nMia: On Sundays I read stories and ride my bike.\nTeacher: Those are great hobbies!",
+      "dialogue": [
+        {
+          "speaker": "Teacher",
+          "text": "What do you like doing in your free time?",
+          "translation": "Rảnh rỗi em thích làm gì?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "I like dancing and drawing. I do not like swimming.",
+          "translation": "Em thích nhảy múa và vẽ. Em không thích bơi."
+        },
+        {
+          "speaker": "Tom",
+          "text": "I love playing football with my friends.",
+          "translation": "Tớ rất thích chơi bóng đá với bạn bè."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Do you play any sport on Sunday?",
+          "translation": "Chủ nhật em có chơi môn thể thao nào không?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "Yes, I play badminton with my dad.",
+          "translation": "Có ạ, em chơi cầu lông với bố."
+        },
+        {
+          "speaker": "Mia",
+          "text": "On Sundays I read stories and ride my bike.",
+          "translation": "Chủ nhật em đọc truyện và đạp xe."
+        },
+        {
+          "speaker": "Teacher",
+          "text": "Those are great hobbies!",
+          "translation": "Đó đều là những sở thích tuyệt vời!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "dance",
+          "definition": "nhảy múa",
+          "example": "I like to dance."
+        },
+        {
+          "term": "draw",
+          "definition": "vẽ",
+          "example": "She draws a flower."
+        },
+        {
+          "term": "football",
+          "definition": "bóng đá",
+          "example": "He plays football."
+        },
+        {
+          "term": "badminton",
+          "definition": "cầu lông",
+          "example": "We play badminton on Sunday."
+        },
+        {
+          "term": "ride a bike",
+          "definition": "đạp xe",
+          "example": "I ride a bike in the park."
+        },
+        {
+          "term": "hobby",
+          "definition": "sở thích",
+          "example": "Drawing is my hobby."
+        }
+      ],
+      "grammar": {
+        "title": "like + V-ing",
+        "explanation": "Sau like/love dùng động từ thêm -ing: I like dancing. He loves playing football. Phủ định: I do not like swimming.",
+        "examples": [
+          "I like dancing.",
+          "He loves playing football.",
+          "I do not like swimming."
+        ]
+      },
+      "pronunciation": {
+        "focus": "Đuôi -ing",
+        "tip": "Đọc đuôi -ing là /ɪŋ/, không đọc “in”: dancing, drawing, swimming.",
+        "words": [
+          "dancing",
+          "drawing",
+          "swimming",
+          "reading"
+        ]
+      },
+      "speakingTasks": [
+        "Nói 3 sở thích của con bằng I like + V-ing.",
+        "Hỏi bạn: What do you like doing?"
+      ],
+      "questions": [
+        {
+          "prompt": "What does Mia like doing?",
+          "options": [
+            "Football",
+            "Swimming",
+            "Dancing and drawing"
+          ],
+          "answer": 2,
+          "explanation": "“I like dancing and drawing.”"
+        },
+        {
+          "prompt": "Who plays football?",
+          "options": [
+            "Tom",
+            "The teacher",
+            "Mia"
+          ],
+          "answer": 0,
+          "explanation": "Tom: “I love playing football.”"
+        },
+        {
+          "prompt": "What does Tom play with his dad?",
+          "options": [
+            "Chess",
+            "Football",
+            "Badminton"
+          ],
+          "answer": 2,
+          "explanation": "“I play badminton with my dad.”"
+        },
+        {
+          "prompt": "What does Mia do on Sundays?",
+          "options": [
+            "Reads stories and rides her bike",
+            "Swims",
+            "Plays badminton"
+          ],
+          "answer": 0,
+          "explanation": "“I read stories and ride my bike.”"
+        },
+        {
+          "prompt": "Complete: I like ___ football.",
+          "options": [
+            "plays",
+            "play",
+            "playing"
+          ],
+          "answer": 2,
+          "explanation": "Sau like dùng V-ing."
+        },
+        {
+          "prompt": "Complete the sentence: I like to _____.",
+          "options": [
+            "ride a bike",
+            "football",
+            "dance"
+          ],
+          "answer": 2,
+          "explanation": "“dance” nghĩa là “nhảy múa”. Câu đầy đủ: I like to dance."
+        },
+        {
+          "prompt": "What does “draw” mean?",
+          "options": [
+            "bóng đá",
+            "sở thích",
+            "vẽ"
+          ],
+          "answer": 2,
+          "explanation": "“draw” = vẽ. Ví dụ: She draws a flower."
+        },
+        {
+          "prompt": "Complete the sentence: He plays _____.",
+          "options": [
+            "badminton",
+            "football",
+            "ride a bike"
+          ],
+          "answer": 1,
+          "explanation": "“football” nghĩa là “bóng đá”. Câu đầy đủ: He plays football."
+        },
+        {
+          "prompt": "What does “badminton” mean?",
+          "options": [
+            "vẽ",
+            "sở thích",
+            "cầu lông"
+          ],
+          "answer": 2,
+          "explanation": "“badminton” = cầu lông. Ví dụ: We play badminton on Sunday."
+        },
+        {
+          "prompt": "Complete the sentence: I _____ in the park.",
+          "options": [
+            "dance",
+            "draw",
+            "ride a bike"
+          ],
+          "answer": 2,
+          "explanation": "“ride a bike” nghĩa là “đạp xe”. Câu đầy đủ: I ride a bike in the park."
+        }
+      ],
+      "audioIds": []
+    },
+    {
+      "id": "kids-a2-6",
+      "level": "A2",
+      "unit": "A2 · Bài 6",
+      "category": "Giao tiếp",
+      "title": "Tiệc sinh nhật",
+      "objective": "Chúc mừng sinh nhật, hỏi tuổi và mời đồ ăn.",
+      "reading": "Mia: Happy birthday, Tom!\nTom: Thank you, Mia! I am nine years old today.\nMia: This present is for you. I hope you like it.\nTom: Wow, a new football! It is great.\nMum: Would you like some cake and juice?\nMia: Yes, please. The cake looks delicious.\nTom: Let us sing and blow out the candles. Make a wish!",
+      "dialogue": [
+        {
+          "speaker": "Mia",
+          "text": "Happy birthday, Tom!",
+          "translation": "Chúc mừng sinh nhật, Tom!"
+        },
+        {
+          "speaker": "Tom",
+          "text": "Thank you, Mia! I am nine years old today.",
+          "translation": "Cảm ơn Mia! Hôm nay tớ chín tuổi."
+        },
+        {
+          "speaker": "Mia",
+          "text": "This present is for you. I hope you like it.",
+          "translation": "Món quà này dành cho bạn. Tớ hy vọng bạn thích nó."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Wow, a new football! It is great.",
+          "translation": "Ồ, một quả bóng đá mới! Tuyệt quá."
+        },
+        {
+          "speaker": "Mum",
+          "text": "Would you like some cake and juice?",
+          "translation": "Các con muốn ăn bánh và uống nước ép không?"
+        },
+        {
+          "speaker": "Mia",
+          "text": "Yes, please. The cake looks delicious.",
+          "translation": "Vâng ạ. Chiếc bánh trông rất ngon."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Let us sing and blow out the candles. Make a wish!",
+          "translation": "Chúng ta hát rồi thổi nến nào. Hãy ước một điều đi!"
+        }
+      ],
+      "vocabulary": [
+        {
+          "term": "birthday",
+          "definition": "sinh nhật",
+          "example": "My birthday is in May."
+        },
+        {
+          "term": "present",
+          "definition": "món quà",
+          "example": "I have a present for you."
+        },
+        {
+          "term": "cake",
+          "definition": "bánh ngọt",
+          "example": "The cake is delicious."
+        },
+        {
+          "term": "candle",
+          "definition": "ngọn nến",
+          "example": "Blow out the candles."
+        },
+        {
+          "term": "party",
+          "definition": "bữa tiệc",
+          "example": "We have a party today."
+        },
+        {
+          "term": "delicious",
+          "definition": "ngon",
+          "example": "The cake is delicious."
+        }
+      ],
+      "grammar": {
+        "title": "How old are you? / Would you like …?",
+        "explanation": "Hỏi tuổi: How old are you? – I am nine. Mời lịch sự: Would you like some cake? – Yes, please. / No, thank you.",
+        "examples": [
+          "How old are you?",
+          "I am nine years old.",
+          "Would you like some cake?"
+        ]
+      },
+      "pronunciation": {
+        "focus": "Hát Happy Birthday",
+        "tip": "Hát chậm và rõ: Happy birthday to you! Nối âm: “birthday to” đọc liền nhau.",
+        "words": [
+          "birthday",
+          "happy",
+          "candle",
+          "present"
+        ]
+      },
+      "speakingTasks": [
+        "Hỏi bố mẹ How old are you? và trả lời tuổi của con.",
+        "Đóng vai tiệc sinh nhật: tặng quà, mời bánh, hát chúc mừng."
+      ],
+      "questions": [
+        {
+          "prompt": "How old is Tom today?",
+          "options": [
+            "Nine",
+            "Ten",
+            "Seven"
+          ],
+          "answer": 0,
+          "explanation": "“I am nine years old today.”"
+        },
+        {
+          "prompt": "What present does Tom get?",
+          "options": [
+            "A football",
+            "A book",
+            "A bag"
+          ],
+          "answer": 0,
+          "explanation": "“a new football”."
+        },
+        {
+          "prompt": "What does Mum offer?",
+          "options": [
+            "Fish",
+            "Rice",
+            "Cake and juice"
+          ],
+          "answer": 2,
+          "explanation": "“Would you like some cake and juice?”"
+        },
+        {
+          "prompt": "How do you accept politely?",
+          "options": [
+            "Yes, please.",
+            "Give me.",
+            "Yes, I am."
+          ],
+          "answer": 0,
+          "explanation": "Yes, please = vâng, xin cảm ơn."
+        },
+        {
+          "prompt": "Complete: Happy ___ , Tom!",
+          "options": [
+            "present",
+            "birthday",
+            "morning"
+          ],
+          "answer": 1,
+          "explanation": "Happy birthday = chúc mừng sinh nhật."
+        },
+        {
+          "prompt": "Complete the sentence: My _____ is in May.",
+          "options": [
+            "delicious",
+            "candle",
+            "birthday"
+          ],
+          "answer": 2,
+          "explanation": "“birthday” nghĩa là “sinh nhật”. Câu đầy đủ: My birthday is in May."
+        },
+        {
+          "prompt": "What does “present” mean?",
+          "options": [
+            "món quà",
+            "ngọn nến",
+            "ngon"
+          ],
+          "answer": 0,
+          "explanation": "“present” = món quà. Ví dụ: I have a present for you."
+        },
+        {
+          "prompt": "Complete the sentence: The _____ is delicious.",
+          "options": [
+            "cake",
+            "party",
+            "candle"
+          ],
+          "answer": 0,
+          "explanation": "“cake” nghĩa là “bánh ngọt”. Câu đầy đủ: The cake is delicious."
+        },
+        {
+          "prompt": "What does “candle” mean?",
+          "options": [
+            "ngọn nến",
+            "món quà",
+            "bữa tiệc"
+          ],
+          "answer": 0,
+          "explanation": "“candle” = ngọn nến. Ví dụ: Blow out the candles."
+        },
+        {
+          "prompt": "Complete the sentence: We have a _____ today.",
+          "options": [
+            "present",
+            "party",
+            "candle"
+          ],
+          "answer": 1,
+          "explanation": "“party” nghĩa là “bữa tiệc”. Câu đầy đủ: We have a party today."
+        }
+      ],
+      "audioIds": []
+    }
+  ],
+  "audio": []
+}
