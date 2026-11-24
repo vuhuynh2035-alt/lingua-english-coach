@@ -91,17 +91,29 @@ export async function downloadPack(id: PackId, onProgress: (fraction: number) =>
     if (await cached(cache, file.name)) { done += file.bytes; onProgress(done / total); continue; }
     const response = await fetch(url, { signal, cache: "no-cache" });
     if (!response.ok || !response.body) throw new Error(`Không tải được ${file.name} (HTTP ${response.status}).`);
+    // Stream the body straight into the cache: keeping a 60-80 MB file in memory (array + Blob + Response)
+    // gets the page killed on iPhone. Progress is counted while the bytes pass through.
     const reader = response.body.getReader();
-    const chunks: Uint8Array[] = [];
     let loaded = 0;
-    for (;;) {
-      const { done: finished, value } = await reader.read();
-      if (finished) break;
-      chunks.push(value);
-      loaded += value.length;
-      onProgress((done + Math.min(loaded, file.bytes)) / total);
+    const counted = new ReadableStream<Uint8Array>({
+      async pull(controller) {
+        const { done: finished, value } = await reader.read();
+        if (finished) { controller.close(); return; }
+        loaded += value.length;
+        onProgress((done + Math.min(loaded, file.bytes)) / total);
+        controller.enqueue(value);
+      },
+      cancel(reason) { return reader.cancel(reason); },
+    });
+    try {
+      await cache.put(url, new Response(counted, { headers: { "Content-Type": response.headers.get("Content-Type") ?? "application/octet-stream" } }));
+    } catch (error) {
+      if (signal?.aborted) throw error;
+      const name = error instanceof Error ? error.name : "";
+      throw new Error(name === "QuotaExceededError"
+        ? `Máy không còn đủ dung lượng cho ${file.name}. Giải phóng bộ nhớ rồi thử lại.`
+        : `Không lưu được ${file.name} vào bộ nhớ trình duyệt${error instanceof Error && error.message ? ` (${error.message})` : ""}. Thử lại, hoặc mở bằng Safari thay vì app trên màn hình chính.`);
     }
-    await cache.put(url, new Response(new Blob(chunks as BlobPart[]), { headers: { "Content-Type": response.headers.get("Content-Type") ?? "application/octet-stream" } }));
     done += file.bytes;
   }
   try { localStorage.setItem(FLAGS[id], "1"); } catch {}
