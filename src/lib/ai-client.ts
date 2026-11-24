@@ -12,6 +12,8 @@ export class AiError extends Error {
   details: string[] = [];
   /** The provider's own error text, if any. */
   detail = "";
+  /** For a quota refusal: how long the provider asked to wait (ms), when it said so. */
+  retryAfterMs?: number;
   constructor(kind: AiErrorKind, message: string, status?: number) {
     super(message);
     this.name = "AiError";
@@ -41,8 +43,9 @@ export const FALLBACK_MODELS: Record<AiProvider, string[]> = {
   openai: ["gpt-4o-mini", "gpt-4.1-mini"],
 };
 
-const FIRST_BYTE_TIMEOUT_MS = 20_000;
-const TOTAL_STREAM_TIMEOUT_MS = 45_000;
+// New Gemini models think before the first word and a phone network can be slow: wait longer, then retry once before giving up.
+const FIRST_BYTE_TIMEOUT_MS = 30_000;
+const TOTAL_STREAM_TIMEOUT_MS = 75_000;
 
 /**
  * Speech, image, embedding and similar models also answer generateContent but cannot chat;
@@ -110,13 +113,40 @@ export function classifyError(error: unknown, provider: AiProvider = "google"): 
 function classifyHttp(provider: AiProvider, status: number, detail: string): AiError {
   const error = classifyStatus(provider, status, detail);
   error.detail = detail;
+  if (error.kind === "quota") error.retryAfterMs = retryDelayMs(detail);
   return error;
+}
+
+/** "Please retry in 20.5s" / "retryDelay": "20s" in a 429 text, in ms. */
+function retryDelayMs(detail: string): number | undefined {
+  const match = /retry(?:\s+in|Delay"?\s*:?\s*"?)\s*([\d.]+)\s*s/i.exec(detail);
+  return match ? Math.ceil(Number(match[1]) * 1000) : undefined;
+}
+
+/**
+ * What a provider's 429 means for the next attempt: a day limit closes the model until the limit renews;
+ * anything else only pauses it for as long as the provider asked (at least 5 s, at most 10 min), so a passing
+ * refusal never shuts a working key for the rest of the day.
+ */
+export function quotaWait(error: AiError): { how: "day" | "minute"; ms: number } {
+  const text = `${error.detail} ${error.message}`;
+  const day = /per[ _-]?day|RPD|limit:\s*0(?!\d)/i.test(text);
+  const retry = error.retryAfterMs;
+  if (day && (retry === undefined || retry > 600_000)) return { how: "day", ms: 0 };
+  const base = retry ?? 60_000;
+  return { how: "minute", ms: Math.min(Math.max(day ? Math.max(base, 30_000) : base, 5_000), 600_000) };
 }
 
 function classifyStatus(provider: AiProvider, status: number, detail: string): AiError {
   const name = provider === "google" ? "Google Gemini" : "OpenAI";
   if (status === 401 || status === 403 || (status === 400 && /api[\s_-]?key|API_KEY_INVALID/i.test(detail))) {
     return new AiError("auth", `${name} từ chối API key (HTTP ${status}).`, status);
+  }
+  if (status === 402) {
+    return new AiError("other", "Dự án của key này đang bật trả phí nhưng số dư trả trước đã hết (HTTP 402). Hãy nạp thêm ở Google AI Studio, hoặc dùng một key miễn phí.", status);
+  }
+  if (status === 400 && /location is not supported/i.test(detail)) {
+    return new AiError("other", "Google chưa cho dùng Gemini API ở khu vực bạn đang ở (HTTP 400, location is not supported).", status);
   }
   if (status === 429) return new AiError("quota", `API key ${name} đã hết hạn mức hoặc bị giới hạn tốc độ (HTTP 429).`, status);
   if (status === 404 || (status === 400 && /model/i.test(detail) && !/thinking/i.test(detail))) {
@@ -285,22 +315,52 @@ async function streamOpenAi(
   return text;
 }
 
+/** Models that were overloaded or too slow a moment ago go to the back of the line for a while. */
+const modelPenalty = new Map<string, number>();
+const PENALTY_MS = 10 * 60_000;
+const penalized = (model: string) => (modelPenalty.get(model) ?? 0) > Date.now();
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
 /**
  * Runs `operation` over (model × key) pairs until one succeeds.
  * - auth: the key is skipped for the rest of the run. quota: next key, same model.
  * - model: the model is dropped for every key.
- * - timeout: the model is too slow right now, so it is dropped (no retry).
- * - busy / network: one quick retry on the same pair, then move on.
+ * - timeout: one more try, then the model is dropped for this run and put at the back of the line for 10 minutes.
+ * - busy / network: one quick retry on the same pair, then move on (a busy model also goes to the back of the line).
+ * - every key refused for a short while (a per-minute limit): wait what Google asked, then one more round.
  */
 export async function runWithFailover<T>(
   options: FailoverOptions,
   operation: (key: string, model: string) => Promise<T>,
 ): Promise<FailoverResult<T>> {
-  const { provider, keys, preferredKeyId, models, deadlineMs = 60_000, onStatus } = options;
+  const started = Date.now();
+  const budget = options.deadlineMs ?? 90_000;
+  for (let round = 0; ; round++) {
+    try {
+      return await failoverRound(options, operation, started, budget);
+    } catch (error) {
+      const wait = error instanceof AiError && error.kind === "quota" ? error.retryAfterMs : undefined;
+      if (round === 0 && wait !== undefined && wait <= 12_000 && Date.now() - started + wait + 5_000 < budget) {
+        options.onStatus?.(`Google báo vượt số lượt mỗi phút, đang chờ ${Math.ceil(wait / 1000)} giây rồi thử lại…`);
+        await sleep(wait + 300);
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
+async function failoverRound<T>(
+  options: FailoverOptions,
+  operation: (key: string, model: string) => Promise<T>,
+  start: number,
+  deadlineMs: number,
+): Promise<FailoverResult<T>> {
+  const { provider, keys, preferredKeyId, onStatus } = options;
+  const models = [...options.models.filter((model) => !penalized(model)), ...options.models.filter(penalized)];
   const providerName = provider === "google" ? "Google AI" : "OpenAI";
   if (!keys.length) throw new AiError("auth", `Chưa có API key ${providerName}. Hãy thêm key trong Cài đặt.`);
 
-  const start = Date.now();
   const preferred = keys.findIndex((k) => k.id === preferredKeyId);
   const orderedKeys = preferred <= 0 ? keys : [...keys.slice(preferred), ...keys.slice(0, preferred)];
   const deadKeys = new Set<string>();
@@ -319,6 +379,7 @@ export async function runWithFailover<T>(
             onStatus?.(`Đang thử ${key.label || `key ${index + 1}`} · ${model}…`);
           }
           const value = await operation(key.value, model);
+          modelPenalty.delete(model);
           return { value, keyId: key.id, model };
         } catch (raw) {
           const error = classifyError(raw, provider);
@@ -327,9 +388,16 @@ export async function runWithFailover<T>(
           // Quota is per model on Gemini, so a 429 only skips this key for this model.
           if (error.kind === "auth") { deadKeys.add(key.id); break; }
           if (error.kind === "quota") break;
-          if (error.kind === "model" || error.kind === "timeout") { deadModels.add(model); break; }
+          if (error.kind === "model") { deadModels.add(model); break; }
+          if (error.kind === "timeout") {
+            if (tries === 0) continue;
+            deadModels.add(model);
+            modelPenalty.set(model, Date.now() + PENALTY_MS);
+            break;
+          }
           if (error.kind === "other") throw error;
-          if (tries === 0) await new Promise((r) => setTimeout(r, 600));
+          if (tries === 0) await sleep(600);
+          else if (error.kind === "busy") modelPenalty.set(model, Date.now() + PENALTY_MS);
         }
       }
     }
@@ -355,7 +423,7 @@ function quotaAdvice(quota: AiError[], providerName: string): string {
   const perDay = /per[ _-]?day|RPD/i.test(text);
   const retry = /retry in ([\d.]+)s/i.exec(text);
   const wait = retry ? ` Thử lại sau khoảng ${Math.ceil(Number(retry[1]))} giây.` : perDay ? " Hạn mức theo ngày sẽ đặt lại vào khoảng 14–15 giờ (giờ Việt Nam)." : " Chờ khoảng 1 phút rồi thử lại.";
-  return `Tất cả API key ${providerName} đã hết hạn mức ${perDay ? "trong ngày" : "tạm thời (theo phút)"}.${wait} Lưu ý: các key tạo trong cùng một dự án Google dùng chung hạn mức — muốn có thêm hạn mức, hãy tạo key ở dự án khác.`;
+  return `${providerName} báo ${perDay ? "đã dùng hết số lượt TRONG NGÀY" : "vượt số lượt MỖI PHÚT"} của key (đây là giới hạn của Google, không phải lỗi của app).${wait} Lưu ý: các key tạo trong cùng một dự án Google dùng chung hạn mức — muốn có thêm hạn mức, hãy tạo key ở dự án khác.`;
 }
 
 function summaryError(problems: AiError[], providerName: string): AiError {
@@ -371,7 +439,12 @@ function summaryError(problems: AiError[], providerName: string): AiError {
     return new AiError("auth", `${providerName} từ chối tất cả API key đã lưu. Hãy kiểm tra hoặc tạo key mới trong Cài đặt.`);
   }
   if (kinds.has("quota") && !kinds.has("network") && !kinds.has("timeout")) {
-    return new AiError("quota", quotaAdvice(problems.filter((p) => p.kind === "quota"), providerName));
+    const quota = problems.filter((p) => p.kind === "quota");
+    const summary = new AiError("quota", quotaAdvice(quota, providerName));
+    summary.detail = quota.map((p) => p.detail).join(" ");
+    // Every refusal said how long to wait: the caller may wait that long once and try again.
+    if (quota.every((p) => p.retryAfterMs !== undefined)) summary.retryAfterMs = Math.min(...quota.map((p) => p.retryAfterMs as number));
+    return summary;
   }
   if (kinds.has("network")) {
     return new AiError("network", "Không kết nối được tới máy chủ AI. Hãy kiểm tra Internet, tắt VPN/chặn quảng cáo rồi thử lại.");

@@ -63,6 +63,7 @@ import {
   parseAiJson,
   modelCandidates,
   rankGoogleModels,
+  quotaWait,
   runWithFailover,
   streamChat,
 } from "@/lib/ai-client";
@@ -1611,7 +1612,8 @@ export default function Home() {
           return value;
         } catch (error) {
           if (error instanceof AiError && error.kind === "quota" && error.detail !== "local usage limit") {
-            refuseUsage(usageSettingsRef.current, service, key, model, "chat", /per[ _-]?day|RPD/i.test(error.detail) ? "day" : "minute");
+            const wait = quotaWait(error);
+            refuseUsage(usageSettingsRef.current, service, key, model, "chat", wait.how, "", wait.ms);
           }
           throw error;
         }
@@ -2519,7 +2521,10 @@ Return ONLY valid JSON with these fields: {"score": integer 0-100, "heard": shor
           return value;
         } catch (error) {
           const failure = error instanceof AiError ? error : null;
-          if (failure?.kind === "quota") refuseUsage(usageSettingsRef.current, choice.service, choice.key, choice.model, "speech", /per[ _-]?day|RPD|limit:\s*0(?!\d)/i.test(`${failure.detail} ${failure.message}`) ? "day" : "minute");
+          if (failure?.kind === "quota") {
+            const wait = quotaWait(failure);
+            refuseUsage(usageSettingsRef.current, choice.service, choice.key, choice.model, "speech", wait.how, "", wait.ms);
+          }
           else if (failure?.kind === "auth") refuseUsage(usageSettingsRef.current, choice.service, choice.key, choice.model, "speech", "key", failure.message);
           reason = `${SERVICE_NAMES[choice.service]}: ${error instanceof Error ? error.message : "lỗi không xác định"}`;
         }

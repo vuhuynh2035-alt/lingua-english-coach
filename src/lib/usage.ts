@@ -212,6 +212,8 @@ type Ledger = { month: string; spent: Record<ServiceId, number>; byKey?: Record<
 let ledger: Ledger | null = null;
 /** Request start times in the last minute per key|model (memory only: a minute is short). */
 const minute: Record<string, number[]> = {};
+/** A model the provider refused for a while (a per-minute limit): until when, by counters group and model. */
+const paused: Record<string, number> = {};
 /** A key refused as invalid / not enabled: skipped until this time. */
 const blockedUntil: Record<string, { until: number; reason: string }> = {};
 
@@ -294,13 +296,20 @@ export function check(settings: UsageSettings, service: ServiceId, key: string, 
   const { rpm, rpd } = limitsFor(service, tier, kind);
   const bucket = `${kind}:${model}`;
   const cost = estimateCost(settings, service, tier, kind, model, amount, group);
-  if (entry.closed[bucket] || (entry.dayCount[bucket] ?? 0) >= safe(rpd)) {
+  // The free Gemini limits in the table are only a guess, so they never block by themselves: only what Google itself
+  // refused does (a pause for as long as it asked, or a closed day). Counting stays for the gauges.
+  const guessed = service === "gemini" && tier === "free";
+  const now = Date.now();
+  const pausedUntil = paused[`${group}|${bucket}`] ?? 0;
+  if (pausedUntil > now) {
+    return { ok: false, cost, reason: `${name} (${model}) đang chờ Google cho gọi lại`, resetIn: pausedUntil - now, renews: "minute" };
+  }
+  if (entry.closed[bucket] || (!guessed && (entry.dayCount[bucket] ?? 0) >= safe(rpd))) {
     return { ok: false, cost, reason: `${name} (${model}) đã dùng hết lượt hôm nay`, resetIn: untilPacificMidnight(), renews: "day" };
   }
-  const now = Date.now();
   const recent = (minute[`${group}|${bucket}`] ?? []).filter((time) => now - time < 60_000);
   minute[`${group}|${bucket}`] = recent;
-  if (recent.length >= safe(rpm)) {
+  if (!guessed && recent.length >= safe(rpm)) {
     return { ok: false, cost, reason: `${name} đang chờ lượt (giới hạn mỗi phút)`, resetIn: recent[0] + 60_000 - now, renews: "minute" };
   }
   // Money: a paid key has a monthly cap (2 USD unless the learner set another). At the cap only free use goes on, the next key
@@ -343,11 +352,11 @@ export function record(settings: UsageSettings, service: ServiceId, key: string,
 }
 
 /** The provider refused: a daily limit closes the model for the day, a minute limit fills the minute, a bad key rests. */
-export function refused(settings: UsageSettings, service: ServiceId, key: string, model: string, kind: UsageKind, how: "day" | "minute" | "key", reason = "") {
+export function refused(settings: UsageSettings, service: ServiceId, key: string, model: string, kind: UsageKind, how: "day" | "minute" | "key", reason = "", waitMs?: number) {
   const group = groupTag(settings, service, key);
   const bucket = `${kind}:${model}`;
   if (how === "day") { keyLedger(group).closed[bucket] = true; persist(); }
-  else if (how === "minute") { const now = Date.now(); minute[`${group}|${bucket}`] = Array.from({ length: 1000 }, () => now); }
+  else if (how === "minute") { paused[`${group}|${bucket}`] = Date.now() + (waitMs ?? 60_000); }
   else blockedUntil[keyTag(key)] = { until: Date.now() + 30 * 60_000, reason: reason || "key bị từ chối" };
 }
 
